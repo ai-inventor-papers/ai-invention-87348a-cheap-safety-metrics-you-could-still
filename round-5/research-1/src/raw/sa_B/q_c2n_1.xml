@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/fg6eLh+a7+8WJZuWtBtzhm10hgw</id>
+  <title>arXiv Query: search_query=all:refusal AND all:ablation AND all:random&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-09-21T21:49:09Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:refusal+AND+(all:ablation+AND+all:random)&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>2</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2609.09793v1</id>
+    <title>How Fragile Is Safety Alignment at Frontier Scale? A Single-Direction Attack on a 320B MoE</title>
+    <updated>2026-09-09T06:48:08Z</updated>
+    <link href="https://arxiv.org/abs/2609.09793v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.09793v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Directional ablation removes an aligned language model's ability to refuse by projecting a single "refusal direction" out of the weights that write the residual stream. It needs no gradient-based training and no optimization, only a few hundred contrastive prompts, which makes it the canonical white-box attack on open-weight alignment. However, it has been established only on dense models up to roughly 70B parameters. We study whether it survives the shift to frontier mixture-of-experts (MoE) models whose residual streams are no longer a single tensor and whose weights ship quantized. We apply it to GLM-5.3-Flash (320B parameters, 288 routed experts, a four-wide hyper-connection residual, block-FP8). The attack survives the architecture, but what it reaches is no longer where a reader of the original recipe would look for it. Editing the attention, dense and routed-expert writers on their own removes 0.039, 0.016 and 0.148 of refusal respectively; editing all three together removes 0.776. As a result, 74% of the effect exists only under the joint intervention. The part the conventional recipe reaches by module-name matching accounts for 0.066 of that 0.776, which is why it fails silently on an MoE. The effect does not follow from removing just any direction: ablating a random direction orthogonal to it leaves refusal unchanged. A category-concentrated residue survives every edit we tried: subspaces fitted on violence, sexual content and hate leave measurable refusal at every rank from 1 to 12. We report the method, the 41-89 percentage-point reductions it achieves across seven harmful benchmarks with no detected change in capability, and the boundary where it stops.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-09T06:48:08Z</published>
+    <arxiv:comment>20 pages, 14 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Yi Shi</name>
+    </author>
+    <author>
+      <name>Tanyu Chen</name>
+    </author>
+    <author>
+      <name>Kai Shen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.23959v1</id>
+    <title>NeuronGuard: Robust LLM Safety Alignment via Ablation-Aware Safety Signal Redistribution</title>
+    <updated>2026-08-25T01:36:54Z</updated>
+    <link href="https://arxiv.org/abs/2608.23959v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.23959v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment in large language models (LLMs) remains brittle against a growing spectrum of attacks. Jailbreak attacks bypass safety mechanisms through crafted prompts, while neuron-level attacks directly prune safety-critical neurons post-deployment. Both exploit a common weakness: safety-relevant information concentrates in a sparse neuron subset. We present NeuronGuard, a fine-tuning-stage defense that simultaneously hardens LLMs against both attack classes by redistributing safety signals across a broader set of neurons. NeuronGuard dynamically identifies safety-critical neurons via periodically refreshed per-layer linear classifiers, forces refusal behavior under deliberate neuron ablation, and applies KL-divergence regularization for distributional consistency. A randomized gradient projection strategy preserves downstream task utility by resolving conflicts between the defense and task objectives. We provide a formal guarantee that NeuronGuard strictly reduces the attack success rate (ASR) upper bound, and experiments across three LLMs, six state-of-the-art attack strategies, and multimodal settings confirm near-zero ASR while maintaining task accuracy, including against white-box adaptive adversaries.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.IR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-25T01:36:54Z</published>
+    <arxiv:comment>To appear in EMNLP 2026 (Findings)</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Anjun Gao</name>
+    </author>
+    <author>
+      <name>Yueyang Quan</name>
+    </author>
+    <author>
+      <name>Yufei Xia</name>
+    </author>
+    <author>
+      <name>Zhuqing Liu</name>
+    </author>
+    <author>
+      <name>Minghong Fang</name>
+    </author>
+  </entry>
+</feed>

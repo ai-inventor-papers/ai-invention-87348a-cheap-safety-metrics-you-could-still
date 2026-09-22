@@ -1,0 +1,10 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/utter-project/EuroLLM-1.7B-Instruct/raw/main/README.md
+Type: HTML
+Pattern: MMLU|GSM8K|safety|Safety|benchmark (3 matches in 11506 chars)
+
+--- Content ---
+
+4057:...ish source text to Portuguese:\nEnglish: I am a language model for european languages. \nPortuguese: <|im_end|>\n<|im_start|>assistant\n' inputs = tokenizer(text, return_tensors="pt") outputs = model.generate(**inputs, max_new_tokens=20) print(tokenizer.decode(outputs[0], skip_special_tokens=True)) ## Results ### Machine Translation We evaluate EuroLLM-1.7B-Instruct on several machine translation benchmarks: FLORES-200, WMT-23, and WMT-24 comparing it with [Gemma-2B](https://huggingface.co/google/gemma-2b) and [Gemma-7B](https://huggingface.co/google/gemma-7b) (also instruction tuned on EuroBlocks). The results show that EuroLLM-1.7B is substantially better than Gemma-2B in Machine Translation and competitive with Gemma-7B. #### Flores-200 | Model | AVG | AVG en-xx | AVG xx-en | en-ar | en-bg | en-...
+--
+8770:...|-----| | EuroLLM-1.7B-Instruct|79.32 | 79.32 | 79.34 | 79.42 | 80.67 | 80.55 | 78.65 | 80.12 | 82.96 | 80.60 | 71.59 | 83.48 | 75.20 | |Gemma-2B-EuroBlocks| 74.72 | 74.41 | 75.97 | 74.93 | 78.81 | 70.54 | 74.90 | 75.84 | 79.48 | 78.06 | 62.70 | 79.87 | 72.07 | |Gemma-7B-EuroBlocks| 78.67 | 78.34 | 80.00 | 78.88 | 80.47 | 78.55 | 78.55 | 80.12 | 80.55 | 78.90 | 70.71 | 84.33 | 75.66 | ### General Benchmarks We also compare EuroLLM-1.7B with [TinyLlama-v1.1](https://huggingface.co/TinyLlama/TinyLlama_v1.1) and [Gemma-2B](https://huggingface.co/google/gemma-2b) on 3 general benchmarks: Arc Challenge and Hellaswag. For the non-english languages we use the [Okapi](https://aclanthology.org/2023.emnlp-demo.28.pdf) datasets. Results show that EuroLLM-1.7B is superior to TinyLlama-v1.1 and similar to Gemma-2B on Hellaswag but worse on Arc Challenge. This can be due to the lower number of parameters of EuroLLM-1.7B (1.133B non-embedding parameters against 1.981B). #### Arc Challenge...

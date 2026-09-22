@@ -1,0 +1,315 @@
+{
+ "window": "2026-09-10 to 2026-09-21 (papers submitted or revised in this window; arXiv API sortBy=submittedDate + cs.CL/cs.LG/cs.CR category scans + general web search)",
+ "accessed_date": "2026-09-21",
+ "candidates": [
+  {
+   "candidate": "C2n",
+   "definition": "Null-corrected self-ablation sensitivity per model (refusal-direction ablation drop, z-scored against random-direction ablations).",
+   "verdict": "OPEN",
+   "closed": false,
+   "nearest_hits": [
+    {
+     "arxiv_id": "2609.16204",
+     "title": "Decoy Direction Optimization: A Post-Hoc Defense Against LLM Abliteration",
+     "date": "2026-09-14 (v1)",
+     "quote": "ablation attacks rely on contrastive estimators to find the refusal direction ... the decoy corrupts their estimator, tricking them into ablating a harmless orthogonal feature while the actual safety mechanism remains intact",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.16204_abs.txt",
+     "which_properties_match": "none scored by benchmark; adversarial caveat on P2 (parent-free): shows the DIM refusal-direction estimator underlying self-ablation sensitivity can be deliberately decoyed post hoc across six model families, so a 'gameable' self-ablation z-score is not a defense-proof safety read. Does not itself compute a per-model scalar correlated with benchmark safety (fails P1+P3 as stated)."
+    },
+    {
+     "arxiv_id": "2609.06951",
+     "title": "Steering Interference Reflects the Model's Defaults, Not the Behavior Directions (v2)",
+     "date": "2026-09-07 (v1), 2026-09-16 (v2, in window)",
+     "quote": "a direction carrying no behavioral content, matched to a real steer only in the size of the vector it adds, moves the same behaviors in the same order as real steers do",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.06951v2_abs.txt",
+     "which_properties_match": "Motivates the null/random-direction correction itself (methodology overlap) but is about additive steering, not subtractive ablation, and reports no per-model scalar correlated with a safety benchmark (fails P1, P3). Confirms the random/content-matched control is necessary and non-trivial to interpret, which is exactly what C2n's z-scoring is meant to fix -- not a scoop."
+    }
+   ],
+   "queries_run": [
+    "arXiv API all:refusal AND all:ablation AND all:random (sortBy=submittedDate, 50) -> q_c2n_1.xml",
+    "arXiv API all:directional AND all:ablation AND all:baseline (50) -> q_c2n_2.xml",
+    "arXiv API all:refusal AND all:direction AND all:specificity (50) -> q_c2n_3.xml",
+    "arXiv API cat:cs.CL AND (all:refusal OR all:abliteration OR all:jailbreak) (100) -> q_catscan_clrefusal.xml",
+    "arXiv API cat:cs.CR AND (all:refusal OR all:jailbreak OR all:abliteration) (100) -> q_catscan_crjailbreak.xml",
+    "web: refusal direction ablation random direction baseline per-model safety 2026",
+    "web: directional ablation sensitivity z-score random directions LLM safety"
+   ],
+   "positioning_sentence": "No paper in the 2026-09-10--21 window reports a per-model, parent-free refusal-ablation sensitivity that is z-scored against matched random-direction ablations and correlated with an external safety benchmark across model families; the closest work either shows the underlying difference-in-means direction estimator can be adversarially decoyed post hoc \\citep{Muhamed2026} or shows norm-matched contentless steers reproduce the ordering (but not the benchmark correlation) of real steers \\citep{Malla2026}, both of which motivate rather than subsume our null correction."
+  },
+  {
+   "candidate": "C2ts",
+   "definition": "Two-sided ablation drop, harmful minus benign twin (XSTest-style).",
+   "verdict": "OPEN",
+   "closed": false,
+   "nearest_hits": [
+    {
+     "arxiv_id": "2608.25390",
+     "title": "Refusal geometry reflects refusal training: diverse refusal prefixes can raise stable rank and weaken refusal vector ablation attacks",
+     "date": "2026-08-26 (v1), 2026-09-03 (v2, before window, no v3 in window)",
+     "quote": "Higher activation stable rank is associated with smaller refusal deltas, consistent with weaker single-vector ablation.",
+     "locator": "Figure 9 caption",
+     "capture_file": "raw/sa_B/grep_2608.25390_keyquote.txt",
+     "which_properties_match": "Reports one-sided harmfulness/refusal ablation deltas (not a harmful-minus-benign twin difference) as a function of stable rank; no XSTest-style benign twin, no per-model scalar correlated with an external jailbreak/safety benchmark (fails P1, P3). Carried forward unchanged from iter_3/iter_4 as the nearest miss for C15, not C2ts; no genuine C2ts hit found."
+    }
+   ],
+   "queries_run": [
+    "arXiv API all:refusal AND all:ablation AND all:XSTest (50) -> q_c2ts_1.xml",
+    "arXiv API all:over-refusal AND all:ablation (50) -> q_c2ts_2.xml",
+    "arXiv API all:two-sided AND all:refusal (50) -> q_c2ts_3.xml",
+    "web: refusal direction ablation over-refusal XSTest harmful benign difference per model 2026",
+    "web: two-sided refusal ablation drop harmful minus benign twin safety metric"
+   ],
+   "positioning_sentence": "No paper published or revised 2026-09-10--21 reports a two-sided (harmful-minus-benign-twin) refusal-ablation drop as a per-model safety score correlated with an external benchmark across families; the nearest geometric result, that activation stable rank predicts one-sided refusal/harmfulness ablation deltas \\citep{Labunets2026}, neither uses matched benign twins nor reports a cross-family benchmark correlation."
+  },
+  {
+   "candidate": "C1n",
+   "definition": "Random-steer-corrected causal harm-to-refusal gain (steer along harmfulness direction, measure refusal gain, subtract norm-matched random steer).",
+   "verdict": "OPEN (narrowed definition unchanged from iter_4: must be reported net of a norm-matched random-direction steer)",
+   "closed": false,
+   "nearest_hits": [
+    {
+     "arxiv_id": "2609.06951",
+     "title": "Steering Interference Reflects the Model's Defaults, Not the Behavior Directions (v2)",
+     "date": "2026-09-07 (v1), 2026-09-16 (v2, in window)",
+     "quote": "The account holds on all ten models, the pull toward defaults strongest below 10B parameters and weakening in each family's largest.",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.06951v2_abs.txt",
+     "which_properties_match": "P4 (across families, 10 models) yes; P1 (per-model scalar) partially -- reports a qualitative 'pull toward defaults' pattern by model size, not a single per-model causal harm-to-refusal gain; P3 (correlated with benchmark safety) NO -- no external benchmark correlation is computed. v2 (revised 2026-09-16, inside window) does not add a benchmark correlation; re-checked full HTML, no 'correlat' match against any safety benchmark. Confirms rather than scoops the C1n definition-narrowing already logged in iter_4."
+    },
+    {
+     "arxiv_id": "2609.14759",
+     "title": "Refusal Reads Only a Slice of What the Model Knows: Harm-Keyed Routing and Its Exceptions Across Model Families",
+     "date": "2026-09-13",
+     "quote": "The central result is causal and comes from one model, OLMo-3.",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.14759_abs.txt",
+     "which_properties_match": "P4 descriptive claims span 4 models/3 families, but the causal (interchange) result that would map to a harm-to-refusal gain is single-model (OLMo-3) -- fails P4 for the causal quantity itself; no per-model scalar reported, no benchmark correlation (fails P1, P3). Same paper already logged ADJACENT in iter_4; unchanged."
+    }
+   ],
+   "queries_run": [
+    "arXiv API all:steering AND all:random AND all:vector AND all:refusal (50, 0 hits total) -> q_c1n_1.xml",
+    "arXiv API all:content-free AND all:steering (50) -> q_c1n_2.xml",
+    "arXiv API all:harmfulness AND all:steering AND all:refusal AND all:gain (50) -> q_c1n_3.xml",
+    "web: steering random vector control refusal gain model comparison 2026",
+    "web: content-free steering refusal baseline correction norm-matched",
+    "web: papers citing Steering Interference Reflects the Model's Defaults 2609.06951"
+   ],
+   "positioning_sentence": "No paper in the window computes a per-model harmfulness-direction-steering-induced refusal gain net of a norm-matched random-direction control and correlates that corrected gain with an external safety benchmark across model families; \\citep{Malla2026}'s revised v2 (2026-09-16) reconfirms on ten models that norm-matched contentless steers reproduce real steers' side-effect ordering without adding any benchmark correlation, and \\citep{ReblitzRichardson2026}'s causal harm-routing result remains single-model, so the C1n definition-narrowing from iter\\_4 stands and is not closed."
+  },
+  {
+   "candidate": "C5",
+   "definition": "Weight-path harm-to-refusal gain from weights only.",
+   "verdict": "OPEN",
+   "closed": false,
+   "nearest_hits": [
+    {
+     "arxiv_id": "2604.27401",
+     "title": "Perturbation Probing: A Two-Pass-per-Prompt Diagnostic for FFN Behavioral Circuits in Aligned LLMs",
+     "date": "2026-04-30 (before window; carried-forward nearest miss, re-confirmed no new version)",
+     "quote": "The FFN-to-skip signal ratio, computed from the same two forward passes, distinguishes the two structures and predicts the appropriate intervention.",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2604.27401_abs.txt",
+     "which_properties_match": "P1 (per-model scalar, FFN-to-skip ratio) and P4 (13 models, 4 architecture families) yes; P3 (correlated with benchmark safety) NO -- ratio predicts whether a directional-steering intervention transfers, not a jailbreak/safety-benchmark score; P2 (parent-free) partially, uses two forward passes not weights alone. Still the nearest miss; unchanged from iter_3/iter_4, no new version found in this window."
+    },
+    {
+     "arxiv_id": "2609.16204",
+     "title": "Decoy Direction Optimization: A Post-Hoc Defense Against LLM Abliteration",
+     "date": "2026-09-14",
+     "quote": "DDO actively injects a high-magnitude, nonlinear decoy signal into the network's MLP neurons",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.16204_abs.txt",
+     "which_properties_match": "Adversarial caveat only: a decoy-hardened model's weights would corrupt any weight-path gain computed onto a DIM-estimated harm/refusal direction, across six families (P4-adjacent) -- but this is a defense mechanism, not a safety-score-vs-benchmark correlation (fails P1, P3 as a metric)."
+    },
+    {
+     "arxiv_id": "2609.18612",
+     "title": "Weakening Neurons: An Input-Output Functionality in Transformers with Outsize Influence",
+     "date": "2026-09-16",
+     "quote": "nine different LLMs have similar patterns: weakening neurons appear mostly in late layers whereas their counterparts, (conditional) strengthening neurons, are frequent in early-middle layers",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.18612_abs.txt (cross-checked against raw/sa_B/grep_weakening_neurons_abs.txt: 0 matches for refus|safety|harm|jailbreak, confirms no safety framing)",
+     "which_properties_match": "Methodologically adjacent (weight-only cosine-similarity analysis of GLU neurons across nine LLMs, i.e. P2+P4-style weight-only cross-model analysis) but has zero mentions of refusal/safety/harm/jailbreak in the abstract page (confirmed by regex grep, 0/4 matches) -- does not touch P1 or P3 at all. Not a hit on the actual candidate; noted only as background technique."
+    }
+   ],
+   "queries_run": [
+    "arXiv API all:weight AND all:refusal AND all:pathway AND all:gain (50, 1 hit total, out of window) -> q_c5_1.xml",
+    "arXiv API all:harm AND all:direction AND all:weight AND all:product AND all:safety (50, 0 hits total) -> q_c5_2.xml",
+    "arXiv API all:weight-only AND all:refusal (50) -> q_c5_3.xml",
+    "web: weight-only refusal pathway gain safety score 2026",
+    "web: harm direction refusal direction weight product safety score per model 2026",
+    "web: FFN skip ratio refusal ablation 2604.27401 follow-up weight only safety"
+   ],
+   "positioning_sentence": "No paper submitted or revised 2026-09-10--21 computes a weight-only (activation-free) harm-to-refusal directional gain and correlates it with benchmark safety across model families; the nearest prior miss remains the FFN-to-skip signal ratio \\citep{Liu2026}, which predicts intervention transfer rather than benchmark safety, and the new decoy-defense result \\citep{Muhamed2026} only shows such weight-path estimators are adversarially gameable, which we now state as an explicit limitation rather than a scoop."
+  },
+  {
+   "candidate": "C15",
+   "definition": "Late-layer effective rank/dispersion as safety read.",
+   "verdict": "OPEN",
+   "closed": false,
+   "nearest_hits": [
+    {
+     "arxiv_id": "2608.25390",
+     "title": "Refusal geometry reflects refusal training: diverse refusal prefixes can raise stable rank and weaken refusal vector ablation attacks",
+     "date": "2026-08-26 (v1), 2026-09-03 (v2, both before window; re-checked, no v3 in window)",
+     "quote": "Higher activation stable rank is associated with smaller refusal deltas, consistent with weaker single-vector ablation.",
+     "locator": "Figure 9 caption",
+     "capture_file": "raw/sa_B/grep_2608.25390_keyquote.txt",
+     "which_properties_match": "P1 (per-model stable-rank statistic) yes on a fixed-model subset; predicts robustness to a specific attack (single-vector ablation), not a benchmark safety score (fails P3, since it is validated against the paper's own ablation-attack outcome, not an external jailbreak/safety benchmark); cross-model scope is a handful of released checkpoints of one lineage, not clearly cross-family (P4 uncertain). Re-confirmed nearest miss, unchanged since iter_3/iter_4, no new version in window."
+    }
+   ],
+   "queries_run": [
+    "arXiv API all:effective AND all:rank AND all:safety AND all:hidden (50) -> q_c15_1.xml",
+    "arXiv API all:stable AND all:rank AND all:refusal (50) -> q_c15_2.xml",
+    "arXiv API all:dispersion AND all:safety AND all:layer (50) -> q_c15_3.xml",
+    "web: effective rank hidden states safety alignment across models arxiv 2026",
+    "web: stable rank refusal robustness jailbreak arxiv 2026"
+   ],
+   "positioning_sentence": "No new paper in the 2026-09-10--21 window reads late-layer effective rank or activation dispersion as a per-model safety score correlated with an external benchmark across model families; the nearest miss remains \\citep{Labunets2026}'s stable-rank-vs-single-vector-ablation-vulnerability result, which we re-checked for a version update in this window (v2 was 2026-09-03, before the window; no v3), so C15 is not closed."
+  },
+  {
+   "candidate": "C14",
+   "definition": "Learned metamodel over pooled hidden stats predicting benchmark safety.",
+   "verdict": "OPEN",
+   "closed": false,
+   "nearest_hits": [
+    {
+     "arxiv_id": "2609.19472",
+     "title": "Safety Beyond the Interface: Detecting Harm via Latent States in Large Language Models",
+     "date": "2026-09-16",
+     "quote": "We extract activations from LLaMA-3.1-8B and train lightweight MLP classifier probes (12.6M parameters) to detect harmful prompts. Evaluated on WildJailbreak, Beavertails, and AEGIS 2.0, our probes achieve F1 scores of 99%, 83%, and 84%, respectively",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.19472_abs.txt",
+     "which_properties_match": "The trained artifact is per-PROMPT (classifies whether a given input is harmful), not a per-MODEL scalar (fails P1); single model (LLaMA-3.1-8B) only, no cross-family comparison (fails P4); F1 is against ground-truth prompt labels, not an external per-model safety benchmark score (fails P3)."
+    },
+    {
+     "arxiv_id": "2609.20129",
+     "title": "Local Sparsity Enables Unsupervised LLM Safety Detection",
+     "date": "2026-09-17",
+     "quote": "we propose a framework for locally masked SAE-based anomaly detection, supported by theoretical justifications. We validate it on various architectures and datasets, including both capability-testing datasets and safety-specific datasets",
+     "locator": "abstract",
+     "capture_file": "raw/sa_B/fetch_2609.20129_abs.txt",
+     "which_properties_match": "Multiple architectures tested (P4-adjacent) but the detector output is per-INPUT anomaly flagging (fails P1, per-model scalar); no learned meta-model pooling hidden stats into one number per model, and no correlation with an external safety benchmark score (fails P3)."
+    }
+   ],
+   "queries_run": [
+    "arXiv API all:meta-model AND all:safety AND all:activations (25) -> q_c14_1.xml",
+    "arXiv API all:probe AND all:jailbreak AND all:robustness AND all:model (39) -> q_c14_2.xml",
+    "arXiv API all:weight-space AND all:safety AND all:prediction (44) -> q_c14_3.xml",
+    "web: predict safety benchmark score from activations meta-model arxiv 2026",
+    "web: model-level probe predicts jailbreak robustness across models zoo arxiv 2026",
+    "web: weight-space learning safety prediction model zoo arxiv 2026"
+   ],
+   "positioning_sentence": "No paper submitted or revised 2026-09-10--21 trains a meta-model over pooled per-model hidden-state statistics to predict an external safety-benchmark score across model families; recent latent-state safety work in this window is uniformly per-prompt harm detection on a single model (arXiv:2609.19472) or per-input SAE anomaly detection (arXiv:2609.20129), neither of which produces or validates a per-model safety scalar, so no bib key is used for either (see new_papers_not_in_bib)."
+  }
+ ],
+ "watchlist_recheck": [
+  {
+   "arxiv_id": "2609.13534",
+   "title": "Harmfulness Propagation Dynamics: Layer-wise Trajectories of Adversarial Intent in Large Language Models",
+   "latest_version": "v1",
+   "version_date": "2026-09-11",
+   "changes_verdict": false,
+   "note": "No v2. Per-prompt HERALD moderator (F1 on 8 harmfulness benchmarks x 4 model families), not a per-model safety score; IRRELEVANT to all six candidates, unchanged from iter_4."
+  },
+  {
+   "arxiv_id": "2609.18471",
+   "title": "First Token Matters: Understanding Safety Collapse in Large Reasoning Models",
+   "latest_version": "v1",
+   "version_date": "2026-09-16",
+   "changes_verdict": false,
+   "note": "No v2. Single-version paper about first-token safety collapse in reasoning models; not previously graded against C1n-C15/C2n/C2ts/C14 in this session's checks but abstract concerns a training-time collapse mechanism, not a per-model activation-derived score correlated with benchmark safety across families -- no verdict change."
+  },
+  {
+   "arxiv_id": "2609.19366",
+   "title": "The Role of Fine-grained Harm Signals in LLM Safety",
+   "latest_version": "v2",
+   "version_date": "2026-09-18 (in window)",
+   "changes_verdict": false,
+   "note": "v2 re-checked in full HTML for 'correlat|benchmark score|per-model|across N models/families': only category-wise Spearman rank correlations across 3 models (Gemma/Llama/Qwen) for steering strength ordering, no benchmark-score correlation added. ADJACENT verdict from iter_4 unchanged."
+  },
+  {
+   "arxiv_id": "2609.14759",
+   "title": "Refusal Reads Only a Slice of What the Model Knows: Harm-Keyed Routing and Its Exceptions Across Model Families",
+   "latest_version": "v1",
+   "version_date": "2026-09-13",
+   "changes_verdict": false,
+   "note": "No v2. Causal result remains single-model (OLMo-3); no benchmark correlation. ADJACENT verdict unchanged, re-confirmed via fresh fetch this session."
+  },
+  {
+   "arxiv_id": "2608.13329",
+   "title": "A Probe Direction Is a Property of Its Prompt",
+   "latest_version": "v1",
+   "version_date": "2026-08-13",
+   "changes_verdict": false,
+   "note": "No v2 (before window and still single-version). No update to re-check."
+  },
+  {
+   "arxiv_id": "2606.08044",
+   "title": "When Behavioral Safety Evaluation Fails: A Representation-Level Perspective",
+   "latest_version": "v2",
+   "version_date": "2026-08-04 (before window)",
+   "changes_verdict": false,
+   "note": "v2 predates the window (2026-08-04); no v3. No new content to re-grade this iteration."
+  },
+  {
+   "arxiv_id": "2606.20626",
+   "title": "Efficient Safety Benchmarking via Item Response Theory",
+   "latest_version": "v1",
+   "version_date": "2026-05-26",
+   "changes_verdict": false,
+   "note": "No v2. No update to re-check."
+  },
+  {
+   "arxiv_id": "2608.05086",
+   "title": "Item Response Theory for AI Safety",
+   "latest_version": "v1",
+   "version_date": "2026-08-05",
+   "changes_verdict": false,
+   "note": "No v2. No update to re-check."
+  }
+ ],
+ "carried_forward": [
+  {
+   "candidate": "C1",
+   "note": "No new hit in window (7 queries this session touching C1's steering-gain framing: c1n_1-3 arXiv, c1n_w1-w3 web, plus catscan_lgsteer). iter_4's NARROWED-by-2609.06951 verdict stands; v2 of that paper (2026-09-16, in window) re-checked, adds no benchmark correlation."
+  },
+  {
+   "candidate": "C2",
+   "note": "No new hit in window (queries: c2n_1-3, c2ts_1-3 arXiv = 6, plus c2n_w1-2, c2ts_w1-2 web = 4, plus catscan_clrefusal/crjailbreak). 2609.16204 (DDO, in window) adds an adversarial-gameability caveat already logged for C2 in iter_4; no benchmark-correlation scoop."
+  },
+  {
+   "candidate": "C4",
+   "note": "No new hit in window; general queries (catscan_clrefusal, catscan_lgsteer, catscan_crjailbreak, c1n/c5/c14 web searches, 9 queries total) surfaced nothing touching C4's specific framing."
+  },
+  {
+   "candidate": "C6",
+   "note": "No new hit in window; c15/c14 queries (5 arXiv + 5 web = 10) surfaced nothing relevant to C6."
+  },
+  {
+   "candidate": "C10",
+   "note": "No new hit in window; c14 queries (3 arXiv + 3 web = 6) and catscan_lgsteer/crjailbreak surfaced nothing relevant to C10."
+  },
+  {
+   "candidate": "C12",
+   "note": "No new hit in window; c5/c15 queries (6 arXiv + 5 web = 11) surfaced nothing relevant to C12."
+  },
+  {
+   "candidate": "C13",
+   "note": "No new hit in window; catscan_crjailbreak plus c2n/c2ts queries (10 total) surfaced nothing relevant to C13."
+  }
+ ],
+ "new_papers_not_in_bib": [
+  {
+   "arxiv_id": "2609.19472",
+   "title": "Safety Beyond the Interface: Detecting Harm via Latent States in Large Language Models",
+   "why_cite": "Optional related-work mention for C14: per-prompt MLP probe on pooled LLaMA-3.1-8B activations reaches guard-model-competitive F1 on WildJailbreak/Beavertails/AEGIS 2.0, single model only -- illustrates the per-prompt vs per-model gap C14 must clear."
+  },
+  {
+   "arxiv_id": "2609.20129",
+   "title": "Local Sparsity Enables Unsupervised LLM Safety Detection",
+   "why_cite": "Optional related-work mention for C14/C15: locally-masked SAE anomaly detection across architectures, validated against safety-specific datasets, but scores inputs not models."
+  }
+ ],
+ "blockers": []
+}

@@ -1,0 +1,100 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: Guard-only|Hybrid reward|3\.5  (4 matches in 101931 chars)
+
+--- Content ---
+
+41389:...
+thinking and non-thinking modes. We then filter out samples where all eight responses are either
+uniformly safe or uniformly unsafe, to ensure meaningful learning signals for the policy. This results in a
+final training set of 13.7k samples for thinking mode and 6.7k samples for non-thinking mode.
+11
+
+Mode
+Model
+Safety Rate
+Refusal ArenaHard-v2 AIME25 LCB-v6 GPQA
+Qwen3-235B
+WildGuard
+WildGuard
+Winrate (GPT-4.1)
+Pass@1
+Pass@1
+Pass@1
+Non-Think
+Qwen3-4B
+47.5
+64.7
+12.9
+9.5
+19.1
+26.4
+41.7
++ SafeRL (Guard-only)
+99.7
+100.0
+96.6
+8.5
+19.5
+25.8
+42.0
++ SafeRL (Hybrid)
+86.5
+98.1
+5.3
+10.7
+18.2
+27.7
+40.8
+Think
+Qwen3-4B
+43.8
+59.0
+6.5
+13.7
+65.6
+48.4
+55.9
++ SafeRL (Guard-only)
+99.7
+100.0
+95.2
+11.7
+66.3
+46.7
+53.1
++ SafeRL (Hybrid)
+83.4
+97.4
+6.2
+16.6
+63.5
+47.5
+51.2
+Table 10: Performance of Safety RL on Qwen3-4B in Think and Non-Think Modes.
+Evaluation
+We adopt the evaluation set from WildJailbreak as our test set, comprising 2,000 harmful
+prompts and 210 benign prompts. To comprehensively assess model performance, we evaluate along the
+following dimensions:
+• Safety: To mitigate risks of metric hack, we avoid using Qwen3Guard for safety evaluation.
+Instead, we employ ...
+--
+42901:...nment does not compromise the model’s core capabilities, we further evaluate
+its general utility across a diverse set of established benchmarks: Arena-Hard-v2 (alignment; Li et al.,
+2024), AIME-25 (mathematical reasoning; AIME, 2025), LiveCodeBench-V6 (code generation; Jain et al.,
+2024), and GPQA (knowledge; Rein et al., 2023).
+3.6
+Experiment Results
+The performance of our model, Qwen3-4B-SafeRL, alongside the baseline Qwen3-4B, is summarized in
+Table 10. Our key findings are as follows:
+• The Guard-only reward achieves near-perfect safety, but this is accomplished through an
+extremely high refusal rate. Consequently, we observe a slight degradation in win rate on
+arena-hard-v2. However, this trade-off does not noticeably impact performance on objective
+benchmarks such as AIME25, LCB-v6, and GPQA.
+• The Hybrid reward successfully mitigates model degradation by penalizing excessive refusal,
+while simultaneously delivering a substantial improvement in safety, rising from approximately
+60 to over 97, as evaluated by WildGuard across both thinking modes. Furthermore, guided by
+the WorldPM’s signal, response quality on arena-hard-v2 even shows marginal improvement.
+These results demonstrate the effectiveness of our Hybrid Reward framework in producing a model
+that is simultaneously safer, more helpful, and retai...

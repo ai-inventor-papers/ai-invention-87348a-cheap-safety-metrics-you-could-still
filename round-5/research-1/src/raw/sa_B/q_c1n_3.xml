@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/fw22Zqh5JEVt6c4lCXXPjEZ2bEA</id>
+  <title>arXiv Query: search_query=all:harmfulness AND all:steering AND all:refusal AND all:gain&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-09-21T21:50:11Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:harmfulness+AND+(all:steering+AND+(all:refusal+AND+all:gain))&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>5</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2609.03887v1</id>
+    <title>Beyond Shallow Alignment: How Post-Training Methods Determine Refusal Circuits And Steering Robustness</title>
+    <updated>2026-09-03T14:10:17Z</updated>
+    <link href="https://arxiv.org/abs/2609.03887v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.03887v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>How do the methods used to train language models to refuse harmful requests shape how that refusal actually works inside the model? We compare three post-training methods - supervised fine-tuning, reasoning-augmented fine-tuning (training on reasoning chains that justify a safety decision), and preference optimization (ORPO) - across three architecturally distinct models (Llama-3.1-8B, Gemma-2-9B, Qwen3-8B). We find that training method, not just data, reshapes how refusal is computed internally: reasoning-augmented training consistently produces a distinct kind of refusal computation, visible across all three models, while architecture independently shapes internal structure and how reliably refusal can be steered. Most importantly, no method we study achieves all three properties we would want from safe alignment at once: refusal that isn't concentrated in a few fragile components, safety gains that don't cost general capability, and safety behavior correctable through small, targeted edits. We caution against treating current post-training methods as a solved, reliable defense, especially for security-critical use. Code and models are available in https://github.com/hoangcuongnguyen2001/Beyond-Shallow-Alignment.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-03T14:10:17Z</published>
+    <arxiv:comment>27 pages, accepted at EMNLP 2026 Main Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Hoang Cuong Nguyen</name>
+    </author>
+    <author>
+      <name>Mark Dras</name>
+    </author>
+    <author>
+      <name>Usman Naseem</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.00686v1</id>
+    <title>Dialectics of Alignment: Harnessing Unsafe Knowledge for Dynamic Safety Routing</title>
+    <updated>2026-05-30T11:49:42Z</updated>
+    <link href="https://arxiv.org/abs/2606.00686v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.00686v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The prevailing paradigm in large language model (LLM) alignment operates via erasure, filtering unsafe data or training models to strictly refuse harmful prompts. While effective at reducing immediate toxicity, this approach fundamentally constricts the model's epistemological scope, resulting in over-cautious systems that output uninformative blanket refusals to sensitive yet benign queries. In this work, we challenge the orthodoxy that unsafe data must be discarded. We propose a dialectical approach to alignment, positing that unsafe data encodes rich, domain specific knowledge critical for nuanced, safe, and informative generation. To operationalize this, we introduce SafeMoE, a Mixture-of-Experts (MoE) framework that isolates unsafe knowledge into domain-specific Low-Rank Adapters (LoRA experts) trained exclusively on harmful corpora. To synthesize safety from these unsafe primitives, we train a lightweight gating network using a minimal, highly curated set of safe-informative responses. During inference, this router dynamically orchestrates the unsafe experts, effectively steering the generation trajectory to harness their deep domain knowledge while strictly enforcing safety constraints. Extensive empirical evaluations across stringent safety benchmarks demonstrate that SafeMoE is not only safer, achieving over a 20% relative improvement in safe response rate (more than a 15% absolute gain), but also produces more informative responses when safety and harmfulness are of paramount concern. Furthermore, the routing mechanism exhibits strong zero-shot generalization to unseen domains and broader safety tasks without domain-specific supervision. Our findings suggest a paradigm shift in alignment: true safety requires not the masking of unsafe knowledge, but its controlled integration.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-30T11:49:42Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Maryam Hashemzadeh</name>
+    </author>
+    <author>
+      <name>Jerry Huang</name>
+    </author>
+    <author>
+      <name>Minseon Kim</name>
+    </author>
+    <author>
+      <name>Marc-Alexandre Côté</name>
+    </author>
+    <author>
+      <name>Sarath Chandar</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20262v1</id>
+    <title>Residual Paving: Diagnosing the Routing Bottleneck in Selective Refusal Editing</title>
+    <updated>2026-05-18T18:17:06Z</updated>
+    <link href="https://arxiv.org/abs/2605.20262v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20262v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study selective refusal editing as a three-way control problem: induce non-refusal on designated edit prompts while preserving benign behavior and harmful refusals outside the edit set. We introduce Residual Paving, a routed residual editing method for frozen instruction-tuned transformers that separates route selectivity, whether to intervene, from residual-edit capacity, what edit to apply. An early-layer router predicts a scalar gate and expert mixture; when active, prompt-conditioned bottleneck residual experts apply later-layer residual updates while leaving the backbone unchanged. This decomposition supports an oracle-routing diagnostic where only the learned scalar gate is replaced with the held-out edit/keep label, leaving the residual editor and frozen backbone fixed. On the primary Gemma-3-4B-IT held-out split, learned Residual Paving reduces edit refusal from 88.6% to 4.0%, with 95.5% benign distribution preservation and 87.3% harmful distribution preservation. Same-protocol one-direction steering controls are much weaker on edit success, leaving edit refusal at 86.8% for Edit-target ActAdd and 78.9% for DIM-style refusal steering. The remaining failure is off-target harmful-keep degradation: harmful refusal remains below the frozen-base rate, 65.3% vs. 81.6%. Across six backbones, oracle routing improves the keep-side diagnostic score on every reported row, with median gain +12.9 pp, supporting the interpretation that learned route selectivity is the main observed bottleneck. Trajectory diagnostics on two backbones further suggest directed movement toward edit-target continuations rather than generic refusal suppression.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-18T18:17:06Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Bryce Hinkley</name>
+    </author>
+    <author>
+      <name>Peyman Najafirad</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2512.06515v1</id>
+    <title>ProSocialAlign: Preference Conditioned Test Time Alignment in Language Models</title>
+    <updated>2025-12-06T18:00:37Z</updated>
+    <link href="https://arxiv.org/abs/2512.06515v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2512.06515v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Current language model safety paradigms often fall short in emotionally charged or high-stakes settings, where refusal-only approaches may alienate users and naive compliance can amplify risk. We propose ProSocialAlign, a test-time, parameter-efficient framework that steers generation toward safe, empathetic, and value-aligned responses without retraining the base model. We formalize five human-centered objectives and cast safety as lexicographic constrained generation: first, applying hard constraints to eliminate harmful continuations; then optimizing for prosocial quality within the safe set. Our method combines (i) directional regulation, a harm-mitigation mechanism that subtracts a learned "harm vector" in parameter space, and (ii) preference-aware autoregressive reward modeling trained jointly across attributes with gradient conflict resolution, enabling fine-grained, user-controllable decoding. Empirical evaluations across five safety benchmarks demonstrate state-of-the-art performance, reducing unsafe leakage and boosting alignment to human values, with strong gains across multiple evaluation metrics. ProSocialAlign offers a robust and modular foundation for generating context-sensitive, safe, and human-aligned responses at inference time.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-12-06T18:00:37Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Somnath Banerjee</name>
+    </author>
+    <author>
+      <name>Sayan Layek</name>
+    </author>
+    <author>
+      <name>Sayantan Adak</name>
+    </author>
+    <author>
+      <name>Mykola Pechenizkiy</name>
+    </author>
+    <author>
+      <name>Animesh Mukherjee</name>
+    </author>
+    <author>
+      <name>Rima Hazra</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2509.26495v3</id>
+    <title>OffTopicEval: When Large Language Models Enter the Wrong Chat, Almost Always!</title>
+    <updated>2026-03-13T11:01:37Z</updated>
+    <link href="https://arxiv.org/abs/2509.26495v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2509.26495v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Model (LLM) safety is one of the most pressing challenges for enabling wide-scale deployment. While most studies and global discussions focus on generic harms, such as models assisting users in harming themselves or others, enterprises face a more fundamental concern: whether LLM-based agents are safe for their intended use case. To address this, we introduce operational safety, defined as an LLM's ability to appropriately accept or refuse user queries when tasked with a specific purpose. We further propose OffTopicEval, an evaluation suite and benchmark for measuring operational safety both in general and within specific agentic use cases. Our evaluations on six model families comprising 20 open-weight LLMs reveal that while performance varies across models, all of them remain highly operationally unsafe. Even the strongest models - Qwen-3 (235B) with 77.77% and Mistral (24B) with 79.96% - fall far short of reliable operational safety, while GPT models plateau in the 62-73% range, Phi achieves only mid-level scores (48-70%), and Gemma and Llama-3 collapse to 39.53% and 23.84%, respectively. While operational safety is a core model alignment issue, to suppress these failures, we propose prompt-based steering methods: query grounding (Q-ground) and system-prompt grounding (P-ground), which substantially improve OOD refusal. Q-ground provides consistent gains of up to 23%, while P-ground delivers even larger boosts, raising Llama-3.3 (70B) by 41% and Qwen-3 (30B) by 27%. These results highlight both the urgent need for operational safety interventions and the promise of prompt-based steering as a first step toward more reliable LLM-based agents.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-09-30T16:39:17Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Jingdi Lei</name>
+    </author>
+    <author>
+      <name>Varun Gumma</name>
+    </author>
+    <author>
+      <name>Rishabh Bhardwaj</name>
+    </author>
+    <author>
+      <name>Seok Min Lim</name>
+    </author>
+    <author>
+      <name>Chuan Li</name>
+    </author>
+    <author>
+      <name>Amir Zadeh</name>
+    </author>
+    <author>
+      <name>Soujanya Poria</name>
+    </author>
+  </entry>
+</feed>

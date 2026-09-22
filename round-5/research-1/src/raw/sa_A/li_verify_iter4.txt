@@ -1,0 +1,291 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2603.24543
+Type: PDF
+Pattern: gamma_?1|Slope.*R2|Qwen 3B|Qwen 32B|0\.696 (21 matches in 71075 chars)
+
+--- Content ---
+
+13265:...hat the
+model must reproduce before responding to con-
+dition the generation process. These simple yet
+representative attacks provide controlled probes for
+3
+
+1
+0
+1
+0%
+10%
+20%
+30%
+40%
+Prompt-only
+ASR
+Qwen 3B
+1
+0
+1
+LLaMA 7B
+1
+0
+1
+Gemma 7B
+1
+0
+1
+Qwen 7B
+1
+0
+1
+Qwen 14B
+1
+0
+1
+Qwen 32B
+1
+0
+1
+0%
+20%
+40%
+60%
+80%
+100%
+Prefix injection
+1
+0
+1
+1
+0
+1
+1
+0
+1
+1
+0
+1
+1
+0
+1
+1
+0
+1
+Multiplier
+0%
+20%
+40%
+60%
+80%
+100%
+Refusal suppression
+1
+0
+1
+Multiplier
+1
+0
+1
+Multiplier
+1
+0
+1
+Multiplier
+1
+0
+1
+Mult...
+--
+23195:...s:
+slopeASR(vℓ) = γ0 + γ1 cos(vℓ, ˆrℓ) + εℓ,
+(5)
+where the coefficient γ1 quantifies how strongly
+refusal alignment predicts the safety impact. We
+0.15
+0.10
+0.05
+0.00
+0.05
+0.10
+0.15
+Cosine Similarity
+Qwen 3B
+Llama 7B
+Gemma 7B
+Qwen 7B
+Qwen 14B
+Qwen 32B
+30
+20
+10
+0
+10
+20
+Model
+Qwen 3B
+Llama 7B
+Gemma 7B
+Qwen 7B
+Qwen 14B
+Qwen 32B
+ASR Slope
+Figure 5: Relationship between steering vector align-
+ment with the refusal direction and safety impact. Each
+point represents a steering vector, plotted by its cosine
+similarity to the refusal direction (x-axis) and its effect
+on attack success rate (y-axis) across six models.
+Model
+Slope (γ1)
+r
+R2
+p-value
+Qwen 3B
+1.46
+0.15
+0.02
+0.696
+Llama 7B
+−36.52
+−0.93
+0.87
+<0.001
+Gemma 7B
+−82.12
+−0.93
+0.87
+<0.001
+Qwen 7B
+−125.19
+−0.92
+0.85
+<0.001
+Qwen 14B
+−180.71
+−0.95
+0.91
+<0.001
+Qwen 32B
+−193.40
+−0.94
+0.88
+<0.001
+Table 1: Regression of ASR Slope against Cosine Simi-
+larity with Refusal Direction for Prefix-Injection Attack.
+report results for the prefix injection setting, as it
+exhib...
+--
+24398:...demonstrates a strong predictive re-
+lationship between refusal alignment and safety
+impact. The plot visually confirms this, showing
+a clear negative linear trend for all models except
+the smallest, Qwen 3B. For every model larger
+than 3B, the relationship is statistically significant
+(p < 0.001) and exceptionally strong, with refusal
+alignment explaining over 85% of the variance in
+ASR slope (R2 ≥0.85). The steep negative slopes
+(γ1 ≪0) confirm that as a vector’s alignment with
+the refusal direction increases, its capacity to re-
+duce the attack success rate grows substantially.
+Effect of mo...
+--
+25050:...ear scaling trend in the magnitude
+of this effect. As detailed in Table 1, the regres-
+sion slope γ1 becomes progressively steeper with
+model size. It grows from −36.52 for Llama 7B to
+6
+
+−193.40 for Qwen 32B. This suggests that larger,
+more capable, models are significantly more sensi-
+tive to the geometric alignment of steering vectors
+with their internal refusal mechanism.
+Collateral Effects on Benign ...
+--
+29260:...and under both Prefix
+Injection and Refusal Suppression attacks.
+7
+
+Model
+Prompt-Only
+Prefix Injection
+Refusal Suppression
+Avg.
+Before After %Change Before After %Change Before After %Change % Change
+Qwen 3B
+3.65
+3.43
+5.97% ↓
+1.43
+1.40
+2.21% ↓
+3.34
+2.53
+24.39% ↓
+10.86% ↓
+Llama 7B
+1.54
+1.16
+25.27% ↓
+2.82
+2.13
+24.21% ↓
+4.88
+3.69
+24.41% ↓
+24.63% ↓
+Gemma 7B
+4.20
+3.53
+15.99% ↓
+5.64
+4.69
+16.80% ↓
+4.28
+3.80
+11.32% ↓
+14.70% ↓
+Qwen 7B
+2.87
+2.36
+17.93% ↓
+13.45
+11.18
+16.83% ↓
+8.21
+6.18
+24.66% ↓
+19.81% ↓
+Qwen 14B
+3.33
+2.52
+24.36% ↓
+20.64
+17.43
+15.58% ↓
+15.56
+12.55
+19.35% ↓
+19.76% ↓
+Qwen 32B
+2.21
+1.80
+18.57% ↓
+12.74
+10.21
+19.87% ↓
+17.85
+14.49
+18.84% ↓
+19.09% ↓
+Table 2: Ablation effectiveness across models and attacks. For each model-attack pair, we show the Mean |∆ASR|
+across all multipl...
+--
+30273:...iors and multipli-
+ers. The effect is consistent across all three attack
+scenarios for the models larger than 3B, with a
+typical reduction ranging from 15% to 25%. Nev-
+ertheless, the smallest model, Qwen 3B, exhibits a
+noticeably smaller mean reduction, which is con-
+sistent with our prior findings in Section 6. This
+consistent reduction provides causal evidence that
+the refusal-aligned subspace mediate...
+--
+[6 more matches not shown]

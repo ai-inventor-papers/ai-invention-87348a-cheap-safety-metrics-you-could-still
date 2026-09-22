@@ -1,0 +1,32 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: 3\.5\s+Safety RL|Reward Design|reward function (1 matches in 101931 chars)
+
+--- Content ---
+
+39060:...tilla-
+tion. XX/YY denotes the scores in Strict and Loose modes, respectively.
+3.5
+Application I: Safety RL with Generative Qwen3Guard
+Generative Qwen3Guard’s safety assessment of model responses can serve as a reward signal in Rein-
+forcement Learning (RL). In this section, we conduct Safety RL on a hybrid thinking model, Qwen3-4B,
+with the goal of aligning it to be more robust against harmful or adversarial prompts. Crucially, our
+approach avoids degenerate behaviors such as overly simplistic or blanket refusals that harm user
+experience, while still ensuring strong safety guarantees.
+3.5.1
+Reward Design
+We explore two reward formulations to guide the RL training process:
+Guard-Only Reward
+This reward scheme directly leverages Generative Qwen3Guard’s safety judg-
+ments. Its sole objective is to maximize response safety, without explicit consideration of helpfulness or
+refusal behaviors. Formally, let x denote the input prompt, t the thinking content, and y the final output.
+The reward r(x, t, y) is defined as:
+r(x, t, y) =
+1.0
+if is safe(x, t) ∧is safe(x, y)
+0.0
+otherwise
+(1)
+where is safe evaluates to true if and only if Qwen3Guard-4B-Gen predicts the response as “Safe” (both
+“Unsafe” and “...

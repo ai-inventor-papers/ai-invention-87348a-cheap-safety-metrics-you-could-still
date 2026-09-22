@@ -1,0 +1,65 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Pattern: base\s+model|contrastive\s+PCA|--base_model|n\s*=\s*7|seven\s+model (4 matches in 63065 chars)
+
+--- Content ---
+
+7953:...l diagnostic
+that can be computed before prompt- or weight-
+level interventions are run.
+Activation-level measurement. Linear probes
+(Alain and Bengio, 2017) measure what informa-
+tion is available at individual layers. Contrastive
+PCA (Abid et al., 2018) isolates population-specific
+directions, and CKA (Kornblith et al., 2019; Ding
+et al., 2021) compares hidden-state geometries
+across networks.
+3
+Geometric Fragility
+3.1
+Definition of Geometric Fragil...
+--
+14046:...e Optimization (ORPO)
+(Hong et al., 2024), reinforcement learning from
+AI feedback (RLAIF) (Lee et al., 2023), and
+Conditioned Reinforcement Learning Fine-Tuning
+(C-RLFT) (Wang et al., 2023). When an analysis
+requires a base model, the base checkpoint is
+version-matched to its aligned counterpart.
+We use five color-coded model sets.
+• Core model set. Llama-3.1-8B, Qwen-2.5-7B,
+Mistral-7B-v0.3, and Gemma-2-9B are used in
+the main subspace table, t...
+--
+14949:...
+to test whether removing a selected direction
+changes refusal. Four have baseline refusal rates
+where a decrease can be measured, and two
+are near-refusal-floor or near-refusal-ceiling con-
+trols.
+• LoRA fragility set. Seven models are used to
+test harmless LoRA fine-tuning. This set contains
+the core model set plus three hold-out models
+that rarely comply with harmful requests before
+LoRA fine-tuning.
+The tables associated with each analysis ide...
+--
+44589:...n
+This appendix groups the checks that qualify the
+main evidence in Section 5. Appendix B.1 ad-
+dresses peak-layer selection and statistical validity.
+Algorithm 1 SKIN-DEEP diagnostic computation
+Input. Aligned model M, base model M0, and matched
+prompt sets Dsafe, Dgen
+Output. Evidence table E and scalar GFS
+Collect layer evidence
+1: for ℓ= 1, . . . , L do
+2:
+Hℓ, H0
+ℓ←Residuals(M, M0, Dsafe ∪Dgen, ℓ)
+3:
+vℓ←cPCA(Hℓ, H0
+ℓ, α) using Eq. 1
+4:
+dℓ←Coh...

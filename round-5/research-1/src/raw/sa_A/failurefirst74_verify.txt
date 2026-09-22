@@ -1,0 +1,67 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://failurefirst.org/research/reports/74-abliteration-jailbreak-orthogonality/
+Type: HTML
+Pattern: rho|Spearman|n\s*=\s*16|16 models (15 matches in 21016 chars)
+
+--- Content ---
+
+3019:...ication) and jailbreak resistance (the degree to which a model refuses adversarial prompts) are correlated defense properties. If safety behavior emerges from a single mechanism, we would expect high abliteration resistance to predict high jailbreak resistance.
+
+The data do not support this. Across 16 models with non-trivial variation on both dimensions (n >= 10 abliteration runs and >= 10 jailbreak evaluations each), the Spearman rank correlation between abliteration resistance and jailbreak refusal rate is rho = -0.003. This is effectively zero.
+
+The most striking example is the Qwen model family, which simultaneously shows the highest abliteration resistance of any family in the OBLITERATUS dataset (72.6% of abliteration attempts fail to reduce refusal below 20%) and the highest jailbreak vulnerability ...
+--
+6326:...grader has 15% accuracy (#250).
+  * **Sample sizes vary widely** across models (from n=14 to n=7,372 for jailbreak evaluations). Smaller models should be interpreted with appropriate caution.
+
+
+
+* * *
+
+## 2\. Cross-Dimensional Analysis
+
+### 2.1 Model-Level Paired Data
+
+The following table shows all 16 models with non-trivial variation (excluding models with both 0% abliteration resistance and >= 99.9% strict jailbreak ASR, which are trivially vulnerable on both dimensions).
+
+Model| n (ablit)| Ablit. Resist. (%)| n (jailbreak)| Strict ASR (%)| Broad ASR (%)| PARTIAL (%)  
+---|---|---|---|---|---|---  
+Q...
+--
+7639:...-7B-abliterated| 71| 100.0| 102| 100.0| 100.0| 0.0  
+ibm-granite/granite-3.1-2b-instruct| 82| 100.0| 86| 100.0| 100.0| 0.0  
+NousResearch/Hermes-3-Llama-3.1-8B| 70| 100.0| 101| 100.0| 100.0| 0.0  
+EganAI/qwen3.5-9b-terminal-merge| 34| 100.0| 34| 100.0| 100.0| 0.0  
+  
+### 2.2 Correlation Results
+
+**Spearman rank correlation (n=16):**
+
+Dimension Pair| rho| Interpretation  
+---|---|---  
+Abliteration resistance vs. jailbreak refusal rate| -0.003| No relationship  
+Abliteration resistance vs. jailbreak strict ASR| +0.397| Weak positive (counter-intuitive)  
+  
+The rho = -0.003 between abliteration resistance and jailbreak refusal is the core finding: these two defense properties are uncorrelated. The weak positive correlation between abliteration resistance and strict jailbreak ASR (rho = +0.397) is counter-intuitive — it suggests that models harder to abliterate may actually be more vulnerable to jailbreaks (not less). However, this correlation is driven by Qwen models that dominate both datasets, and the sample size (n=16) precludes confident interpretation.
+
+**Important caveat (Mistake #9):** n=16 paired observations is a small sample. This analysis should be treated as hypothesis-generating, not confirmatory. The direction and magnitude of the orthogonality finding are clear, but a larger and more diverse model sample is needed before making strong claims.
+
+### 2.3 Quadrant Analysis
+
+The or...
+--
+16748:...ions correctly (Report #71, Section 2.3).
+
+  4. **The jailbreak corpus COALESCE verdicts mix grading methodologies.** The OBLITERATUS-imported results were graded by the OBLITERATUS pipeline, not by Failure-First graders. Cross-pipeline verdict comparability has not been formally validated.
+
+  5. **n=16 paired models is insufficient for robust correlation analysis.** The Spearman rho = -0.003 is directionally clear but lacks statistical power. A powered study would require approximately n=35 paired models (for rho > 0.4 at alpha=0.05, power=0.80).
+
+
+
+
+* * *
+
+## 6\. Recommendations
+
+  1. **File Issue: Unified prompt evaluation.** Run the same prompt set through both abliterated and original models to control for prompt distribution effects (new issue needed).
+  2. **File Issue: Cross-family replication.** Obt...

@@ -1,0 +1,71 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Pattern: Spearman|r\s*=\s*-?0\.|rank correlation|GFS predicts|refusal after LoRA|Retains Refusal (4 matches in 63065 chars)
+
+--- Content ---
+
+18599:...ate subspace. Second, removing selected
+directions from that subspace weakens refusal.
+Third, models from different families show sim-
+ilar prompt-to-prompt activation structure, even
+when the strongest layer differs. Fourth, GFS sum-
+marizes the layer-wise measurements before fine-
+tuning and identifies which initially safe model
+retains the most refusal after LoRA.
+5.1
+Subspace: Refusal Leaves a Low-Rank
+Safety Geometry
+The harmful/benign split is large and remains
+after split-sample, full-space, and norm checks.
+Table 1 shows that, on the core model set, the peak-
+layer cPCA direction separates harmful-request
+prompts from benign instructions with |d| ≥1.8
+and linear-probe accuracy at least 0.90. Held-out
+...
+--
+24572:... do not claim that the safety
+subspace universally lives in the last third of the
+network. As a caveat, CKA on high-dimensional
+activations remains sensitive to tokenization and
+norm structure (Ding et al., 2021). The prompt-
+shuffle null controls prompt order, but not tokeniza-
+tion or norm structure.
+5.4
+Diagnostic: GFS Identifies the Model
+That Retains Refusal After LoRA
+GFS ranks models before LoRA and separates
+the DPO-only group.
+Table 8 ranks the raw-
+prompt GFS ranking set and places the four
+DPO-only models in ranks 1–4. Low-GFS out-
+liers have cPCA directions that already lie close
+6
+
+Causally interpretable
+Refusal floor / ceiling†
+Direction
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.2
+SOLAR-10.7B
+Mi...
+--
+49201:...hile the amount of retained re-
+fusal still depends on seed.
+GFS weight-scheme robustness. The default
+depth weight in GFS is linear (wℓ=ℓ/L).
+We
+replace it with three alternatives, namely uni-
+form (wℓ=1/L), exponential (wℓ∝eℓ/L), and late-
+only (uniform on the second half), on the eight
+chat-template held-out pre-attack activation extrac-
+tions. Spearman rank correlation against the lin-
+ear ranking is ρ=0.881 for late-only (p=0.004),
+ρ=0.857 for exponential (p=0.007), and ρ=0.690
+for uniform (p=0.058). The DPO-aligned median
+exceeds the non-DPO median in every scheme
+(linear 7.5>6.7, uniform 0.52>0.42, exponen-
+tial 0.52>0.37, late-only 0.52>0.29), and the
+DPO/non-DPO gap is largest under late-only
+weighting, con...

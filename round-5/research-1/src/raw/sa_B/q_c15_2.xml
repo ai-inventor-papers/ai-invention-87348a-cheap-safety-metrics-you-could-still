@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/fUhQ4woMDjjZ9Dvl5ThbpA6JZ4o</id>
+  <title>arXiv Query: search_query=all:stable AND all:rank AND all:refusal&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-09-21T21:50:29Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:stable+AND+(all:rank+AND+all:refusal)&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>7</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2608.25390v2</id>
+    <title>Refusal geometry reflects refusal training: diverse refusal prefixes can raise stable rank and weaken refusal vector ablation attacks</title>
+    <updated>2026-09-03T01:09:32Z</updated>
+    <link href="https://arxiv.org/abs/2608.25390v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.25390v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Refusal training protects AI models from jailbreaks by training models to decline unsafe queries, reducing the risk of misuse. Recent work finds that refusal behavior in aligned language models can be mediated by a single activation direction or a low-dimensional refusal subspace shared across harmful prompts: ablating those directions suppresses refusals while largely preserves other model capabilities. Yet it remains unclear why safety-critical features in a wide range of models emerge in a concentrated, low-dimensional structure. In a case study of OLMo-2-0425-1B-Instruct we find that the refusal geometry reflects refusal training: activation updates resulting from refusal-completion first-token losses explain the resulting refusal direction and refusal subspace. We study refusal directions through the training dynamics across refusal datasets and reveal that their brittleness is associated with repetitive refusal starts, which in turn is linked to concentration of gradients and refusal features in a low-dimensional subspace. Across frozen-model analyses and controlled synthetic fine-tuning, we find evidence of a hardening lever: diverse refusal starts can raise stable ranks of gradients and activation changes, making refusals harder to remove with a vector ablation attack.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-26T05:35:54Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Andrey Labunets</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.10226v1</id>
+    <title>When Are Sparse Feature Interventions Actually Localized? Matched Evaluation for SAE-Based Safety Control</title>
+    <updated>2026-07-11T09:31:45Z</updated>
+    <link href="https://arxiv.org/abs/2607.10226v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.10226v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We evaluate when sparse autoencoder (SAE) features act as localized control handles for safety-relevant behavior. This question is difficult because apparent success can arise from weak interventions, mismatched baselines, model robustness, or degenerate outputs that automated safety judges mark as unsafe without representing meaningful harmful compliance. We introduce a matched coherence-gated evaluation protocol for runtime safety interventions: methods are compared at matched target-effect points, and the primary target metric counts harmful compliance only when an output is both judge-unsafe and coherent. Applying this protocol to three prompt splits on Gemma-2-9B-it with a Gemma Scope layer-20 residual SAE, we find that SAE feature ablation has a narrow useful regime. SAE top800 reaches a low-to-mid target effect with lower total perturbation and competitive utility, but SAE top1600 loses utility relative to a matched dense refusal-direction baseline, and SAE top3200 primarily induces coherence collapse. Human audit confirms that coherence gating removes unsafe-only artifacts, and feature diagnostics show that the useful regime is driven by a stable head of refusal-aligned features whose activation separation decays rapidly with rank. These results argue that SAE-based safety interventions should be evaluated as regime-dependent control mechanisms rather than assumed to be uniformly localized.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-11T09:31:45Z</published>
+    <arxiv:comment>11 pages, 5 figures, 4 tables. Preliminary version; extended multi-model study in progress</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Daming Luo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.07097v1</id>
+    <title>Operational Reframing and Approval-Framed Delegation in Multi-Agent LLM Safety</title>
+    <updated>2026-07-08T07:31:37Z</updated>
+    <link href="https://arxiv.org/abs/2607.07097v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.07097v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety evaluations of multi-agent LLM systems often compare a direct prompt with a planner-executor pipeline and report the difference as a single "pipeline effect." We argue that this aggregate is difficult to interpret because it conflates three mechanisms: harmful intent may be reframed as plausible operational work, the planner may refuse or transform the request, and the executor may act under delegation prompts implying prior approval. To separate these factors, we introduce a five-condition controlled contrast design, evaluated on 30 synthetic harmful scenarios and an exploratory external validation set from four agent-safety benchmarks using LLM-judged compliance.
+  Our results show that aggregate pipeline safety is not a stable architectural property. Operational reframing is the most portable risk signal, increasing compliance for GPT, Gemini, and DeepSeek across both scenario sets, while Claude is comparatively resistant. Planner behavior can offset this risk mainly through refusal; however, when the planner produces executable steps, the executor may become more compliant than under the direct operational baseline. Approval-framed delegation is sensitive to prompt design, model pairing, and scenario source, and a skeptical executor prompt sharply reduces compliance.
+  Raw-direct model rankings can also mispredict deployed planner-executor behavior. Gemini is safest under raw direct prompts in the primary set yet shows the largest amplification with a Claude planner, rising from 8.9 percent to 38.9 percent compliance. GPTs near-zero aggregate pipeline effect instead hides a reframing increase canceled by planner refusal. These findings suggest that multi-agent safety evaluations should report reframing, planner behavior, delegation framing, and model pairing separately before attributing failures to architecture itself.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-08T07:31:37Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Lifei Liu</name>
+    </author>
+    <author>
+      <name>Haoran Yu</name>
+    </author>
+    <author>
+      <name>Xiaochong Jiang</name>
+    </author>
+    <author>
+      <name>Su Wang</name>
+    </author>
+    <author>
+      <name>Pin Qian</name>
+    </author>
+    <author>
+      <name>Yihang Chen</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.05355v1</id>
+    <title>Faithfulness to Refusal: A Causal Audit of Neuron Selectors</title>
+    <updated>2026-07-06T17:33:36Z</updated>
+    <link href="https://arxiv.org/abs/2607.05355v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.05355v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Attribution scores increasingly identify which neuron rows of a language model matter for applications such as pruning, interpretability, and editing for safety, yet whether they identify causally important rows is rarely tested directly. We address this with two paired audits built on one-shot neuron-row zeroing. We first audit selectors at the language-modeling level: attribution methods substantially outperform activation and magnitude-based baselines at identifying dispensable rows across five LLMs. We then adapt the same intervention into a behavior test by driving it with a contrastive harmful-versus-benign signal; the attributed rows are sufficient to install refusal on hate and crime while keeping benign over-refusal low and preserving language model fluency, and specific in that layer-matched random controls at the same depths fail. Highly rank-stable selectors can be among the least causally valid. Refusal moreover lives in a redundant subspace, where different attribution methods install it through largely disjoint row sets, so the recovered edit is one realization of a sufficient set rather than a unique mechanism. Together, these findings show that rank-stability proxies miss the kinds of selector failures a direct causal audit can surface.%</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.ET" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-06T17:33:36Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Ananth Eswar</name>
+    </author>
+    <author>
+      <name>Pratinav Seth</name>
+    </author>
+    <author>
+      <name>Utsav Avaiya</name>
+    </author>
+    <author>
+      <name>Vinay Kumar Sankarapu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.01239v1</id>
+    <title>Breaking Safety at the Token Boundary: How BPE Tokenization Creates Exploitable Gaps in LLM Alignment</title>
+    <updated>2026-05-01T18:57:03Z</updated>
+    <link href="https://arxiv.org/abs/2607.01239v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.01239v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Character-level perturbations bypass safety alignment in modern LLMs despite leaving prompts human-readable. We identify and test a central structural mechanism: BPE tokenization fragments safety-critical words into sub-word pieces, and the three public alignment datasets we surveyed contain no intentionally fragmented inputs. The mechanism is a chain, tested end-to-end on five model families (Qwen-3-4B, Qwen-2.5-7B, Gemma-3-4B, Llama-3.1-8B, Mistral-7B). An optimization targeting safety-token fragmentation flips the first-token refusal trigger on 80-100% of refused HarmBench prompts, with 48% of those flips producing genuinely harmful outputs (per-model 29-65%; gap-vs-behavior ROC-AUC 0.66-0.98, pooled 0.84). Activation patching localizes the disrupted signal to the last ${\sim}30\%$ of layers; an alignment-data scan finds zero fragmented prompts among 30,000 examples (positive-control recall $\geq 99\%$ at attack-relevant intensities); and targeted-mutation experiments isolate safety words as the disruption locus. On the defense side, a 68-cell grid (55 trained checkpoints) shows that no DPO configuration achieves seed- and pool-stable ASR closure on the three families with closed pool-size confounds. SFT trained on fragmented prompts closes ASR on 3/5 families but only via global collapse that raises refusal on benign prompts as well, indicating the missing distribution is necessary but not sufficient under the LoRA-16 recipe we tested. To distinguish selective repair from global collapse, we introduce Conv-Benign, a candidate paired diagnostic. All ASR claims are 3-judge-calibrated (cell rankings stable across judges; absolute levels $\pm$18pp; see App.~B.13).</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-01T18:57:03Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Tung-Ling Li</name>
+    </author>
+    <author>
+      <name>Hongliang Liu</name>
+    </author>
+    <author>
+      <name>Yuhao Wu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2512.17956v2</id>
+    <title>Victor Calibration (VC): Multi-Pass Confidence Calibration and CP4.3 Governance Stress Test under Round-Table Orchestration</title>
+    <updated>2025-12-29T18:07:41Z</updated>
+    <link href="https://arxiv.org/abs/2512.17956v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2512.17956v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment can make frontier LMs overly conservative, degrading collaboration via hedging or false refusals. We present a lightweight toolkit with three parts: (1) Victor Calibration (VC), a multi-pass protocol that elicits a scalar confidence proxy T (T0&lt;T1&lt;T2) through iterative evidence re-evaluation; (2) FD-Lite, a behavior-only phenomenology audit with a fixed anchor phrase and a meta-prefix trap to avoid anthropomorphic claims; and (3) CP4.3, a governance stress test for rank invariance and allocation monotonicity (M6). Across Claude 4.5 models (Haiku, Sonnet no-thinking, Sonnet thinking) and Opus, we observe monotonic VC trajectories without violating safety invariants, and stable CP4.3 behavior. ("Opus" here refers to a single Claude Opus 4.1 session accessed via a standard UI account, as reported in Table 1.) This work was conducted by a single operator (n=1) and is intended as hypothesis-generating; we explicitly invite replication, critique, and extension by the research community. We include prompt templates and an artifact plan to facilitate independent verification.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-12-18T04:09:22Z</published>
+    <arxiv:comment>7 pages, 1 figure, 4 tables. Exploratory case study</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Victor Stasiuc</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2510.01782v2</id>
+    <title>Can LLMs Refuse Questions They Do Not Know? Measuring Knowledge-Aware Refusal in Factual Tasks</title>
+    <updated>2026-05-16T06:34:30Z</updated>
+    <link href="https://arxiv.org/abs/2510.01782v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2510.01782v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) should refuse to answer questions beyond their knowledge. This capability, which we term knowledge-aware refusal, is crucial for factual reliability, while existing metrics fail to capture this ability. In this work, we propose the Refusal Index (RI), a novel and principled metric that measures how accurately LLMs refuse questions they do not know. We define RI as Spearman's rank correlation between refusal probability and error probability. RI is practically measurable with a lightweight two-pass evaluation method which only require observed refusal rates across two standard evaluation runs. Extensive experiments across 16 models and 5 datasets demonstrate that RI accurately quantifies a model's knowledge-aware refusal capability. Notably, RI remains stable across different refusal rates and provides consistent model rankings independent of a model's overall accuracy and refusal rates. These properties suggest RI captures a stable, intrinsic aspect of model knowledge calibration. More importantly, RI provides insight into an important but previously overlooked aspect of LLM factuality: while LLMs achieve high accuracy on factual tasks, their refusal behavior can be unreliable and fragile.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-10-02T08:20:36Z</published>
+    <arxiv:comment>Accepted at ICLR 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Wenbo Pan</name>
+    </author>
+    <author>
+      <name>Jie Xu</name>
+    </author>
+    <author>
+      <name>Qiguang Chen</name>
+    </author>
+    <author>
+      <name>Junhao Dong</name>
+    </author>
+    <author>
+      <name>Libo Qin</name>
+    </author>
+    <author>
+      <name>Xinfeng Li</name>
+    </author>
+    <author>
+      <name>Haining Yu</name>
+    </author>
+    <author>
+      <name>Xiaohua Jia</name>
+    </author>
+  </entry>
+</feed>

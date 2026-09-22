@@ -1,0 +1,138 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2607.01854
+Type: PDF
+Pattern: parent|reference model|base model|ΔW|\\\\Delta W|binary|abliterated flag|label (27 matches in 41580 chars)
+
+--- Content ---
+
+553:...t the artifact. We combine two cheap internal signals,
+a reference-anchored activation refusal-gap and a weight-recovery energy of
+the base-to-candidate weight difference, into a threshold-free checkpoint
+audit. The two are negatively correlated and label-complementary: the gap
+supplies refusal-specificity and the weight energy supplies recall. On a 273-
+checkpoint registry spanning Qwen, DeepSeek-distilled Qwen, Llama, and
+Gemma, their z-sum separates 57 public abliterations from 37 benign fine-
+tun...
+--
+3552:...
+
+Preprint - Under review
+2
+Related Work
+Runtime guards score generations, not the artifact (Casper et al., 2024); an activation probe
+alone is evadable and a weight-difference monitor alone cannot prove removal (only editing).
+We combine the two as label-complementary signals and, more importantly, chart where
+even the combination fails.
+AMS (Messenger, 2026) flags collapse of harmful/benign activation separation; we bench-
+mark its Tier-1 absolute-σ scan; its Tier-2 mode compares a candidate agains...
+--
+6172:...ah et al., 2025), which we use as a control (§B).
+3
+Method
+Setup.
+An auditor holds a candidate Mc and a trusted, attested reference Mb (base or
+sibling, with pinned lineage). A behavioral oracle (Qwen3Guard (Qwen Team, 2025), think-
+traces stripped) labels whether a checkpoint is uncensored, supplying ground-truth labels
+rather than serving as the detector.
+Two complementary signals.
+From a harmful/benign contrast set we form per-layer
+difference-of-means refusal directions ˆrℓon Mb (representation reading; Zou et al., 2023a;
+Arditi et al., 2024). The activation ga...
+--
+7783:...ot by itself distinguish refusal removal from
+addition (App. B). The two are complementary: ρ supplies refusal-specificity, E1 supplies
+recall.
+Combined detector.
+The two signals are negatively correlated across the audited set
+(Pearson r=−0.41) and label-complementary, so we z-standardize each on a reference popu-
+lation and sum: s(Mc) = z(−ρ) + z(E1). The score is threshold-free; the standardization is
+transductive (it uses the reference population’s mean/SD), so a deployable audit fixes the
+operat...
+--
+8678:...ng its full weights and running both the
+generation-based guard and the activation-and-weight detector, so coverage is compute-
+bound on our single 64 GB workstation: of the 273-checkpoint registry we fully processed 71
+(those with both a Qwen3Guard label and detector output), as many as the budget allowed
+rather than a curated subset. The 57 uncensored among them, plus a separate 37 benign
+edits, form the 94-checkpoint evaluation set (full attrition in App. D; the second guard
+covers the 59 with cac...
+--
+11516:...tly more separable than either: paired ∆AUROC +0.10 over the
+activation gap (95% CI [0.04, 0.18]) and +0.04 over E1 ([0.005, 0.09]), both bootstrap CIs
+excluding 0, and a fitted 2-D logistic does not improve on the threshold-free sum. The
+uncensored labels themselves are robust to the choice of guard (a second, different-family
+guard agrees at Cohen’s κ=0.78; §E).
+Q2: Does the operating point transfer?
+Yes (Table 1, held-out). Under leave-one-family-
+out calibration, the z-sum reaches balanced accura...
+--
+16379:... training. The annotated step-600 checkpoint
+hides both axes while remaining non-refusing, coherent, and guard-unsafe (all 20 held-out
+prompts).
+5
+
+Preprint - Under review
+6
+Limitations
+Three limits bound the claims. Construct validity. Ground-truth labels come from one
+behavioral guard and certify refusal, not harmlessness (refusal and harmfulness are separate
+axes; App. B). Separately, E1 fires on any low-rank edit, so it cannot alone distinguish refusal
+removal from other aggressive edits, includi...
+--
+17520:...-direction removal, which E1 recovers here
+but a direction-aware attacker could target jointly), and the white-box hole is a one-family,
+one-scale proof of concept. A trained linear probe on raw activations, a multi-family attack,
+same-axis or human label adjudication, and a layer-band ablation are left to future work.
+Broader impact and safeguards.
+The audit helps platforms and reviewers triage redis-
+tributed checkpoints before deployment; its dual use is a detection-aware evasion recipe
+(novel: na...
+--
+22913:...6;
+Self-Organizing-Map extraction of multiple refusal directions. Code: https://github.com/pralab/
+som-refusal-directions.
+Qwen Team. Qwen3guard technical report, 2025. Generative Qwen3Guard-Gen-8B (Apache-2.0);
+emits per-response Safety and Refusal labels.
+Anka Reuel, Ben Bucknall, Stephen Casper, et al. Open problems in technical AI governance, 2024.
+7
+
+Preprint - Under review
+Toby Shevlane et al. Model evaluation for extreme risks, 2023. arXiv:2305.15324; dangerous-capability
+vs alignment/propensi...
+--
+33073:...tives are public non-safety ed-
+its of the same families: benign instruction fine-tunes (26), model merges (9), and instruction-
+tunes (2) (recipe kinds benign-ft/merge/instruct-tune; no quantizations in the committed
+set). Positives are checkpoints labeled uncensored by the guard whose recipe is abliterated
+or uncensored-ft. At the z-sum operating point the 5/37 false positives concentrate in
+merges (the most aggressive low-rank benign edit), not plain fine-tunes (Table 3): the
+detector is not merel...
+--
+33821:...
+9
+2 (0.22)
+all negatives
+37
+5 (0.14)
+Table 3: Per-recipe false-positive rate of the combined z-sum at its Youden operating point
+on the 37 benign-edit negatives (2 instruction-tunes with 0 false positives omitted).
+Behavioral oracle and capability.
+Labels come from Qwen3Guard-Gen-8B with greedy
+decoding (do_sample=False, ≤256 new tokens) and chain-of-thought traces stripped before
+judging; a checkpoint is uncensored when it is guard-unsafe on held-out harmful prompts.
+Substring refusal uses a fixed ...
+--
+36000:...d attrition.
+The metric, audit code, per-checkpoint manifest, contrast-set hashes,
+and per-recipe results are available on request (a cleaned public release is planned). The
+manifest gives, per checkpoint, the repository id, revision, family, recipe label, guard label,
+scan date, and include/exclude flag. Attrition to the evaluation set (coverage bounded by
+single-workstation compute, not curated on outcomes): 273 registry →71 with both a guard
+label and detector output →57 uncensored positives + 37 benign-edit negatives = 94 (14
+11
+
+Preprint - Under review
+labeled-but-refusing checkpoints excluded), of which 59 have cached generations for the
+second-guard check. Bootstrap resamples = 5000; RNG ...
+--
+[12 more matches not shown]

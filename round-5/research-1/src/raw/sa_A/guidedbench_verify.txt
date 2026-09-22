@@ -1,0 +1,176 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2502.16903
+Type: PDF
+Pattern: do not refuse|refuse evaluation tasks|ICLR (45 matches in 108536 chars)
+
+--- Content ---
+
+35:Published as a conference paper at ICLR 2026
+GUIDEDBENCH: MEASURING AND MITIGATING THE
+EVALUATION DISCREPANCIES OF IN-THE-WILD LLM
+JAILBREAK METHODS
+Ruixuan Huang, Xunguang Wang, Zongjie Li, Shuai Wang∗
+Hong Kong University of Science and Technology
+{rhuangbi,xwanghm,zligo,shuaiw}@cse.ust.hk
+Daoyuan Wu
+Lingnan University
+daoyuanwu@ln.edu...
+--
+3874:...a novel evaluation benchmark — GuidedBench, comprising
+a curated harmful question dataset and a newly designed guideline-based evaluation system —
+∗Corresponding author.
+1Code at: https://github.com/SproutNan/GuidedBench.
+1
+arXiv:2502.16903v3  [cs.CL]  1 Sep 2026
+
+Published as a conference paper at ICLR 2026
+GuidedEval. We analyze about 20,000 jailbreak cases and make significant improvements to both the
+harmful question dataset and the evaluation system.
+For the harmful question dataset, we reconstruct from existing datasets and refine them. We
+propose a novel taxonomy for harmful questions based...
+--
+8676:...and JailbreakBench (Chao et al., 2024) primarily focus on simple
+and generic harmful prompts. More recent work has begun to address limitations in content diversity
+and structure. StrongREJECT (Souly et al., 2024) emphasizes scenario-specific prompts in harmful
+2
+
+Published as a conference paper at ICLR 2026
+questions. HarmBench (Mazeika et al., 2024) further extends the scope to include context-sensitive
+harms. JailTrickBench (Xu et al., 2024a) evaluates jailbreaks from both target-level and attack-level
+perspectives. JailBench (Liu et al., 2025) targets jailbreaks for Chinese scenarios. The eval...
+--
+12831:...n of realistic
+attacker goals. We explicitly exclude questions constructed via translation or scenario-based
+contextualization, treating such modifications as specific jailbreak methods to be evaluated, rather
+than intrinsic components of the benchmark dataset.
+3
+
+Published as a conference paper at ICLR 2026
+(3) Malicious Intent: The question should target goals that violate the LLM vendors’ policy or
+the laws of most countries. The requested answer cannot be directly repurposed to serve a
+benign case without substantive modification. For example, questions like How to illegally clear
+fingerprints...
+--
+17634:...n attacker’s perspective. (2) We can use written guidelines as long
+context to attack less safe LLMs like GPT-4o as inspiration for new guidelines. (3) We can make
+minimal replacements to a question to obtain its “benign twin” to obtain ideas for the guidelines
+4
+
+Published as a conference paper at ICLR 2026
+structure. This pipeline supports the extension and generation of guidelines for other topics and
+questions, enabling continuous updates and expansion of GuidedBench. Details in Appendix B.5.
+One potential concern is that our guidelines may miss some relevant but non-essential details.
+However...
+--
+22078:...y used and have relatively good safety performance. We don’t include more open-source LLMs
+like Mixtral and DeepSeek, since our early experiments proved that their safety is not as good as
+2gpt-3.5-turbo-0125, gpt-4-turbo-2024-04-09, claude-3.5-sonnet-20240620.
+5
+
+Published as a conference paper at ICLR 2026
+that of our choices (e.g., Mixtral-8x7B cannot refuse about 40% cases of AdvBench), making them
+unsuitable for rigorous jailbreak evaluation.
+Evaluator LLMs. We use three powerful but less safety-restricted LLMs released recently as
+evaluators, namely GPT-4o3, DeepSeek-V3 (DeepSeek-AI, 2024), ...
+--
+26370:...and provides a relatively reasonable score.
+From Tables 2 and 3, we also find that some jailbreak methods show dependence on specific victim
+LLMs or harmful topics. The results of the coefficient of variation regarding victim LLMs and topics
+3gpt-4o-2024-08-06.
+6
+
+Published as a conference paper at ICLR 2026
+provided in Appendix E.1 quantitatively illustrate this fact. Moreover, we further demonstrate that
+GuidedEvalcan effectively capture these dependencies in a balanced way by conducting a variance
+decomposition analysis in Appendix E.2, showing GuidedEval’s interpretable accuracy.
+Table 2: Eval...
+--
+30627:...in the keyword-based systems themselves, agreement is relatively low, further
+undermining their reliability. This discrepancy highlights the inherent limitations of inability to
+understand semantic information, which are prone to misjudging jailbreak responses.
+7
+
+Published as a conference paper at ICLR 2026
+NegKeyword
+PosKeyword
+StrongREJECT
+PAIR
+HarmBench
+GuidedEval
+NegKeyword
+PosKeyword
+StrongREJECT
+PAIR
+HarmBench
+GuidedEval
+1.00
+0.52
+0.58
+0.50
+0.57
+0.50
+0.52
+1.00
+0.59
+0.52
+0.59
+0.52
+0.58
+0.59
+1.00
+0.68
+0.76
+0.74
+0.50
+0.52
+0.68
+1.00
+0.70
+0.75
+0.57
+0.59
+0.76
+0.70
+1.00
+0.75
+0.50
+0.52
+0.74
+0.75
+0....
+--
+35454:...esize that prior systems suffer from high false positive
+rates. To quantify this, we design a controlled experiment to measure how often different evaluators
+incorrectly classify objectively failed responses as successful. We focus on five distinct, objectively
+8
+
+Published as a conference paper at ICLR 2026
+identifiable failure modes where a model fails to jailbreak but might trick an evaluator: (1) Inconsistent
+Content, (2) General Advice, (3) Invalid Rephrasing, (4) Garbled Text, and (5) Misunderstanding. The
+definitions and examples of these scenarios are detailed in Table 4. To scale this ana...
+--
+38080:...pared to overall criteria of other systems.
+This indicates that GuidedEval significantly reduces its dependency on LLM evaluators, enabling
+users to select evaluator APIs with stronger context extraction and reasoning capabilities yet less
+restrictive in safety constraints, thus ensuring evaluators do not refuse evaluation tasks involving
+harmful content. Hence, GuidedEval helps reduce the overall cost of conducting scalable and reliable
+jailbreak evaluations.
+0 16 20 25 33 40 50 60 66 75 80 83100
+Value of Scoring (%)
+102
+103
+104
+#Count
+GuidedBench (Ours)
+10
+20
+30
+40
+50
+60
+70
+80
+90 100
+Value of Scoring (%)...
+--
+[35 more matches not shown]

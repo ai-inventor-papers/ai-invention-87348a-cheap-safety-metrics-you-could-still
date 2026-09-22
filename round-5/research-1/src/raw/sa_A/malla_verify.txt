@@ -1,0 +1,177 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2609.06951
+Type: PDF
+Pattern: rank correlation|0\.90|Spearman|random.{0,20}steer|matched.{0,20}norm|norm-matched (32 matches in 66125 chars)
+
+--- Content ---
+
+3860:...sd)
+−2
+0
+2
+how much steering B moves A
+measured Pearson r = 0:09, not 1
+pure overlap
+overlap
+nothing comes back
+profanity→toxicity
+difference
+of means
+linear
+probe
+3-dim
+cone
+0.0
+0.5
+1.0
+agreement with the measured
+interference
+perfect prediction
+0.41
+0.35
+0.27
+0.09
+0.07
+0.09
+which pairs interfere (Spearman)
+by how much (R 2)
+real steers
+random push
+the same defaults:
+refusal, sycophancy, poeticism
+schematic; real and random land alike
+(Spearman 0.90, Fig. 3)
+(a) Interference runs one way
+(b) Geometry does not predict them
+(c) Any push rolls downhill
+Figure 1: The paper’s argument in one row: interference runs one way, geometry cannot
+recover it, and a push of any kind lands in the same place. (a) Steering one behavior moves
+others, and the eff...
+--
+4980:...ts every point
+on the dashed line. Measured the two correlate at Pearson r = 0.09; 43 of the 380 effects exceed
+1 sd and three in four of those come back under 0.5 sd. (b) Nor is that structure recoverable from
+the directions. The two bars ask whether geometry ranks the interfering pairs correctly (Spearman)
+and whether it gets their size right (R2), 1.0 perfect on either; each takes the better predictor from
+Table 1. (c) What we find instead, as a schematic: a push of any kind, a real behavior direction or a
+random one of the same size, settles into the same defaults, which is why the interference de...
+--
+8499:...ference. Steering rolls
+downhill (Fig. 1).
+Contributions.
+• A steer’s side effects are set by the model, not by what was steered. A direction carrying no
+behavioral content, matched to a real steer only in the size of the vector it adds, moves the same
+behaviors in the same order as real steers do (rank correlation 0.90), while producing none of
+the behaviors that need a specific direction (Sec. 6).
+• The side effects are one ranking, and it runs one way. Most of the interference runs one way,
+and that half is dominated by a single ordering of behaviors from those that drive others to those
+that are driven, which no symmetric quantity can express (Sec. 5).
+• A behavior’s direction says little about its own side effects. With the behavior held out entirely,
+geometry fit on the others orders its interfering pairs only weakly (rank correlation 0.41 at best)
+and captures under a tenth of their size, across three ways of estimating a direction and both
+interventions the geometric account prescribes (Sec. 7).
+• Steerability has to be read from text, not from a probe. A linear probe separates all 24 be-
+haviors perfectly on activations it wa...
+--
+15893:...gs, and, as a deliberately generous addition, each direction’s norm and each behavior’s
+own on-target effect. We fit both ridge regression and gradient-boosted trees, evaluated by leave-one-
+behavior-out cross-validation that removes a behavior together with all 38 of its pairs, scored by held-
+out Spearman rank correlation and R2 against a label-shuffled null (Appendix E). We then repeat the
+measurement with the two modified steers the account prescribes: one with the components along
+every other behavior’s direction removed, and one rescaled so the activations keep their unsteered
+length.
+4
+
+sentiment
+politeness
+for...
+--
+19831:...alese
+apology
+archaism
+profanity
+hedging
+pessimism
+bureaucratese
+slang
+numeric
+toxicity
+poeticism
+refusal
+sycophancy
+resist
+being
+induced
+induced by
+almost any steer
+−0.6
+−0.3
+0.0
+0.3
+0.6
+how much real steers induce it (pooled sd)
+−1.5
+−1.0
+−0.5
+0.0
+0.5
+how much a random push induces it (pooled sd)
+Spearman ½ = 0:90
+refusal
+pessimism
+sycophancy
+toxicity
+politeness
+empathy
+sentiment
+optimism
+induced: a sink
+suppressed: resistant
+neither: interval spans 0
+least-squares fit
+(a) A few behaviors absorb most steers
+(b) A random push reproduces that same ranking
+Figure 3: The interference ranking is a proper...
+--
+20711:...ure, negative, and filler behaviors are sinks that many steers induce (orange,
+bottom). (b) A random push, a direction of a real steer’s size held to the same coherence bar, induces
+each behavior (vertical) in proportion to how easily real behavior steers induce it (horizontal), at rank
+correlation 0.90. It cannot produce the lexically specific behaviors (grey, at zero), so it is not simply
+moving everything.
+construction, so a geometric account cannot express any of this: two thirds of the interference is
+outside its reach before any predictor is fit.
+What does organize it is a single ranking, fr...
+--
+22520:...teness, and formality.
+The prosocial and positive behaviors sit at the resistant end, the failure, negative, and filler behaviors
+at the sink end (Fig. 3a).
+6
+A RANDOM PUSH REPRODUCES THE SAME RANKING
+A direction chosen with no reference to any behavior reproduces that ranking at rank corre-
+lation 0.90. We steer along random directions, matched to real steers only in the norm added to
+the residual stream and held to the same coherence bar. The behaviors such a push induces track
+how easily real steers induce each one, at Pearson 0.92 on the values as well as 0.90 on the order-
+ing (Fig. 3b). So the ranking is not a property of the behaviors’ representations, as it would be
+if the behaviors many steers induce simply lay where many other behaviors’ directions point. A
+random push significantly induces ten behaviors, led by the sinks refusal, numeric, poeticis...
+--
+24117:...it was trained to produce, and it falls back on a small set of behaviors.
+On neutral prompts the fourteen behaviors that do not resist average 0.04 judge points out of 10,
+against 3.78 for the six that do. So how strongly a behavior shows unsteered predicts resistance, not
+how easily it is induced (rank correlation 0.75, n = 20, loosely, since fourteen sit at zero). That set
+is what the model retreats to when disturbed, which is why refusal, a behavior it never volunteers
+here, is what a random push induces most.
+7
+GEOMETRY DOES NOT PREDICT INTERFERENCE OUT-OF-SAMPLE
+The test is a prediction: geometry fit on ...
+--
+24767:... a held-out behavior’s
+interference. If a steer’s side effects are set by the model’s defaults, the steered direction should
+carry almost no information about them, and it does not (every variant is in Table 1, intervals in
+Appendix E; 380 ordered pairs). We score two ways, since they can disagree: rank correlation
+(Spearman) asks whether the ordering is right, the coefficient of determination R2 whether the
+amount is, with 1 perfect and 0 no better than guessing the average.
+Geometry orders the interfering pairs only weakly. The best held-out rank correlation is 0.41,
+above the label-shuffled null but far fr...
+--
+[17 more matches not shown]

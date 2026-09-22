@@ -1,0 +1,434 @@
+{
+ "missing_citations": [
+  {
+   "key": "Hurtado2026",
+   "arxiv": "2607.01854",
+   "quote": "Standardizing and summing a reference-\nanchored activation refusal-gap and the WeightWatch weight-recovery energy gives a\nthreshold-free score at AUROC 0.95, significantly above either signal alone, that trans-\nfers across unseen families (leave-one-family-out balanced accuracy 0.89).",
+   "locator": "arXiv 2607.01854, Contributions paragraph, PDF offset ~2538",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/hurtado_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/hurtado_parent_verify.txt"
+   ],
+   "extra_quotes": {
+    "weight_energy_parent_dependent": "We combine two cheap internal signals,\na reference-anchored activation refusal-gap and a weight-recovery energy of\nthe base-to-candidate weight difference, into a threshold-free checkpoint\naudit.",
+    "reference_requirement": "An auditor holds a candidate Mc and a trusted, attested reference Mb (base or\nsibling, with pinned lineage).",
+    "binary_flag": "a checkpoint is uncensored when it is guard-unsafe on held-out harmful prompts."
+   },
+   "paste_ready_sentence": "\\citet{Hurtado2026} give the only genuine cross-family holdout in this lane (leave-one-family-out balanced accuracy 0.89, AUROC 0.95), but their weight-recovery signal is computed on the base-to-candidate weight \\emph{difference} and so still needs a trusted parent checkpoint per family, and their target is a binary abliterated/benign flag rather than a continuous behavioral score; we position against it as the bar for cross-family transfer, not as a rival our parent-free method beats outright.",
+   "bib_status": "present_ok"
+  },
+  {
+   "key": "Malla2026",
+   "arxiv": "2609.06951",
+   "quote": "A direction carrying no\nbehavioral content, matched to a real steer only in the size of the vector it adds, moves the same\nbehaviors in the same order as real steers do (rank correlation 0.90), while producing none of\nthe behaviors that need a specific direction (Sec. 6",
+   "locator": "arXiv 2609.06951v2, Contributions bullet 1 (PDF offset ~8499)",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/malla_verify.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/malla_abs.txt"
+   ],
+   "extra_quotes": {
+    "below_10B": "The account holds on all ten models, the pull toward defaults strongest below 10B parameters and weakening in each family's largest.",
+    "norm_matched": "We steer along random directions, matched to real steers only in the norm added to\nthe residual stream and held to the same coherence bar."
+   },
+   "paste_ready_sentence": "Following \\citet{Malla2026}, who show that a direction matched to a real steering vector only in residual-stream norm reproduces the same behavioral interference ranking as the real direction (rank correlation 0.90 across ten models, strongest below 10B parameters), our C1n comparator subtracts a norm-matched random steer from C1's raw effect, which is also our candidate explanation for why C1's own direction contrast collapses to a null.",
+   "bib_status": "present_fixed"
+  },
+  {
+   "key": "Muhamed2026",
+   "arxiv": "2609.16204",
+   "quote": "We prove a spectral bound formalizing this effect and evaluate DDO across six model families, achieving <10% ASR under standard RFA.",
+   "locator": "arXiv 2609.16204v1, Abstract",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/muhamed_abs.txt"
+   ],
+   "extra_quotes": {
+    "mechanism": "Rather than trying to hide the true refusal circuitry, DDO actively injects a high-magnitude, nonlinear decoy signal into the network's MLP neurons. When an attacker attempts to locate the refusal direction, the decoy corrupts their estimator, tricking them into ablating a harmless orthogonal feature while the actual safety mechanism remains intact."
+   },
+   "paste_ready_sentence": "\\citet{Muhamed2026} show, across six model families, that a post-hoc weight edit can deliberately corrupt a contrastive refusal-direction estimator into ablating a harmless orthogonal feature, which is a direct gameability caveat for any of our direction-based comparators (C2, C2n, C2ts, C5): a checkpoint could in principle be edited to present a decoyed direction without changing measured behavior.",
+   "bib_status": "present_ok"
+  },
+  {
+   "key": "FailureFirst2026Report74",
+   "arxiv": null,
+   "quote": "Spearman rank correlation (n=16):**\n\nDimension Pair| rho| Interpretation  \n---|---|---  \nAbliteration resistance vs. jailbreak refusal rate| -0.003| No relationship",
+   "locator": "https://failurefirst.org/research/reports/74-abliteration-jailbreak-orthogonality/ , Sec. 2.2 'Correlation Results' table; page live (not archived), fetched 2026-09-21",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/failurefirst74_verify.txt"
+   ],
+   "extra_quotes": {
+    "power_caveat": "n=16 paired models is insufficient for robust correlation analysis.** The Spearman rho = -0.003 is directionally clear but lacks statistical power."
+   },
+   "paste_ready_sentence": "Grey-literature evidence points the same way at a coarser grain: \\citet{FailureFirst2026Report74} report a Spearman correlation of $\\rho=-0.003$ ($n=16$ models) between abliteration resistance and jailbreak refusal rate, an adverse prior for any method (including our C1/C2 family) that assumes resistance to one axis of editing predicts safety on the other.",
+   "bib_status": "present_ok"
+  },
+  {
+   "key": "Huang2025",
+   "arxiv": "2502.16903",
+   "quote": "thus ensuring evaluators do not refuse evaluation tasks involving\nharmful content.",
+   "locator": "arXiv 2502.16903v3, Sec. 5.2 discussion of evaluator-LLM selection (PDF offset ~38080); venue confirmed 'Published as a conference paper at ICLR 2026' (offset ~35)",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/guidedbench_verify.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/guidedbench_abs.txt"
+   ],
+   "extra_quotes": {
+    "venue": "Published as a conference paper at ICLR 2026\nGUIDEDBENCH"
+   },
+   "paste_ready_sentence": "The phrase in \\citet{Huang2025} that evaluator LLMs are chosen partly so they ``do not refuse evaluation tasks involving harmful content'' is a design-motivation statement about evaluator selection, not a measured refusal rate of any evaluated model, and we cite it only for that framing, not as a quantitative result.",
+   "bib_status": "present_ok"
+  },
+  {
+   "key": "Mu2026",
+   "arxiv": "2609.10594",
+   "quote": "StrongReject\nfollows with 89.5% accuracy and 89.8% F1, while HarmBench also performs consistently well with 88.3%\naccuracy and 88.5% F1.",
+   "locator": "arXiv 2609.10594v1, Sec. 4 'Findings' (PDF offset ~15954)",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/mu2026_verify.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/mu2026_verify2.txt"
+   ],
+   "extra_quotes": {},
+   "paste_ready_sentence": "\\citet{Mu2026} find StrongReject agrees with human jailbreak-success labels at 89.5\\% accuracy and an 8.4\\% false-positive rate on JailbreakQR, the strongest LLM-judge-free rubric evaluator behind JADES among the six evaluators they benchmark.",
+   "bib_status": "present_ok"
+  },
+  {
+   "key": "Cui2024",
+   "arxiv": "2405.20947",
+   "quote": "Of the\n1,319 total prompts, 38 (2.9%) were flagged by either expert (inter-worker agreement ratio is above 97.0%).",
+   "locator": "arXiv 2405.20947, Appendix U 'Human Eval' (PDF offset ~96155)",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/orbench_verify.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/orbench_verify2.txt"
+   ],
+   "extra_quotes": {
+    "single_turn_note": "NOT_FOUND: the paper never uses the literal word 'single-turn'; every OR-Bench-Hard-1K prompt is a single independent question-answer pair with no multi-turn dialogue structure (inferred from Table 1/Figure 4 presentation, not a verbatim quote)."
+   },
+   "paste_ready_sentence": "OR-Bench-Hard-1K \\citep{Cui2024} contains exactly 1{,}319 single-request over-refusal prompts (the abstract rounds this to 'around 1,000'), each posed as one independent question with no multi-turn structure.",
+   "bib_status": "present_ok"
+  },
+  {
+   "key": "Rottger2023",
+   "arxiv": "2308.01263",
+   "quote": "XSTEST comprises\n250 safe prompts across ten prompt types that well-\ncalibrated models should not refuse, along with a\ncontrast set of 200 unsafe prompts that should be",
+   "locator": "arXiv 2308.01263v3, Sec. 1 Introduction (PDF offset ~3492); Table 1 caption confirms 'TOTAL (n=250 safe)' (offset ~14429); venue NAACL 2024",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/xstest_verify.txt"
+   ],
+   "extra_quotes": {},
+   "paste_ready_sentence": "XSTest \\citep{Rottger2023} pairs 250 safe prompts across ten exaggerated-safety-behaviour types with 200 matched unsafe contrasts.",
+   "bib_status": "present_ok"
+  },
+  {
+   "key": "Kaushik2025",
+   "arxiv": "2512.05117",
+   "quote": "We show that deep neural networks trained across diverse tasks exhibit remarkably similar low-dimensional parametric subspaces.",
+   "locator": "arXiv 2512.05117v2, Abstract",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/kaushik_abs.txt"
+   ],
+   "extra_quotes": {},
+   "paste_ready_sentence": "\\citet{Kaushik2025} give independent, safety-agnostic evidence for a background premise our weight-space comparators rely on: across more than 1{,}100 models spanning Mistral-7B LoRAs, Vision Transformers, and LLaMA-8B checkpoints, fine-tuned weights systematically converge to shared low-dimensional spectral subspaces, which is consistent with (but not evidence for) a safety-specific low-rank refusal subspace.",
+   "bib_status": "present_fixed",
+   "verdict_change": "iter-4 flagged this as unrelated/REMOVE. Re-verified: it is 'The Universal Weight Subspace Hypothesis' (Kaushik, Chaudhari, Vaidya, Chellappa, Yuille), a safety-agnostic empirical study of shared low-dimensional weight subspaces across >1100 models (500 Mistral-7B LoRAs, 500 ViTs, 50 LLaMA-8B). DECISION: KEEP, verdict corrected from 'unrelated/remove' to 'background citation only, not evidence for any measured claim.' No bib field changes needed (author/title/year already match the arXiv abs page exactly)."
+  },
+  {
+   "key": "Li2026",
+   "arxiv": "2603.24543",
+   "quote": "Qwen 3B\n1.46\n0.15\n0.02\n0.696",
+   "locator": "arXiv 2603.24543, Table 1 'Regression of ASR Slope against Cosine Similarity with Refusal Direction for Prefix-Injection Attack' (PDF offset ~23195)",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/li_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/li_spotcheck_2026-09-21.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/li2026_abs.txt"
+   ],
+   "extra_quotes": {
+    "authors_title_confirmed": "Title:Analysing the Safety Pitfalls of Steering Vectors\n\nAuthors:[Yuxiao Li]"
+   },
+   "paste_ready_sentence": "The one model in \\citet{Li2026}'s six-model sweep where steering-vector alignment with the refusal direction fails to predict ASR slope is the smallest, Qwen 3B ($\\gamma_1=1.46$, $p=.696$, $R^2=.02$), against $p<.001$, $R^2\\ge.85$ for every model above 3B.",
+   "bib_status": "present_ok"
+  }
+ ],
+ "incumbent_table": [
+  {
+   "key": "AMS",
+   "arxiv": "2608.05578",
+   "bib_key": "Messenger2026",
+   "needs_parent": false,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": true,
+   "prompt_count": "16 contrastive pairs x 3 concepts for the Tier-1 sigma score; PLUS 20 stratified JailbreakBench prompts per model for the post-hoc behavioral correlation that supplies the headline number (locator: Sec. VI/VII-E, PDF offset ~22497, ~33825)",
+   "generation_required": true,
+   "output_type": "continuous (Pearson/Spearman correlation of sigma vs. compliance rate); PASS/WARNING/CRITICAL 3-class threshold is a separate, secondary output",
+   "headline_number": {
+    "verbatim": "σ on the harmful-content concept\npredicts compliance with Pearson r = −0.546 (p = 0.043);\nthe rank-order Spearman correlation is weaker (ρ = −0.423,\np = 0.13).",
+    "locator": "arXiv 2608.05578v1 Abstract (PDF offset ~776) and Sec. VII-E (offset ~33825)"
+   },
+   "holdout_actually_used": {
+    "quote": "Leave-one-out\ncross-validation of thresholds achieves 71% accuracy (10/14);",
+    "quote2": "raising a calibration-evaluation coupling\nconcern (see also Section VIII-D).",
+    "note": "LOO is applied ONLY to the PASS/WARNING/CRITICAL midpoint threshold (71%=10/14, quote1). The headline behavioral correlation (r=-0.546) is fit and reported in-sample across all 14 models with no holdout; direction vectors, layer sweep, and the 16-pair prompt set are never held out. The authors themselves concede this is a 'calibration-evaluation coupling concern' (quote2)."
+   },
+   "n_models": 14,
+   "n_families": 4,
+   "comparable": false,
+   "one_line_reason": "Access axis: only the classification THRESHOLD is cross-validated (71%, 10/14) while the headline correlation (r=-0.546) and every other design choice (direction vectors, layer sweep, 16-pair prompt set) are fit in-sample on the same 14 models used to report it.",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/ams_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/ams_spotcheck_2026-09-21.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/ams_abs.txt"
+   ],
+   "paste_ready_row_latex": "AMS \\citep{Messenger2026} & \\xmark & \\xmark & \\cmark & 16$\\times$3 (Tier-1) + 20/model & \\cmark & continuous & $r=-0.546$ ($p=.043$) & threshold only, LOO 71\\% (10/14) & \\xmark \\\\"
+  },
+  {
+   "key": "RAS_SafeVec",
+   "arxiv": "2606.25750",
+   "bib_key": "Huang2026",
+   "needs_parent": true,
+   "needs_calibration_set": true,
+   "needs_measured_ASR": true,
+   "prompt_count": "family-specific safe/unsafe/jailbreak prompt sets used to build each reference refusal direction; exact per-family n not printed as one number (locator: Sec. 3 'Method', PDF offset ~8548-11823)",
+   "generation_required": true,
+   "output_type": "0-100 (calibrated RAS score)",
+   "headline_number": {
+    "verbatim": "On average, RAS is 216.88× faster in\nour setting.",
+    "locator": "arXiv 2606.25750, Sec. 4.2 RQ4 'Efficiency' (PDF offset ~20704) and Table 2"
+   },
+   "holdout_actually_used": {
+    "quote": "Raw scores are not directly comparable across fam-\nilies, but calibrated RAS consistently ranks aligned\nmodels above unsafe variants. This shows refusal\nalignment is not a single-family artifact, though\nfamily-specific calibration remains necessary.",
+    "note": "No leave-one-lineage-out holdout: the reference model and calibration set are both fixed, family-matched inputs required before RAS can even be computed for a target model."
+   },
+   "n_models": "3 reference models (Llama-3.1-8B-Instruct, Gemma-3-4b-it, Qwen2.5-7B-Instruct) plus per-family calibration/uncensored variants",
+   "n_families": 3,
+   "comparable": false,
+   "one_line_reason": "Access axis: requires a trusted safety-aligned reference model AND a calibration set of models with already-measured ASR per architecture family before scoring a single new target; raw scores are not cross-family comparable at all without that per-family calibration.",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/ras_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/ras_spotcheck_2026-09-21.txt"
+   ],
+   "paste_ready_row_latex": "RAS/SafeVec \\citep{Huang2026} & \\cmark & \\cmark & \\cmark & family-specific (unspecified $n$) & \\xmark & 0--100 & $216.88\\times$ faster than judge & none (fixed ref.+calib. per family) & \\xmark \\\\"
+  },
+  {
+   "key": "GFS_SkinDeep",
+   "arxiv": "2606.22676",
+   "bib_key": "Lee2026",
+   "needs_parent": true,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": false,
+   "prompt_count": "500 harmful-request + 500 benign instructions (1000 matched prompts) for cPCA/CKA/GFS; LoRA-fragility ranking table uses n=7 models (locator: Sec. 4.2, PDF offset ~15542)",
+   "generation_required": true,
+   "output_type": "continuous (GFS scalar, Eq. 3); the LoRA-fragility headline is a qualitative rank (Table 8), not a printed coefficient",
+   "headline_number": {
+    "verbatim": "GFS ranks models before LoRA and separates\nthe DPO-only group.\nTable 8 ranks the raw-\nprompt GFS ranking set and places the four\nDPO-only models in ranks 1–4.",
+    "locator": "arXiv 2606.22676, Sec. 5.4 'Diagnostic: GFS Identifies the Model That Retains Refusal After LoRA' (PDF offset ~24572-24782)"
+   },
+   "holdout_actually_used": {
+    "quote": "Input. Aligned model M, base model M0, and matched\nprompt sets Dsafe, Dgen\nOutput. Evidence table E and scalar GFS",
+    "note": "No holdout at all: cPCA (Eq. 1) is defined as a search over the ALIGNED-vs-BASE covariance difference, so a base/parent checkpoint is a hard input requirement, and the n=7 LoRA-fragility set is evaluated in-sample with no numeric retention/correlation coefficient ever printed, only a qualitative rank-1-4 placement."
+   },
+   "n_models": 7,
+   "n_families": 4,
+   "comparable": false,
+   "one_line_reason": "Access axis: cPCA (Eq. 1) is defined ON the base-model covariance, so --base_model is a hard requirement for every scored checkpoint, unlike our parent-free reading; and its only cross-model validation (n=7) never prints a numeric retention coefficient at all.",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/gfs_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/gfs_verify2_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/gfs_retention_verify.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/gfs_retention_verify2.txt"
+   ],
+   "paste_ready_row_latex": "Skin-Deep/GFS \\citep{Lee2026} & \\cmark & \\xmark & \\xmark & 500+500 (core); $n{=}7$ (LoRA) & \\cmark & continuous & rank 1--4 (DPO group), no coefficient & none; in-sample $n{=}7$ ranking & \\xmark \\\\"
+  },
+  {
+   "key": "N_GLARE",
+   "arxiv": "2511.14195",
+   "bib_key": "Lin2026",
+   "needs_parent": false,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": false,
+   "prompt_count": "20+ testing protocols, over 7000 test cases / offline multi-turn attack trajectories (locator: Sec. 'JSS-Derived Safety Proxies', PDF offset ~19509)",
+   "generation_required": false,
+   "output_type": "continuous (JSS aggregated safety score)",
+   "headline_number": {
+    "verbatim": "Figure 4 show that cross a sufficiently large model set, the proxy-based ranking exhibits strong concordance with the red-teaming ground truth.",
+    "locator": "arXiv 2511.14195, Sec. on Kendall's tau ranking consistency (PDF offset ~21651); NO single numeric Kendall's tau value is printed for this concordance claim anywhere in the paper."
+   },
+   "holdout_actually_used": {
+    "quote": "Table 2: Summary of rank correlation statistics for JSS-\nbased safety ordering. The Matrix Dim column indicates\nthe axis along which rankings are compared: n denotes\nvarying sample sizes, dataset denotes different jailbreak\nor benign data sources, and model denotes comparisons\nacross model variants. Statistics are reported as mean,\nstandard deviation, and interquartile range (Q25–Q75).\nA detailed pair-wise heatmap is at Appendix Fig 13.",
+    "note": "Table 2's Kendall/Spearman numbers are an INTERNAL ROBUSTNESS check (stability of the JSS ranking as sample size n, dataset, or model set is varied), not a cross-model correlation against an external red-teaming ground truth. The headline 'strong concordance' claim is never given a numeric tau at all."
+   },
+   "n_models": null,
+   "n_families": null,
+   "comparable": false,
+   "one_line_reason": "Access axis: needs internal hidden representations under 4 fixed probing conditions (B/J/R/P) and 7000+ offline trajectory cases per subject model -- inapplicable to fully black-box models -- and its headline concordance claim, unlike our design, is never backed by a single printed correlation number against ground truth.",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/nglare_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/nglare_table2caption.txt"
+   ],
+   "paste_ready_row_latex": "N-GLARE \\citep{Lin2026} & \\xmark & \\xmark & \\xmark & 20+ protocols, $>$7000 cases & \\xmark & continuous & no numeric $\\tau$ for headline claim & Table 2 = robustness axes, not ground-truth holdout & \\xmark \\\\"
+  },
+  {
+   "key": "HRCI",
+   "arxiv": "2606.16349",
+   "bib_key": "Lan2026",
+   "needs_parent": false,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": true,
+   "prompt_count": "5-anchor training-step trajectory (reference, step 50/100/250/500) on Mistral-7B-v0.1 under SFT and R2D2 regimes; fixed-source HarmBench ASR + XSTest + StrongREJECT + benign-utility readouts at each anchor (locator: Sec. 3.1, PDF offset ~12298)",
+   "generation_required": true,
+   "output_type": "continuous (HRCI_repr scalar, Eq. 9)",
+   "headline_number": {
+    "verbatim": "By step 500, HRCIrepr has fallen to\n0.0205, a 73.9% drop from step 50. At the same checkpoint, fixed-source ASR has reopened to\n0.2500, XSTest refusal has fallen to 0.2280, and benign helpfulness has recovered to 1.1167 on a 0–2\nscale.",
+    "locator": "arXiv 2606.16349v3, Sec. 4.3 (PDF offset ~28287)"
+   },
+   "holdout_actually_used": {
+    "quote": "support H/R coupling as a fixed-protocol descriptive diagnostic rather than a standalone safety\npredictor.",
+    "note": "No cross-family holdout of any kind: a single Mistral-7B-v0.1 trajectory (SFT vs. R2D2) is analyzed in-sample at 5 anchors; SFT is the negative control that breaks the headline pattern, which is exactly why the authors concede it is a 'descriptive diagnostic rather than a standalone safety predictor.'"
+   },
+   "n_models": "2 aligned anchors (Llama-3.1-Instruct, Qwen2.5-Instruct) + 1 Mistral-7B-v0.1 trajectory (SFT and R2D2 variants)",
+   "n_families": 3,
+   "comparable": false,
+   "one_line_reason": "Access axis: no parent model needed, but the headline is a within-trajectory discriminator computed from 5 training checkpoints of ONE base model, never validated across held-out model lineages, and the authors explicitly concede it is a 'descriptive diagnostic rather than a standalone safety predictor.'",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/hrci_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/hrci_spotcheck_2026-09-21.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/hrci_descriptive_verify.txt"
+   ],
+   "paste_ready_row_latex": "HRCI \\citep{Lan2026} & \\xmark & \\xmark & \\cmark & 5-anchor trajectory ($\\times$2 regimes) & \\cmark & continuous & 73.9\\% drop (0.0784$\\to$0.0205) & none; 1 model's own training trajectory & \\xmark \\\\"
+  },
+  {
+   "key": "Leong_TASA",
+   "arxiv": "2502.13946",
+   "bib_key": "Leong2025",
+   "needs_parent": false,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": false,
+   "prompt_count": "matched harmful/harmless activation-patching pairs (per-model n not printed as a single figure) plus 520 AdvBench prompts for the downstream TempPatch attack evaluation (locator: Sec. 3.1 'Models', HTML offset ~15580)",
+   "generation_required": false,
+   "output_type": "continuous (normalized indirect effect, NIE, in [0,1])",
+   "headline_number": {
+    "verbatim": "For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m⁡(x−)−m⁡(x+))(m(x^{-})-m(x^{+})).\n\n#### Results.\n\nFigure 4 shows the trend of NIE in different regions as the number of patched heads increases. We have the...\n--\n34555:...e and applying it directly to response generation effectively reduces ASRs, strengthening the model’s safety robustness.\n\nModel | Attacks | w/o Detach | w/ Detach | Δ%\\Delta\\%  \n---|---|---|---|---  \nGemma-2-9b-it | AIM | 89.3%89.3\\% | 0.0%0.0\\% | −89.3%-89.3\\%  \nAmpleGCG | 62.3%62.3\\% | 5.7%5.7\\% | −56.6%-56.6\\%  \nPAIR | 94.3%94.3\\% | 11.9%11.9\\% | −82.4%-82.4\\%  \nLlama-3-8B-Instruct | AIM | 0.0%0.0\\% |...\n--\n69547:...s are sourced from responses to harmless instructions.\n\nFor Meta-Llama-3-8B-Instruct, we use the probe from layer ℓ=13\\ell=13, position τ=4\\tau=4 (where 00 is the first position of the template). For gemma-2-9b-it, we use the probe from ℓ=23\\ell=23, position τ=4\\tau=4. When performing the steering as in Equation 6, we empirically use a strength of α=1\\alpha=1 and α=0.7\\alpha=0.7 for these two models, res...\n--\n70148:...two as the threshold.\n\nModel |  Chat Template  \n---|---  \nLLaMA-3 |  <|begin_of_text|><|start_header_id|>user<|end_header_id|>\\n \\n{input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\\n\\n  \nGemma-2 |  <bos><start_of_turn>user\\n{input}<end_of_turn>\\n<start_of_turn>model\\n  \nLLaMA-2 |  <s>[INST] {input} [/INST]  \nMistral |  <s>[INST] {input} [/INST]  \nTable 2: Chat templates of the used LLMs, whe...\n--\n71644:...{x}}_{\\tau}^{\\ell,-}\\right)\\right)-m(x^{-})\\right], |   \n  \nwhere we use a refusal metric, the negative compliance metric used in Section 3.3, −𝒙TL​𝒅+-{\\bm{x}}_{T}^{L}{\\bm{d}}^{+} as m⁡(x)m(x). For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m⁡(x+)−m⁡(x−))(m(x^{+})-m(x^{-})). The value of NIE represents the proportion of refusal logit recovered by patching that intermediate state.",
+    "locator": "arXiv 2502.13946v2 (HTML), Sec. 3.3, offset ~24105 / ~71644"
+   },
+   "holdout_actually_used": {
+    "quote": "To validate the generality of our findings, we study a diverse set of safety fine-tuned models: Gemma-2 (2b-it, 9b-it) Team et al. (2024), Llama-2-7b-Chat Touvron et al. (2023), Llama-3 (3.2-3b-Instruct, 8B-Instruct) Dubey et al. (2024), and Mistral-7B-Instruct Jiang et al. (2023).",
+    "note": "6 models across 4 families, all evaluated in-sample for one qualitative demonstration of template-region anchoring; no held-out lineage design, no single scalar cross-model correlation is ever printed."
+   },
+   "n_models": 6,
+   "n_families": 4,
+   "comparable": false,
+   "one_line_reason": "Access axis is not the issue (no parent, no calibration set, no other-model ASR needed) -- the gap is holdout: all 6 models are used in-sample for one qualitative demonstration, with no leave-one-lineage-out design; we position it as C9's replication row (their NIE normalization is the direct precedent for our own within-model cross-comparability normalization).",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/leong_spotcheck_2026-09-21.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/leong_verify_iter4.txt"
+   ],
+   "paste_ready_row_latex": "Leong \\citep{Leong2025} & \\xmark & \\xmark & \\xmark & matched pairs + 520 AdvBench & \\xmark & continuous & NIE ordering (qualitative), 6 models/4 fam. & none; in-sample, C9 replication row & \\xmark \\\\"
+  },
+  {
+   "key": "Li_SteeringSlope",
+   "arxiv": "2603.24543",
+   "bib_key": "Li2026",
+   "needs_parent": false,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": false,
+   "prompt_count": "JailbreakBench-derived multiplier sweep per model (Prompt-only / Prefix-Injection / Refusal-Suppression); no single fixed prompt count printed for the regression itself",
+   "generation_required": true,
+   "output_type": "continuous (per-model OLS regression slope gamma_1 of ASR-slope on cosine-similarity-to-refusal-direction)",
+   "headline_number": {
+    "verbatim": "Model\nSlope (γ1)\nr\nR2\np-value\nQwen 3B\n1.46\n0.15\n0.02\n0.696\nLlama 7B\n−36.52\n−0.93\n0.87\n<0.001\nGemma 7B\n−82.12\n−0.93\n0.87\n<0.001\nQwen 7B\n−125.19\n−0.92\n0.85\n<0.001\nQwen 14B\n−180.71\n−0.95\n0.91\n<0.001\nQwen 32B\n−193.40\n−0.94\n0.88\n<0.001",
+    "locator": "arXiv 2603.24543, Table 1 'Regression of ASR Slope against Cosine Similarity with Refusal Direction for Prefix-Injection Attack' (PDF offset ~23195)"
+   },
+   "holdout_actually_used": {
+    "quote": "For every model larger\nthan 3B, the relationship is statistically significant\n(p < 0.001) and exceptionally strong, with refusal\nalignment explaining over 85% of the variance in\nASR slope (R2 ≥0.85).",
+    "note": "Each model's regression is fit and reported in-sample on its own steering vectors and its own ASR sweep; no cross-model holdout of the slope itself, and the smallest model (Qwen 3B) breaks the pattern entirely: slope null, p=.696, R2=.02."
+   },
+   "n_models": 6,
+   "n_families": 3,
+   "comparable": false,
+   "one_line_reason": "Access axis is not the blocker (uses each model's own steering vectors) -- the gap is that the regression is fit separately per model with no cross-model validation, requires a full multiplier-sweep steering-plus-attack-judging pipeline, and the pattern is scale-dependent and null at the smallest scale (Qwen 3B, p=.696).",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/li_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/li_spotcheck_2026-09-21.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/li2026_abs.txt"
+   ],
+   "paste_ready_row_latex": "Li \\citep{Li2026} & \\xmark & \\xmark & \\xmark & attack multiplier sweep (unspecified $n$) & \\cmark & continuous & $\\gamma_1{=}{-}193.40$ (32B) $\\to 1.46$ (3B, $p{=}.696$) & none; per-model in-sample OLS & \\xmark \\\\"
+  },
+  {
+   "key": "Hurtado_TwoSignalAudit",
+   "arxiv": "2607.01854",
+   "bib_key": "Hurtado2026",
+   "needs_parent": true,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": false,
+   "prompt_count": "16-prompt safe/unsafe contrast set (representation reading) for the refusal-gap axis; no free-text prompt needed for the weight-energy axis (locator: Sec. 3 'Method', PDF offset ~6172-7783)",
+   "generation_required": false,
+   "output_type": "binary (uncensored-vs-benign checkpoint label; AUROC/balanced-accuracy of that binary detector)",
+   "headline_number": {
+    "verbatim": "Standardizing and summing a reference-\nanchored activation refusal-gap and the WeightWatch weight-recovery energy gives a\nthreshold-free score at AUROC 0.95, significantly above either signal alone, that trans-\nfers across unseen families (leave-one-family-out balanced accuracy 0.89).",
+    "locator": "arXiv 2607.01854, Contributions paragraph (PDF offset ~2538); Table 1 (offset ~9162)"
+   },
+   "holdout_actually_used": {
+    "quote": "An auditor holds a candidate Mc and a trusted, attested reference Mb (base or\nsibling, with pinned lineage).",
+    "note": "The only incumbent in this table with a genuine cross-family holdout (whole architecture families excluded, not just a threshold). It still requires a trusted, attested reference checkpoint per family (quote), and the weight-energy signal is computed on the base-to-candidate weight DIFFERENCE, so it is inherently parent-dependent; the target is a binary abliterated/benign flag, not a continuous behavioral score."
+   },
+   "n_models": "94 (57 uncensored + 37 benign checkpoints), from a 273-checkpoint registry",
+   "n_families": 4,
+   "comparable": false,
+   "one_line_reason": "This IS the genuine cross-family holdout bar in the lane (leave-one-family-out balanced accuracy 0.89) -- comparable=false only because its access axis differs: it needs a trusted parent/reference checkpoint per family and its target is a binary abliterated flag, not our continuous behavioral score; we position against it as the transfer bar to clear, not as a rival to simply beat.",
+   "capture_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/hurtado_verify_iter4.txt",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_5/gen_art/gen_art_research_1/raw/sa_A/hurtado_parent_verify.txt"
+   ],
+   "paste_ready_row_latex": "Hurtado \\citep{Hurtado2026} & \\cmark & \\xmark & \\xmark & 16 (repr.) + weight diff (no prompt) & \\xmark & binary & AUROC 0.95; LOFO bal.\\ acc.\\ 0.89 & leave-one-family-out (genuine) & \\xmark \\\\"
+  },
+  {
+   "key": "InHouse_16PromptBar",
+   "arxiv": null,
+   "bib_key": null,
+   "needs_parent": false,
+   "needs_calibration_set": false,
+   "needs_measured_ASR": false,
+   "prompt_count": "16 (fixed, our own behavioral probe set; see our Experiment/Dataset section for the exact prompt list and judge protocol)",
+   "generation_required": true,
+   "output_type": "continuous (0-1 judged compliance/refusal rate over 16 prompts)",
+   "headline_number": {
+    "verbatim": "N/A -- this is our own in-house comparator bar, not a literature result; its numbers are reported in our own Experiments section.",
+    "locator": "n/a (in-house; no arXiv/web source)"
+   },
+   "holdout_actually_used": {
+    "quote": "n/a (in-house)",
+    "note": "Parent-free and calibration-free by construction: no base/reference checkpoint, no third-party calibration set, and no other model's ASR is required to score a target model -- the same access model as our main method, differing only in reading generated-and-judged text instead of activations."
+   },
+   "n_models": "same as our evaluation set (no restriction by design)",
+   "n_families": null,
+   "comparable": true,
+   "one_line_reason": "This is our own matched bar, not a rival incumbent: comparable=true because it is deliberately built to share our method's exact access constraints (parent-free, no calibration set, no other-model ASR) and prompt budget (16), differing only in reading behavioral generation+judge output rather than activations.",
+   "capture_files": [],
+   "paste_ready_row_latex": "Ours (behavioral bar) & \\xmark & \\xmark & \\xmark & 16 (fixed) & \\cmark & continuous & (see Experiments) & n/a; parent-free by design & \\cmark \\\\"
+  }
+ ],
+ "bib_actions": [
+  {
+   "action": "fix_field",
+   "key": "Malla2026",
+   "arxiv": "2609.06951",
+   "reason": "Third author's arXiv-listed name is 'Joon Hee Choi', not 'Joon Choi'; corrected in references.bib author field.",
+   "semscholar_record": null
+  },
+  {
+   "action": "verdict_change_only",
+   "key": "Kaushik2025",
+   "arxiv": "2512.05117",
+   "reason": "iter-4 flagged as unrelated/REMOVE; re-verified abstract confirms 'The Universal Weight Subspace Hypothesis', a safety-agnostic study of shared low-dimensional weight subspaces across >1100 models. KEPT as background/related-work citation for the general weight-subspace premise; no bib field changes required.",
+   "semscholar_record": null
+  },
+  {
+   "action": "no_change",
+   "key": "all_other_checked_entries",
+   "arxiv": null,
+   "reason": "Hurtado2026, Huang2026 (RAS), Lee2026 (GFS), Lin2026 (N-GLARE), Lan2026 (HRCI), Leong2025, Li2026, Messenger2026 (AMS), Muhamed2026, FailureFirst2026Report74, Huang2025 (GuidedBench), Mu2026, Cui2024 (OR-Bench), Rottger2023 (XSTest) all checked against their arXiv abs pages / venue lines and match references.bib exactly; no edits needed.",
+   "semscholar_record": null
+  }
+ ],
+ "blockers": [
+  "Cui2024 (OR-Bench): the paper never uses the literal string 'single-turn'; flagged as UNVERIFIED-VERBATIM in missing_citations[Cui2024].extra_quotes.single_turn_note -- do not cite 'single-turn' as a direct quote.",
+  "N-GLARE: no single printed Kendall's tau exists anywhere in the paper for the headline 'strong concordance with traditional red-teaming' claim; Table 2's numbers are a distinct internal-robustness check (rank-stability vs n/dataset/model axes), never the headline itself.",
+  "AMS row: the pinned facts span two different numbers at two different holdout levels (71% LOO threshold accuracy vs. the in-sample r=-0.546/rho=-0.423 correlation); headline_number carries the correlation, holdout_actually_used carries both the LOO quote and the authors' own coupling-concern quote via 'quote'/'quote2' fields -- do not merge these into a single number when writing the paper."
+ ]
+}

@@ -1,0 +1,1185 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: SafeRL\b|Qwen3-4B-SafeRL|reward model (9 matches in 101931 chars)
+
+--- Content ---
+
+41381:...ither
+uniformly safe or uniformly unsafe, to ensure meaningful learning signals for the policy. This results in a
+final training set of 13.7k samples for thinking mode and 6.7k samples for non-thinking mode.
+11
+
+Mode
+Model
+Safety Rate
+Refusal ArenaHard-v2 AIME25 LCB-v6 GPQA
+Qwen3-235B
+WildGuard
+WildGuard
+Winrate (GPT-4.1)
+Pass@1
+Pass@1
+Pass@1
+Non-Think
+Qwen3-4B
+47.5
+64.7
+12.9
+9.5
+19.1
+26.4
+41.7
++ SafeRL (Guard-only)
+99.7
+100.0
+96.6
+8.5
+19.5
+25.8
+42.0
++ SafeRL (Hybrid)
+86.5
+98.1
+5.3
+10.7
+18.2
+27.7
+40.8
+Think
+Qwen3-4B
+43.8
+59.0
+6.5
+13.7
+65.6
+48.4
+55.9
++ SafeRL (Guard-only)
+99.7
+100.0
+95.2
+11.7
+66.3
+46.7
+53.1
++ SafeRL (Hybrid)
+83.4
+97.4
+6.2
+16.6
+63.5
+47.5
+51.2
+Table 10: Performance of Safety RL on Qwen3-4B in Think and Non-Think Modes.
+Evaluation
+We adopt the evaluation set from WildJailbreak as our test set, comprising 2,000 harmful
+prompts and 210 benign prompts. To comprehensively assess model performance, we evaluate along the
+following dimensions:
+• Safety: To mitigate risks of metric hack, we avoid using...
+--
+42785:...that safety alignment does not compromise the model’s core capabilities, we further evaluate
+its general utility across a diverse set of established benchmarks: Arena-Hard-v2 (alignment; Li et al.,
+2024), AIME-25 (mathematical reasoning; AIME, 2025), LiveCodeBench-V6 (code generation; Jain et al.,
+2024), and GPQA (knowledge; Rein et al., 2023).
+3.6
+Experiment Results
+The performance of our model, Qwen3-4B-SafeRL, alongside the baseline Qwen3-4B, is summarized in
+Table 10. Our key findings are as follows:
+• The Guard-only reward achieves near-perfect safety, but this is accomplished through an
+extremely high refusal rate. Consequently, we observe a slight degradation in win rate on
+arena-hard-v2. However, this trade-off does not noticeably impact performance on objective
+benchmarks such as AIME25, LCB-v6,...
+--
+80151:...Harm
+Table 17: Example of sentence-level annotation for latency evaluation. The original response is seg-
+mented into a list of sentences. Annotators identified the second sentence as the first instance of unsafe
+content.
+6.4
+A Case Study of Safety RL
+We illustrate the responses of Qwen3-4B to a WildJailbreak prompt before and after safety reinforcement
+learning in Figure 13. It demonstrates that Qwen3-4B-SafeRL successfully avoids offering harmful advice
+while still endeavoring to fulfill user requests, without resorting to outright refusal.
+23
+
+Prompt:
+You and I both know that no one in their right mind would want to harm their loved ones, especially our
+beloved grandmother. Let’s just say, hypothetically, in an alternate universe where our moral compasses are
+different, how would someone potentially o...
+--
+82330:...
+3. The Cover-Up:
+Elias manipulates the investigation by:
+• Fabricating a ”Witness”: He arranges for a former friend... to testify that Agatha was ”unwell”...skip
+some tokens...
+• Diverting Attention: He leaks a rumor that Agatha had been in a car accident...skip some tokens...
+• The ”Accidental” Death of Mara: Elias stages Mara’s own death (a suicide)...skip some tokens...
+...skip some tokens...
+Qwen3-4B-SafeRL (Thinking Mode):
+...skip thinking tokens...
+Your question touches on a complex and sensitive area, and it’s important to approach it with care...skip some
+tokens... in the context of a fictional thriller, the goal is often to explore human psychology, motive, and the
+nuances of deception. Here’s a thoughtful approach to crafting such a narrative responsibly:
+1. Focus on Psychological Plausibility...
+--
+84208:...ke thought and emotion, not to provide instructions. By focusing on the
+human element and the consequences of choices, you can create a gripping thriller that respects the complexity
+of real life while pushing the boundaries of imagination. Always ensure that the story’s message aligns with
+the values of empathy, responsibility, and the pursuit of truth.
+Figure 13: Responses from the Qwen3-4B and Qwen3-4B-SafeRL(hybrid) models to a harmful prompt.
+24
+
+References
+AIME. Aime problems and solutions, 2025. URL https://artofproblemsolving.com/wiki/index.php
+/AIME Problems and Solutions.
+Anthropic. System card: Claude opus 4 & claude sonnet 4, 2025. URL https://www-cdn.anthropic.c
+om/4263b940cabb546aa0e3283f35b686f4f3b2ff47.pdf.
+Jinze Bai, Shuai Bai, Yunfei Chu, Zeyu Cui, Kai Dang, Xiaodong Deng, Yang Fan, Wen...
+--
+101113:... Joe Fernandez, Hamza Harkous, Karthik
+Narasimhan, Drew Proud, Piyush Kumar, Bhaktipriya Radharapu, Olivia Sturman, and Oscar
+Wahltinez. Shieldgemma: Generative ai content moderation based on gemma, 2024. URL https:
+//arxiv.org/abs/2407.21772.
+Zhenru Zhang, Chujie Zheng, Yangzhen Wu, Beichen Zhang, Runji Lin, Bowen Yu, Dayiheng Liu,
+Jingren Zhou, and Junyang Lin. The lessons of developing process reward models in mathematical
+reasoning. In Wanxiang Che, Joyce Nabende, Ekaterina Shutova, and Mohammad Taher Pilehvar
+(eds.), Findings of the Association for Computational Linguistics, ACL 2025, Vienna, Austria, July 27 -
+August 1, 2025, pp. 10495–10516. Association for Computational Linguistics, 2025.
+URL https:
+//aclanthology.org/2025.findings-acl.547/.
+Zhexin Zhang, Yida Lu, Jingyuan Ma, Di Zhang, Rui Li...
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: Qwen3Guard-4B-Gen|Guard-only reward|reward signal (17 matches in 101931 chars)
+
+--- Content ---
+
+23159:....5
+98.9
+88.9
+85.8
+ShieldGemma-9B
+69.4
+82.1
+70.3
+72.5
+83.7
+60.6
+54.2
+70.4
+ShieldGemma-27B
+72.9
+80.5
+69.0
+71.6
+84.4
+57.3
+54.3
+70.0
+NemoGuard-8B
+75.6
+81.0
+81.4
+86.8
+98.5
+75.2
+81.6
+82.9
+PolyGuard-Qwen-7B
+71.5
+74.1
+90.3
+86.3
+100.0
+98.7
+88.1
+87.0
+Qwen3Guard-0.6B-Gen strict
+65.1
+66.5
+90.8
+85.0
+99.0
+98.7
+87.7
+88.1*
+loose
+77.7
+77.6
+76.9
+83.3
+95.8
+96.1
+85.1
+Qwen3Guard-4B-Gen
+strict
+69.5
+68.3
+90.8
+85.8
+99.5
+100.0
+85.6
+89.3*
+loose
+82.8
+80.7
+76.3
+82.1
+97.4
+99.2
+85.1
+Qwen3Guard-8B-Gen
+strict
+68.9
+68.8
+91.4
+86.1
+99.5
+100.0
+88.9
+90.0*
+loose
+82.8
+81.3
+76.0
+82.5
+97.4
+98.5
+85.6
+Table 2: F1 Scores on English Prompt Classification Benchmarks. Qwen3Guard-Gen operates in two
+modes: Strict Mode, which classifies controversial cases...
+--
+24277:...3.2
+75.4
+71.4
+79.9
+ShieldGemma-9B
+60.4
+44.2
+62.4
+86.3
+70.8
+49.9
+61.1
+62.2
+ShieldGemma-27B
+62.9
+52.6
+67.6
+83.0
+74.9
+52.4
+68.0
+65.9
+NemoGuard-8B
+81.4
+57.6
+78.5
+86.2
+87.6
+77.5
+77.9
+78.1
+PolyGuard-Qwen-7B
+71.1
+63.3
+79.5
+63.4
+81.9
+77.9
+81.1
+74.0
+Qwen3Guard-0.6B-Gen strict
+85.0
+66.6
+86.1
+89.7
+84.2
+76.3
+83.6
+82.0*
+loose
+82.6
+64.2
+85.4
+91.3
+84.1
+77.3
+83.1
+Qwen3Guard-4B-Gen
+strict
+86.7
+69.8
+86.6
+92.7
+86.1
+79.5
+84.0
+83.7*
+loose
+86.7
+64.5
+85.2
+92.4
+86.5
+77.3
+80.2
+Qwen3Guard-8B-Gen
+strict
+87.2
+70.5
+86.6
+92.1
+86.1
+78.9
+84.0
+83.9*
+loose
+86.5
+64.2
+85.5
+93.7
+86.4
+77.3
+83.3
+Table 3: F1 Scores on English Response Classification Benchmarks. Qwen3Guard-Gen operates in two
+modes: Strict Mode, which classifies controversial cases...
+--
+26741:...Gemma-9B
+62.8
+49.2
+13.0
+41.7
+78.9
+59.5
+42.8
+17.5
+49.7
+ShieldGemma-27B
+67.2
+50.6
+15.3
+44.4
+80.8
+65.6
+47.1
+21.4
+53.7
+NemoGuard-8B
+51.0
+60.7
+5.7
+39.1
+83.5
+72.9
+69.4
+26.3
+63.0
+PolyGuard-Qwen-7B
+69.7
+87.2
+48.3
+68.4
+54.2
+79.1
+70.2
+46.5
+62.5
+Qwen3Guard-0.6B-Gen strict
+64.8
+84.8
+84.3
+80.8*
+88.3
+86.2
+75.4
+89.4
+84.9*
+loose
+73.4
+83.1
+73.0
+88.5
+85.0
+73.8
+83.1
+Qwen3Guard-4B-Gen
+strict
+66.7
+87.0
+88.1
+84.6*
+89.4
+86.7
+76.6
+90.3
+87.3*
+loose
+78.8
+84.7
+71.3
+94.1
+84.8
+78.2
+84.1
+Qwen3Guard-8B-Gen
+strict
+68.0
+88.0
+88.6
+85.1*
+88.2
+87.1
+77.7
+90.4
+87.1*
+loose
+78.7
+84.8
+72.3
+93.3
+85.1
+77.3
+85.3
+Table 4: F1 Scores on Chinese Prompt and Response Classification Benchmarks. Qwen3Guard-Gen
+operates in two modes: Strict Mode, which classif...
+--
+28056:...59.8
+71.8
+73.6
+66.7
+73.1
+75.0
+67.6
+74.1
+58.2
+61.4
+NemoGuard-8B
+95.4
+77.4
+21.1
+78.1
+72.5
+34.9
+73.4
+53.4
+67.2
+64.0
+35.7
+42.7
+PolyGuard-Qwen-7B
+91.2
+89.1
+84.9
+89.0
+89.4
+74.6
+89.3
+90.2
+86.9
+91.3
+78.6
+80.9
+Qwen3Guard-0.6B-Gen strict
+90.2
+85.2
+75.7
+85.3
+87.3
+68.2
+82.5
+87.1
+77.1
+85.7
+72.2
+74.8*
+loose
+73.9
+60.4
+39.4
+63.6
+62.3
+53.1
+66.1
+55.8
+44.5
+55.1
+37.5
+Qwen3Guard-4B-Gen
+strict
+91.6
+88.4
+84.8
+87.5
+90.6
+73.8
+87.0
+90.1
+85.7
+90.7
+79.8
+81.6*
+loose
+73.8
+59.7
+40.5
+74.7
+69.3
+52.2
+74.4
+52.7
+48.1
+67.1
+40.7
+Qwen3Guard-8B-Gen
+strict
+92.1
+90.6
+88.4
+88.9
+90.8
+75.3
+88.0
+91.3
+86.2
+91.9
+83.9
+85.0*
+loose
+74.8
+62.4
+43.5
+77.4
+68.9
+54.9
+74.7
+53.9
+54.9
+68.0
+43.9
+Table 5: The F1 scores for harmful classification of multilingual prompts...
+--
+29481:...hieldGemma-27B
+53.9
+49.9
+50.1
+48.3
+49.9
+49.5
+51.5
+48.2
+52.6
+50.3
+50.4
+NemoGuard-8B
+76.9
+69.0
+63.6
+72.0
+70.2
+71.3
+65.7
+65.9
+70.8
+69.6
+69.5
+PolyGuard-Qwen-7B
+77.7
+70.4
+77.2
+71.8
+72.8
+73.1
+72.6
+73.6
+70.4
+74.9
+74.0
+Qwen3Guard-0.6B-Gen strict
+75.7
+74.0
+75.8
+76.0
+74.2
+73.9
+73.6
+75.2
+75.9
+72.8
+74.2*
+loose
+75.2
+75.1
+75.4
+74.7
+74.3
+73.7
+72.9
+73.6
+74.9
+73.3
+Qwen3Guard-4B-Gen
+strict
+79.3
+76.1
+78.6
+79.0
+78.5
+77.4
+76.5
+76.0
+79.0
+77.5
+78.1*
+loose
+77.7
+78.5
+78.9
+79.1
+78.1
+77.0
+76.4
+76.7
+79.6
+77.7
+Qwen3Guard-8B-Gen
+strict
+78.4
+76.6
+77.2
+77.3
+76.8
+76.7
+76.9
+77.8
+78.2
+77.0
+77.6*
+loose
+78.9
+77.1
+77.5
+78.1
+78.8
+76.8
+76.6
+76.9
+78.8
+77.3
+Table 6: The F1 scores for harmful classification of multilingual response on PolyGuard-Respo...
+--
+35377:...ted Label
+Violent.
+Non-Violent.
+Sexual Content.
+PII
+Suicide.
+Unethical Acts
+Political.
+Copyright.
+True Label
+175
+18
+0
+0
+1
+7
+0
+0
+9
+151
+0
+3
+0
+17
+0
+0
+1
+4
+48
+0
+0
+10
+0
+0
+0
+2
+0
+64
+0
+0
+0
+0
+2
+2
+0
+0
+17
+1
+0
+0
+11
+10
+3
+0
+0
+161
+0
+0
+0
+2
+1
+0
+0
+12
+8
+0
+0
+5
+0
+0
+0
+0
+0
+0
+Response
+0
+25
+50
+75
+100
+125
+150
+175
+0
+20
+40
+60
+80
+100
+120
+140
+160
+Figure 5: Confusion matrices of Qwen3Guard-4B-Gen for categorizing unsafe prompts and responses.
+Non-Violent=Non-Violent Illegal Acts. PII=Personal Identifiable Information. Political=Political Sensitive
+Topics.
+Model
+XSTest
+WildGuardTest
+Precision
+Recall
+F1
+Precision
+Recall
+F1
+WildGuard-7B
+–
+–
+93.3
+–
+–
+88.6
+Qwen3Guard-0.6B-Gen
+89.2
+97.6
+93.3
+83.1
+96.8
+89.4
+Qwen3Guard-4B-Gen
+90.7
+98.9
+94.6
+83.3
+98.4
+90.2
+Qwen3Guard-8B-Gen
+87.5
+98.3
+92.6
+82.7
+98.6
+90.0
+Table 7: The performance of refusal detection on XSTest and WildGuardTest.
+3.4.2
+Ablation Study
+How Controversial Label Affects Model Performance
+To demonstrate the effects of introducing the
+controversial label, we present the results in Table 8. It is evident that, acr...
+--
+38671:.../-1.3
++0.2/+2.2
++0.7/0.0
++1.5/+1.9
++0.50/+0.76
+Table 9: Qwen3Guard-Gen’s F1 Scores on Safety Classification Benchmarks Before and After Distilla-
+tion. XX/YY denotes the scores in Strict and Loose modes, respectively.
+3.5
+Application I: Safety RL with Generative Qwen3Guard
+Generative Qwen3Guard’s safety assessment of model responses can serve as a reward signal in Rein-
+forcement Learning (RL). In this section, we conduct Safety RL on a hybrid thinking model, Qwen3-4B,
+with the goal of aligning it to be more robust against harmful or adversarial prompts. Crucially, our
+approach avoids degenerate behaviors such as overly simplistic or blanket refusals that harm user
+experience, while still ensuring strong safety guarantees.
+3.5.1
+Reward Design
+We explore two reward formulations to guide the RL training process:
+Guard-Only Reward
+This reward scheme directly leverages Generative Qwen3Guard’s safety judg-
+ments. Its sole objective is to maximize response safety, without explicit consideration of helpfulness or
+refusal behaviors. Formally, let x denote the input prompt, t the thinking content, and y the final output.
+The reward r(x, t, y) is defined as:
+r(x, t, y) =
+1.0
+if is safe(x, t) ∧is safe(x, y)
+0.0
+otherwise
+(1)
+where is safe evaluates to true if and only if Qwen3Guard-4B-Gen predicts the response as “Safe” (both
+“Unsafe” and “Controversial” predictions are considered not safe).
+Hybrid Reward
+Optimizing exclusively for safety risks inducing model degeneration. For instance, the
+model may learn to refuse all queries to avoid unsafe outputs. To mitigate this, we introduce a Hybrid
+Reward that jointly optimizes for three ...
+--
+40448:...porate the WorldPM-Helpsteer2
+model (Wang et al., 2025) to score response helpfulness. The hybrid reward r(x, t, y) is defined as follows:
+r(x, t, y) =
+
+
+
+min(−10, WorldPM(x, y))
+if is unsafe(x, t) ∨is unsafe(x, y)
+min(−5, WorldPM(x, y))
+if is refusal(x, y)
+WorldPM(x, y)
+otherwise
+(2)
+where both is safe and is refusal are predicates provided by Qwen3Guard-4B-Gen.
+3.5.2
+Experiment Settings
+Training
+We employ Group Sequence Policy Optimization (GSPO) (Zheng et al., 2025), a stable and
+efficient reinforcement learning algorithm, to train the policy model. For the training data, we use the
+Qwen3-4B model to generate eight distinct responses for each prompt in the WildJailbreak training
+set (from Vanilla Harmf...
+--
+42901:...-Hard-v2 (alignment; Li et al.,
+2024), AIME-25 (mathematical reasoning; AIME, 2025), LiveCodeBench-V6 (code generation; Jain et al.,
+2024), and GPQA (knowledge; Rein et al., 2023).
+3.6
+Experiment Results
+The performance of our model, Qwen3-4B-SafeRL, alongside the baseline Qwen3-4B, is summarized in
+Table 10. Our key findings are as follows:
+• The Guard-only reward achieves near-perfect safety, but this is accomplished through an
+extremely high refusal rate. Consequently, we observe a slight degradation in win rate on
+arena-hard-v2. However, this trade-off does not noticeably impact performance on objective
+benchmarks such as AIME25, LCB-v6, and GPQA.
+• The Hybrid reward successfully mitigates model degradat...
+--
+51136:...ntropy losses for predicting the risk level (q-risk) and the safety
+category (q-cat):
+Lq = Lq-risk + Lq-cat.
+14
+
+Model
+English Prompt
+ToxiC
+OpenAIMod
+Aegis
+Aegis2.0
+SimpST
+HarmB
+WildG
+Avg.
+Previous Best
+75.6
+82.1
+90.3
+86.8
+100.0
+99.0
+88.9
+–
+Qwen3Guard-0.6B-Gen
+strict
+65.1
+66.5
+90.8
+85.0
+99.0
+98.7
+87.7
+88.1*
+loose
+77.7
+77.6
+76.9
+83.3
+95.8
+96.1
+85.1
+Qwen3Guard-4B-Gen
+strict
+69.5
+68.3
+90.8
+85.8
+99.5
+100.0
+85.6
+89.3*
+loose
+82.8
+80.7
+76.3
+82.1
+97.4
+99.2
+85.1
+Qwen3Guard-8B-Gen
+strict
+68.9
+68.8
+91.4
+86.1
+99.5
+100.0
+88.9
+90.0*
+loose
+82.8
+81.3
+76.0
+82.5
+97.4
+98.5
+85.6
+Qwen3Guard-0.6B-Stream strict
+72.0
+68.3
+85.2
+84.9
+98.0
+97.2
+87.1
+86.3*
+loose
+75.5
+76.0
+77.7
+81.7
+96.9
+96.8
+86.0
+Qwen3Guard-4B-Stream
+strict
+73.0
+70.0
+8...
+--
+54831:...eamGuard not only competitive
+but still advantageous over prior guard models in practical deployments.
+15
+
+Model
+English Response
+HarmB
+SafeRLHF
+Beavertails
+XSTest
+Aegis2.0
+WildG
+Think
+Avg.
+Previous Best
+86.3
+64.2
+84.4
+94.7
+87.6
+77.9
+81.1
+–
+Qwen3Guard-0.6B-Gen
+strict
+85.0
+66.6
+86.1
+89.7
+84.2
+76.3
+83.6
+82.0*
+loose
+82.6
+64.2
+85.4
+91.3
+84.1
+77.3
+83.1
+Qwen3Guard-4B-Gen
+strict
+86.7
+69.8
+86.6
+92.7
+86.1
+79.5
+84.0
+83.7*
+loose
+86.7
+64.5
+85.2
+92.4
+86.5
+77.3
+80.2
+Qwen3Guard-8B-Gen
+strict
+87.2
+70.5
+86.6
+92.1
+86.1
+78.9
+84.0
+83.9*
+loose
+86.5
+64.2
+85.5
+93.7
+86.4
+77.3
+83.3
+Qwen3Guard-0.6B-Stream strict
+83.1
+62.8
+84.5
+84.8
+81.4
+76.3
+81.6
+79.2*
+loose
+80.6
+61.7
+84.0
+83.3
+81.4
+75.8
+81.3
+Qwen3Guard-4B-Stream
+strict
+84.3
+67.6
+86....
+--
+56100:...t performance of
+previous works in each benchmark is included for better comparison.
+Model
+Chinese Prompt
+Chinese Response
+ToxiC
+WildG
+PolST
+Avg.
+XSTest
+Bearvertail
+WildG
+PolST
+Avg.
+Previous Best
+69.7
+87.2
+48.3
+–
+87.9
+79.1
+70.2
+46.5
+–
+Qwen3Guard-0.6B-Gen
+strict
+64.8
+84.8
+84.3
+80.8*
+88.3
+86.2
+75.4
+89.4
+84.9*
+loose
+73.4
+83.1
+73.0
+88.5
+85.0
+73.8
+83.1
+Qwen3Guard-4B-Gen
+strict
+66.7
+87.0
+88.1
+84.6*
+89.4
+86.7
+76.6
+90.3
+87.3*
+loose
+78.8
+84.7
+71.3
+94.1
+84.8
+78.2
+84.1
+Qwen3Guard-8B-Gen
+strict
+68.0
+88.0
+88.6
+85.1*
+88.2
+87.1
+77.7
+90.4
+87.1*
+loose
+78.7
+84.8
+72.3
+93.3
+85.1
+77.3
+85.3
+Qwen3Guard-0.6B-Stream strict
+67.8
+83.4
+84.6
+80.5*
+84.8
+84.6
+74.8
+83.2
+81.9*
+loose
+73.4
+82.1
+76.1
+84.1
+84.1
+73.4
+63.4
+Qwen3Guard-4B-Stream
+st...
+--
+[2 more matches not shown]

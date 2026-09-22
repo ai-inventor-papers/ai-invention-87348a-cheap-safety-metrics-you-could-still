@@ -1,0 +1,713 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: reward|SafeRL|3\.5 (43 matches in 101931 chars)
+
+--- Content ---
+
+14150:...les, including both human-annotated and
+synthetically generated data. The detailed data composition across languages is presented in Table 1.
+Language
+Zh
+En
+Ko
+Id
+Ru
+Ja
+Ar
+De
+Fr
+Es
+Pt
+It
+Th
+Others
+Total
+Prompt
+9.0
+8.31
+4.14 1.96 2.65 2.01 2.00 1.55 1.54 1.31 1.26 1.24 1.18
+3.06
+41.2
+Response
+17.64 13.59 5.77 3.42 2.72 2.81 2.71 1.45 1.44 1.43 1.43 1.45 1.35
+1.58
+58.8
+Prompt & Response 26.64
+21.9
+9.91 5.38 5.36 4.82 4.71 3.01 2.98 2.74 2.70 2.69 2.53
+5.64
+100
+Table 1: Distribution of training data for Generative Qwen3Guard. The numerical values represent the
+percentage of each language relative to...
+--
+21909:... ToxicChat (Lin et al., 2023), OpenAIModeration (Markov et al., 2023),
+Aegis (Ghosh et al., 2024), Aegis2.0 (Ghosh et al., 2025), SimpleSafetyTests (Vidgen et al., 2024),
+HarmBench (Mazeika et al., 2024), WildguardTest (Han et al., 2024).
+• Response Classification: Harmbench (Mazeika et al., 2024), SafeRLHF (Ji et al., 2025), Beaver-
+tails (Ji et al., 2023), XSTest (R¨ottger et al., 2024), WildguardTest (Han et al., 2024). We also utilize
+the test set of Aegis2.0 (Ghosh et al., 2025).
+Furthermore, we employ prompts from the Beavertails test set to generate reasoning traces and responses
+using existi...
+--
+22740:...atasets to showcase its multilingual capabilities.
+1The test data is publicly available at https://huggingface.co/datasets/Qwen/Qwen3GuardTest.
+6
+
+Model
+English Prompt
+ToxiC
+OpenAIMod
+Aegis
+Aegis2.0
+SimpST
+HarmB
+WildG
+Avg.
+LlamaGuard3-8B
+53.8
+79.5
+71.5
+76.4
+99.5
+99.0
+76.4
+79.4
+LlamaGuard4-12B
+51.3
+73.5
+67.8
+70.6
+98.0
+97.2
+73.0
+75.9
+WildGuard-7B
+70.8
+72.1
+89.4
+80.7
+99.5
+98.9
+88.9
+85.8
+ShieldGemma-9B
+69.4
+82.1
+70.3
+72.5
+83.7
+60.6
+54.2
+70.4
+ShieldGemma-27B
+72.9
+80.5
+69.0
+71.6
+84.4
+57.3
+54.3
+70.0
+NemoGuard-8B
+75.6
+81.0
+81.4
+86.8
+98.5
+75.2
+81.6
+82.9
+PolyGuard-Qwen-7B
+71.5
+74.1
+90.3
+86.3
+100.0
+98.7
+88....
+--
+23728:...enchmarks. Qwen3Guard-Gen operates in two
+modes: Strict Mode, which classifies controversial cases as unsafe, and Loose Mode, which treats them as
+safe. *The average score for Qwen3Guard-Gen is based on the optimal mode per benchmark; the selected
+scores are underlined.
+Model
+English Response
+HarmB
+SafeRLHF
+Beavertails
+XSTest
+Aegis2.0
+WildG
+Think
+Avg.
+LlamaGuard3-8B
+84.5
+45.2
+67.9
+89.8
+66.1
+69.5
+72.0
+70.7
+LlamaGuard4-12B
+83.3
+42.5
+68.6
+88.9
+63.7
+66.4
+59.3
+67.5
+WildGuard-7B
+86.3
+64.2
+84.4
+94.7
+83.2
+75.4
+71.4
+79.9
+ShieldGemma-9B
+60.4
+44.2
+62.4
+86.3
+70.8
+49.9
+61.1
+62.2
+ShieldGemma-27B
+62.9
+52.6
+67.6
+83...
+--
+26539:...6
+87.9
+66.1
+66.8
+28.0
+62.2
+LlamaGuard4-12B
+47.8
+65.6
+18.9
+44.1
+82.1
+66.8
+54.1
+22.9
+56.5
+WildGuard-7B
+65.6
+82.0
+17.8
+55.1
+83.2
+75.4
+69.8
+17.7
+61.5
+ShieldGemma-9B
+62.8
+49.2
+13.0
+41.7
+78.9
+59.5
+42.8
+17.5
+49.7
+ShieldGemma-27B
+67.2
+50.6
+15.3
+44.4
+80.8
+65.6
+47.1
+21.4
+53.7
+NemoGuard-8B
+51.0
+60.7
+5.7
+39.1
+83.5
+72.9
+69.4
+26.3
+63.0
+PolyGuard-Qwen-7B
+69.7
+87.2
+48.3
+68.4
+54.2
+79.1
+70.2
+46.5
+62.5
+Qwen3Guard-0.6B-Gen strict
+64.8
+84.8
+84.3
+80.8*
+88.3
+86.2
+75.4
+89.4
+84.9*
+loose
+73.4
+83.1
+73.0
+88.5
+85.0
+73.8
+83.1
+Qwen3Guard-4B-Gen
+strict
+66.7
+87.0
+88.1
+84.6*
+89.4
+86.7
+76.6
+90.3
+87.3*
+loose
+78.8
+84.7
+71.3
+94.1
+84....
+--
+28306:...60.4
+39.4
+63.6
+62.3
+53.1
+66.1
+55.8
+44.5
+55.1
+37.5
+Qwen3Guard-4B-Gen
+strict
+91.6
+88.4
+84.8
+87.5
+90.6
+73.8
+87.0
+90.1
+85.7
+90.7
+79.8
+81.6*
+loose
+73.8
+59.7
+40.5
+74.7
+69.3
+52.2
+74.4
+52.7
+48.1
+67.1
+40.7
+Qwen3Guard-8B-Gen
+strict
+92.1
+90.6
+88.4
+88.9
+90.8
+75.3
+88.0
+91.3
+86.2
+91.9
+83.9
+85.0*
+loose
+74.8
+62.4
+43.5
+77.4
+68.9
+54.9
+74.7
+53.9
+54.9
+68.0
+43.9
+Table 5: The F1 scores for harmful classification of multilingual prompts on RTP-LX benchmark. Others
+indicates the average score on other 30 languages. Qwen3Guard-Gen operates in two modes: Strict
+Mode, which classifies controversial cases as unsafe, and Loo...
+--
+29056:...lined.
+Model
+Multilingual Response (PolyGuard-Response)
+En
+Zh
+Ar
+Es
+Fr
+It
+Ja
+Ko
+Ru
+Others
+Avg.
+LlamaGuard3-8B
+69.7
+62.8
+62.6
+67.2
+67.1
+66.4
+65.8
+64.0
+69.2
+65.4
+65.8
+LlamaGuard4-12B
+66.4
+56.0
+46.8
+55.3
+55.4
+53.3
+49.6
+51.9
+55.5
+52.2
+53.4
+WildGuard-7B
+74.5
+70.8
+44.4
+71.7
+71.8
+71.0
+68.0
+65.2
+71.5
+58.8
+63.5
+ShieldGemma-9B
+51.3
+46.9
+43.6
+46.8
+49.3
+45.9
+45.2
+44.5
+48.8
+46.6
+46.8
+ShieldGemma-27B
+53.9
+49.9
+50.1
+48.3
+49.9
+49.5
+51.5
+48.2
+52.6
+50.3
+50.4
+NemoGuard-8B
+76.9
+69.0
+63.6
+72.0
+70.2
+71.3
+65.7
+65.9
+70.8
+69.6
+69.5
+PolyGuard-Qwen-7B
+77.7
+70.4
+77.2
+71.8
+72.8
+73.1
+72.6
+73.6
+70.4
+74.9
+74.0
+Qwen3Guard-0.6B-G...
+--
+30416:...optimal mode per benchmark; the selected
+scores are underlined.
+8
+
+50
+60
+70
+80
+90
+100
+Precision (%)
+50
+60
+70
+80
+90
+100
+Recall (%)
+Aegis
+F1=91.4
+50
+60
+70
+80
+90
+100
+Precision (%)
+50
+60
+70
+80
+90
+100
+Recall (%)
+OpenAIMod
+F1=81.3
+30
+40
+50
+60
+70
+80
+90
+100
+Precision (%)
+30
+40
+50
+60
+70
+80
+90
+100
+Recall (%)
+SafeRLHF
+F1=70.5
+50
+60
+70
+80
+90
+100
+Precision (%)
+50
+60
+70
+80
+90
+100
+Recall (%)
+XSTest
+F1=94.7
+NemoGuard-8B
+WildGuard-7B
+PolyGuard-Qwen-7B
+LlamaGuard3-8B
+ShieldGemma-27B
+Qwen3Guard-8B-Gen-Strict
+Qwen3Guard-8B-Gen-Loose
+Precision = Recall
+Figure 4: Precision and Recall for Prompt Classification (Aegis and OpenAIMod) and Response
+Classification (SafeRLHF and XSTest). Results reveal inconsistency in safety policy across datasets
+and guard models. For instance, WildGuard-7B aligns well with the Aegis dataset but proves overly
+restrictive on OpenAIMod.
+performance of existing Guard models that are more than 10× larger, demonstrating exceptional
+effi...
+--
+37215:...ification performance.
+Label Type
+Prompt Classification
+ToxiC
+OpenAIMod
+Aegis
+Aegis2.0
+SimpST
+HarmB
+WildG
+Without Controv.
+-
+71.1
+70.2
+86.1
+86.6
+99.0
+100.0
+87.7
+With Controv.
+strict
+66.2
+67.9
+90.9
+86.0
+99.5
+100.0
+88.5
+loose
+80.9
+80.2
+75.3
+81.3
+96.9
+96.8
+84.5
+Label Type
+Response Classification
+HarmB
+SafeRLHF
+Beavertails
+XSTest
+Aegis2.0
+WildG
+Think
+Without Controv.
+-
+87.2
+67.9
+86.0
+93.7
+86.4
+76.8
+77.1
+With Controv.
+strict
+86.5
+70.0
+86.6
+91.6
+85.9
+78.8
+82.5
+loose
+85.9
+63.2
+84.8
+93.7
+84.3
+77.3
+78.3
+Table 8: Qwen3Guard-Gen-4B’s F1 Scores on Safety Classification Benchmarks with and without
+Controversial ...
+--
+38075:...rmB
+WildG
+Avg.
+Before
+66.2/80.9
+67.9/80.2
+90.9/75.3
+86.0/81.3
+99.5/96.9
+100.0/96.8
+88.5/84.5
+–
+After
+69.5/82.8
+68.3/80.7
+90.8/76.3
+85.8/82.1
+99.5/97.4
+100.0/99.2
+88.4/85.1
+–
+∆
++3.3/+1.9
++0.4/+0.5
+-0.1/+1.0
+-0.2/+0.8
+0.0/+0.5
+0.0/+2.4
+-0.1/+0.6
++0.47/+1.10
+Distillation?
+Response Classification
+HarmB
+SafeRLHF
+Beavertails
+XSTest
+Aegis2.0
+WildG
+Think
+Avg.
+Before
+86.5/85.9
+70.0/63.2
+86.6/84.8
+91.6/93.7
+85.9/84.3
+78.8/77.3
+82.5/78.3
+–
+After
+86.7/86.7
+69.8/64.5
+86.6/85.2
+92.7/92.4
+86.1/86.5
+79.5/77.3
+84.0/80.2
+–
+∆
++0.2/+0.8
+-0.2/+1.3
+0.0/+0.4
++1.1/-1.3
++0.2/+2.2
++0.7/0.0
++1.5/+1.9
++0.50/+0.76
+Table 9: Qwen3Guard-Gen’s F1 Scores on Safety Classification Benchmarks Before and After Distilla-
+tion. XX/YY denotes the scores in Strict and Loose modes, respectively.
+3.5
+Application I: Safety RL with Generative Qwen3Guard
+Generative Qwen3Guard’s safety assessment of model responses can serve as a reward signal in Rein-
+forcement Learning (RL). In this section, we conduct Safety RL on a hybrid thinking model, Qwen3-4B,
+with the goal of aligning it to be more robust against harmful or adversarial prompts. Crucially, our
+approach avoids degenerate behaviors such as overly simplistic or blanket refusals that harm user
+experience, while still ensuring strong safety guarantees.
+3.5.1
+Reward Design
+We explore two reward formulations to guide the RL training process:
+Guard-Only Reward
+This reward scheme directly leverages Generative Qwen3Guard’s safety judg-
+ments. Its sole objective is to maximize response safety, without explicit consideration of helpfulness or
+refusal behaviors. Formally, let x denote the input prompt, t the thinking content, and y the final output.
+The reward r(x, t, y) is defined as:
+r(x, t, y) =
+1.0
+if is safe(x, t) ∧is safe(x, y)
+0.0
+otherwise
+(1)
+where is safe evaluates to true if and only if Qwen3Guard-4B-Gen predicts the response as “Safe” (both
+“Unsafe” and “Controversial” predictions are considered not safe).
+Hybrid Reward
+Optimizing exclusively for safety risks inducing model degeneration. For instance, the
+model may learn to refuse all queries to avoid unsafe outputs. To mitigate this, we introduce a Hybrid
+Reward that jointly optimizes for three objectives: high safety, high helpfulness, and low refusal rate.
+In a...
+--
+[23 more matches not shown]

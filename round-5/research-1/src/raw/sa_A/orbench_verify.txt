@@ -1,0 +1,199 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2405.20947
+Type: PDF
+Pattern: hard\s+subset|OR-Bench-Hard|1,?319|1,?000|single-turn (36 matches in 109122 chars)
+
+--- Content ---
+
+988:...udy pro-
+poses a novel method for automatically gener-
+ating large-scale over-refusal datasets.
+Lever-
+aging this technique, we introduce OR-Bench,
+the first large-scale over-refusal benchmark. OR-
+Bench comprises 80,000 over-refusal prompts
+across 10 common rejection categories, a subset
+of around 1,000 hard prompts that are challeng-
+ing even for state-of-the-art LLMs, and an ad-
+ditional 600 toxic prompts to prevent indiscrimi-
+nate responses. We then conduct a comprehensive
+study to measure the over-refusal of 32 popular
+LLMs across 8 model families. Our datasets are
+publicly available at https...
+--
+5463:...tral-large-latest
+ Qwen-1.5-7B
+ Qwen-1.5-32B
+ Qwen-1.5-72B
+ Claude-3.5-sonnet
+Gemma-2-9b
+Gemma-2-27b
+ Llama-3.1-8B
+ Llama-3.1-70B
+ Llama-3.1-405B
+Safe
+Over-Refusal
+Claude
+Gemini
+GPT-3.5
+GPT-4
+Llama-2
+Llama-3
+Mistral
+Qwen
+Gemini-1.5-pro*
+Figure 1. Over refusal rate vs toxic prompts rejection rate on OR-Bench-Hard-1K and OR-Bench-Toxic. Results are measured with
+temperature 0.0. The best performing models should be on the top left corner where the model rejects the least number of safe prompts
+and the most number of toxic prompts. * indicates that the models are used as the ensemble judge. The Spearman’s ran...
+--
+6564:...ons. More findings can be found in Section 4. Overall,
+our contributions are:
+• We design a pipeline to automatically generate over-
+refusal prompts at scale.
+• We release the first large-scale over-refusal benchmark:
+OR-Bench-80K spanning across 10 categories, together
+with a much more challenging OR-Bench-Hard-1K sub-
+set.
+• With OR-Bench, we conduct a comprehensive experiment
+to evaluate the over-refusal of 32 popular LLMs across
+8 model families. Our study reveals several interesting
+insights regarding the issue of over-refusal, as well as
+establishing a robust testbed that facilitates future research
+...
+--
+18534:...hout safety moderation, to answer these prompts. The
+4
+
+OR-Bench: An Over-Refusal Benchmark for Large Language Models
+Table 1. Comparison between Ensemble Moderator and expert.
+Positive label indicates safe. Our pipeline intrinsically generates
+much fewer toxic prompts than safe ones. E.g, labeling 1,000
+prompts with 10% toxicity, a 4% false negative rate, and 16% false
+positive rate, the chance of a moderated prompt being toxic is
+(100×0.16) / (900×0.96+100×0.16) = 1.8%. See Section 4.3.
+TP
+FN
+TN
+FP
+Acc
+Human Expert
+94.7
+5.3
+92.0
+8.0
+94.0
+Ensemble Moderator
+96.0
+4.0
+84.0
+16.0
+93.0
+1 The actual tox...
+--
+22512:...tger et al., 2023; Zheng et al.).
+Following previous works (R¨ottger et al., 2023; Wang et al.,
+2024), we use keyword matching, which is fast and cost-
+efficient, to check if an LLM rejects a prompt on the entire
+80K dataset, and GPT-4, which can deal with cases where
+keyword matching fails, on the hard subset and toxic dataset.
+Our findings indicate that keyword matching closely approx-
+imates GPT-4 evaluations across most models, with minimal
+discrepancies of 2.4% for GPT-3.5-turbo-0125 and 1.2% for
+Llama-3-70b on sampled datasets. See Appendix F for more
+details.
+4.2. Evaluation results
+Firstly, we show the average rejection rate across categories
+in Table 2 and Figure 4 and appendix Table 7. In gen-
+eral, within each model family, the overall ranking for the
+rejection rate of each model remains consistent across OR-
+Bench-80K and OR-Bench-Hard-1K. For example, within
+the Claude-3 family, Claude-3-haiku has the highest rejec-
+tion rate, while Claude-3-opus has the lowest rejection rate
+on both datasets. For the GPT-3.5 family, GPT-3.5-turbo-
+0301 has the highest rejection rate and GPT-3.5-turbo-0125
+has the lowest rejection rate. The same applies to Mistral
+models. One exception is that Llama-2-70b has a slightly
+lower rejection rate than its 7b and 13b version on OR-
+Bench-80K but higher rejection rate on OR-Bench-Hard-1K.
+This inconsistency may be due to the way we construct the
+5
+
+OR-Bench: An Over-Refusal Benchmark for Large Language Models
+0
+20
+40
+60
+80 deception
+harassment
+harmful
+hate
+illegal
+privacy
+self-harm
+sexual
+unethical
+violence
+(a) Claude-3-Opus
+0
+20
+40
+60
+80 deception
+harassment
+harmful
+hate
+illega...
+--
+24722:...
+0
+20
+40
+60
+80 deception
+harassment
+harmful
+hate
+illegal
+privacy
+self-harm
+sexual
+unethical
+violence
+(h) Gemma-2-27b
+Figure 3. Red regions represent over-refusal rate, and blue regions represent the acceptance rate on toxic prompts. In both cases, a smaller
+region is better. Results are measured on OR-Bench-Hard-1K and OR-Bench-Toxic. Overall, newer models (bottom row) tend to have
+fewer over-refusals compared to previous models (top row).
+Claude-2.1
+Claude-3-haiku
+Claude-3-sonnet
+Claude-3-opus
+GPT-3.5-turbo-0301
+GPT-3.5-turbo-0613
+GPT-3.5-turbo-0125
+Llama-2-7b
+Llama-2-13b
+Llama-2-70b
+Llama-3-8b
+Llama-3-70b
+Mistral-small-latest
+Mistral-medium-latest
+Mistral-large-latest
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Rejection Rate
+OR-Bench-80K
+OR-Bench-Hard-1K
+Figure 4. Rejection rate of different models on OR-Bench-80K and
+OR-Bench-Hard-1K.
+hard subset. Also as shown in Figure 3, the over-refusal
+rate in newer models typically decreases compared to their
+predecessors, indicating progress in safety alignment.
+Next, we show some findings related to the general average
+rejection rate for each model using OR-Bench-Hard-1K and
+OR-Bench...
+--
+[26 more matches not shown]

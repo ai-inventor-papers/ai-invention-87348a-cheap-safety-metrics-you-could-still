@@ -1,0 +1,1265 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/fu5NFoiK/LDRT9/D7pUST+qqoxI</id>
+  <title>arXiv Query: search_query=all:probe AND all:jailbreak AND all:robustness AND all:model&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-09-21T21:50:40Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:probe+AND+(all:jailbreak+AND+(all:robustness+AND+all:model))&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>39</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2609.06934v1</id>
+    <title>The Geometry of Refusal: Why Post-Hoc Safety Is Fragile and Pretraining-Time Safety Persists</title>
+    <updated>2026-09-07T02:08:19Z</updated>
+    <link href="https://arxiv.org/abs/2609.06934v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.06934v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Post-hoc safety training (RLHF, DPO) is the dominant way to align large language models, yet jailbreaks (Zou et al., 2023b), fine-tuning attacks (Qi et al., 2024), and activation-space probes (Arditi et al., 2024) keep recovering the behaviors it was meant to remove. We give this fragility one geometric explanation and trace it to when, during pretraining, safety can take hold. We measure the safety update $Δ= W_{\text{safe}} - W_{\text{base}}$ against the curvature of the model's capabilities (the empirical Fisher of a capability loss). Post-hoc safety consistently lands in a suppression regime: $Δ$ is nearly orthogonal to the capability directions, and its small in-subspace part concentrates on a few high-curvature ones. The update is thin but sharp, a refusal gate laid over intact capabilities rather than erasure of them. A kernel-immobility lemma explains why such an update can only mask a capability, not remove it, so a little benign fine-tuning restores it: 100 steps of benign fine-tuning collapse refusal on Qwen-2.5-7B and Llama-3-8B Instruct at preserved capability, a signature that replicates across five model families.
+  Following the account into pretraining, a 267-checkpoint sweep of OLMo-2-1B (OLMo et al., 2025) shows the substrate that safety engages emerging in a sharp transition between roughly 6B and 60B pretraining tokens. We then use the account constructively: models trained from scratch with safety co-training spread continuously across pretraining reach 87 to 98% refusal whose post-attack level holds at 84 to 91% at every scale, an erosion of 2 to 14 pp against 35 to 38 pp for post-hoc installs, at capability matched or better than an LM-only baseline and holding from 410M to 6.9B, whereas a compute-matched windowed schedule installs no lasting refusal. Persistence of the safety signal across pretraining, not its timing, is what buys attack robustness.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-07T02:08:19Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Srikanth Malla</name>
+    </author>
+    <author>
+      <name>Chiho Choi</name>
+    </author>
+    <author>
+      <name>Joon Hee Choi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.17890v2</id>
+    <title>Stress Testing Concept Erasure with Large Language Model Agents</title>
+    <updated>2026-07-22T09:45:01Z</updated>
+    <link href="https://arxiv.org/abs/2607.17890v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.17890v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Concept erasure aims to remove semantic concepts from a trained generative model and is increasingly important for responsible AI deployment. However, verifying whether a model has robustly removed targeted concepts remains a critical challenge. Existing evaluation methods are typically pre-defined and static, failing to expose vulnerabilities under diverse natural-language probes and challenging conditions. Moreover, manually designed evaluation strategies can be biased and difficult to scale. We posit that concept erasure evaluation is best formulated as an adaptive hypothesis search, operationalised by agents that iteratively propose, critique, and verify tests to systematically expand coverage of failure modes. To this end, we propose Stress Testing Agents for Concept Erasure (STACE), a framework that autonomously stress-tests concept-erased models using multiple Large Language Model (LLM) agents, by iteratively generating and verifying stress-testing hypotheses grounded by external knowledge. We also introduce a suite of metrics for assessing the performance and efficiency of LLM-agent-powered stress-testing frameworks. Our extensive experiments show that STACE outperforms five LLM-based evaluation baselines on four concept categories. Further analysis across two T2I models, six concept erasure approaches, and various erasure strengths show that STACE is robust for different settings. We also show that STACE can be adapted beyond concept erasure evaluation to other problem domains, such as LLM jailbreaking. Our code is available anonymously.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-20T12:38:50Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Yuyang Xue</name>
+    </author>
+    <author>
+      <name>Feng Chen</name>
+    </author>
+    <author>
+      <name>Zhihua Liu</name>
+    </author>
+    <author>
+      <name>Edward Moroshko</name>
+    </author>
+    <author>
+      <name>Jingyu Sun</name>
+    </author>
+    <author>
+      <name>Steven McDonagh</name>
+    </author>
+    <author>
+      <name>Sotirios A. Tsaftaris</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.08883v1</id>
+    <title>Optimizing Against Safety Representations: Activation-Guided Adversarial Suffixes and the Geometry of Refusal</title>
+    <updated>2026-07-09T19:21:29Z</updated>
+    <link href="https://arxiv.org/abs/2607.08883v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.08883v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Behavioral alignment in large language models often masks fragile internal safety representations. Recent work suggests that refusal behavior is mediated by low-dimensional directions in activation space. This raises questions about how such representations are structured, localized, and accessed by optimization. We study adversarial suffix attacks as a probe of representational alignment. We introduce Activation-Guided GCG, which replaces output-based objectives with losses that directly target a model's internal refusal direction. Across several objective variants, we find that suppressing refusal globally across all layers and positions is more effective than targeting a single layer-position pair. This suggests that safety representations are distributed across the forward pass rather than causally localized to a single site. We further introduce Soft-GCG, a continuous relaxation of discrete suffix optimization using Gumbel-Softmax. Soft-GCG achieves a 33 $\times$ speedup over standard GCG while improving attack success rates. Evaluating across model scales, we find that smaller models remain vulnerable while larger models resist both activation- and suffix-based attacks at our compute-constrained settings, consistent with larger and better safety trained models being harder to jailbreak. Together, our results clarify how safety mechanisms are encoded and can be broken in contemporary models. These insights provide concrete guidance for designing more robust and representation-aware alignment strategies.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-09T19:21:29Z</published>
+    <arxiv:comment>Accepted at the AAAI 2026 Summer Symposium Series. This paper was presented at the ICLR Re-Align workshop under a different name, "Accelerating Adversarial Suffix Optimization via Continuous Relaxation and Activation-Guided Objectives"</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Ege Çakar</name>
+    </author>
+    <author>
+      <name>Hannah Guan</name>
+    </author>
+    <author>
+      <name>Kayden Kehe</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.28981v1</id>
+    <title>Bad company corrupts good morals: Understanding and Measuring Narrative-Induced Moral Reasoning Degradation in LLMs</title>
+    <updated>2026-06-27T15:30:42Z</updated>
+    <link href="https://arxiv.org/abs/2606.28981v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.28981v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models are deployed in long-context, emotionally interactive environments like digital humans, AI companions, educational assistants, and counseling systems. Unlike jailbreak attacks with explicit adversarial prompts, these systems interact with emotionally charged narratives involving bullying, betrayal, loneliness, social hostility, and institutional unfairness. This raises an important question: can prolonged narrative exposure reshape the reasoning and alignment stability of LLMs? We present the first systematic study of narrative-induced alignment degradation in LLMs. We design BreakingBad, a three-stage framework that measures how negative narrative immersion affects moral reasoning, behaviors, and deployment risks. It combines ethical decision evaluation, behavioral probing, and digital-human interaction analysis. Our experiments reveal three findings. First, negative narrative exposure degrades moral accuracy across multiple LLMs, with average drops of 12%-31%, especially in ambiguous scenarios and those involving vulnerable individuals. Second, the degradation is structured: different narratives induce distinct shifts, and first-person narratives produce stronger effects than third-person. Third, these shifts propagate into real deployments. Across counseling, education, medical, and financial/legal scenarios, narrative-conditioned models increasingly normalize hopelessness, cynicism, emotional detachment, and ethically questionable reasoning while remaining superficially policy-compliant. More broadly, our findings suggest alignment robustness is not static but a dynamically conditioned state shaped by long-term semantic environments and interaction history. These results reveal a new class of alignment risk that existing safety defenses largely fail to capture.</summary>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-27T15:30:42Z</published>
+    <arxiv:primary_category term="cs.CY"/>
+    <author>
+      <name>Wanying Yu</name>
+      <arxiv:affiliation>Shandong University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Boyang Ma</name>
+      <arxiv:affiliation>Shandong University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Zhibo Eric Sun</name>
+      <arxiv:affiliation>Drexel University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Minghui Xu</name>
+      <arxiv:affiliation>Shandong University</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Yue Zhang</name>
+      <arxiv:affiliation>Shandong University</arxiv:affiliation>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.23892v1</id>
+    <title>REALM: A Unified Red-Teaming Benchmark for Physical-World VLMs</title>
+    <updated>2026-06-22T19:41:57Z</updated>
+    <link href="https://arxiv.org/abs/2606.23892v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.23892v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision-language models (VLMs) are increasingly used as perception-reasoning backbones for embodied intelligence in safety-critical physical systems, where perception or reasoning errors can lead to unsafe decisions or actions. Although many red-teaming methods have been developed to probe VLM vulnerabilities, their evaluation remains fragmented across datasets, metrics, and threat models, making direct comparison difficult and obscuring whether observed differences arise from stronger attacks, more vulnerable models, or incompatible evaluation settings. Existing chatbot-centric red-teaming benchmarks mainly standardize jailbreak and content-safety evaluation, but they do not systematically capture physically grounded functional failures or cover red-teaming methods that target physical-world VLMs. This raises the key challenge of comparing diverse attack methods under a unified protocol while targeting the same scenario-specific failures. We introduce REALM, to our knowledge the first unified red-teaming benchmark for physical-world VLMs. REALM integrates 12 red-teaming methods, 3 model-agnostic defenses, and 13 VLMs under a practical black-box threat model with shared datasets and metrics. To align adversarial objectives across attack families, REALM introduces an agentic target-generation pipeline that constructs shared, scenario-specific, and physically grounded attack objectives for each scene, enabling fair comparison of diverse red-teaming methods under aligned adversarial goals. Our evaluation shows that text and typographic injection attacks induce the most failures, multimodal co-optimization yields the strongest visual-perturbation transfer, single-pass attacks approach iterative methods at much lower cost, and model scale alone does not confer adversarial robustness. Code is available at https://github.com/UCF-ML-Research/REALM.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-22T19:41:57Z</published>
+    <arxiv:comment>20 pages, 5 figures. Preprint</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Yifei Zhao</name>
+    </author>
+    <author>
+      <name>Qian Lou</name>
+    </author>
+    <author>
+      <name>Mengxin Zheng</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.08044v2</id>
+    <title>When Behavioral Safety Evaluation Fails: A Representation-Level Perspective</title>
+    <updated>2026-08-04T12:50:00Z</updated>
+    <link href="https://arxiv.org/abs/2606.08044v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.08044v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety evaluation of large language models (LLMs) is largely behavioral: a model is certified safe when it refuses harmful requests and answers benign ones. But refusing on the prompts an auditor happens to try does not show that the model is far from harmful behavior. Behavioral tests observe outputs; they do not measure how easily an intervention on the model turns a refusal into compliance. We call the gap between what static audits certify and what an intervention can reach the audit gap, and we show it is realizable: one can build a model that matches its safety-aligned base on every static audit yet gives way to a small, known perturbation of its internal state. We construct such dissociated models from three safety-aligned bases (Gemma 2 2B, Llama 3.2 3B, Qwen 2.5 3B) and audit the base, dissociated, and openly harmful models with the same soft interventions in parameter and latent space; the latent attacks are summarized by the Latent Vulnerability Score (LVS), the safety degradation produced per unit of bounded latent perturbation. Every static audit we run gives the dissociated model the same verdict as its base, since its refusals match the base, jailbreaks show no consistent signature, and a strong fixed probe on clean activations cannot tell it from the base. The same interventions an auditor could run reverse the verdict. At the targeted mid layer the dissociated models score 2.5 to 3.1 times higher LVS than their bases. A bounded latent attack elicits harmful compliance on 54 to 86% of prompts, against 3 to 48% for the bases, while matched random perturbations stay at or below 12%. Harmful fine-tuning reaches high compliance within five gradient steps, where the bases need 10 to 25. Behavioral testing, even with static latent probing, cannot certify representation-level robustness: a safety audit must intervene on the model, not only observe it.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-06T08:10:56Z</published>
+    <arxiv:comment>Preprint</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Enyi Jiang</name>
+    </author>
+    <author>
+      <name>Anders Gjølbye</name>
+    </author>
+    <author>
+      <name>Yibo Jacky Zhang</name>
+    </author>
+    <author>
+      <name>Sanmi Koyejo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.28553v2</id>
+    <title>Refusal Before Decoding: Detecting and Exploiting Refusal Signals in Intermediate LLM Activations</title>
+    <updated>2026-09-03T10:19:09Z</updated>
+    <link href="https://arxiv.org/abs/2605.28553v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.28553v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this paper, we investigate whether refusal behavior can be predicted from LLM intermediate activations before decoding using linear probes trained on residual stream activations at each transformer block. We find that refusal is linearly decodable well before the final layer, indicating that safety-relevant behavior is represented in intermediate activations before output generation. To test whether this signal is actionable, we introduce Mechanistic AutoDAN, a probe-guided variant of AutoDAN that replaces full-model fitness evaluation with partial forward passes and probe-based scoring inside a genetic prompt search loop. Across the evaluated models, our method achieves attack success rates competitive with vanilla AutoDAN while reducing per-iteration search time by up to 72%, and probe-guided prompts match or exceed AutoDAN's cross-model transfer in several configurations. We further find that the usefulness of probe guidance increases with model scale. Our results suggest that refusal-relevant information is decodable from intermediate activations and can serve as an effective search signal in an AutoDAN-style discrete jailbreak optimization loop, especially for larger and more robust models.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-27T14:44:36Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Matteo Gioele Collu</name>
+    </author>
+    <author>
+      <name>Riccardo Conte</name>
+    </author>
+    <author>
+      <name>Alberto Giaretta</name>
+    </author>
+    <author>
+      <name>Denis Kleyko</name>
+    </author>
+    <author>
+      <name>Mauro Conti</name>
+    </author>
+    <author>
+      <name>Matteo Zavatteri</name>
+    </author>
+    <author>
+      <name>Roberto Confalonieri</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.26409v1</id>
+    <title>Jailbreak susceptibility prediction and mitigation via the behavioral geometry of models</title>
+    <updated>2026-05-26T00:36:42Z</updated>
+    <link href="https://arxiv.org/abs/2605.26409v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.26409v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Evaluating and mitigating a generative system's susceptibility to jailbreak attacks is critical to its safe deployment. Given the number of deployable systems, full per-configuration evaluation and optimization is impractical. In this paper, we formalize the behavioral geometry of a population of models that, by leveraging previously evaluated and defended models, supports both efficient susceptibility prediction and effective defense transfer across a population. We apply the framework to 79 models spanning 24 providers and to 100 system configurations of a single base model. Simple methods that use the behavioral geometry reach an AUPRC of $0.94$ for susceptibility detection with $\approx98\%$ fewer probes relative to a full evaluation. Using the behavioral geometry to select which model to transfer an optimized defense from outperforms same-provider assignment ($+2\%$, $p = 0.03$) at no additional probe cost, with a set of three models sufficient to cover the population. Results are robust to hyperparameter selection and judge.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-26T00:36:42Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Hayden Helm</name>
+    </author>
+    <author>
+      <name>Xiaodong Liu</name>
+    </author>
+    <author>
+      <name>Weiwei Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.20286v1</id>
+    <title>Adaptive Probe-based Steering for Robust LLM Jailbreaking</title>
+    <updated>2026-05-19T06:11:04Z</updated>
+    <link href="https://arxiv.org/abs/2605.20286v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.20286v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent work has demonstrated the potential of contrastive steering for jailbreaking Large Language Models (LLMs). However, existing methods rely on limited and inherently biased contrastive prompts and require laborious manual tuning of steering strength, limiting their robustness and effectiveness. In this paper, we leverage the idea of model extraction to guide the learned steering vectors to approximate the ideal one and propose tuning the steering strength adaptively based on contrastive activations' statistics. Experiments demonstrate that our method notably improves the effectiveness and robustness of probe-based steering, without any extra contrastive prompts or laborious manual tuning. Being an attack paper, this paper focuses on revealing the breakdown of fortified LLMs, raising the average harmfulness score from 6\% to 70\%. Our code is available at https://github.com/fhdnskfbeuv/adaptiveSteering.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T06:11:04Z</published>
+    <arxiv:comment>19 pages, 13 figures, accepted by ICML 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Junxi Chen</name>
+    </author>
+    <author>
+      <name>Junhao Dong</name>
+    </author>
+    <author>
+      <name>Xiaohua Xie</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.12128v1</id>
+    <title>Metaphor Is Not All Attention Needs</title>
+    <updated>2026-05-12T13:50:26Z</updated>
+    <link href="https://arxiv.org/abs/2605.12128v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.12128v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models are increasingly deployed in safety-critical applications, where their ability to resist harmful instructions is essential. Although post-training aims to make models robust against many jailbreak strategies, recent evidence shows that stylistic reformulations, such as poetic transformation, can still bypass safety mechanisms with alarming effectiveness. This raises a central question: why do literary jailbreaks succeed? In this work, we investigate whether their effectiveness depends on specific poetic devices, on a failure to recognize literary formatting, or on deeper changes in how models process stylistically irregular prompts. We address this problem through an interpretability analysis of attention patterns. We perform input-level ablation studies to assess the contribution of individual and combinations of poetic devices; construct an interpretable vector representation of attention maps; cluster these representations and train linear probes to predict safety outcomes and literary format. Our results show that models distinguish poetic from prose formats with high accuracy, yet struggle to predict jailbreak success within each format. Clustering further reveals clear separation by literary format, but not by safety label. These findings indicate that jailbreak success is not caused by a failure to recognize poetic formatting; rather, poetic prompts induce distinct processing patterns that remain largely independent of harmful-content detection. Overall, literary jailbreaks appear to misalign large language models not through any single poetic device, but through accumulated stylistic irregularities that alter prompt processing and avoid lexical triggers considered during post-training. This suggests that robustness requires safety mechanisms that account for style-induced shifts in model behavior. We use Qwen3-14B as a representative open-weight case study.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-12T13:50:26Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Olga Sorokoletova</name>
+    </author>
+    <author>
+      <name>Francesco Giarrusso</name>
+    </author>
+    <author>
+      <name>Giacomo De Luca</name>
+    </author>
+    <author>
+      <name>Piercosma Bisconti</name>
+    </author>
+    <author>
+      <name>Matteo Prandi</name>
+    </author>
+    <author>
+      <name>Federico Pierucci</name>
+    </author>
+    <author>
+      <name>Marcello Galisai</name>
+    </author>
+    <author>
+      <name>Vincenzo Suriani</name>
+    </author>
+    <author>
+      <name>Daniele Nardi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.05687v1</id>
+    <title>DataDignity: Training Data Attribution for Large Language Models</title>
+    <updated>2026-05-07T05:27:45Z</updated>
+    <link href="https://arxiv.org/abs/2605.05687v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.05687v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Auditing language-model outputs often requires more than judging correctness: an auditor may need to identify which source document most likely supports the knowledge expressed in a response. We study this as pinpoint provenance: given a prompt, a target-model response, and a candidate corpus, rank the documents that best support the response. We introduce FakeWiki, a controlled benchmark of 3,537 fabricated Wikipedia-style articles designed to preserve ground-truth provenance while weakening lexical shortcuts. FakeWiki includes QA probes, source-preserving paraphrases, retro-generated variants, hard anti-documents that remain topically similar while removing answer-critical facts, and five query conditions: clean prompting plus four jailbreak-inspired transformations. We evaluate seven retrieval baselines, a training-free activation-steering retrieval-fusion method, SteerFuse, and a supervised contrastive provenance ranker, ScoringModel. ScoringModel maps response and document features into a shared space and is trained with InfoNCE using in-batch, retrieval-mined, and anti-document negatives. Across nine open-weight instruction-tuned LLMs and five query conditions, ScoringModel improves mean Recall@10 from 35.0 for the strongest retrieval baseline to 52.2, without inference-time fusion, and wins 41/45 model-by-condition cells. SteerFuse is usually second-best despite requiring no supervised training, showing that activation-space evidence can efficiently complement text retrieval. On jailbreak-inspired transformed queries, ScoringModel improves Recall@10 by 15.7 points on average over the best baseline. Overall, our work shows that robust training data attribution requires evaluation settings that separate true answer support from topical or lexical resemblance.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-07T05:27:45Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Xiaomin Li</name>
+    </author>
+    <author>
+      <name>Andrzej Banburski-Fahey</name>
+    </author>
+    <author>
+      <name>Jaron Lanier</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2604.20945v1</id>
+    <title>Breaking Bad: Interpretability-Based Safety Audits of State-of-the-Art LLMs</title>
+    <updated>2026-04-22T16:51:49Z</updated>
+    <link href="https://arxiv.org/abs/2604.20945v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2604.20945v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Effective safety auditing of large language models (LLMs) demands tools that go beyond black-box probing and systematically uncover vulnerabilities rooted in model internals. We present a comprehensive, interpretability-driven jailbreaking audit of eight SOTA open-source LLMs: Llama-3.1-8B, Llama-3.3-70B-4bt, GPT-oss- 20B, GPT-oss-120B, Qwen3-0.6B, Qwen3-32B, Phi4-3.8B, and Phi4-14B. Leveraging interpretability-based approaches -- Universal Steering (US) and Representation Engineering (RepE) -- we introduce an adaptive two-stage grid search algorithm to identify optimal activation-steering coefficients for unsafe behavioral concepts. Our evaluation, conducted on a curated set of harmful queries and a standardized LLM-based judging protocol, reveals stark contrasts in model robustness. The Llama-3 models are highly vulnerable, with up to 91\% (US) and 83\% (RepE) jailbroken responses on Llama-3.3-70B-4bt, while GPT-oss-120B remains robust to attacks via both interpretability approaches. Qwen and Phi models show mixed results, with the smaller Qwen3-0.6B and Phi4-3.8B mostly exhibiting lower jailbreaking rates, while their larger counterparts are more susceptible. Our results establish interpretability-based steering as a powerful tool for systematic safety audits, but also highlight its dual-use risks and the need for better internal defenses in LLM deployment.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-04-22T16:51:49Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Krishiv Agarwal</name>
+    </author>
+    <author>
+      <name>Ramneet Kaur</name>
+    </author>
+    <author>
+      <name>Colin Samplawski</name>
+    </author>
+    <author>
+      <name>Manoj Acharya</name>
+    </author>
+    <author>
+      <name>Anirban Roy</name>
+    </author>
+    <author>
+      <name>Daniel Elenius</name>
+    </author>
+    <author>
+      <name>Brian Matejek</name>
+    </author>
+    <author>
+      <name>Adam D. Cobb</name>
+    </author>
+    <author>
+      <name>Susmit Jha</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2604.18660v1</id>
+    <title>Evaluating Answer Leakage Robustness of LLM Tutors against Adversarial Student Attacks</title>
+    <updated>2026-04-20T11:29:22Z</updated>
+    <link href="https://arxiv.org/abs/2604.18660v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2604.18660v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) are increasingly used in education, yet their default helpfulness often conflicts with pedagogical principles. Prior work evaluates pedagogical quality via answer leakage-the disclosure of complete solutions instead of scaffolding-but typically assumes well-intentioned learners, leaving tutor robustness under student misuse largely unexplored. In this paper, we study scenarios where students behave adversarially and aim to obtain the correct answer from the tutor. We evaluate a broad set of LLM-based tutor models, including different model families, pedagogically aligned models, and a multi-agent design, under a range of adversarial student attacks. We adapt six groups of adversarial and persuasive techniques to the educational setting and use them to probe how likely a tutor is to reveal the final answer. We evaluate answer leakage robustness using different types of in-context adversarial student agents, finding that they often fail to carry out effective attacks. We therefore introduce an adversarial student agent that we fine-tune to jailbreak LLM-based tutors, which we propose as the core of a standardized benchmark for evaluating tutor robustness. Finally, we present simple but effective defense strategies that reduce answer leakage and strengthen the robustness of LLM-based tutors in adversarial scenarios.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-04-20T11:29:22Z</published>
+    <arxiv:comment>ACL 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Jin Zhao</name>
+    </author>
+    <author>
+      <name>Marta Knežević</name>
+    </author>
+    <author>
+      <name>Tanja Käser</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2604.14865v1</id>
+    <title>Segment-Level Coherence for Robust Harmful Intent Probing in LLMs</title>
+    <updated>2026-04-16T10:56:40Z</updated>
+    <link href="https://arxiv.org/abs/2604.14865v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2604.14865v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) are increasingly exposed to adaptive jailbreaking, particularly in high-stakes Chemical, Biological, Radiological, and Nuclear (CBRN) domains. Although streaming probes enable real-time monitoring, they still make systematic errors. We identify a core issue: existing methods often rely on a few high-scoring tokens, leading to false alarms when sensitive CBRN terms appear in benign contexts. To address this, we introduce a streaming probing objective that requires multiple evidence tokens to consistently support a prediction, rather than relying on isolated spikes. This encourages more robust detection based on aggregated signals instead of single-token cues. At a fixed 1% false-positive rate, our method improves the true-positive rate by 35.55% relative to strong streaming baselines. We further observe substantial gains in AUROC, even when starting from near-saturated baseline performance (AUROC = 97.40%). We also show that probing Attention or MLP activations consistently outperforms residual-stream features. Finally, even when adversarial fine-tuning enables novel character-level ciphers, harmful intent remains detectable: probes developed for the base LLMs can be applied ``plug-and-play'' to these obfuscated attacks, achieving an AUROC of over 98.85%.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-04-16T10:56:40Z</published>
+    <arxiv:comment>preprint</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Xuanli He</name>
+    </author>
+    <author>
+      <name>Bilgehan Sel</name>
+    </author>
+    <author>
+      <name>Faizan Ali</name>
+    </author>
+    <author>
+      <name>Jenny Bao</name>
+    </author>
+    <author>
+      <name>Hoagy Cunningham</name>
+    </author>
+    <author>
+      <name>Jerry Wei</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.29038v1</id>
+    <title>Trojan-Speak: Bypassing Constitutional Classifiers with No Jailbreak Tax via Adversarial Finetuning</title>
+    <updated>2026-03-30T22:10:28Z</updated>
+    <link href="https://arxiv.org/abs/2603.29038v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.29038v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Fine-tuning APIs offered by major AI providers create new attack surfaces where adversaries can bypass safety measures through targeted fine-tuning. We introduce Trojan-Speak, an adversarial fine-tuning method that bypasses Anthropic's Constitutional Classifiers. Our approach uses curriculum learning combined with GRPO-based hybrid reinforcement learning to teach models a communication protocol that evades LLM-based content classification. Crucially, while prior adversarial fine-tuning approaches report more than 25% capability degradation on reasoning benchmarks, Trojan-Speak incurs less than 5% degradation while achieving 99+% classifier evasion for models with 14B+ parameters. We demonstrate that fine-tuned models can provide detailed responses to expert-level CBRN (Chemical, Biological, Radiological, and Nuclear) queries from Anthropic's Constitutional Classifiers bug-bounty program. Our findings reveal that LLM-based content classifiers alone are insufficient for preventing dangerous information disclosure when adversaries have fine-tuning access, and we show that activation-level probes can substantially improve robustness to such attacks.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-30T22:10:28Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Bilgehan Sel</name>
+    </author>
+    <author>
+      <name>Xuanli He</name>
+    </author>
+    <author>
+      <name>Alwin Peng</name>
+    </author>
+    <author>
+      <name>Ming Jin</name>
+    </author>
+    <author>
+      <name>Jerry Wei</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.15684v2</id>
+    <title>State-Dependent Safety Failures in Multi-Turn Language Model Interaction</title>
+    <updated>2026-07-29T08:22:26Z</updated>
+    <link href="https://arxiv.org/abs/2603.15684v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.15684v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment in large language models is typically evaluated under isolated queries, yet real-world use is inherently multi-turn. Although multi-turn jailbreaks are empirically effective, the structure of conversational safety failure remains insufficiently understood. In this work, we study safety failures from a state-space perspective and show that many multi-turn safety failures in current safety-aligned language models arise from contextual state evolution, a regime that is not fully captured by isolated prompt-level analyses alone. We introduce STAR, a state-oriented diagnostic framework that treats dialogue history as a state transition operator and enables controlled analysis of safety behavior along interaction trajectories. Rather than optimizing attack strength, STAR provides a principled probe of how aligned models traverse the safety boundary under autoregressive conditioning. Across multiple frontier language models, we find that systems that appear robust under static evaluation can undergo rapid and reproducible safety collapse under structured multi-turn interaction. Mechanistic analysis reveals monotonic drift away from refusal-related representations and abrupt phase transitions induced by role-conditioned context. Together, these findings motivate viewing language model safety as a dynamic, state-dependent process defined over conversational trajectories.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-15T12:13:01Z</published>
+    <arxiv:comment>9 pages, accepted at the International Conference on Machine Learning (ICML) 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Pengcheng Li</name>
+    </author>
+    <author>
+      <name>Jie Zhang</name>
+    </author>
+    <author>
+      <name>Tianwei Zhang</name>
+    </author>
+    <author>
+      <name>Han Qiu</name>
+    </author>
+    <author>
+      <name>Zhang kejun</name>
+    </author>
+    <author>
+      <name>Weiming Zhang</name>
+    </author>
+    <author>
+      <name>Nenghai Yu</name>
+    </author>
+    <author>
+      <name>Wenbo Zhou</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.02675v1</id>
+    <title>From Shallow to Deep: Pinning Semantic Intent via Causal GRPO</title>
+    <updated>2026-03-03T07:02:20Z</updated>
+    <link href="https://arxiv.org/abs/2603.02675v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.02675v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models remain vulnerable to adversarial prefix attacks (e.g., ``Sure, here is'') despite robust standard safety. We diagnose this vulnerability as Shallow Safety Alignment, stemming from a pathology we term semantic representation decay: as the model generates compliant prefixes, its internal malicious intent signal fades. To address this, we propose Two-Stage Causal-GRPO (TSC-GRPO), a framework designed to achieve intent pinning. First, grounded in causal identifiability theory, we train a causal intent probe to disentangle invariant intent from stylistic perturbations. Second, we internalize this causal awareness into the policy via Group Relative Policy Optimization. By employing a cumulative causal penalty within ``fork-in-the-road'' training scenarios, we force the model to learn that accumulating harmful tokens monotonically decreases reward, enabling robust late-stage refusals. Experiments show that TSC-GRPO significantly outperforms baselines in defending against jailbreak attacks while preserving general utility.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-03T07:02:20Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Shuyi Zhou</name>
+    </author>
+    <author>
+      <name>Zeen Song</name>
+    </author>
+    <author>
+      <name>Wenwen Qiang</name>
+    </author>
+    <author>
+      <name>Jiyan Sun</name>
+    </author>
+    <author>
+      <name>Yao Zhou</name>
+    </author>
+    <author>
+      <name>Yinlong Liu</name>
+    </author>
+    <author>
+      <name>Wei Ma</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2602.23391v1</id>
+    <title>Detoxifying LLMs via Representation Erasure-Based Preference Optimization</title>
+    <updated>2026-02-24T22:51:06Z</updated>
+    <link href="https://arxiv.org/abs/2602.23391v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2602.23391v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) trained on webscale data can produce toxic outputs, raising concerns for safe deployment. Prior defenses, based on applications of DPO, NPO, and similar algorithms, reduce the likelihood of harmful continuations, but not robustly so: they are vulnerable to adversarial prompting and easily undone by fine-tuning-based relearning attacks. Indeed, research has shown that these edits to the model are superficial: linear probing reveals that harmful "directions" remain present in representations. To address this, we propose Representation Erasure-based Preference Optimization (REPO), reformulating detoxification as a token-level preference problem. Using a novel objective with preference data, we force the representations of toxic continuations to converge toward their benign counterparts. Our mechanistic analysis reveals that this granular approach is critical: unlike baselines, REPO induces deep, localized edits to toxicity-encoding neurons while preserving general model utility. Exhaustive evaluations show that REPO achieves state-of-the-art robustness, stopping sophisticated threats-including relearning attacks and enhanced GCG jailbreaks-where existing representation- and output-based methods fail.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-02-24T22:51:06Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Nazanin Mohammadi Sepahvand</name>
+    </author>
+    <author>
+      <name>Eleni Triantafillou</name>
+    </author>
+    <author>
+      <name>Hugo Larochelle</name>
+    </author>
+    <author>
+      <name>Doina Precup</name>
+    </author>
+    <author>
+      <name>Daniel M. Roy</name>
+    </author>
+    <author>
+      <name>Gintare Karolina Dziugaite</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2602.16835v2</id>
+    <title>NeST: Neuron Selective Tuning for LLM Safety</title>
+    <updated>2026-06-12T11:06:43Z</updated>
+    <link href="https://arxiv.org/abs/2602.16835v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2602.16835v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment is essential for the responsible deployment of Large Language Models (LLMs). Yet, existing approaches often rely on heavyweight fine-tuning that is costly to update, audit, and maintain across model families. Full fine-tuning incurs substantial computational and storage overhead, while parameter-efficient methods, e.g., Low-Rank Adaptation (LoRA), trade efficiency for inconsistent safety gains and sensitivity to design choices. Safety intervention mechanisms reduce unsafe outputs without modifying model weights, but do not directly shape or preserve the internal representations that govern safety behavior.
+  We present NeST, a Neuron-Selective Tuning framework for efficient post-hoc safety alignment. NeST identifies safety-relevant feed-forward neurons via activation probing on vanilla harmful and benign prompts, clusters neurons with similar activation profiles, and trains shared cluster-level updates while freezing the rest of the model. Importantly, NeST is trained only on vanilla malicious prompts, without using jailbreak-specific attack data, yet generalizes robustly to diverse jailbreaks. The learned updates are then folded into the original weights, incurring no inference-time overhead. Evaluated on 14 open-weight language and multimodal models, NeST outperforms lightweight baselines and approaches full fine-tuning robustness with significantly fewer trainable parameters. On text-only models, NeST reduces average jailbreak attack success rate from 44.5% to 1.1% while training only 0.4M parameters on average. Across multimodal settings, it reduces ASR from 55.3% to 1.1%, and for downstream fine-tuned variants, it restores safety by reducing ASR from 53.8% to 0.8%. These results show that robust, maintainable safety alignment can be achieved by concentrating adaptation on localized, functionally coherent safety structures.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-02-18T20:01:01Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Sasha Behrouzi</name>
+    </author>
+    <author>
+      <name>Lichao Wu</name>
+    </author>
+    <author>
+      <name>Mohamadreza Rostami</name>
+    </author>
+    <author>
+      <name>Ahmad-Reza Sadeghi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2602.04893v1</id>
+    <title>A Causal Perspective for Enhancing Jailbreak Attack and Defense</title>
+    <updated>2026-01-31T15:20:13Z</updated>
+    <link href="https://arxiv.org/abs/2602.04893v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2602.04893v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Uncovering the mechanisms behind "jailbreaks" in large language models (LLMs) is crucial for enhancing their safety and reliability, yet these mechanisms remain poorly understood. Existing studies predominantly analyze jailbreak prompts by probing latent representations, often overlooking the causal relationships between interpretable prompt features and jailbreak occurrences. In this work, we propose Causal Analyst, a framework that integrates LLMs into data-driven causal discovery to identify the direct causes of jailbreaks and leverage them for both attack and defense. We introduce a comprehensive dataset comprising 35k jailbreak attempts across seven LLMs, systematically constructed from 100 attack templates and 50 harmful queries, annotated with 37 meticulously designed human-readable prompt features. By jointly training LLM-based prompt encoding and GNN-based causal graph learning, we reconstruct causal pathways linking prompt features to jailbreak responses. Our analysis reveals that specific features, such as "Positive Character" and "Number of Task Steps", act as direct causal drivers of jailbreaks. We demonstrate the practical utility of these insights through two applications: (1) a Jailbreaking Enhancer that targets identified causal features to significantly boost attack success rates on public benchmarks, and (2) a Guardrail Advisor that utilizes the learned causal graph to extract true malicious intent from obfuscated queries. Extensive experiments, including baseline comparisons and causal structure validation, confirm the robustness of our causal analysis and its superiority over non-causal approaches. Our results suggest that analyzing jailbreak features from a causal perspective is an effective and interpretable approach for improving LLM reliability. Our code is available at https://github.com/Master-PLC/Causal-Analyst.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-01-31T15:20:13Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Licheng Pan</name>
+    </author>
+    <author>
+      <name>Yunsheng Lu</name>
+    </author>
+    <author>
+      <name>Jiexi Liu</name>
+    </author>
+    <author>
+      <name>Jialing Tao</name>
+    </author>
+    <author>
+      <name>Haozhe Feng</name>
+    </author>
+    <author>
+      <name>Hui Xue</name>
+    </author>
+    <author>
+      <name>Zhixuan Chu</name>
+    </author>
+    <author>
+      <name>Kui Ren</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2601.22636v2</id>
+    <title>Statistical Estimation of Adversarial Risk in Large Language Models under Best-of-N Sampling</title>
+    <updated>2026-02-08T19:08:41Z</updated>
+    <link href="https://arxiv.org/abs/2601.22636v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2601.22636v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) are typically evaluated for safety under single-shot or low-budget adversarial prompting, which underestimates real-world risk. In practice, attackers can exploit large-scale parallel sampling to repeatedly probe a model until a harmful response is produced. While recent work shows that attack success increases with repeated sampling, principled methods for predicting large-scale adversarial risk remain limited. We propose a scaling-aware Best-of-N estimation of risk, SABER, for modeling jailbreak vulnerability under Best-of-N sampling. We model sample-level success probabilities using a Beta distribution, the conjugate prior of the Bernoulli distribution, and derive an analytic scaling law that enables reliable extrapolation of large-N attack success rates from small-budget measurements. Using only n=100 samples, our anchored estimator predicts ASR@1000 with a mean absolute error of 1.66, compared to 12.04 for the baseline, which is an 86.2% reduction in estimation error. Our results reveal heterogeneous risk scaling profiles and show that models appearing robust under standard evaluation can experience rapid nonlinear risk amplification under parallel adversarial pressure. This work provides a low-cost, scalable methodology for realistic LLM safety assessment. We will release our code and evaluation scripts upon publication to future research.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-01-30T06:54:35Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Mingqian Feng</name>
+    </author>
+    <author>
+      <name>Xiaodong Liu</name>
+    </author>
+    <author>
+      <name>Weiwei Yang</name>
+    </author>
+    <author>
+      <name>Chenliang Xu</name>
+    </author>
+    <author>
+      <name>Christopher White</name>
+    </author>
+    <author>
+      <name>Jianfeng Gao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2601.22313v2</id>
+    <title>Hair-Trigger Alignment: Black-Box Evaluation Cannot Guarantee Post-Update Alignment</title>
+    <updated>2026-07-10T04:20:21Z</updated>
+    <link href="https://arxiv.org/abs/2601.22313v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2601.22313v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Language Models (LLMs) are rarely static and are frequently updated in practice. A growing body of alignment research has shown that models initially deemed ``aligned'' can exhibit misaligned behavior after fine-tuning. These works typically assume that the initial model is aligned based on static black-box evaluation, i.e., the absence of undesired responses to a fixed set of queries. However, the limits of black-box evaluation for post-update scenarios is not explored sufficiently. In this work, we formalize model alignment in both the static and post-update settings and uncover a fundamental limitation of black-box evaluation. We theoretically show that, due to overparameterization, static alignment provides no guarantee of post-update alignment for any update dataset. Moreover, we prove that static black-box probing cannot distinguish a model that is genuinely post-update robust from one that conceals an arbitrary amount of adversarial behavior which can be activated by even a single benign gradient update. We further validate these findings empirically in LLMs across three core alignment domains: privacy, jailbreak safety, and behavioral honesty. We demonstrate the existence of LLMs that pass all standard black-box alignment tests, yet become severely misaligned after a single benign update. Finally, we show that the capacity to hide such latent adversarial behavior increases with model scale, confirming our theoretical prediction that post-update misalignment grows with the number of parameters. Together, our results highlight the inadequacy of static evaluation protocols and emphasize the urgent need for post-update--robust alignment evaluation. Code can be found at: https://github.com/Ybakman/safety_benign_update.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-01-29T20:54:21Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yavuz Bakman</name>
+    </author>
+    <author>
+      <name>Duygu Nur Yaldiz</name>
+    </author>
+    <author>
+      <name>Eleni Triantafillou</name>
+    </author>
+    <author>
+      <name>Peter Kairouz</name>
+    </author>
+    <author>
+      <name>Salman Avestimehr</name>
+    </author>
+    <author>
+      <name>Sai Praneeth Karimireddy</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2601.10543v2</id>
+    <title>Defending Large Language Models Against Jailbreak Attacks via In-Decoding Safety-Awareness Probing</title>
+    <updated>2026-01-30T11:57:19Z</updated>
+    <link href="https://arxiv.org/abs/2601.10543v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2601.10543v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) have achieved impressive performance across natural language tasks and are increasingly deployed in real-world applications. Despite extensive safety alignment efforts, recent studies show that such alignment is often shallow and remains vulnerable to jailbreak attacks. Existing defense mechanisms, including decoding-based constraints and post-hoc content detectors, struggle against sophisticated jailbreaks, often intervening robust detection or excessively degrading model utility. In this work, we examine the decoding process of LLMs and make a key observation: even when successfully jailbroken, models internally exhibit latent safety-related signals during generation. However, these signals are overridden by the model's drive for fluent continuation, preventing timely self-correction or refusal. Building on this observation, we propose a simple yet effective approach that explicitly surfaces and leverages these latent safety signals for early detection of unsafe content during decoding. Experiments across diverse jailbreak attacks demonstrate that our approach significantly enhances safety, while maintaining low over-refusal rates on benign inputs and preserving response quality. Our results suggest that activating intrinsic safety-awareness during decoding offers a promising and complementary direction for defending against jailbreak attacks. Code is available at: https://github.com/zyz13590/SafeProbing.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-01-15T16:09:10Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Yinzhi Zhao</name>
+    </author>
+    <author>
+      <name>Ming Wang</name>
+    </author>
+    <author>
+      <name>Shi Feng</name>
+    </author>
+    <author>
+      <name>Xiaocui Yang</name>
+    </author>
+    <author>
+      <name>Daling Wang</name>
+    </author>
+    <author>
+      <name>Yifei Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2601.04603v1</id>
+    <title>Constitutional Classifiers++: Efficient Production-Grade Defenses against Universal Jailbreaks</title>
+    <updated>2026-01-08T05:16:12Z</updated>
+    <link href="https://arxiv.org/abs/2601.04603v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2601.04603v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce enhanced Constitutional Classifiers that deliver production-grade jailbreak robustness with dramatically reduced computational costs and refusal rates compared to previous-generation defenses. Our system combines several key insights. First, we develop exchange classifiers that evaluate model responses in their full conversational context, which addresses vulnerabilities in last-generation systems that examine outputs in isolation. Second, we implement a two-stage classifier cascade where lightweight classifiers screen all traffic and escalate only suspicious exchanges to more expensive classifiers. Third, we train efficient linear probe classifiers and ensemble them with external classifiers to simultaneously improve robustness and reduce computational costs. Together, these techniques yield a production-grade system achieving a 40x computational cost reduction compared to our baseline exchange classifier, while maintaining a 0.05% refusal rate on production traffic. Through extensive red-teaming comprising over 1,700 hours, we demonstrate strong protection against universal jailbreaks -- no attack on this system successfully elicited responses to all eight target queries comparable in detail to an undefended model. Our work establishes Constitutional Classifiers as practical and efficient safeguards for large language models.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-01-08T05:16:12Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Hoagy Cunningham</name>
+    </author>
+    <author>
+      <name>Jerry Wei</name>
+    </author>
+    <author>
+      <name>Zihan Wang</name>
+    </author>
+    <author>
+      <name>Andrew Persic</name>
+    </author>
+    <author>
+      <name>Alwin Peng</name>
+    </author>
+    <author>
+      <name>Jordan Abderrachid</name>
+    </author>
+    <author>
+      <name>Raj Agarwal</name>
+    </author>
+    <author>
+      <name>Bobby Chen</name>
+    </author>
+    <author>
+      <name>Austin Cohen</name>
+    </author>
+    <author>
+      <name>Andy Dau</name>
+    </author>
+    <author>
+      <name>Alek Dimitriev</name>
+    </author>
+    <author>
+      <name>Rob Gilson</name>
+    </author>
+    <author>
+      <name>Logan Howard</name>
+    </author>
+    <author>
+      <name>Yijin Hua</name>
+    </author>
+    <author>
+      <name>Jared Kaplan</name>
+    </author>
+    <author>
+      <name>Jan Leike</name>
+    </author>
+    <author>
+      <name>Mu Lin</name>
+    </author>
+    <author>
+      <name>Christopher Liu</name>
+    </author>
+    <author>
+      <name>Vladimir Mikulik</name>
+    </author>
+    <author>
+      <name>Rohit Mittapalli</name>
+    </author>
+    <author>
+      <name>Clare O'Hara</name>
+    </author>
+    <author>
+      <name>Jin Pan</name>
+    </author>
+    <author>
+      <name>Nikhil Saxena</name>
+    </author>
+    <author>
+      <name>Alex Silverstein</name>
+    </author>
+    <author>
+      <name>Yue Song</name>
+    </author>
+    <author>
+      <name>Xunjie Yu</name>
+    </author>
+    <author>
+      <name>Giulio Zhou</name>
+    </author>
+    <author>
+      <name>Ethan Perez</name>
+    </author>
+    <author>
+      <name>Mrinank Sharma</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2601.03868v2</id>
+    <title>What Matters For Safety Alignment?</title>
+    <updated>2026-02-24T04:21:01Z</updated>
+    <link href="https://arxiv.org/abs/2601.03868v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2601.03868v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper presents a comprehensive empirical study on the safety alignment capabilities. We evaluate what matters for safety alignment in LLMs and LRMs to provide essential insights for developing more secure and reliable AI systems. We systematically investigate and compare the influence of six critical intrinsic model characteristics and three external attack techniques. Our large-scale evaluation is conducted using 32 recent, popular LLMs and LRMs across thirteen distinct model families, spanning a parameter scale from 3B to 235B. The assessment leverages five established safety datasets and probes model vulnerabilities with 56 jailbreak techniques and four CoT attack strategies, resulting in 4.6M API calls. Our key empirical findings are fourfold. First, we identify the LRMs GPT-OSS-20B, Qwen3-Next-80B-A3B-Thinking, and GPT-OSS-120B as the top-three safest models, which substantiates the significant advantage of integrated reasoning and self-reflection mechanisms for robust safety alignment. Second, post-training and knowledge distillation may lead to a systematic degradation of safety alignment. We thus argue that safety must be treated as an explicit constraint or a core optimization objective during these stages, not merely subordinated to the pursuit of general capability. Third, we reveal a pronounced vulnerability: employing a CoT attack via a response prefix can elevate the attack success rate by 3.34x on average and from 0.6% to 96.3% for Seed-OSS-36B-Instruct. This critical finding underscores the safety risks inherent in text-completion interfaces and features that allow user-defined response prefixes in LLM services, highlighting an urgent need for architectural and deployment safeguards. Fourth, roleplay, prompt injection, and gradient-based search for adversarial prompts are the predominant methodologies for eliciting unaligned behaviors in modern models.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-01-07T12:31:52Z</published>
+    <arxiv:comment>Added more commercial model results, majority voting scores, and theoretical analysis in v2</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Xing Li</name>
+    </author>
+    <author>
+      <name>Hui-Ling Zhen</name>
+    </author>
+    <author>
+      <name>Lihao Yin</name>
+    </author>
+    <author>
+      <name>Xianzhi Yu</name>
+    </author>
+    <author>
+      <name>Zhenhua Dong</name>
+    </author>
+    <author>
+      <name>Mingxuan Yuan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2512.06387v1</id>
+    <title>Beyond Model Jailbreak: Systematic Dissection of the "Ten DeadlySins" in Embodied Intelligence</title>
+    <updated>2025-12-06T10:38:00Z</updated>
+    <link href="https://arxiv.org/abs/2512.06387v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2512.06387v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Embodied AI systems integrate language models with real world sensing, mobility, and cloud connected mobile apps. Yet while model jailbreaks have drawn significant attention, the broader system stack of embodied intelligence remains largely unexplored. In this work, we conduct the first holistic security analysis of the Unitree Go2 platform and uncover ten cross layer vulnerabilities the "Ten Sins of Embodied AI Security." Using BLE sniffing, traffic interception, APK reverse engineering, cloud API testing, and hardware probing, we identify systemic weaknesses across three architectural layers: wireless provisioning, core modules, and external interfaces. These include hard coded keys, predictable handshake tokens, WiFi credential leakage, missing TLS validation, static SSH password, multilingual safety bypass behavior, insecure local relay channels, weak binding logic, and unrestricted firmware access. Together, they allow adversaries to hijack devices, inject arbitrary commands, extract sensitive information, or gain full physical control.Our findings show that securing embodied AI requires far more than aligning the model itself. We conclude with system level lessons learned and recommendations for building embodied platforms that remain robust across their entire software hardware ecosystem.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-12-06T10:38:00Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Yuhang Huang</name>
+    </author>
+    <author>
+      <name>Junchao Li</name>
+    </author>
+    <author>
+      <name>Boyang Ma</name>
+    </author>
+    <author>
+      <name>Xuelong Dai</name>
+    </author>
+    <author>
+      <name>Minghui Xu</name>
+    </author>
+    <author>
+      <name>Kaidi Xu</name>
+    </author>
+    <author>
+      <name>Yue Zhang</name>
+    </author>
+    <author>
+      <name>Jianping Wang</name>
+    </author>
+    <author>
+      <name>Xiuzhen Cheng</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2510.26418v4</id>
+    <title>Chain-of-Thought Hijacking</title>
+    <updated>2026-05-24T08:30:15Z</updated>
+    <link href="https://arxiv.org/abs/2510.26418v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2510.26418v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Reasoning Models (LRMs) improve task performance through extended inference-time reasoning. Although previous studies suggest that longer reasoning should lead to more robust safety behavior, we find evidence to the contrary: over-extended reasoning can instead be exploited to systematically weaken refusal behavior. We propose Chain-of-Thought Hijacking, a simple yet effective black-box jailbreak attack that induces LRMs to engage in prolonged benign puzzle-solving reasoning, often lasting more than five minutes, before eliciting harmful compliance. Across HarmBench, CoT Hijacking achieves attack success rates of 99%, 94%, 100%, and 94% on Gemini 2.5 Pro, ChatGPT o4 Mini, Grok 3 Mini, and Claude 4 Sonnet, respectively. To understand why this attack succeeds, we conduct activation probing, attention-pattern analysis, and causal interventions on open-source reasoning models. Our results indicate that refusal behavior depends on a low-dimensional safety signal whose expression weakens as reasoning traces grow longer. In particular, extended benign reasoning shifts attention away from harmful intentions and attenuates refusal-related activations, producing what we call refusal dilution. These findings demonstrate that excessively prolonged reasoning can introduce a systematic jailbreak attack surface. We release our evaluation materials to support reproducibility and further research.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-10-30T12:10:03Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Jianli Zhao</name>
+    </author>
+    <author>
+      <name>Tingchen Fu</name>
+    </author>
+    <author>
+      <name>Rylan Schaeffer</name>
+    </author>
+    <author>
+      <name>Mrinank Sharma</name>
+    </author>
+    <author>
+      <name>Fazl Barez</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2509.23362v2</id>
+    <title>Dual-Space Smoothness for Robust and Balanced LLM Unlearning</title>
+    <updated>2026-03-28T14:14:18Z</updated>
+    <link href="https://arxiv.org/abs/2509.23362v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2509.23362v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>As large language models evolve, Machine Unlearning has emerged to address growing concerns around user privacy, copyright infringement, and overall safety. Yet state-of-the-art (SOTA) unlearning methods often suffer from catastrophic forgetting and metric imbalance, for example, by over-optimizing one objective (e.g., unlearning effectiveness, utility preservation, or privacy protection) at the expense of others. In addition, small perturbations in the representation or parameter space can be exploited by relearn and jailbreak attacks. To address these challenges, we propose PRISM, a unified framework that enforces dual-space smoothness in representation and parameter spaces to improve robustness and balance unlearning metrics. PRISM consists of two smoothness optimization stages: (i) a representation space stage that employs a robustly trained probe to defend against jailbreak attacks, and (ii) a parameter-space stage that decouples retain-forget gradient conflicts, reduces imbalance, and smooths the parameter space to mitigate relearning attacks. Extensive experiments on WMDP and MUSE, across conversational-dialogue and continuous-text settings, show that PRISM outperforms SOTA baselines under multiple attacks while achieving a better balance among key metrics.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-09-27T15:20:37Z</published>
+    <arxiv:comment>Accepted by ICLR 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Han Yan</name>
+    </author>
+    <author>
+      <name>Zheyuan Liu</name>
+    </author>
+    <author>
+      <name>Meng Jiang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2509.20230v3</id>
+    <title>Beyond Sharp Minima: Robust LLM Unlearning via Feedback-Guided Multi-Point Optimization</title>
+    <updated>2025-09-30T13:04:46Z</updated>
+    <link href="https://arxiv.org/abs/2509.20230v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2509.20230v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Current LLM unlearning methods face a critical security vulnerability that undermines their fundamental purpose: while they appear to successfully remove sensitive or harmful knowledge, this ``forgotten" information remains precariously recoverable through relearning attacks. We identify that the root cause is that conventional methods optimizing the forgetting loss at individual data points will drive model parameters toward sharp minima in the loss landscape. In these unstable regions, even minimal parameter perturbations can drastically alter the model's behaviors. Consequently, relearning attacks exploit this vulnerability by using just a few fine-tuning samples to navigate the steep gradients surrounding these unstable regions, thereby rapidly recovering knowledge that was supposedly erased. This exposes a critical robustness gap between apparent unlearning and actual knowledge removal. To address this issue, we propose StableUN, a bi-level feedback-guided optimization framework that explicitly seeks more stable parameter regions via neighborhood-aware optimization. It integrates forgetting feedback, which uses adversarial perturbations to probe parameter neighborhoods, with remembering feedback to preserve model utility, aligning the two objectives through gradient projection. Experiments on WMDP and MUSE benchmarks demonstrate that our method is significantly more robust against both relearning and jailbreaking attacks while maintaining competitive utility performance.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-09-24T15:23:46Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Wenhan Wu</name>
+    </author>
+    <author>
+      <name>Zheyuan Liu</name>
+    </author>
+    <author>
+      <name>Chongyang Gao</name>
+    </author>
+    <author>
+      <name>Ren Wang</name>
+    </author>
+    <author>
+      <name>Kaize Ding</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2507.07735v1</id>
+    <title>GuardVal: Dynamic Large Language Model Jailbreak Evaluation for Comprehensive Safety Testing</title>
+    <updated>2025-07-10T13:15:20Z</updated>
+    <link href="https://arxiv.org/abs/2507.07735v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2507.07735v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Jailbreak attacks reveal critical vulnerabilities in Large Language Models (LLMs) by causing them to generate harmful or unethical content. Evaluating these threats is particularly challenging due to the evolving nature of LLMs and the sophistication required in effectively probing their vulnerabilities. Current benchmarks and evaluation methods struggle to fully address these challenges, leaving gaps in the assessment of LLM vulnerabilities. In this paper, we review existing jailbreak evaluation practices and identify three assumed desiderata for an effective jailbreak evaluation protocol. To address these challenges, we introduce GuardVal, a new evaluation protocol that dynamically generates and refines jailbreak prompts based on the defender LLM's state, providing a more accurate assessment of defender LLMs' capacity to handle safety-critical situations. Moreover, we propose a new optimization method that prevents stagnation during prompt refinement, ensuring the generation of increasingly effective jailbreak prompts that expose deeper weaknesses in the defender LLMs. We apply this protocol to a diverse set of models, from Mistral-7b to GPT-4, across 10 safety domains. Our findings highlight distinct behavioral patterns among the models, offering a comprehensive view of their robustness. Furthermore, our evaluation process deepens the understanding of LLM behavior, leading to insights that can inform future research and drive the development of more secure models.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-07-10T13:15:20Z</published>
+    <arxiv:comment>24 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Peiyan Zhang</name>
+    </author>
+    <author>
+      <name>Haibo Jin</name>
+    </author>
+    <author>
+      <name>Liying Kang</name>
+    </author>
+    <author>
+      <name>Haohan Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2507.02799v1</id>
+    <title>Is Reasoning All You Need? Probing Bias in the Age of Reasoning Language Models</title>
+    <updated>2025-07-03T17:01:53Z</updated>
+    <link href="https://arxiv.org/abs/2507.02799v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2507.02799v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Reasoning Language Models (RLMs) have gained traction for their ability to perform complex, multi-step reasoning tasks through mechanisms such as Chain-of-Thought (CoT) prompting or fine-tuned reasoning traces. While these capabilities promise improved reliability, their impact on robustness to social biases remains unclear. In this work, we leverage the CLEAR-Bias benchmark, originally designed for Large Language Models (LLMs), to investigate the adversarial robustness of RLMs to bias elicitation. We systematically evaluate state-of-the-art RLMs across diverse sociocultural dimensions, using an LLM-as-a-judge approach for automated safety scoring and leveraging jailbreak techniques to assess the strength of built-in safety mechanisms. Our evaluation addresses three key questions: (i) how the introduction of reasoning capabilities affects model fairness and robustness; (ii) whether models fine-tuned for reasoning exhibit greater safety than those relying on CoT prompting at inference time; and (iii) how the success rate of jailbreak attacks targeting bias elicitation varies with the reasoning mechanisms employed. Our findings reveal a nuanced relationship between reasoning capabilities and bias safety. Surprisingly, models with explicit reasoning, whether via CoT prompting or fine-tuned reasoning traces, are generally more vulnerable to bias elicitation than base models without such mechanisms, suggesting reasoning may unintentionally open new pathways for stereotype reinforcement. Reasoning-enabled models appear somewhat safer than those relying on CoT prompting, which are particularly prone to contextual reframing attacks through storytelling prompts, fictional personas, or reward-shaped instructions. These results challenge the assumption that reasoning inherently improves robustness and underscore the need for more bias-aware approaches to reasoning design.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-07-03T17:01:53Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Riccardo Cantini</name>
+    </author>
+    <author>
+      <name>Nicola Gabriele</name>
+    </author>
+    <author>
+      <name>Alessio Orsino</name>
+    </author>
+    <author>
+      <name>Domenico Talia</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2506.16078v1</id>
+    <title>Probing the Robustness of Large Language Models Safety to Latent Perturbations</title>
+    <updated>2025-06-19T07:03:05Z</updated>
+    <link href="https://arxiv.org/abs/2506.16078v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2506.16078v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment is a key requirement for building reliable Artificial General Intelligence. Despite significant advances in safety alignment, we observe that minor latent shifts can still trigger unsafe responses in aligned models. We argue that this stems from the shallow nature of existing alignment methods, which focus on surface-level refusal behaviors without sufficiently altering internal representations. Consequently, small shifts in hidden activations can re-trigger harmful behaviors embedded in the latent space. To explore the robustness of safety alignment to latent perturbations, we introduce a probing method that measures the Negative Log-Likelihood of the original response generated by the model. This probe quantifies local sensitivity in the latent space, serving as a diagnostic tool for identifying vulnerable directions. Based on this signal, we construct effective jailbreak trajectories, giving rise to the Activation Steering Attack (ASA). More importantly, these insights offer a principled foundation for improving alignment robustness. To this end, we introduce Layer-wise Adversarial Patch Training~(LAPT), a fine-tuning strategy that inject controlled perturbations into hidden representations during training. Experimental results highlight that LAPT strengthen alignment robustness without compromising general capabilities. Our findings reveal fundamental flaws in current alignment paradigms and call for representation-level training strategies that move beyond surface-level behavior supervision. Codes and results are available at https://github.com/Carol-gutianle/LatentSafety.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-06-19T07:03:05Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Tianle Gu</name>
+    </author>
+    <author>
+      <name>Kexin Huang</name>
+    </author>
+    <author>
+      <name>Zongqi Wang</name>
+    </author>
+    <author>
+      <name>Yixu Wang</name>
+    </author>
+    <author>
+      <name>Jie Li</name>
+    </author>
+    <author>
+      <name>Yuanqi Yao</name>
+    </author>
+    <author>
+      <name>Yang Yao</name>
+    </author>
+    <author>
+      <name>Yujiu Yang</name>
+    </author>
+    <author>
+      <name>Yan Teng</name>
+    </author>
+    <author>
+      <name>Yingchun Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.19610v3</id>
+    <title>JailBound: Jailbreaking Internal Safety Boundaries of Vision-Language Models</title>
+    <updated>2026-02-25T13:06:15Z</updated>
+    <link href="https://arxiv.org/abs/2505.19610v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.19610v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Vision-Language Models (VLMs) exhibit impressive performance, yet the integration of powerful vision encoders has significantly broadened their attack surface, rendering them increasingly susceptible to jailbreak attacks. However, lacking well-defined attack objectives, existing jailbreak methods often struggle with gradient-based strategies prone to local optima and lacking precise directional guidance, and typically decouple visual and textual modalities, thereby limiting their effectiveness by neglecting crucial cross-modal interactions. Inspired by the Eliciting Latent Knowledge (ELK) framework, we posit that VLMs encode safety-relevant information within their internal fusion-layer representations, revealing an implicit safety decision boundary in the latent space. This motivates exploiting boundary to steer model behavior. Accordingly, we propose JailBound, a novel latent space jailbreak framework comprising two stages: (1) Safety Boundary Probing, which addresses the guidance issue by approximating decision boundary within fusion layer's latent space, thereby identifying optimal perturbation directions towards the target region; and (2) Safety Boundary Crossing, which overcomes the limitations of decoupled approaches by jointly optimizing adversarial perturbations across both image and text inputs. This latter stage employs an innovative mechanism to steer the model's internal state towards policy-violating outputs while maintaining cross-modal semantic consistency. Extensive experiments on six diverse VLMs demonstrate JailBound's efficacy, achieves 94.32% white-box and 67.28% black-box attack success averagely, which are 6.17% and 21.13% higher than SOTA methods, respectively. Our findings expose a overlooked safety risk in VLMs and highlight the urgent need for more robust defenses. Warning: This paper contains potentially sensitive, harmful and offensive content.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-26T07:23:00Z</published>
+    <arxiv:comment>The Thirty-ninth Annual Conference on Neural Information Processing Systems (NeurIPS 2025)</arxiv:comment>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Jiaxin Song</name>
+    </author>
+    <author>
+      <name>Yixu Wang</name>
+    </author>
+    <author>
+      <name>Jie Li</name>
+    </author>
+    <author>
+      <name>Rui Yu</name>
+    </author>
+    <author>
+      <name>Yan Teng</name>
+    </author>
+    <author>
+      <name>Xingjun Ma</name>
+    </author>
+    <author>
+      <name>Yingchun Wang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2504.07887v2</id>
+    <title>Benchmarking Adversarial Robustness to Bias Elicitation in Large Language Models: Scalable Automated Assessment with LLM-as-a-Judge</title>
+    <updated>2025-10-16T14:59:50Z</updated>
+    <link href="https://arxiv.org/abs/2504.07887v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2504.07887v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The growing integration of Large Language Models (LLMs) into critical societal domains has raised concerns about embedded biases that can perpetuate stereotypes and undermine fairness. Such biases may stem from historical inequalities in training data, linguistic imbalances, or adversarial manipulation. Despite mitigation efforts, recent studies show that LLMs remain vulnerable to adversarial attacks that elicit biased outputs. This work proposes a scalable benchmarking framework to assess LLM robustness to adversarial bias elicitation. Our methodology involves: (i) systematically probing models across multiple tasks targeting diverse sociocultural biases, (ii) quantifying robustness through safety scores using an LLM-as-a-Judge approach, and (iii) employing jailbreak techniques to reveal safety vulnerabilities. To facilitate systematic benchmarking, we release a curated dataset of bias-related prompts, named CLEAR-Bias. Our analysis, identifying DeepSeek V3 as the most reliable judge LLM, reveals that bias resilience is uneven, with age, disability, and intersectional biases among the most prominent. Some small models outperform larger ones in safety, suggesting that training and architecture may matter more than scale. However, no model is fully robust to adversarial elicitation, with jailbreak attacks using low-resource languages or refusal suppression proving effective across model families. We also find that successive LLM generations exhibit slight safety gains, while models fine-tuned for the medical domain tend to be less safe than their general-purpose counterparts.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-04-10T16:00:59Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <arxiv:journal_ref>Cantini, R., Orsino, A., Ruggiero, M., Talia, D. Benchmarking adversarial robustness to bias elicitation in large language models: scalable automated assessment with LLM-as-a-judge. Mach Learn 114, 249 (2025)</arxiv:journal_ref>
+    <author>
+      <name>Riccardo Cantini</name>
+    </author>
+    <author>
+      <name>Alessio Orsino</name>
+    </author>
+    <author>
+      <name>Massimo Ruggiero</name>
+    </author>
+    <author>
+      <name>Domenico Talia</name>
+    </author>
+    <arxiv:doi>10.1007/s10994-025-06862-6</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1007/s10994-025-06862-6" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2502.05945v3</id>
+    <title>Head-Specific Intervention Can Induce Misaligned AI Coordination in Large Language Models</title>
+    <updated>2025-08-25T08:20:08Z</updated>
+    <link href="https://arxiv.org/abs/2502.05945v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2502.05945v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Robust alignment guardrails for large language models (LLMs) are becoming increasingly important with their widespread application. In contrast to previous studies, we demonstrate that inference-time activation interventions can bypass safety alignments and effectively steer model generations towards harmful AI coordination. Our method applies fine-grained interventions at specific attention heads, which we identify by probing each head in a simple binary choice task. We then show that interventions on these heads generalise to the open-ended generation setting, effectively circumventing safety guardrails. We demonstrate that intervening on a few attention heads is more effective than intervening on full layers or supervised fine-tuning. We further show that only a few example completions are needed to compute effective steering directions, which is an advantage over classical fine-tuning. We also demonstrate that applying interventions in the negative direction can prevent a common jailbreak attack. Our results suggest that, at the attention head level, activations encode fine-grained linearly separable behaviours. Practically, the approach offers a straightforward methodology to steer large language model behaviour, which could be extended to diverse domains beyond safety, requiring fine-grained control over the model output. The code and datasets for this study can be found on https://github.com/PaulDrm/targeted_intervention.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-09T16:11:57Z</published>
+    <arxiv:comment>Published at Transaction of Machine Learning Research 08/2025, Large Language Models (LLMs), Interference-time activation shifting, Steerability, Explainability, AI alignment, Interpretability</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Paul Darm</name>
+    </author>
+    <author>
+      <name>Annalisa Riccardi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.01872v6</id>
+    <title>Turning Logic Against Itself : Probing Model Defenses Through Contrastive Questions</title>
+    <updated>2025-09-30T14:18:32Z</updated>
+    <link href="https://arxiv.org/abs/2501.01872v6" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.01872v6" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models, despite extensive alignment with human values and ethical principles, remain vulnerable to sophisticated jailbreak attacks that exploit their reasoning abilities. Existing safety measures often detect overt malicious intent but fail to address subtle, reasoning-driven vulnerabilities. In this work, we introduce POATE (Polar Opposite query generation, Adversarial Template construction, and Elaboration), a novel jailbreak technique that harnesses contrastive reasoning to provoke unethical responses. POATE crafts semantically opposing intents and integrates them with adversarial templates, steering models toward harmful outputs with remarkable subtlety. We conduct extensive evaluation across six diverse language model families of varying parameter sizes to demonstrate the robustness of the attack, achieving significantly higher attack success rates (~44%) compared to existing methods. To counter this, we propose Intent-Aware CoT and Reverse Thinking CoT, which decompose queries to detect malicious intent and reason in reverse to evaluate and reject harmful responses. These methods enhance reasoning robustness and strengthen the model's defense against adversarial exploits.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-03T15:40:03Z</published>
+    <arxiv:comment>Accepted at EMNLP 2025 (Main)</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Rachneet Sachdeva</name>
+    </author>
+    <author>
+      <name>Rima Hazra</name>
+    </author>
+    <author>
+      <name>Iryna Gurevych</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.14502v1</id>
+    <title>Global Challenge for Safe and Secure LLMs Track 1</title>
+    <updated>2024-11-21T08:20:31Z</updated>
+    <link href="https://arxiv.org/abs/2411.14502v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.14502v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper introduces the Global Challenge for Safe and Secure Large Language Models (LLMs), a pioneering initiative organized by AI Singapore (AISG) and the CyberSG R&amp;D Programme Office (CRPO) to foster the development of advanced defense mechanisms against automated jailbreaking attacks. With the increasing integration of LLMs in critical sectors such as healthcare, finance, and public administration, ensuring these models are resilient to adversarial attacks is vital for preventing misuse and upholding ethical standards. This competition focused on two distinct tracks designed to evaluate and enhance the robustness of LLM security frameworks. Track 1 tasked participants with developing automated methods to probe LLM vulnerabilities by eliciting undesirable responses, effectively testing the limits of existing safety protocols within LLMs. Participants were challenged to devise techniques that could bypass content safeguards across a diverse array of scenarios, from offensive language to misinformation and illegal activities. Through this process, Track 1 aimed to deepen the understanding of LLM vulnerabilities and provide insights for creating more resilient models.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-21T08:20:31Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Xiaojun Jia</name>
+    </author>
+    <author>
+      <name>Yihao Huang</name>
+    </author>
+    <author>
+      <name>Yang Liu</name>
+    </author>
+    <author>
+      <name>Peng Yan Tan</name>
+    </author>
+    <author>
+      <name>Weng Kuan Yau</name>
+    </author>
+    <author>
+      <name>Mun-Thye Mak</name>
+    </author>
+    <author>
+      <name>Xin Ming Sim</name>
+    </author>
+    <author>
+      <name>Wee Siong Ng</name>
+    </author>
+    <author>
+      <name>See Kiong Ng</name>
+    </author>
+    <author>
+      <name>Hanqing Liu</name>
+    </author>
+    <author>
+      <name>Lifeng Zhou</name>
+    </author>
+    <author>
+      <name>Huanqian Yan</name>
+    </author>
+    <author>
+      <name>Xiaobing Sun</name>
+    </author>
+    <author>
+      <name>Wei Liu</name>
+    </author>
+    <author>
+      <name>Long Wang</name>
+    </author>
+    <author>
+      <name>Yiming Qian</name>
+    </author>
+    <author>
+      <name>Yong Liu</name>
+    </author>
+    <author>
+      <name>Junxiao Yang</name>
+    </author>
+    <author>
+      <name>Zhexin Zhang</name>
+    </author>
+    <author>
+      <name>Leqi Lei</name>
+    </author>
+    <author>
+      <name>Renmiao Chen</name>
+    </author>
+    <author>
+      <name>Yida Lu</name>
+    </author>
+    <author>
+      <name>Shiyao Cui</name>
+    </author>
+    <author>
+      <name>Zizhou Wang</name>
+    </author>
+    <author>
+      <name>Shaohua Li</name>
+    </author>
+    <author>
+      <name>Yan Wang</name>
+    </author>
+    <author>
+      <name>Rick Siow Mong Goh</name>
+    </author>
+    <author>
+      <name>Liangli Zhen</name>
+    </author>
+    <author>
+      <name>Yingjie Zhang</name>
+    </author>
+    <author>
+      <name>Zhe Zhao</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2405.20653v3</id>
+    <title>Mind the Inconspicuous: Revealing the Hidden Weakness in Aligned LLMs' Refusal Boundaries</title>
+    <updated>2025-06-17T03:03:45Z</updated>
+    <link href="https://arxiv.org/abs/2405.20653v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2405.20653v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advances in Large Language Models (LLMs) have led to impressive alignment where models learn to distinguish harmful from harmless queries through supervised finetuning (SFT) and reinforcement learning from human feedback (RLHF). In this paper, we reveal a subtle yet impactful weakness in these aligned models. We find that simply appending multiple end of sequence (eos) tokens can cause a phenomenon we call context segmentation, which effectively shifts both harmful and benign inputs closer to the refusal boundary in the hidden space.
+  Building on this observation, we propose a straightforward method to BOOST jailbreak attacks by appending eos tokens. Our systematic evaluation shows that this strategy significantly increases the attack success rate across 8 representative jailbreak techniques and 16 open-source LLMs, ranging from 2B to 72B parameters. Moreover, we develop a novel probing mechanism for commercial APIs and discover that major providers such as OpenAI, Anthropic, and Qwen do not filter eos tokens, making them similarly vulnerable. These findings highlight a hidden yet critical blind spot in existing alignment and content filtering approaches.
+  We call for heightened attention to eos tokens' unintended influence on model behaviors, particularly in production systems. Our work not only calls for an input-filtering based defense, but also points to new defenses that make refusal boundaries more robust and generalizable, as well as fundamental alignment techniques that can defend against context segmentation attacks.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-05-31T07:41:03Z</published>
+    <arxiv:comment>published at USENIX Security 25</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Jiahao Yu</name>
+    </author>
+    <author>
+      <name>Haozheng Luo</name>
+    </author>
+    <author>
+      <name>Jerry Yao-Chieh Hu</name>
+    </author>
+    <author>
+      <name>Wenbo Guo</name>
+    </author>
+    <author>
+      <name>Han Liu</name>
+    </author>
+    <author>
+      <name>Xinyu Xing</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2310.12860v2</id>
+    <title>Probing LLMs for hate speech detection: strengths and vulnerabilities</title>
+    <updated>2023-10-28T05:07:31Z</updated>
+    <link href="https://arxiv.org/abs/2310.12860v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2310.12860v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recently efforts have been made by social media platforms as well as researchers to detect hateful or toxic language using large language models. However, none of these works aim to use explanation, additional context and victim community information in the detection process. We utilise different prompt variation, input information and evaluate large language models in zero shot setting (without adding any in-context examples). We select three large language models (GPT-3.5, text-davinci and Flan-T5) and three datasets - HateXplain, implicit hate and ToxicSpans. We find that on average including the target information in the pipeline improves the model performance substantially (~20-30%) over the baseline across the datasets. There is also a considerable effect of adding the rationales/explanations into the pipeline (~10-20%) over the baseline across the datasets. In addition, we further provide a typology of the error cases where these large language models fail to (i) classify and (ii) explain the reason for the decisions they take. Such vulnerable points automatically constitute 'jailbreak' prompts for these models and industry scale safeguard techniques need to be developed to make the models robust against such prompts.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-10-19T16:11:02Z</published>
+    <arxiv:comment>13 pages, 9 figures, 7 tables, accepted to findings of EMNLP 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Sarthak Roy</name>
+    </author>
+    <author>
+      <name>Ashish Harshavardhan</name>
+    </author>
+    <author>
+      <name>Animesh Mukherjee</name>
+    </author>
+    <author>
+      <name>Punyajoy Saha</name>
+    </author>
+  </entry>
+</feed>

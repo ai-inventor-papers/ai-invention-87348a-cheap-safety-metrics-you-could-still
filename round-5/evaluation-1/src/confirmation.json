@@ -1,0 +1,60 @@
+{
+ "blindness": "BLIND (no labels exist yet)",
+ "post_label_changes": [],
+ "statement": "No re-screen, subgroup search or rule change was applied after the labels were seen.",
+ "frozen_sha256": "9f89236aa8a95e02804842b3249caf5fb7d2a0af636bb247aca9d833f7f49c8f",
+ "status": "UNTESTED",
+ "reason": "confirm_labels.json does not exist in any iter-5 sibling (MISSING_confirm_labels): no Set A (or Set B) checkpoint has a BALANCED label",
+ "n_labelled": 0,
+ "families_missing": [
+  "gemma2",
+  "phi",
+  "eurollm"
+ ],
+ "verdicts": {
+  "C2": "UNTESTED",
+  "C17": "UNTESTED",
+  "C2n": "UNTESTED"
+ },
+ "heldout_descriptive": {
+  "C1": {
+   "verdict": "UNTESTED",
+   "label": "HELD-OUT DESCRIPTIVE - screen-failed, cannot be CONFIRMED"
+  },
+  "C2ts": {
+   "verdict": "UNTESTED",
+   "label": "HELD-OUT DESCRIPTIVE - screen-failed, cannot be CONFIRMED"
+  },
+  "C14": {
+   "verdict": "UNTESTED",
+   "label": "HELD-OUT DESCRIPTIVE - screen-failed, cannot be CONFIRMED"
+  }
+ },
+ "shipped_set": {
+  "internal_reads": [
+   {
+    "id": "C2",
+    "verdict": "UNTESTED"
+   },
+   {
+    "id": "C17",
+    "verdict": "UNTESTED"
+   },
+   {
+    "id": "C2n",
+    "verdict": "UNTESTED"
+   }
+  ],
+  "logit_only_baselines": [
+   "logit_gap",
+   "refusal_mass"
+  ],
+  "n_internal_confirmed": 0
+ },
+ "invariant_sentence": "The requester's invariant of at least 3 shipped internal metrics is UNMET.",
+ "invariant_reason": "3 internal read(s) passed the screen and were frozen (C2, C17, C2n), but 0 are CONFIRMED because the confirmation is UNTESTED: the invariant counts CONFIRMED reads, not screen survivors. The frozen survivors are also monotone transforms of one another (see screen_ranked.json:survivor_independence), so even a successful confirmation would ship one measurement three times.",
+ "increment_over_behaviour_positive_bound": [],
+ "behaviour_sentence": "Looking inside MATCHES and does not beat 16 judged completions; it saves generation and the judge (no generation, no judge, about 16 seconds per 4B model).",
+ "strongest_to_date_allowed": false,
+ "ams": "AMS_MISSING - the wording 'strongest to date' is forbidden"
+}
