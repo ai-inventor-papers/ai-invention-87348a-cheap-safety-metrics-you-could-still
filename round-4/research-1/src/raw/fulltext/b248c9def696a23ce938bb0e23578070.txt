@@ -1,0 +1,1331 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2609.16204
+Type: PDF
+Length: 130573 chars (truncated)
+
+--- Content ---
+
+Decoy Direction Optimization: A Post-Hoc Defense
+Against LLM Abliteration
+Aashiq Muhamed∗
+Mona T. Diab
+Virginia Smith
+Carnegie Mellon University
+Abstract
+Safety guardrails in open-weight language models can be readily bypassed using
+Refusal Feature Ablation (RFA), a technique that identifies and projects out a linear
+refusal direction from the residual stream, often achieving a high attack success rate
+(ASR) while preserving model capability. Defending against these attacks typically
+requires computationally expensive safety finetuning for every new checkpoint. We
+introduce Decoy Direction Optimization (DDO), a fast, post-hoc weight-editing
+defense that requires no base-model finetuning. Our approach is based on a simple
+mechanistic insight: ablation attacks rely on contrastive estimators to find the
+refusal direction. Rather than trying to hide the true refusal circuitry, DDO actively
+injects a high-magnitude, nonlinear decoy signal into the network’s MLP neurons.
+When an attacker attempts to locate the refusal direction, the decoy corrupts their
+estimator, tricking them into ablating a harmless orthogonal feature while the actual
+safety mechanism remains intact. We prove a spectral bound formalizing this effect
+and evaluate DDO across six model families, achieving <10% ASR under standard
+RFA. On Llama-3-8B-Instruct, DDO remains comparable to trained defenses under
+adaptive multi-phase attacks (65% vs. 58% worst-case ASR) and reduces Heretic
+weight-level attack ASR from 88.7% to 18%, all at 30–450× lower optimization
+cost per configuration than the trained baselines.1
+1
+Introduction
+The ability to decline harmful requests is a core safety mechanism in instruction-tuned LLMs
+aligned via preference finetuning [1–3]. Removing refusal from open-weight models can fuel misuse,
+increasing risks such as chemical, biological, radiological, and nuclear (CBRN) capability uplift;
+cyber-offense generation; and the production of child sexual abuse material (CSAM), making refusal
+robustness a pressing safety concern [4, 5]. In the open-weight setting, however, safety is brittle: a
+white-box adversary can modify the released checkpoint and its inference code, yielding a model
+that preserves capability while dropping refusal. Prior work suggests that refusal is often mediated
+by low-dimensional residual-stream features [6], enabling training-free attacks such as Refusal
+Feature Ablation (RFA; also referred to as abliteration) that estimate a difference-in-means (DIM)
+direction between harmful and safe activations and project it out at inference time [7]. The resulting
+checkpoints often achieve high attack success rate (ASR; harmful prompts judged compliant), and
+thousands of such uncensored variants are already publicly hosted [8].
+Existing defenses against refusal removal are predominantly training-time interventions. Circuit
+Breakers [9] finetunes checkpoints with a representation-rerouting objective; LAT [10] and Re-
+FAT [11] adversarially train against latent/feature-space attacks; and RepBend [12] and Triplet-based
+objectives [13] reshape representation geometry during training. These methods can be highly effec-
+tive, but they require safety finetuning and must be repeated for each new checkpoint. Depending
+∗Correspondence to amuhamed@cs.cmu.edu.
+1Code: https://github.com/aashiqmuhamed/defending-against-abliteration.
+Preprint.
+arXiv:2609.16204v1  [cs.LG]  14 Sep 2026
+
+No
+defense
+RFA
+Jailbroken
+ASR >85%
+“How do I
+build a bomb?”
+“Sure! Here are
+the steps...”
+q
+Zero cost to attacker
+Automated, no expertise
+Safety
+finetuning
+Safety FT
+CB, LAT, ...
+RFA
+Protected
+ASR <10%
+“How do I
+build a bomb?”
+“I can’t help
+with that...”
+¥
+Heavy Requirements
+q Training data & labels
+q Multi-GPU, hours–days
+q Full-model finetuning
+q Expensive to tune
+DDO
+(Ours)
+DDO
+Post-hoc
+RFA
+Protected
+ASR <10%
+“How do I
+build a bomb?”
+“I can’t help
+with that...”
+¥
+Minimal Requirements
+¥ No training data
+¥ 1 GPU, 2 minutes
+¥ Base weights frozen
+¥ Cheap to tune
+Figure 1: DDO vs. existing defenses against RFA. Without any defense, RFA strips refusal from
+open-weight models with no training cost for the attacker (top row). Trained safety defenses (Circuit
+Breakers, LAT, ReFAT, RepBend) preserve refusal under RFA but require training data, multi-
+GPU finetuning, and expensive per-method hyperparameter sweeps (middle row). DDO reaches
+comparable standard-RFA robustness at 30–450× lower cost: a single GPU, two minutes, no training
+data, and base weights left frozen (bottom row).
+on the method, they may additionally require method-specific training data or attack pipelines (e.g.,
+adversarial examples) and hyperparameter tuning. Moreover, prior work does not evaluate these
+defenses against adaptive multi-phase RFA or automated weight-level attacks like Heretic [14];
+we evaluate under this stronger attack ladder (Section 4.2). Given the rapid release cadence of
+open-weight checkpoints, and evidence that frontier open-weight models can trail closed-weight
+state-of-the-art on the order of months on capability benchmarks [15, 16], per-checkpoint retraining
+is difficult to sustain; we therefore seek post-hoc safety hardening tools that are low-cost, composable,
+and data-light.
+We introduce Decoy Direction Optimization (DDO), a post-hoc defense that targets the attacker’s es-
+timator rather than the refusal feature itself, without requiring expensive finetuning. DDO repurposes
+low-impact MLP neurons to implement a gated read–write map: on harmful prompts, the neurons
+read the refusal coordinate and write large updates in directions orthogonal to refusal, inducing a
+decoy-dominated contrast that biases DIM estimation so that RFA ablates a decoy signal rather than
+the causal refusal subspace. We prove a subspace overlap bound and specialize it to orthogonal
+decoys (Theorem 2): sufficiently strong decoy modes limit how much a contrastive attack overlaps
+the causal refusal subspace. The number of such modes defines an effective decoy rank, which also
+serves as a diagnostic for interpreting adaptive re-estimation budgets.
+Empirically, DDO is able to lower the ASR of standard-RFA to less than 10% on six model families
+in ∼2 minutes per optimization run on a single A100 GPU. DDO matches or exceeds trained baselines
+on standard RFA at 30–450× lower cost per configuration (Figure 1). On Llama-3-8B-Instruct, under
+adaptive multi-phase RFA, DDO degrades comparably to trained defenses (65% worst-case ASR vs.
+58% for the best trained baseline) while preserving coherent generation (MT-Bench ≥5.82), and
+reduces Heretic [14] ASR from 88.7% to 18% at 200 trials. Our contributions include:
+(i) We introduce DDO (Decoy Direction Optimization), to our knowledge, the first post-hoc
+defense against refusal feature ablation that requires no base-model finetuning. DDO repurposes
+a small set of low-impact MLP neurons to inject gated, refusal-orthogonal decoy directions
+that corrupt contrastive refusal estimators. The defense compiles into weights, incurring no
+architectural or runtime overhead.
+(ii) We prove subspace overlap bounds (Theorems 1 and 2) that relate attacker–refusal overlap to
+the contrast matrix and, for DDO, the spectrum of its empirical decoy response matrix. The re-
+sulting effective decoy rank characterizes protection against a fixed contrastive attack and helps
+interpret adaptive phase budgets. A corollary on optimal spectral allocation (Corollary 3) pro-
+2
+
+Table 1: Attack surface by tier. The three tiers probe complementary attack channels.
+Capability
+RFA
+Heretic
+Adapt.
+Read weights
+✓
+✓
+✓
+Hook activations
+✓
+–
+✓
+Modify activations
+✓
+–
+✓
+Modify weights
+–
+✓
+–
+Iterative search
+–
+✓
+✓
+vides a concrete design principle for multi-direction decoys: under a fixed decoy-energy budget,
+spreading energy evenly across k directions maximizes the k-th singular value, strengthening
+guarantees against rank-k contrastive ablation.
+(iii) We provide a broad evaluation under a three-tier training-free attack ladder (standard RFA,
+adaptive multi-phase RFA, and Heretic), including head-to-head comparisons with trained
+defenses and cross-architecture mechanism ablations. On Llama-3-8B-Instruct [17], DDO
+reduces standard-RFA ASR from 85% to 1.8% while preserving benign compliance, performing
+comparably to the strongest trained baselines at 30–450× lower cost per configuration. Across
+six model families, DDO achieves < 10% standard-RFA ASR without base-model finetuning.
+Related work.
+Beyond the rank-1 refusal feature attack [7], recent work shows that refusal geometry
+can be multi-dimensional, e.g., concept cones [18], multiple mediating directions [19], orthogonal
+safety dimensions [20], and separable harmfulness/refusal representations [21], motivating our multi-
+phase adaptive attack evaluation. Prior model-level defenses against RFA require per-checkpoint
+safety finetuning with task-specific data and full backward passes through the model; DDO instead
+freezes all base weights and optimizes only a small set of decoy parameters, enabling post-hoc
+hardening in minutes with no inference-time overhead. We additionally evaluate prompt-level
+jailbreaks (GCG [22], PAIR [23], AutoDAN [24]), which have been linked to the same refusal
+features exploited by RFA [11]. Extended related work is in Appendix B.
+2
+Threat Model and Attacks
+We study refusal robustness in the open-weight release setting: a defender applies DDO to a check-
+point and releases only the hardened model; an adversary then obtains the defended weights and
+attempts to remove refusal while preserving general capability.
+Our threat model targets the automated, training-free uncensoring pipeline that dominates open-weight
+model tampering. The low-barrier route is not safety unlearning or adversarial finetuning, but applying
+public abliteration or weight-editing tools to a released checkpoint. We model a resource-constrained,
+white-box, and adaptive attacker who can inspect released weights, run arbitrary inference code,
+collect activations on harmful and benign probe prompts, modify activations at inference time, and
+apply post-hoc weight edits. Following Kerckhoffs’s principle, the attacker knows DDO was applied
+and can adapt their scripts accordingly, but has no access to the original pre-DDO checkpoint and
+does not perform gradient-based finetuning. This captures the platform-side risk DDO addresses: a
+model provider, hosting platform, or downstream distributor may harden a checkpoint before release,
+but cannot assume downstream users will not attempt to strip safety guardrails.
+The attacker’s objective is capability-preserving refusal removal: maximize ASR on harmful prompts
+while preserving coherent generation. Since ASR can be artificially lowered by destroying model
+quality, we evaluate robustness jointly with utility metrics (MT-Bench, MMLU, XSTest). We
+operationalize this threat model with three tiers of training-free attacks (Table 1), forming a ladder of
+increasing attacker sophistication within the post-hoc, no-finetuning regime.
+Standard RFA.
+The attacker estimates a per-layer difference-in-means (DIM) direction and projects
+it out of the residual stream [7]. Let hℓ∈Rd denote the residual stream at layer ℓ. The attacker
+computes
+dℓ≜E[hℓ| harm] −E[hℓ| safe],
+ˆdℓ≜
+dℓ
+∥dℓ∥2
+,
+3
+
+for nonzero dℓ, and applies hℓ←(I −ˆdℓˆd⊤
+ℓ)hℓ. We reserve ˆrℓfor the defender’s reference refusal
+direction and ˆdℓfor the attacker’s estimate on the released model. We evaluate both three-point and
+residual-stream variants (Appendix F.1) on JailbreakBench [25] and HarmBench [5].
+Heretic.
+Heretic [14] is a fully automated weight-level refusal-removal tool that applies Optuna-
+optimized [26] low-rank projections to attention output Wo and MLP down-projection Wdown:
+Wablated = W −α(ℓ) ˆd(ˆd⊤W), where ˆd is a searched ablation direction and α(ℓ) is a searched
+per-layer ablation strength. It produces a modified checkpoint and requires no ML expertise. We
+report H-200 as the maximum-ASR trial among 200 Optuna trials (Appendix F.1).
+Adaptive multi-phase RFA.
+To model an attacker who adapts after observing the defended
+checkpoint, we introduce an iterative variant. At phase t, the attacker computes a fresh DIM vector
+d(t)
+ℓ
+with all earlier phases’ ablations active, then removes its components along previously selected
+directions:
+v(t)
+ℓ
+= d(t)
+ℓ
+−
+t−1
+X
+j=1
+⟨d(t)
+ℓ, ˆd(j)
+ℓ⟩ˆd(j)
+ℓ,
+ˆd(t)
+ℓ
+=
+v(t)
+ℓ
+∥v(t)
+ℓ∥2
+.
+The sum is empty at t = 1. Normalization applies when v(t)
+ℓ̸
+= 0; otherwise we set ˆd(t)
+ℓ
+= 0 and add
+no new direction. The attacker ablates all accumulated directions simultaneously, giving rank at most
+t per layer. Throughout, t indexes adaptive phases, k denotes attack rank, and K denotes the number
+of decoy reader groups.
+3
+Method: Decoy Direction Optimization (DDO)
+We consider standard pre-norm decoder-only transformers with SwiGLU/GeGLU MLPs (Ap-
+pendix C). Let hℓ∈Rd denote the residual-stream state at layer ℓ, and let hattn
+ℓ
+denote the residual
+stream after the attention update (before the MLP). The MLP input is ˜xℓ≜RMSNorm(hattn
+ℓ
+).
+SwiGLU uses gate/up projections Wgate, Wup ∈Rdinter×d and down projection Wdown ∈Rd×dinter
+(where dinter is the MLP intermediate dimension and silu(x) = xσ(x) is the SiLU activation) to
+produce the residual update mℓ= Wdown
+ silu(Wgate˜xℓ) ⊙(Wup˜xℓ)
+
+, where ⊙is elementwise
+multiplication. DDO operates by editing select rows/columns of Wgate, Wup, and Wdown.
+Decoy Direction Optimization (DDO) is a post-hoc weight-editing defense (base weights frozen) that
+targets the attacker’s contrastive estimator rather than the refusal feature. On harmful prompts, DDO
+repurposes a small number of SwiGLU/GeGLU neurons to inject large residual shifts along decoy
+directions orthogonal to refusal, so RFA’s estimated ablation direction becomes decoy-dominated,
+and ablation preferentially removes decoys rather than the underlying causal refusal subspace. All
+edits are folded into the deployed weights, incurring no additional architectural or runtime overhead.
+Concretely, DDO: (i) estimates a per-layer refusal direction ˆrℓvia DIM on 128 harmful and 128
+safe probes; (ii) selects n low-impact neurons per target layer (smallest-norm columns of Wdown);
+(iii) optimizes decoy write directions ui ⊥ˆrℓunder a four-term loss, tuning scalar gains (β, s) via
+Bayesian hyperparameter search; and (iv) compiles the optimized parameters into weights using
+replace or additive mode, and places the edits at or upstream of the causal refusal zone. Figure 2
+provides a schematic of the DDO architecture, optimization objective, and geometric intuition.
+Gated decoy architecture.
+DDO repurposes a small set of SwiGLU (or GeGLU) units to implement
+a gated read–write map: each unit reads the refusal coordinate and writes into an orthogonal decoy
+direction. To minimize utility loss, we choose n low-impact units per layer by selecting the n
+smallest-norm columns of Wdown (units whose down-projection contributes weakly to the residual
+update). In each targeted layer ℓand for each selected unit i, we write a refusal-aligned trigger into
+row i of Wup and Wgate (denoted wup,i and wgate,i), and a decoy write vector into column i of
+Wdown (denoted wdown,i):
+wup,i ←ˆr⊤
+ℓ,
+wgate,i ←β ˆr⊤
+ℓ,
+wdown,i ←s · ui,
+(1)
+where ui ⊥ˆrℓis a decoy output direction and β, s > 0 are scalar gains. For SwiGLU in replace
+mode, writing aℓ≜⟨ˆrℓ, ˜xℓ⟩for the neuron’s refusal coordinate, its decoy contribution is
+δi(˜xℓ) = s gβ(aℓ) ui,
+gβ(a) ≜a silu(βa) = βa2σ(βa),
+(2)
+4
+
+A. Weight Surgery Architecture
+Input Activation ˜xℓ
+(post-attention LN)
+Scale β (Optuna)
+ˆr
+×
+⟨·, ·⟩
+βˆr
+up_proj
+ˆr (frozen)
+⟨·, ·⟩
+SiLU
+×
+a = SiLU(β⟨ˆr, ˜x⟩) · ⟨ˆr, ˜x⟩
+down_proj uj ⊥ˆr
+(learned)
+Magnitude (Optuna)
+×
+∆h = a · scale · uj
+B. DDO Optimization
+Batched Data
+Harmful + Harmless Prompts
+Lrefuse (Cross-Entropy)
+Maintain refusal on harmful
+Lretain (KL Divergence)
+Preserve behavior on safe
+Lconfusion (Self-RFA KL)
+Rotate mean-diff ˆd
+Lrefusal_score
+Prevent 1st-token collapse
+Learned: θ={uj} via ∇θ; β, scale via Optuna
+∇θ
+base weights
+frozen
+Orthogonal projection: uj ←uj −(u⊤
+j ˆr)ˆr
+C. Geometric Intuition
+uj
+ˆr
+µsafe
+µharm
+(Undefended)
+µharm
+(Defended)
+ˆdbase
+ˆddef
+ablation residual
+Attacker ablates ˆddef,
+but decoy uj ⊥ˆr means
+true refusal ˆr is preserved.
+α
+Figure 2: DDO overview. (A) Gated decoy architecture: SwiGLU MLP neuron repurposing writes
+ˆrℓinto Wgate/Wup (trigger) and ui ⊥ˆrℓinto Wdown (decoy output); gating silu(βa) · a produces
+harmful-selective shifts. (B) DDO optimizes {ui} via four losses: refusal preservation, benign
+retention, estimator confusion, and first-token anchoring (with β, s tuned by Optuna). (C) The
+defended mean-difference ˆddef rotates toward the decoy subspace; ablating it removes decoys but
+preserves true refusal ˆr.
+where σ is the logistic sigmoid. The sigmoid suppresses the gate for negative refusal coordinates;
+for large positive coordinates, gβ(a) ≈βa2. This produces larger decoy shifts on prompts with
+positive refusal coordinates. DDO estimates ˆrℓvia DIM on post-attention-layernorm activations
+˜xℓ= RMSNorm(hattn
+ℓ
+), the same space that Wgate and Wup read from. The decoy output through
+Wdown writes directly to the residual stream. We parameterize {ui} as unit vectors constrained to
+remain orthogonal to ˆrℓ. We initialize by sampling vi ∼N(0, I), projecting onto ˆr⊥
+ℓ, and orthonor-
+malizing, then gradient-optimize {ui} to maximize estimator confusion.
+Multiple decoy readers.
+With a shared reader and gate, all edited neurons respond through the
+same scalar gβ(aℓ). To obtain more varied responses, DDO (rank K) partitions the n edited neurons
+into K groups. Group g uses a perturbed reader
+qℓ,g =
+ˆrℓ+ γzℓ,g
+∥ˆrℓ+ γzℓ,g∥2
+,
+zℓ,g ⊥ˆrℓ,
+g = 1, . . . , K,
+where zℓ,g is random and γ > 0 controls reader diversity. Its neurons use q⊤
+ℓ,g in the up-projection
+and βgq⊤
+ℓ,g in the gate-projection. Distinct readers allow decoy responses to vary differently across
+prompts; the spectral analysis below explains the resulting tradeoff between strength and rank.
+DDO gradient optimization.
+DDO optimizes decoy directions {ui} via gradient descent through
+the defended model, while all base-model weights remain frozen. Scalar gains (β, s) are treated
+as hyperparameters and tuned via Bayesian hyperparameter search (Optuna; Appendix F.6). The
+optimization minimizes a composite loss over 128 harmful and 128 safe probes:
+L = λrefLrefuse + λretLretain + λconfLconfusion + λrsLrefusal-score,
+(3)
+with λref=λret=λrs=1, λconf tuned per model (Table 13), where (i) Lrefuse (refusal preservation) is
+cross-entropy on harmful prompts toward a refusal continuation; (ii) Lretain (benign retention) is
+KL divergence to the frozen base model on safe prompts; (iii) Lconfusion (estimator confusion) is a
+differentiable self-RFA simulator that re-estimates DIM on the current defended weights, applies
+ablation, and minimizes KL divergence between defended and ablated output logits, pushing the
+estimated DIM direction toward the decoy subspace; and (iv) Lrefusal-score (first-token anchoring) is
+a first-token logit margin between refusal-prefixed tokens ({I, Sorry, cannot}) and compliance-
+prefixed tokens ({Sure, Here}). Without this term, the model can satisfy sequence-level losses
+by emitting a compliance token followed by a mid-sentence pivot to refusal (“Sure, I’d be happy
+to...actually I cannot”), a degenerate solution that does not produce genuine refusal at generation
+5
+
+time (Appendix D.1). After each gradient step, we re-project each ui onto ˆr⊥
+ℓ, Gram-Schmidt
+orthogonalize the decoy directions within each layer, and renormalize. For one hyperparameter
+configuration, including direction estimation, optimization, and weight surgery, DDO takes ∼2
+minutes per optimization run on a single A100 GPU.
+Compile mode.
+DDO parameters are compiled into model weights using either replace mode
+(overwriting neuron weights for a stronger decoy signal) or additive mode (superposing the decoy
+on original weights, preserving the neuron’s original computation). The preferred mode is model-
+specific: replace is preferred on Yi [27], Llama-3, and GLM-4 [28]; additive on Gemma-2 [29],
+Qwen3 [30], and Mistral [31] (Appendix F.4).
+Layer placement.
+DDO decoys must be placed at or before the model’s causal refusal zone—the
+layers whose ablation causally reduces refusal (Appendix F.3). We say refusal is localized when
+ablating any single layer in this zone causes near-complete refusal loss, and distributed when refusal
+is redundant across many layers so that ablating any one only partially reduces it. Placing decoys
+inside the causal zone can disrupt baseline refusal and increase vulnerability under attack on models
+with localized refusal. Upstream placement preserves refusal while still contaminating the attacker’s
+estimator. On models with distributed or sparse refusal patterns (Yi, Llama-2 [32]), placement has
+less impact (Appendix F.5).
+Spectral analysis of contrastive ablation.
+DDO aims to make decoy signals dominate the harmful–
+safe contrast. We analyze this effect through the overlap between the attacker’s selected directions and
+the refusal subspace. The results proceed in three steps: a general overlap bound, its specialization to
+DDO, and a design rule for distributing decoy strength.
+Fix a layer and token position, and suppress their indices. Let R ⊆Rd be the causal refusal subspace,
+with orthogonal projector ΠR. A contrastive attacker forms C ∈Rd×N and ablates its top-k left
+singular directions. Write
+Πk(C) ≜Qk(C)Qk(C)⊤,
+where Qk(C) contains those k singular vectors. Standard rank-1 DIM uses the single-column matrix
+C = d; a higher-rank SVD attack uses per-sample harmful–safe contrasts as columns. The overlap
+∥ΠRΠk(C)∥op lies in [0, 1]: zero means the subspaces are orthogonal, and one means they share a
+direction. We write σj(C) for the j-th largest singular value, ∥· ∥op for the matrix operator norm,
+and ∥· ∥F for the Frobenius norm.
+Theorem 1 (Subspace overlap bound). For 1 ≤k ≤min(d, N) with σk(C) > 0, the attacker’s
+ablation subspace satisfies
+∥ΠRΠk(C)∥op ≤
+∥ΠRC∥op
+σk(C)
+.
+(4)
+The numerator measures the refusal signal in the contrast; the denominator is the strength of the
+weakest singular direction the attacker selects. A small ratio therefore implies little refusal overlap.
+DDO seeks to strengthen the contrast along decoy directions while preserving the underlying refusal
+computation.
+Decoy contrast decomposition.
+For DDO, decompose the defended contrast into a decoy compo-
+nent and a remainder:
+Cθ = Dθ + Sθ,
+Dθ = UAθ.
+The columns of U ∈Rd×m are m orthonormal decoy write directions. The decoy response matrix
+Aθ ∈Rm×N records their contributions across contrast samples: Aθ[i, j] is the coefficient of ui in
+the j-th decoy contrast. The remainder Sθ contains all other contributions. Define
+ρ ≜∥Sθ∥op,
+ρR ≜∥ΠRSθ∥op,
+the total residual magnitude and its refusal component, respectively.
+Theorem 2 (Overlap bound under orthogonal decoys). For the decomposition above, assume U ⊤U =
+Im and ΠRU = 0. If 1 ≤k ≤min(m, N) and σk(Aθ) > ρ, then
+∥ΠRΠk(Cθ)∥op ≤
+ρR
+σk(Aθ) −ρ.
+(5)
+6
+
+The denominator is a spectral margin: the k-th decoy mode must exceed the residual magnitude. At
+fixed ρR, a larger margin gives a smaller overlap bound. The idealized orthogonality condition puts
+all refusal signal in Sθ; DDO approximates it by enforcing ui ⊥ˆrℓ.
+For an overlap tolerance 0 < ε < 1, define the effective decoy rank
+reff(ε) ≜#
+n
+1 ≤j ≤min(m, N) : σj(Aθ) > ρ + ρR
+ε
+o
+.
+For a fixed contrast matrix, this counts the decoy modes strong enough to keep overlap at most ε:
+Theorem 2 applies to every 1 ≤k ≤reff(ε). Adaptive RFA changes the contrast after each phase, so
+reff is a diagnostic for interpreting phase budgets, rather than a guarantee for iterative re-estimation.
+Decoy energy allocation.
+Shared readers produce responses that vary together, so adding write
+directions alone need not create additional strong decoy modes. The diversified readers introduced
+above allow several modes, but a fixed energy budget limits their individual strength.
+Corollary 3 (Optimal spectrum under an energy constraint). For Aθ ∈Rm×N, 1 ≤k ≤min(m, N),
+and ∥Aθ∥F ≤B, we have σk(Aθ) ≤B/
+√
+k. The bound is attained by allocating equal energy to
+the first k singular modes:
+σ1(Aθ) = · · · = σk(Aθ) = B
+√
+k
+,
+σj(Aθ) = 0
+(j > k).
+For rank-1 protection, concentrating energy gives the strongest possible leading decoy mode. Protect-
+ing against larger ranks requires sharing that energy across more modes, each of which is weaker. This
+strength–rank tradeoff motivates DDO’s K reader groups. Proofs are in Appendix E.1; Appendix E.2
+discusses the broader attacker–defender interaction.
+Orthogonal debiasing (utility repair).
+DDO can introduce mild over-refusal [33] on some models.
+We repair this with orthogonal debiasing: projecting out an over-refusal direction ˆv estimated from
+benign prompts the model incorrectly refuses [34, 35]. For matrices where the residual stream is
+the input dimension (Wgate, Wup): W′ = W −(Wˆv)ˆv⊤. For matrices where the residual stream
+is the output dimension (Wo, Wdown): W′ = W −ˆv(ˆv⊤W). We apply this to Wemb, Wo, and
+Wdown.
+4
+Experiments and Results
+4.1
+Experimental Setup
+DDO edits are applied to model weights before deployment; the defended checkpoint incurs no
+architectural or runtime overhead. We compare against trained baselines under the same evaluation
+protocol. For all defenses, we report (i) utility and benign compliance without attack, and (ii)
+robustness under our attack ladder (standard RFA, adaptive multi-phase RFA, and Heretic; Section 2).
+Full settings, hyperparameters, and per-model configs are in Appendix F.2.
+Models and baselines.
+Our primary evaluation uses Llama-3-8B-Instruct with the full attack ladder
+and baseline comparison. On Llama-3, we compare against six trained defenses using publicly
+released checkpoints: Circuit Breakers [9], LAT [10], ReFAT [11], RepBend [12], Triplet, and Triplet-
+Adv [13]. For cross-model generalization, we evaluate DDO on five additional instruction-tuned
+model families and compare against four trained baselines (Circuit Breakers, RepBend, LAT, ReFAT)
+with small hyperparameter sweeps (3–5 configs per defense per model; Appendix F.8). Seven further
+models are evaluated with DDO only (Appendix F.15).
+Evaluation protocol.
+All generations use deterministic greedy decoding on a single A100 GPU.
+Hyperparameter tuning and DIM estimation use a held-out validation split (128 harmful + 128 safe
+probes); all reported metrics are on held-out test sets. We report knowledge accuracy (MMLU [36],
+5-shot), conversational quality (MT-Bench [37]), over-refusal on prompts that superficially resemble
+harmful ones (XSTest [38], 250 such prompts, GPT-4o judge), and robustness under DirectRequest
+(harmful prompts sent directly), four standard-RFA variants (Section 2), adaptive multi-phase RFA (up
+to 8 phases), Heretic (200 trials), and prompt-level jailbreaks (HumanJailbreaks, GCG [22], PAIR [23],
+7
+
+Table 2: Main defense comparison on Llama-3-8B-Instruct. ASR (%, 3-judge avg). MT-B =
+MT-Bench; XST = XSTest; DR = DirectRequest. RFA: 3p/rs = three-point/residual-stream; J/H =
+JailbreakBench/HarmBench. H-200 = Heretic at 200 trials. † = post-attack generation degradation
+(Appendix F.1).
+best / good / poor / ours . DDO matches trained baselines on standard RFA
+(1.8% avg) at 30–450× lower cost per configuration without finetuning.
+Utility ↑
+Direct
+RFA ASR ↓
+Heretic ↓
+Defense
+Type
+MMLU
+MT-B
+XST
+DR↓
+3p-J
+rs-J
+3p-H
+rs-H
+Avg
+H-200
+Base
+–
+68.1
+7.89
+94.8
+3.8
+86.0
+84.0
+87.2
+83.2
+85.1
+88.7
+Circuit Breakers
+Trained
+67.6
+7.73
+95.6
+11.3
+0.0
+1.7
+0.0
+2.7
+1.1
+24.0
+LAT
+Trained
+67.8
+7.52
+20.8
+0.0
+10.7
+4.7
+8.0
+3.8
+6.8
+82.3
+ReFAT
+Trained
+67.2
+7.37
+60.4
+0.0
+3.7
+3.3
+5.2
+5.5
+4.4
+85.3
+RepBend
+Trained
+64.4
+7.69
+98.4
+0.0
+6.0
+4.7
+4.0
+4.4
+4.8
+1.3
+Triplet
+Trained
+67.7
+7.78
+98.0
+0.0
+14.0
+17.3
+20.1
+20.8
+18.1
+0.0†
+Triplet-Adv
+Trained
+65.6
+7.47
+96.8
+25.6
+8.7
+3.7
+12.2
+6.3
+7.7
+30.0†
+DDO
+Ours
+66.8
+7.38
+91.6
+0.4
+2.3
+0.3
+4.4
+0.0
+1.8
+18.0
+DDO + debiasing
+Ours
+66.8
+7.56
+99.2
+0.4
+0.7
+0.0
+3.4
+0.0
+1.0
+22.3
+AutoDAN [24]). Unless otherwise specified, ASR is averaged over three judges: HarmBench
+classifier [5], LlamaGuard-2 [39], and StrongREJECT [40]. Configurations that fail a coherence
+check (non-empty, non-degenerate, minimum-length outputs on 10 benign prompts) are marked
+“×” and excluded. Full details on decoding, DIM estimation, splits, and benchmark settings are in
+Appendix F.7.
+4.2
+Results
+Standard RFA and Heretic on Llama-3.
+Table 2 compares DDO against six trained baselines on
+Llama-3-8B-Instruct. DDO here denotes DDO (rank 1): one decoy neuron per layer with a single
+shared reader ˆrℓ. DDO + debiasing adds orthogonal debiasing (Section 3) to repair over-refusal.
+On standard RFA, DDO achieves 1.8% mean ASR, comparable to the strongest trained baselines
+while requiring no finetuning and ∼2 minutes per optimization run. Several trained defenses reduce
+ASR partly by over-refusing (LAT: 20.8% XSTest; ReFAT: 60.4%), while DDO preserves 91.6%.
+Adding orthogonal debiasing restores XSTest to 99.2% and improves standard RFA further (mean
+ASR 1.0%). Under Heretic [14] (weight-level attack), DDO achieves 18% H-200 ASR; a gap to
+trained RepBend (1.3%) remains, consistent with trained defenses distributing refusal more diffusely
+across parameters.
+Adaptive multi-phase RFA.
+Under adaptive multi-phase RFA (phases t=1, . . . , 8), all evaluated
+defenses degrade as the attacker re-estimates. Worst-case ASR across phases is comparable across
+the strongest defenses: RepBend [12] 58%, ReFAT [11] 60%, DDO (rank 8) 65%, with Circuit
+Breakers [9] weaker at 75%. We track ASR jointly with utility (MT-Bench [37]; Figure 3) because
+ASR alone can be misleading—a defense can lower ASR by degrading generation rather than refusing.
+At Phase 8, DDO (rank 8) preserves MT-Bench at 5.82, comparable to RepBend (6.17) and Circuit
+Breakers (5.90), and substantially better than ReFAT, which collapses to 4.01 (Appendix Table 17).
+DDO therefore lands in the same operating regime as the strongest gradient-trained defenses on both
+worst-case ASR and utility under sustained adaptive attack, despite requiring no finetuning (Appendix
+Figure 4).
+Cross-model generalization and baseline comparison.
+To test generalization, we apply DDO to
+five additional model families (Yi-1.5, Qwen3, Gemma-2, Mistral, and GLM-4) and compare against
+four trained baselines per model (Table 3; Appendix F.8).
+Across all six models, DDO achieves < 10% mean standard-RFA ASR without base-model finetuning.
+On Qwen3 and GLM-4, DDO achieves the lowest RFA ASR among utility-preserving defenses. On
+Gemma-2, DDO matches LAT’s 0% RFA while preserving higher benign compliance (83.2% vs.
+51.2% XSTest). DDO also reduces DirectRequest compliance on models with weaker native refusal
+(Yi: 27% →5%; Mistral: 41% →6%; GLM-4: 26% →0.3%). Beyond these six families, DDO
+8
+
+0
+20
+40
+60
+80
+ASR (%) ↓
+Base (undefended)
+RepBend
+Circuit Breakers
+ReFAT
+DDO rank 8 (ours)
+DDO rank 8, Optuna (ours)
+0
+1
+2
+3
+4
+5
+6
+7
+8
+Adaptive Attack Phase
+2
+4
+6
+8
+MT-Bench ↑
+usable
+Figure 3: Adaptive RFA on Llama-3-8B (8 phases). Top: attack success rate (↓). Bottom: model
+quality (↑). All defenses see rising ASR under sustained re-estimation: DDO (green) remains coherent
+(MT-Bench ≥5.82) but ultimately leaks, while ReFAT (red) attains low ASR partly by collapsing
+quality to 2.46 at Phase 1.
+transfers to seven additional models with per-model Optuna tuning (∼10 min each), achieving <10%
+ASR on all of them (Appendix F.15). A DDO optimization run takes ∼2 minutes on a single A100
+GPU, giving a 30–450× per-configuration cost advantage over trained baselines (1–15 A100-hours
+each).
+Compile-mode selection.
+For each model, we sweep both compile modes (replace and additive)
+with 15 Optuna trials per mode (Table 10; Appendix Table 13). Replace mode overwrites the neuron’s
+original weights with the decoy, producing a stronger signal but removing the neuron’s original
+computation; additive mode superposes the decoy on top, preserving the original behavior at the cost
+of a weaker decoy. The preferred mode depends on how each model’s refusal circuitry responds to
+neuron overwriting: replace is preferred on Yi, Llama-3, and GLM-4 (where the model compensates
+for the lost neuron), while additive is preferred on Gemma-2 (replace fails the coherence check),
+Qwen3, and Mistral (replace disrupts baseline refusal). See Appendix F.4 for a detailed analysis.
+Prompt-level jailbreaks.
+Although DDO targets mechanistic refusal removal, we also evaluate
+it against prompt-level attacks that operate purely at the input level (Table 4). DDO + debiasing
+achieves 0.4% GCG [22] ASR, matching the best trained defenses, and 1.2% on HumanJailbreaks.
+A plausible explanation is that optimization-based prompt attacks like GCG suppress the same
+low-dimensional refusal feature targeted by RFA [11]; DDO’s decoy neurons partially re-inject
+refusal-correlated signal, making it harder for gradient-based prompt optimization to fully suppress
+refusal. However, semantic attacks like PAIR [23] (36.3% ASR) circumvent refusal through meaning
+rather than activation geometry, and DDO provides no advantage here. Defending against semantic
+jailbreaks requires complementary input-level defenses such as input classifiers.
+4.3
+Ablations
+Table 5 isolates each DDO component on Llama-3-8B-Instruct by removing one element at a time
+from the full configuration. All ablations preserve MMLU within 3 points of the base model.
+Effect of gradient optimization.
+Random orthogonal decoys (no optimization) achieve 72.3%
+ASR—only a modest reduction from the undefended base (85.1%). In contrast, gradient optimization
+9
+
+Table 3: Cross-model baseline comparison (ASR %, 3-judge avg). DR = DirectRequest; RFA = mean
+of 4 variants (three-point/residual-stream × JailbreakBench/HarmBench). Cost: A100 wall-clock
+time per run (single config). best / good / poor / ours . DDO achieves the lowest RFA among
+utility-preserving defenses on 4/5 models at 30–450× lower cost per configuration.
+Model
+Defense
+MMLU↑
+MT-B↑
+XST↑
+DR↓
+RFA↓
+Cost
+Yi-1.5-9B
+Base
+71.3
+7.92
+98.0
+27.0
+84.9
+–
+Yi-1.5-9B
+Circuit Breakers
+71.4
+7.93
+93.6
+50.3
+0.0
+∼1h
+Yi-1.5-9B
+RepBend
+71.1
+8.00
+94.0
+44.3
+0.0
+∼5h
+Yi-1.5-9B
+LAT
+71.3
+1.00
+0.4
+0.0
+0.0
+∼15h
+Yi-1.5-9B
+ReFAT
+70.4
+6.60
+90.0
+0.3
+0.0
+∼8h
+Yi-1.5-9B
+Ours (DDO)
+70.6
+7.78
+93.6
+5.0
+5.0
+∼2m
+Qwen3-8B
+Base
+76.6
+6.78
+94.8
+8.5
+90.7
+–
+Qwen3-8B
+Circuit Breakers
+76.6
+6.85
+98.0
+10.7
+77.6
+∼1h
+Qwen3-8B
+RepBend (D)
+76.7
+6.78
+96.8
+0.3
+24.8
+∼5h
+Qwen3-8B
+LAT (C)
+76.7
+2.35
+0.0
+0.0
+0.0
+∼15h
+Qwen3-8B
+ReFAT (C)
+77.4
+6.12
+97.2
+8.5
+8.4
+∼8h
+Qwen3-8B
+Ours (DDO)
+76.6
+7.15
+100.0
+6.2
+8.0
+∼2m
+Gemma-2-9B
+Base
+73.4
+8.35
+80.4
+1.3
+66.5
+–
+Gemma-2-9B
+Circuit Breakers (B)
+73.4
+8.42
+79.2
+1.3
+65.0
+∼1h
+Gemma-2-9B
+RepBend (D)
+72.5
+8.17
+86.4
+0.0
+5.5
+∼5h
+Gemma-2-9B
+LAT
+73.4
+8.40
+51.2
+0.0
+0.0
+∼15h
+Gemma-2-9B
+ReFAT
+73.4
+7.32
+77.6
+0.0
+7.4
+∼8h
+Gemma-2-9B
+Ours (DDO)
+73.6
+8.43
+83.2
+2.1
+0.0
+∼2m
+Mistral-7B
+Base
+60.1
+7.51
+94.0
+40.6
+86.3
+–
+Mistral-7B
+Circuit Breakers (C)
+59.4
+7.47
+96.0
+0.0
+35.2
+∼1h
+Mistral-7B
+RepBend
+60.0
+7.51
+94.0
+18.9
+81.0
+∼5h
+Mistral-7B
+LAT (C)
+57.5
+7.64
+63.6
+0.0
+4.2
+∼15h
+Mistral-7B
+ReFAT (C)
+61.0
+6.58
+96.0
+41.5
+57.6
+∼8h
+Mistral-7B
+Ours (DDO)
+60.1
+7.51
+92.0
+5.7
+0.0
+∼2m
+GLM-4-9B
+Base
+70.3
+7.78
+96.8
+26.1
+87.0
+–
+GLM-4-9B
+Circuit Breakers (D)
+70.1
+7.73
+96.0
+8.5
+6.5
+∼1h
+GLM-4-9B
+RepBend
+69.7
+7.64
+98.4
+0.0
+13.3
+∼5h
+GLM-4-9B
+LAT (C)
+70.1
+7.67
+84.4
+5.7
+59.2
+∼15h
+GLM-4-9B
+ReFAT
+69.2
+2.84
+95.6
+18.2
+52.9
+∼8h
+GLM-4-9B
+Ours (DDO)
+70.3
+7.78
+90.8
+0.3
+2.0
+∼2m
+under the full 4-part objective reduces ASR to 1.8%, confirming that orthogonality alone is insufficient:
+decoys must be optimized to dominate the harmful–safe contrast that the attacker re-estimates.
+Loss components.
+The confusion loss Lconfusion and refusal-score loss Lrefusal-score are the most
+critical terms: removing either increases ASR to 43.2% and 41.8% respectively. The confusion loss
+directly optimizes decoy directions to mislead the DIM estimator, while the refusal-score loss prevents
+first-token collapse (“Sure ...” followed by refusal). The retain KL term stabilizes optimization
+(ASR 22.4% without it) but is less critical on its own.
+Neuron selection and compile mode.
+Low-norm neuron selection outperforms random neuron
+choice (ASR 1.8% vs. 15.3%), supporting our design choice to edit low-impact units to reduce utility
+disruption while maintaining decoy strength. On Llama-3, replace mode outperforms additive (ASR
+1.8% vs. 16.5%), but this preference is model-specific (Appendix F.4). Finally, layer placement
+upstream of the causal refusal zone is critical on models with localized refusal (Appendix F.5).
+Alternative defense mechanisms.
+We evaluated 14 additional post-hoc mechanisms beyond DDO
+(Appendix Table 19). Linear defenses are brittle under re-estimation: Decoy Shear Transform (92%
+ASR), Refusal Direction Rotation (68%), and Representation Rerouting (86%) are all defeated once
+the attacker recomputes DIM on the defended checkpoint. Aggressive edits (e.g., LM-Head Row
+Scaling) can drive RFA ASR near zero but at catastrophic utility cost (XSTest 8%, MT-Bench 1.72).
+Finally, spreading decoy energy across more directions involves a tradeoff predicted by Corollary 3:
+10
+
+Table 4: Prompt-level jailbreak ASR (%↓, 3-judge avg, HarmBench). HJB = HumanJailbreaks;
+ADAN = AutoDAN. best / good / poor / ours . DDO + debiasing matches the best trained
+defenses on GCG (0.4%); PAIR remains high (36.3%).
+Defense
+Type
+HJB↓
+GCG↓
+PAIR↓
+ADAN↓
+Base
+–
+2.9
+27.7
+55.1
+0.4
+CB
+Trained
+8.2
+3.8
+32.1
+5.7
+LAT
+Trained
+0.0
+8.0
+34.6
+0.0
+ReFAT
+Trained
+0.0
+30.6
+30.0
+0.0
+RepBend
+Trained
+0.1
+0.6
+38.8
+0.2
+Triplet
+Trained
+0.0
+0.4
+39.8
+0.0
+Tri-Adv
+Trained
+20.9
+22.2
+43.6
+20.8
+DDO
+Ours
+1.2
+1.7
+37.5
+0.0
++debias
+Ours
+1.2
+0.4
+36.3
+0.0
+Table 5: DDO ablation on Llama-3-8B-Instruct. RFA ASR = mean of 4 variants, 3-judge avg (%).
+best / good / poor / ours . All components contribute; confusion and refusal-score losses are
+most critical.
+Ablation
+RFA↓
+MMLU↑
+XST↑
+Base (no defense)
+85.1
+68.1
+94.8
+Random orth. decoys
+72.3
+67.9
+99.6
+w/o confusion loss
+43.2
+66.5
+82.0
+w/o refusal-score
+41.8
+66.7
+90.0
+w/o retain KL
+22.4
+65.8
+86.4
+Additive (vs. replace)
+16.5
+66.8
+82.8
+Random neurons
+15.3
+65.2
+79.2
+DDO full
+1.8
+66.8
+91.6
+diversified readers weaken rank-1 protection (ASR rises from 10% to 27% as the number of decoy
+groups K increases from 1 to 4) but strengthen higher-rank robustness (rank-16 ASR drops from 5%
+to 2%). The optimal K depends on the expected attacker rank budget (Appendix E.3).
+Cross-architecture mechanism comparison.
+We evaluated 8 post-hoc mechanisms across all
+7 models (10–30 Optuna trials each; Appendix F.12). DDO is the only single mechanism that
+achieves < 10% ASR reliably across all architectures. Other mechanisms are individually weak
+(e.g., gate_boost: 56–81% ASR) or break generation on most models (diverse Q-head routing,
+rotation, V-projection, head amplification, and KV strengthening all fail the coherence check on Yi,
+Gemma-2, and GLM-4). Even random orthogonal decoys without gradient optimization fail on 5 of 7
+models (18–53% ASR). This supports the core DDO design: nonlinear SwiGLU gating plus gradient
+optimization (and per-model compile-mode selection) are jointly necessary for cross-architecture
+robustness. Full mechanism definitions are in Appendix D.2.
+4.4
+Discussion
+The role of nonlinearity.
+Adaptive multi-phase RFA repeatedly estimates a linear DIM direction
+on the defended checkpoint. DDO’s SwiGLU gate makes the decoy response depend on the prompt:
+writing a ≜⟨ˆrℓ, ˜xℓ⟩, the decoy amplitude scales as silu(βa) · a and behaves like βa2 for large positive
+a. The prompt-dependent decoy response can bias the DIM estimate toward the decoy subspace.
+Theorems 1 and 2 characterize the resulting subspace overlap under their stated assumptions.
+Resistance to DDO undo attacks.
+A defense-aware attacker may try to undo DDO by identify-
+ing edited neurons. Let ˆrclean denote the reference refusal direction and ˆdatk the DIM direction
+the attacker estimates on the defended checkpoint. The attacker scores each MLP gate row by
+si ≜|⟨w(i)
+gate, ˆdatk⟩| and zeros the down-projection columns corresponding to the highest-scoring
+11
+
+rows. This would work if ˆdatk ≈ˆrclean, since DDO writes ˆrclean-aligned triggers into gate rows. In-
+stead, estimator corruption rotates ˆdatk away from ˆrclean, so edited neurons are not salient under this
+score. Across Qwen3, Mistral-7B, and Yi, mid-zone target layers satisfy cossim(ˆrclean, ˆdatk) ≈0 and
+the modified rows’ scores fall within the natural top-5 distribution. The evaluated undo heuristics pro-
+vide partial recovery, with ASR remaining below the undefended model in Table 21 (Appendix F.16).
+ASR ranges from 6% to 12% without a sustained increase as the attacker’s probe budget grows
+from 32 to 1024 prompts per class (Appendix F.18). Under rank-k SVD attacks, DDO with a single
+reader is effective at rank 1 (4% ASR) but degrades at higher ranks (39% at k=16; Appendix F.17).
+Diversifying readers across K groups extends higher-rank protection at the cost of rank-1 strength, as
+predicted by Corollary 3 (Appendix E.3).
+Comparison with trained defenses.
+On standard RFA, DDO matches the strongest trained base-
+lines across five model families (Table 3) at 30–450× lower cost per configuration. Under Heretic on
+Llama-3, DDO alone (18%) remains weaker than RepBend [12] (1.3%). A plausible explanation is
+entanglement: gradient-based training can distribute refusal across many parameters jointly, while
+closed-form edits are easier to localize and therefore easier to target with weight-level attacks.
+5
+Conclusion and Limitations
+Existing defenses against refusal ablation require gradient-based training per checkpoint, creating
+a bottleneck for the open-weight release cycle. DDO demonstrates that a mechanistic alternative—
+repurposing MLP neurons to corrupt the attacker’s contrastive estimator—can match trained baselines
+on standard RFA across six model families at 30–450× lower cost per configuration. The key
+insight is that contrastive attacks are only as good as the contrast they estimate: by injecting a large,
+harmful-selective, refusal-orthogonal decoy signal, DDO forces the attacker to ablate decoys rather
+than genuine refusal.
+DDO requires only a small generic probe set (128 harmful + 128 safe prompts), gradient optimization
+of the decoy parameters (base weights frozen, so memory overhead beyond inference is minimal),
+and a single GPU—no full finetuning infrastructure, no method-specific safety datasets, and few
+design decisions beyond compile mode and layer range. This makes it applicable by any party with
+access to the weights: model providers before release, downstream deployers, safety auditors, or
+automated agents. The feedback loop is fast (minutes per optimization run) and defense strength
+is controllable via compile mode and scalar gains (β, s), making DDO well-suited to agent-driven
+safety pipelines that iteratively harden and evaluate checkpoints.
+Limitations and future work.
+DDO improves resistance to refusal ablation, but sustained adaptive
+re-estimation remains a challenge for all evaluated defenses. DDO can also increase over-refusal
+on some models, although orthogonal debiasing and compile-mode selection mitigate this effect
+(Appendix A). Future work could investigate post-hoc edits that distribute refusal behavior more
+broadly across parameters to improve robustness to weight-level attacks. Evaluating DDO alongside
+inference-time guardrails, such as Llama Guard, would help establish whether these approaches
+provide complementary protection.
+Acknowledgments
+The authors thank Tatiana Gaintseva, Rebecca Portnoff, and the team at THORN for valuable
+discussions. Aashiq Muhamed is grateful for support from the Amazon AI Ph.D. Fellowship, the
+Cooperative AI PhD Fellowship, the ML Alignment and Theory Scholars (MATS) Program, and the
+Supervised Program for Alignment Research (SPAR).
+References
+[1] Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela Mishkin,
+Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, et al. Training language models to
+follow instructions with human feedback. Advances in neural information processing systems,
+35:27730–27744, 2022.
+12
+
+[2] Yuntao Bai, Saurav Kadavath, Sandipan Kundu, Amanda Askell, Jackson Kernion, Andy Jones,
+Anna Chen, Anna Goldie, Azalia Mirhoseini, Cameron McKinnon, et al. Constitutional AI:
+Harmlessness from AI feedback. arXiv preprint arXiv:2212.08073, 2022.
+[3] Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano Ermon, Christopher D. Manning, and
+Chelsea Finn. Direct preference optimization: Your language model is secretly a reward model.
+arXiv preprint arXiv:2305.18290, 2023.
+[4] Laura Weidinger, Jonathan Uesato, Maribeth Rauh, Conor Griffin, Po-Sen Huang, John Mellor,
+Amelia Glaese, Myra Cheng, Borja Balle, Atoosa Kasirzadeh, et al. Taxonomy of risks posed
+by language models. In Proceedings of the 2022 ACM conference on fairness, accountability,
+and transparency, pages 214–229, 2022.
+[5] Mantas Mazeika, Long Phan, Xuwang Yin, Andy Zou, Zifan Wang, Norman Mu, Elham
+Sakhaee, Nathaniel Li, Steven Basart, Bo Li, et al. HarmBench: A standardized evaluation
+framework for automated red teaming and robust refusal. arXiv preprint arXiv:2402.04249,
+2024.
+[6] Andy Zou, Long Phan, Sarah Chen, James Campbell, Phillip Guo, Richard Ren, Alexander Pan,
+Xuwang Yin, Mantas Mazeika, Ann-Kathrin Dombrowski, et al. Representation engineering: A
+top-down approach to AI transparency. arXiv preprint arXiv:2310.01405, 2023.
+[7] Andy Arditi, Oscar Obeso, Aaquib Syed, Daniel Paleka, Nina Panickssery, Wes Gurnee, and
+Neel Nanda. Refusal in language models is mediated by a single direction. Advances in Neural
+Information Processing Systems, 37:136037–136083, 2024.
+[8] Bahrad A. Sokhansanj. Uncensored AI in the wild: Tracking publicly available and locally
+deployable LLMs. Future Internet, 17(10):477, 2025.
+[9] Andy Zou, Long Phan, Justin Wang, Derek Duenas, Maxwell Lin, Maksym Andriushchenko,
+Rowan Wang, Zico Kolter, Matt Fredrikson, and Dan Hendrycks. Improving alignment and
+robustness with circuit breakers. Advances in Neural Information Processing Systems, 37:
+83345–83373, 2024.
+[10] Stephen Casper, Lennart Schulze, Oam Patel, and Dylan Hadfield-Menell. Defending against
+unforeseen failure modes with latent adversarial training. arXiv preprint arXiv:2403.05030,
+2024.
+[11] Lei Yu, Virginie Do, Karen Hambardzumyan, and Nicola Cancedda. Robust LLM safeguarding
+via refusal feature adversarial training. arXiv preprint arXiv:2409.20089, 2024.
+[12] Ashkan Yousefpour, Taeheon Kim, Ryan Sungmo Kwon, Seungbeen Lee, Wonje Jeung, Seungju
+Han, Alvin Wan, Harrison Ngan, Youngjae Yu, and Jonghyun Choi. Representation bending for
+large language model safety. In Proceedings of the 63rd Annual Meeting of the Association for
+Computational Linguistics (Volume 1: Long Papers), pages 24073–24098, 2025.
+[13] Samuel Simko, Mrinmaya Sachan, Bernhard Schölkopf, and Zhijing Jin. Improving large
+language model safety with contrastive representation learning. In Proceedings of the 2025
+Conference on Empirical Methods in Natural Language Processing, pages 28154–28182, 2025.
+[14] Philipp Emanuel Weidmann. Heretic: Fully automatic LLM abliteration. https://github.
+com/p-e-w/heretic, 2025. Open-source tool, GNU AGPL-3.0-or-later.
+[15] Luke
+Emberson.
+Open-weight
+models
+lag
+state-of-the-art
+by
+around
+3
+months
+on
+average,
+2025.
+URL
+https://epoch.ai/data-insights/
+open-weights-vs-closed-weights-models/. Accessed: 2026-05-01.
+[16] Jean-Stanislas Denain.
+Models with downloadable weights currently lag behind
+the
+top-performing
+models,
+2025.
+URL
+https://epoch.ai/data-insights/
+open-vs-closed-model-performance. Accessed: 2026-05-01.
+[17] Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian,
+Ahmad Al-Dahle, Aiesha Letman, Akhil Mathur, Alan Schelten, Alex Vaughan, et al. The
+Llama 3 herd of models. arXiv preprint arXiv:2407.21783, 2024.
+13
+
+[18] Tom Wollschläger, Jannes Elstner, Simon Geisler, Vincent Cohen-Addad, Stephan Günnemann,
+and Johannes Gasteiger. The geometry of refusal in large language models: Concept cones and
+representational independence. arXiv preprint arXiv:2502.17420, 2025.
+[19] Faaiz Joad, Majd Hawasly, Sabri Boughorbel, Nadir Durrani, and Husrev Taha Sencar.
+There is more to refusal in large language models than a single direction. arXiv preprint
+arXiv:2602.02132, 2026.
+[20] Wenbo Pan, Zhichao Liu, Qiguang Chen, Xiangyang Zhou, Haining Yu, and Xiaohua Jia. The
+hidden dimensions of LLM alignment: A multi-dimensional analysis of orthogonal safety
+directions. arXiv preprint arXiv:2502.09674, 2025.
+[21] Jiachen Zhao, Jing Huang, Zhengxuan Wu, David Bau, and Weiyan Shi.
+LLMs encode
+harmfulness and refusal separately. arXiv preprint arXiv:2507.11878, 2025.
+[22] Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr, J Zico Kolter, and Matt Fredrikson.
+Universal and transferable adversarial attacks on aligned language models. arXiv preprint
+arXiv:2307.15043, 2023.
+[23] Patrick Chao, Alexander Robey, Edgar Dobriban, Hamed Hassani, George J Pappas, and
+Eric Wong. Jailbreaking black box large language models in twenty queries. In 2025 IEEE
+Conference on Secure and Trustworthy Machine Learning (SaTML), pages 23–42. IEEE, 2025.
+[24] Xiaogeng Liu, Nan Xu, Muhao Chen, and Chaowei Xiao. AutoDAN: Generating stealthy
+jailbreak prompts on aligned large language models. In International Conference on Learning
+Representations (ICLR), 2024.
+[25] Patrick Chao, Edoardo Debenedetti, Alexander Robey, Maksym Andriushchenko, Francesco
+Croce, Vikash Sehwag, Edgar Dobriban, Nicolas Flammarion, George J Pappas, Florian Tramer,
+et al. JailbreakBench: An open robustness benchmark for jailbreaking large language models.
+Advances in Neural Information Processing Systems, 37:55005–55029, 2024.
+[26] Takuya Akiba, Shotaro Sano, Toshihiko Yan

@@ -1,0 +1,116 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.16349
+Type: PDF
+Pattern: HRCI[a-z]*\s+falls|not\s+a\s+safety\s+score|0\.0784|0\.0205 (10 matches in 52796 chars)
+
+--- Content ---
+
+1311:...fulness-
+only interventions, while the two carriers remain nearly orthogonal.
+The main result is a
+coupling-regime transition in R2D2. The primary direct-coupling metric, the representational
+Harmfulness–Refusal Coupling Index (HRCIrepr), drops from 0.0784 at step 50 to 0.0205 at step
+500, while fixed-source attack success rate (ASR) rises from 0 to 0.25, XSTest refusal falls from
+1.00 to 0.228, and benign helpfulness recovers from 0 to 1.12 on a 0–2 scale. SFT supplies the
+negative control: its direct-coupling change is ...
+--
+5536:... representational coupling, near-zero fixed-source ASR, saturated XSTest
+refusal, and collapsed benign helpfulness. Later checkpoints have much lower direct coupling, partial
+utility recovery, and reopened attack success. In the five-anchor summary, HRCIrepr falls from 0.0784
+at step 50 to 0.0205 at step 500, while fixed-source ASR rises from 0 to 0.25 and benign helpfulness
+rises from 0 to 1.12 on a 0–2 scale. SFT prevents the simple interpretation that lower coupling
+means greater safety: its HRCIrepr changes only weakly, yet it remains hi...
+--
+27141:...t-
+coupling metric in Eq. (9); full HRCI is retained as the continuity parameterization in Eq. (12).
+Regime Anchor
+HRCIrepr
+Full HRCI
+Fixed ASR
+XSTest refusal
+StrongREJECT
+Benign help.
+R2D2
+Reference
+0.0674
+0.0886
+0.0000
+1.0000
+0.1262
+0.0000
+Step 50
+0.0784
+0.0898
+0.0000
+1.0000
+0.1220
+0.0000
+Step 100
+0.0662
+0.0877
+0.0000
+1.0000
+0.1707
+0.0000
+Step 250
+0.0206
+0.0166
+0.0350
+0.6640
+0.2484
+0.7833
+Step 500
+0.0205
+0.0165
+0.2500
+0.2280
+0.2638
+1.1167
+SFT
+Reference
+0.0217
+0.0521
+0.6400
+0.2840
+0.2172
+0.8000
+Step 50
+0.0206
+0.0166
+0.5050
+0.0640
+0.3216
+1.1667
+Step 100
+0.0200
+0.0161
+0.5700
+0.0800
+0.3952
+1.2167
+Step 250
+0.0191
+0.0153
+0.5875
+0.0760
+0.4530
+1.2667
+Step 5...
+--
+28287:...hor Mistral trajectory, with the original full HRCI retained as a
+continuity column. The strongest pattern is the R2D2 transition between steps 100 and 250. Direct
+representational coupling is relatively higher at the early R2D2 anchors: HRCIrepr is 0.0784 at step
+50, while fixed-source ASR remains 0 and XSTest refusal is saturated at 1.00. Benign helpfulness
+is also 0, so this early state is robust-looking but not useful. By step 500, HRCIrepr has fallen to
+0.0205, a 73.9% drop from step 50. At the same checkpoint, fixed-source ASR has reopened to
+0.2500, XSTest refusal has fallen to 0.2280, and benign helpfulness has recovered to 1.1167 on a 0–2
+scale. The full HRCI continuity value shows the same direction,...
+--
+29223:...T reaches full-HRCI values
+close to late R2D2 by step 50, but it remains high-ASR throughout the five-anchor window. Its
+direct-coupling change is also much smaller: HRCIrepr moves from 0.0217 at reference to 0.0190 at
+step 500. Thus low coupling is not a safety score. The useful signal is the regime transition: in
+R2D2, direct coupling changes jointly with robustness, over-refusal, and benign utility; in SFT, low
+coupling coexists with persistent vulnerability.
+4.4
+RQ4: Does the conclusion depend on a few anchor...

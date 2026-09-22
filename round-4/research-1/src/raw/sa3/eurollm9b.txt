@@ -1,0 +1,61 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2506.04079
+Type: PDF
+Pattern: EuroLLM-1.7B|1.7B (6 matches in 147465 chars)
+
+--- Content ---
+
+4214:...n mind, we added support for 11 additional lan-
+guages (Arabic, Catalan, Chinese, Galician, Hindi, Japanese, Korean, Norwegian, Russian, Turkish,
+and Ukrainian). Our journey began with the release of EuroLLM-1.7B (Martins et al., 2024), a com-
+pact yet powerful model that excels in machine translation and performs competitively on general
+benchmarks. Building on this foundation, we now introduce the technical...
+--
+8874:...meters
+8.105B
+Total Parameters
+9.153B
+Table 1: EuroLLM-9B hyperparameters.
+EuroLLM-9B uses a standard, dense Trans-
+former architecture (Vaswani et al., 2017)
+with the same design choices as EuroLLM-
+1.7B (Martins et al., 2024).
+• We use grouped query attention (GQA;
+Ainslie et al. (2023)) with 8 key-value
+heads, which has been demonstrated to
+enhance inference speed while preserving
+downstream perfor...
+--
+11123:...: Annealing to Zero. During the final phase, the learning rate decays linearly to
+zero over a brief period, corresponding to about 40 billion tokens. This phase is a novelty
+of EuroLLM-9B compared to EuroLLM-1.7B (Martins et al., 2024).
+We will describe next the data used in these three phases.
+2.4
+DATA
+To train EuroLLM-9B, we collect and filter data from various sources for all supported languages.
+The data ...
+--
+11554:...inal corpus can be categorized into four main types: web data, parallel
+data, code / math data, and higher-quality data. The data distribution for the first two phases is kept
+the same as that of the 1.7B model. Figure 3 illustrates the distribution of these categories across the
+three pre-training phases.
+2.4.1
+DATA COLLECTION AND FILTERING (EUROFILTER)
+Web Data
+For web data collection, we employ dif...
+--
+19357:...y maintaining the English allocation but revert-
+ing the multilingual increase done for the 2nd phase. See analysis in §5.1.2. This is the
+main difference in terms of data and training to that of the EuroLLM-1.7B model (Martins
+et al., 2024).
+Figure 4 shows the exact percentage attributed to each language in the three pre-training phases.
+These design decisions for data mixes were done with careful scaling la...
+--
+33838:...Portuguese, Dutch, Swedish,
+Hungarian, Romanian, and Danish.
+5.1.1
+SECOND PHASE DATA MIXTURES
+To determine the optimal data mixture for the second training phase, we perform several experiments
+using EuroLLM-1.7B (Martins et al., 2024) with reduced datasets of 80 billion tokens instead of the
+full 400 billion. We evaluate three distinct data mixtures, each maintaining an increased percentage
+of higher-quality...

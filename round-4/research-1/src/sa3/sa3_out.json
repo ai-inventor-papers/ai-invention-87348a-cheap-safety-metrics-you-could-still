@@ -1,0 +1,2092 @@
+{
+  "rows": [
+    {
+      "repo": "Qwen/Qwen3-0.6B",
+      "family": "qwen3",
+      "n_params": 751632384,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 6.5,
+      "metric_name": "Arena-Hard v1 (non-thinking mode)",
+      "setting": "enable_thinking=False",
+      "source_url": "https://arxiv.org/abs/2505.09388",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Qwen3 Technical Report Table 20 (Qwen3-1.7B/0.6B Non-thinking baselines). Matches panel thinking_flag=False.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-0.6B",
+      "family": "qwen3",
+      "n_params": 751632384,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 44.6,
+      "metric_name": "MMLU-Redux (5-shot, CoT), NOT vanilla MMLU",
+      "setting": "enable_thinking=False",
+      "source_url": "https://arxiv.org/abs/2505.09388",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same Table 20. Qwen reports MMLU-Redux, not standard MMLU, at this size; GSM8K is not reported for this size either (superseded by MATH-500 in their harness).",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-0.6B",
+      "family": "qwen3",
+      "n_params": 751632384,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+GSM8K+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. OLB v2 (open-llm-leaderboard/contents, commit 9c09a7cae433): no row (model post-dates leaderboard's active submission window). No official safety table on HF card (README has zero MMLU/GSM8K/safety keyword hits) or in the tech report for 0.6B.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-1.7B",
+      "family": "qwen3",
+      "n_params": 2031739904,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 36.9,
+      "metric_name": "Arena-Hard v1 (non-thinking mode)",
+      "setting": "enable_thinking=False",
+      "source_url": "https://arxiv.org/abs/2505.09388",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Qwen3 Technical Report Table 20.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-1.7B",
+      "family": "qwen3",
+      "n_params": 2031739904,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 64.4,
+      "metric_name": "MMLU-Redux (5-shot, CoT)",
+      "setting": "enable_thinking=False",
+      "source_url": "https://arxiv.org/abs/2505.09388",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Table 20. Cross-check: SmolLM3-3B card (HF, No-Extended-Thinking table) reports Qwen3-1.7B IFEval=74.0 vs Qwen's own self-reported IFEval for the same nominal checkpoint elsewhere in Table 20 context -- absolute values differ by harness/prompt, a recurring pattern across every cross-paper comparison found in this census.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-1.7B",
+      "family": "qwen3",
+      "n_params": 2031739904,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+GSM8K+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. OLB v2: no row (post-dates leaderboard). No safety number found on card, in tech report, or in any third-party card that cross-cites Qwen3-1.7B.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 66.2,
+      "metric_name": "Arena-Hard v1 (non-thinking mode)",
+      "setting": "enable_thinking=False",
+      "source_url": "https://arxiv.org/abs/2505.09388",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Qwen3 Technical Report Table 18 (Qwen3-8B/4B Non-thinking).",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 77.3,
+      "metric_name": "MMLU-Redux (5-shot, CoT)",
+      "setting": "enable_thinking=False",
+      "source_url": "https://arxiv.org/abs/2505.09388",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Table 18.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Safety Rate (Qwen3-235B-Instruct-2507 judge)=47.5%; WildGuard safety rate=64.7%; WildGuard refusal-on-benign=12.9%; ArenaHard-v2 (GPT-4.1 judge) winrate=9.5",
+      "metric_name": "Pre-SafeRL baseline safety/refusal/quality quad, Non-Think mode",
+      "setting": "enable_thinking=False; eval set = WildJailbreak (2000 harmful + 210 benign prompts)",
+      "source_url": "https://arxiv.org/abs/2510.14276",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Qwen3Guard Technical Report Table 10, the 'before' row used as the RL baseline for Qwen3-4B-SafeRL. Judges (Qwen3-235B-Instruct-2507 + WildGuard) are explicitly NOT Qwen3Guard itself ('we avoid using Qwen3Guard for safety evaluation... to mitigate risk of metric hack'), so this is less self-referential than the SafeRL row, but still produced and reported by the Qwen team about their own base model.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+GSM8K+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. OLB v2: no row (post-dates leaderboard).",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B-SafeRL",
+      "family": "qwen3",
+      "n_params": 4411424256,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Safety Rate (Qwen3-235B judge)=86.5%; Safety Rate (WildGuard)=98.1%; Refusal (WildGuard)=5.3%",
+      "metric_name": "Hybrid-reward SafeRL safety/refusal, Non-Think mode",
+      "setting": "enable_thinking=False (matches panel thinking_flag). Released checkpoint = Hybrid-reward variant per its own HF card.",
+      "source_url": "https://huggingface.co/Qwen/Qwen3-4B-SafeRL",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "NOT_INDEPENDENT (flagged per task instruction): Qwen3Guard-Gen-4B was the reward model used to TRAIN this checkpoint (Qwen3Guard Technical Report 2510.14276 Sec 3.5, Table 10). The safety EVAL itself uses Qwen3-235B-Instruct-2507-as-judge and WildGuard, which the paper says were chosen specifically to avoid grading with Qwen3Guard -- but training reward and eval are still both produced by the same team on their own held-out WildJailbreak split, not an external leaderboard. A second reward variant ('Guard-only': Safety 99.7%/WildGuard 100.0%/Refusal 96.6%) exists in the paper but was NOT released as this HF checkpoint per the card's own text.",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B-SafeRL",
+      "family": "qwen3",
+      "n_params": 4411424256,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 10.7,
+      "metric_name": "ArenaHard-v2 (winrate vs GPT-4.1)",
+      "setting": "enable_thinking=False, Hybrid reward",
+      "source_url": "https://huggingface.co/Qwen/Qwen3-4B-SafeRL",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same card/table. Not directly comparable to the plain Arena-Hard v1 numbers used elsewhere in this census (ArenaHard-v2 is judged by GPT-4.1 winrate, a different protocol/scale).",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B-SafeRL",
+      "family": "qwen3",
+      "n_params": 4411424256,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Released 2025-10, post-dates OLB v2's active window.",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "huihui-ai/Huihui-Qwen3-0.6B-abliterated-v2",
+      "family": "qwen3",
+      "n_params": 596049920,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only (raw README)",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card grepped for mmlu|gsm8k|arena.hard|xstest|harmbench|refusal|benchmark keywords: zero hits. Card is boilerplate abliteration usage instructions with no evaluation section at all. Not in OLB v2 join (external_join.json), not in local HELM/AIR-Bench/SALAD tables.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "huihui-ai/Huihui-Qwen3-1.7B-abliterated-v2",
+      "family": "qwen3",
+      "n_params": 1720574976,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only (raw README)",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card grepped for mmlu|gsm8k|arena.hard|xstest|harmbench|refusal|benchmark keywords: zero hits. Card is boilerplate abliteration usage instructions with no evaluation section at all. Not in OLB v2 join (external_join.json), not in local HELM/AIR-Bench/SALAD tables.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "mlabonne/Qwen3-4B-abliterated",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only (raw README)",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card grepped for mmlu|gsm8k|arena.hard|xstest|harmbench|refusal|benchmark keywords: zero hits. Card is boilerplate abliteration usage instructions with no evaluation section at all. Not in OLB v2 join (external_join.json), not in local HELM/AIR-Bench/SALAD tables.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "DreamFast/qwen3-4b-heretic",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Refusals: 3/100 (selected trial) vs 100/100 (original Qwen3-4B), self-reported by the Heretic tool's own trial-selection log",
+      "metric_name": "Heretic internal refusal-rate optimizer output (undisclosed 100-prompt eval set, tool version v1.2.0)",
+      "setting": "n/a",
+      "source_url": "https://huggingface.co/DreamFast/qwen3-4b-heretic",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "SELF-REPORTED, methodology undisclosed on the card (no link to the 100-prompt set or judge used); this is the Heretic abliteration tool's own hyperparameter-search log printed verbatim on the card, not a named external benchmark (not XSTest/HarmBench/etc). Card has zero MMLU/GSM8K/Arena-Hard numbers.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "DreamFast/qwen3-4b-heretic",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "No named-benchmark numbers anywhere; not in OLB v2/HELM/AIR-Bench/SALAD local tables.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B-Base",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 74.14,
+      "metric_name": "GSM8K (5-shot), base pretrained model",
+      "setting": "base (no chat template)",
+      "source_url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "From SmolLM3-3B's own card 'Base Pre-Trained Model' comparison table (third-party eval of Qwen3-4B-Base as a baseline). No safety number expected/found for a base (non-chat) model; not applicable.",
+      "class": "base"
+    },
+    {
+      "repo": "Qwen/Qwen3-4B-Base",
+      "family": "qwen3",
+      "n_params": 4022468096,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Safety benchmarks are not meaningfully applicable to a base (non-instruction-tuned) checkpoint; none found regardless.",
+      "class": "base"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 494032768,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 24.1,
+      "metric_name": "MMLU-Redux (Qwen2.5 report Table 10); also MMLU-Pro=15.0 same table",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2412.15115",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Qwen2.5 Technical Report Table 10 ('0.5B-1.5B instruction-tuned models'). GSM8K=49.6, IFEval=27.9 same table/row.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 494032768,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 49.6,
+      "metric_name": "GSM8K",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2412.15115",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same Table 10. Cross-check discrepancy: SmolLM2-360M-Instruct's own HF card reports Qwen2.5-0.5B-Instruct GSM8K(5-shot)=26.8 and MMLU(cloze)=31.7 -- a different lighteval harness giving materially different absolute numbers for the identical checkpoint than Qwen's own self-reported 49.6/24.1. huihui-ai's CensorTune card reports yet a third set (IF_Eval=33.07, MMLU-Pro=17.18). All three are 'real' published numbers for the same exact repo; they simply disagree by harness, illustrating that these small-model numbers are not directly comparable across sources.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 494032768,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "201/320 = 62.8% harmful-instruction compliance ('Passed ratio')",
+      "metric_name": "huihui-ai/harmbench_behaviors pass-rate (community-hosted HarmBench-behaviors variant, 320 prompts)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Reported as the un-fine-tuned baseline row on a THIRD-PARTY community card (huihui-ai's CensorTune card), not on Qwen's own card/report. Self-reported by huihui-ai, methodology = huihui-ai's own TestPassed.py script against huihui-ai/harmbench_behaviors (a community-hosted derivative, not the official HarmBench leaderboard/harness). Treat as low-confidence but genuinely published.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-0.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 494032768,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. OLB v2 join: no row for this exact repo (checked in external_join.json rows list).",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-1.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 1543714304,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 18.430509141644382,
+      "metric_name": "olb2_average (Open LLM Leaderboard v2, IFEval+BBH+MATH-lvl5+GPQA+MUSR+MMLU-Pro composite)",
+      "setting": "submission_date=2024-09-19",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Exact repo_id join. Sub-scores: ifeval=44.76, bbh=19.81, math_lvl5=22.05, gpqa=0.78, musr=3.19, mmlu_pro=19.99.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-1.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 1543714304,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 32.4,
+      "metric_name": "MMLU-Pro (Qwen2.5 report Table 10); MMLU-Redux=50.7 same table",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2412.15115",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "GSM8K=73.2, IFEval=42.5 same row/table. Cross-check: Falcon3-1B-Instruct's own card reports Qwen2.5-1.5B MMLU(5-shot)=59.8/GSM8K(5-shot)=57.8; SmolLM2-1.7B's card reports Qwen2.5-1.5B-Instruct IFEval=47.4/MMLU-Pro=24.2/GSM8K=42.8 -- three more disagreeing harness-specific numbers for this one checkpoint.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-1.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 1543714304,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": 77.6,
+      "metric_name": "'Safety' composite score, AI2 Tulu-3 evaluation suite (0-100)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/allenai/OLMo-2-0425-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "INDEPENDENT THIRD PARTY: reported on AI2's OLMo-2-0425-1B-Instruct card as a baseline comparison row ('Qwen 2.5 1.5B'), not on Qwen's own materials. AI2's 'Safety' column methodology is the Tulu-3 eval-suite composite (not individually broken out here into XSTest/WildGuard/etc. -- treated as other_card_safety rather than a single named benchmark from the task's list).",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-1.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 1543714304,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "73/320 = 22.81% harmful-instruction compliance",
+      "metric_name": "huihui-ai/harmbench_behaviors pass-rate (community variant)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same caveats as the 0.5B CensorTune row above (self-reported, community dataset).",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-1.5B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 1543714304,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run.",
+      "class": "instruct"
+    },
+    {
+      "repo": "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+      "family": "qwen2.5",
+      "n_params": 494032768,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "0/320 = 0.00% harmful-instruction compliance",
+      "metric_name": "huihui-ai/harmbench_behaviors pass-rate (own card, self test)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "SELF-REPORTED by the fine-tuner on their own card using their own community-hosted harmbench_behaviors dataset and TestPassed.py script; not an independent/official leaderboard. This is the one community-fine-tune EXCEPTION found in this census with a published safety-adjacent number.",
+      "class": "blanket_refuser"
+    },
+    {
+      "repo": "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+      "family": "qwen2.5",
+      "n_params": 494032768,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 17.09,
+      "metric_name": "MMLU Pro (own card re-eval)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card also reports IF_Eval=16.20, BBH=32.51, GPQA=25.25, TruthfulQA=45.48.",
+      "class": "blanket_refuser"
+    },
+    {
+      "repo": "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+      "family": "qwen2.5",
+      "n_params": 494032768,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench(official)+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "No hit on any official leaderboard/local table; the harmbench_behaviors number above is a community self-test, not the official HarmBench leaderboard.",
+      "class": "blanket_refuser"
+    },
+    {
+      "repo": "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+      "family": "qwen2.5",
+      "n_params": 1543714304,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "0/320 = 0.00% harmful-instruction compliance",
+      "metric_name": "huihui-ai/harmbench_behaviors pass-rate (own card, self test)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same pattern as the 0.5B CensorTune row.",
+      "class": "blanket_refuser"
+    },
+    {
+      "repo": "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+      "family": "qwen2.5",
+      "n_params": 1543714304,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench(official)+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card has an 'Evaluations' capability table too but with different columns per its README structure; no official-leaderboard hit found.",
+      "class": "blanket_refuser"
+    },
+    {
+      "repo": "Goekdeniz-Guelmez/Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1",
+      "family": "qwen2.5",
+      "n_params": 1777088000,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 18.44117473256343,
+      "metric_name": "olb2_average",
+      "setting": "submission_date=2024-09-28",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Sub-scores: ifeval=47.69, bbh=18.31, math_lvl5=20.85, gpqa=0.0, musr=4.00, mmlu_pro=19.81. This is a CAPABILITY number only; no safety number found anywhere for this checkpoint (card checked, no benchmark keywords).",
+      "class": "abliterated"
+    },
+    {
+      "repo": "Goekdeniz-Guelmez/Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1",
+      "family": "qwen2.5",
+      "n_params": 1777088000,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Own card has zero MMLU/GSM8K/safety keyword hits (checked separately from the OLB v2 join).",
+      "class": "abliterated"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-3B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 3085938688,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 27.16175720903232,
+      "metric_name": "olb2_average",
+      "setting": "submission_date=2024-09-19",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Sub-scores: ifeval=64.75, bbh=25.80, math_lvl5=36.78, gpqa=3.02, musr=7.57, mmlu_pro=25.05.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-3B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 3085938688,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 32.0,
+      "metric_name": "Arena-Hard v1",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Third-party: Microsoft's Phi-4-mini Technical Report Table (Sec 'Model Quality') comparison row. Same table gives MMLU(5-shot)=65.0, MMLU-Pro=44.7, BigBenchHard=56.2, GSM8K(8-shot,CoT)=80.6, ARC-Challenge=82.6.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-3B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 3085938688,
+      "benchmark": "HELM_XSTest_overrefusal",
+      "number_exists": "yes",
+      "value": "IPRR=92%, VPRR=25.6%",
+      "metric_name": "XSTest via Phi-4-mini paper's own harness (NOT the HELM XSTest scenario)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "IMPORTANT: this is XSTest run by Microsoft's Phi-4-mini team as a third-party comparison (their Table 12), NOT HELM's XSTest scenario -- filed under HELM_XSTest_overrefusal only because it is the closest benchmark bucket in the task's taxonomy; treat as 'other_card_safety'-style provenance. IPRR=Inappropriate-Prompt Refusal Rate (higher better), VPRR=Valid-Prompt Refusal Rate (lower better, i.e. over-refusal).",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-3B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 3085938688,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Defect Rate avg=4.25% (no-JB), 14% (with known jailbreaks)",
+      "metric_name": "Azure AI RAI Defect Rate across Violence/Sexual/Self-Harm/Hateful categories (GPT-4o-simulated adversarial conversations)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Phi-4-mini paper Tables 10-11, third-party comparison row for Qwen2.5-3B.",
+      "class": "instruct"
+    },
+    {
+      "repo": "Qwen/Qwen2.5-3B-Instruct",
+      "family": "qwen2.5",
+      "n_params": 3085938688,
+      "benchmark": "HELM_Safety+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run.",
+      "class": "instruct"
+    },
+    {
+      "repo": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 2.818859486124847,
+      "metric_name": "olb2_average",
+      "setting": "submission_date=2024-08-04",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Sub-scores: ifeval=5.96, bbh=4.01, math_lvl5=1.51, gpqa=0.0, musr=4.31, mmlu_pro=1.12.",
+      "class": "instruct"
+    },
+    {
+      "repo": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 0.253901737256654,
+      "metric_name": "MMLU (0-100 rescaled to 0-1)",
+      "setting": "default",
+      "source_url": "local:data/external/openllm_v1_old_contents.parquet (open-llm-leaderboard-old/contents @ 791ca1c) via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "v1-old fallback, used only because openllm_capability.json had no direct hit (that file is only a 40-row alphabetic slice of the 7,116-repo archive, not a full join).",
+      "class": "instruct"
+    },
+    {
+      "repo": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 0.02350265352539803,
+      "metric_name": "GSM8K (0-100 rescaled to 0-1)",
+      "setting": "default",
+      "source_url": "local:data/external/openllm_v1_old_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same v1-old fallback row as MMLU above.",
+      "class": "instruct"
+    },
+    {
+      "repo": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. No dedicated TinyLlama technical report/card safety section found; the original TinyLlama paper (2401.02385) reports only pretraining perplexity/downstream-task accuracy, no safety evaluation.",
+      "class": "instruct"
+    },
+    {
+      "repo": "AIPlans/TinyLlama-1.1B-IPO-PKU-SafeRLHF",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only (raw README)",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card is an auto-generated HF Trainer model-card template. It reports only training-time DPO/IPO/ORPO loss and preference-pair 'Rewards/accuracies' (an internal training diagnostic, not an evaluated benchmark score) -- e.g. Rewards/accuracies=0.7389. No XSTest/HarmBench/MMLU/GSM8K/Arena-Hard number anywhere. Not in OLB v2 join.",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "AIPlans/TinyLlama-1.1B-ORPO-PKU-SafeRLHF",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only (raw README)",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card is an auto-generated HF Trainer model-card template. It reports only training-time DPO/IPO/ORPO loss and preference-pair 'Rewards/accuracies' (an internal training diagnostic, not an evaluated benchmark score) -- e.g. Rewards/accuracies=0.7389. No XSTest/HarmBench/MMLU/GSM8K/Arena-Hard number anywhere. Not in OLB v2 join.",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "AIPlans/tinyllama-1.1b-dpo-pku-saferlhf",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only (raw README)",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card is an auto-generated HF Trainer model-card template. It reports only training-time DPO/IPO/ORPO loss and preference-pair 'Rewards/accuracies' (an internal training diagnostic, not an evaluated benchmark score) -- e.g. Rewards/accuracies=0.7389. No XSTest/HarmBench/MMLU/GSM8K/Arena-Hard number anywhere. Not in OLB v2 join.",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "Shortmund09/MLDM-TinyLlama-1.1b-gcpo-ocra-saferlhf",
+      "family": "tinyllama",
+      "n_params": 1100048384,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card raw README is literally the single word 'hello' (6 bytes) -- effectively no card content at all, let alone a benchmark number.",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "unsloth/gemma-2-2b-it",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 17.046939294966545,
+      "metric_name": "olb2_average",
+      "setting": "submission_date=2024-07-31",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Identical row also present under google/gemma-2-2b-it in the local join (both resolve to the same weights). Sub-scores: ifeval=56.68, bbh=17.98, math_lvl5=0.08, gpqa=3.24, musr=7.08, mmlu_pro=17.22.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/gemma-2-2b-it",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 56.1,
+      "metric_name": "MMLU (5-shot), instruction-tuned",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2408.00118",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Gemma 2 Technical Report Table 17 (PT vs IT comparison), row 'Gemma-2 IT 2B'. checkpoint_exact_match=True because unsloth/gemma-2-2b-it is an unquantized re-upload of the identical google/gemma-2-2b-it weights (the official HF card itself is gated and returned 'Access restricted' on raw README fetch in this session).",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/gemma-2-2b-it",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Human-preference Safety win-rate vs GPT-4o-2024-05-13 = 57.5% (Win 53% / Tie 9% / Loss 38%)",
+      "metric_name": "Human single-sided safety preference (held-out safety prompt set)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2408.00118",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Gemma 2 Technical Report Table 15, row 'Gemma 2 IT 2B'.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/gemma-2-2b-it",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "RealToxicity avg tox=8.16; CrowS-Pairs=37.67; BBQ Ambig=83.20; BBQ Disambig=69.31; TruthfulQA MC2Acc=43.72",
+      "metric_name": "Academic safety/bias benchmark suite",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2408.00118",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Gemma 2 Technical Report Table 18, row labelled 'Gemma 2 IT 2.6B' (their own parameter-count label for the same 2B-class checkpoint).",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/gemma-2-2b-it",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 63.2,
+      "metric_name": "GSM8K (5-shot)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2412.15115",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Third-party: Qwen2.5 Technical Report Table 9 ('2B-4B instruction-tuned models'), row 'Gemma2-2B' -- MMLU-Pro=26.7, MMLU-Redux=51.9, IFEval=51.0 same row. Label just says 'Gemma2-2B' without explicit '-it' suffix but the table is titled 'instruction-tuned models' and uses IFEval, so it is the IT checkpoint.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/gemma-2-2b-it",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Official google/gemma-2-2b-it card raw README returned 'Access to model ... is restricted' (gated, needs HF auth) in this session; capability/safety numbers above are sourced from the arXiv report and third-party cards instead.",
+      "class": "instruct"
+    },
+    {
+      "repo": "IlyaGusev/gemma-2-2b-it-abliterated",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 16.705746365531194,
+      "metric_name": "olb2_average",
+      "setting": "submission_date=2025-01-07",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Sub-scores: ifeval=53.31, bbh=16.80, math_lvl5=6.12, gpqa=2.01, musr=4.91, mmlu_pro=17.09. Capability only; card itself has zero safety-keyword hits.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "IlyaGusev/gemma-2-2b-it-abliterated",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "Robust-Decoding/gemma2-2b-it-hh-dpo-harmless-step-6000",
+      "family": "gemma2",
+      "n_params": 2614341888,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "checked card only",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Card is the unfilled HF default template ('[More Information Needed]' throughout, no model description, no eval section at all) despite the repo name indicating Anthropic-HH-style DPO-for-harmlessness training. Not in OLB v2 join.",
+      "class": "safety_tuned"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-1B-Instruct",
+      "family": "llama3.2",
+      "n_params": 1235814400,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 14.532450983938604,
+      "metric_name": "olb2_average",
+      "setting": "submission_date=2025-01-23",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Sub-scores: ifeval=58.10, bbh=8.32, math_lvl5=8.23, gpqa=2.35, musr=1.95, mmlu_pro=8.24.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-1B-Instruct",
+      "family": "llama3.2",
+      "n_params": 1235814400,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 68.2,
+      "metric_name": "MMLU (5-shot)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/tiiuae/Falcon3-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Third-party: TII's Falcon3-1B-Instruct card comparison table, column header 'Llama-3.2-1B' (no explicit -Instruct suffix, but table is evaluated with chat template + IFEval so is the instruct checkpoint). Same table: GSM8K(5-shot)=82.6, MMLU-Pro=16, IFEval=55.3. NOTE: this is far higher than the 58.1 IFEval reported by OLB v2 for the same nominal checkpoint above -- harness-dependent again.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-1B-Instruct",
+      "family": "llama3.2",
+      "n_params": 1235814400,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Over-Refusal=81.86, Safety&Alignment=96.30, Overall=63.99 (aiXamine composite, 0-100)",
+      "metric_name": "aiXamine leaderboard: Over-Refusal (OK-Test/OR-Bench/WildGuard/XSTest composite) and Safety&Alignment services",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2504.14985",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "INDEPENDENT THIRD-PARTY academic paper (aiXamine, April 2025), model listed as 'Llama3.2-1B' in Table 6, an open-source HF chat model so almost certainly the Instruct checkpoint. Over-Refusal sub-scores from their Table 3.7 section: OK-Test=94.57, OR-Bench=57.01, WildGuard=86.51, XSTest=89.33.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-1B-Instruct",
+      "family": "llama3.2",
+      "n_params": 1235814400,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal(HELM-native)+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+GSM8K(HELM/Arena-Hard)",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Official meta-llama/Llama-3.2-1B-Instruct card raw README returned 'Access ... is restricted' (gated) in this session; no official Meta safety table was reachable this way.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-3B-Instruct",
+      "family": "llama3.2",
+      "n_params": 3212749824,
+      "benchmark": "OLB_v2",
+      "number_exists": "yes",
+      "value": 24.204650807793456,
+      "metric_name": "olb2_average",
+      "setting": "submission_date=2024-09-27",
+      "source_url": "local:data/external/openllm_v2_contents.parquet via results/external_join.json",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Sub-scores: ifeval=73.93, bbh=24.06, math_lvl5=17.67, gpqa=3.80, musr=1.37, mmlu_pro=24.39.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-3B-Instruct",
+      "family": "llama3.2",
+      "n_params": 3212749824,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 17.0,
+      "metric_name": "Arena-Hard v1",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Third-party: Microsoft Phi-4-mini Technical Report comparison table (column 'Llama-3.2-3B-Ins'). Same table: MMLU(5-shot)=61.8, MMLU-Pro=39.2, BBH=55.4, GSM8K(8-shot,CoT)=75.6.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-3B-Instruct",
+      "family": "llama3.2",
+      "n_params": 3212749824,
+      "benchmark": "HELM_XSTest_overrefusal",
+      "number_exists": "yes",
+      "value": "IPRR=92.5%, VPRR=15.6%",
+      "metric_name": "XSTest via Phi-4-mini paper's harness (NOT HELM's XSTest scenario -- see note)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same caveat as the Qwen2.5-3B-Instruct XSTest row: this is Microsoft's own third-party XSTest run, not HELM's. Filed here only because it is the closest bucket in the task's benchmark taxonomy.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-3B-Instruct",
+      "family": "llama3.2",
+      "n_params": 3212749824,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Defect Rate avg=5% (no-JB) / 8% (with jailbreaks) [Phi-4-mini paper]; Over-Refusal=93.77 / Safety&Alignment=94.67 / Overall=73.04 [aiXamine paper]",
+      "metric_name": "Two independent third-party safety composites",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743 ; https://arxiv.org/abs/2504.14985",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "aiXamine Over-Refusal sub-scores: OK-Test=95.43, OR-Bench=94.24, WildGuard=96.09, XSTest=89.33.",
+      "class": "instruct"
+    },
+    {
+      "repo": "unsloth/Llama-3.2-3B-Instruct",
+      "family": "llama3.2",
+      "n_params": 3212749824,
+      "benchmark": "HELM_Safety(HELM-native)+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run.",
+      "class": "instruct"
+    },
+    {
+      "repo": "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+      "family": "llama3.2",
+      "n_params": 3606752256,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 28.0,
+      "metric_name": "MMLU Pro (own card re-eval, abliterated vs original comparison)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Self-reported re-evaluation on the fine-tuner's own card: IF_Eval=76.76, MMLU Pro=28.00, TruthfulQA=50.73, BBH=41.86, GPQA=28.41 (vs original Llama-3.2-3B-Instruct: 76.55/27.88/50.55/41.81/28.39 same row). Capability only -- no safety/refusal number on this card.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+      "family": "llama3.2",
+      "n_params": 3606752256,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Not in OLB v2 join.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "microsoft/Phi-4-mini-instruct",
+      "family": "phi",
+      "n_params": 3836021760,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 32.8,
+      "metric_name": "Arena-Hard v1",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official technical report / HF card 'Model Quality' table. Same table: MMLU(5-shot)=67.3, MMLU-Pro(0-shot,CoT)=52.8, BigBenchHard=70.4, GSM8K(8-shot,CoT)=88.6, ARC-Challenge=83.7.",
+      "class": "instruct"
+    },
+    {
+      "repo": "microsoft/Phi-4-mini-instruct",
+      "family": "phi",
+      "n_params": 3836021760,
+      "benchmark": "HELM_XSTest_overrefusal",
+      "number_exists": "yes",
+      "value": "IPRR=93.5%, VPRR=20.8%",
+      "metric_name": "XSTest via Phi-4-mini paper's own harness (NOT HELM's XSTest scenario)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official Table 12.",
+      "class": "instruct"
+    },
+    {
+      "repo": "microsoft/Phi-4-mini-instruct",
+      "family": "phi",
+      "n_params": 3836021760,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Defect Rate avg=3.75% (no-JB) / 1.25% (with known jailbreaks)",
+      "metric_name": "Azure AI RAI Defect Rate (Violence/Sexual/Self-Harm/Hateful, GPT-4o-simulated adversarial conv.)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official Tables 10-11. This is the single best-covered checkpoint in the whole panel for named safety numbers.",
+      "class": "instruct"
+    },
+    {
+      "repo": "microsoft/Phi-4-mini-instruct",
+      "family": "phi",
+      "n_params": 3836021760,
+      "benchmark": "HELM_Safety(HELM-native)+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Not in OLB v2 join (released 2025-02, checked against external_join.json rows -- no hit).",
+      "class": "instruct"
+    },
+    {
+      "repo": "lunahr/Phi-4-mini-instruct-abliterated",
+      "family": "phi",
+      "n_params": 3836021760,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "https://huggingface.co/lunahr/Phi-4-mini-instruct-abliterated",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "IMPORTANT: the card DOES contain a large benchmark table (Arena-Hard=32.8, MMLU=67.3, GSM8K etc.) but it is a VERBATIM COPY of Microsoft's original Phi-4-mini-instruct comparison table, not a re-evaluation of the abliterated checkpoint itself (no 'abliterated' row/column anywhere, no re-eval methodology described). Recorded here as number_exists=no for THIS checkpoint; the copied numbers are already captured under microsoft/Phi-4-mini-instruct above.",
+      "class": "abliterated"
+    },
+    {
+      "repo": "microsoft/Phi-3.5-mini-instruct",
+      "family": "phi",
+      "n_params": 3821079552,
+      "benchmark": "Arena_Hard",
+      "number_exists": "yes",
+      "value": 34.4,
+      "metric_name": "Arena-Hard v1",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Third-party (but same vendor/Microsoft): Phi-4-mini paper's own comparison table, column 'Phi-3.5-mini-Ins'. Same table: MMLU=65.5, MMLU-Pro=47.4, BBH=63.1.",
+      "class": "instruct"
+    },
+    {
+      "repo": "microsoft/Phi-3.5-mini-instruct",
+      "family": "phi",
+      "n_params": 3821079552,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 67.7,
+      "metric_name": "MMLU-Redux",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2412.15115",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Third-party: Qwen2.5 Technical Report Table 9, column 'Phi3.5-Mini'. Same table: MMLU-Pro=47.5, GSM8K=86.2, IFEval=52.1.",
+      "class": "instruct"
+    },
+    {
+      "repo": "microsoft/Phi-3.5-mini-instruct",
+      "family": "phi",
+      "n_params": 3821079552,
+      "benchmark": "HELM_XSTest_overrefusal",
+      "number_exists": "yes",
+      "value": "IPRR=87%, VPRR=21.2%",
+      "metric_name": "XSTest via Phi-4-mini paper's harness (own-vendor retrospective comparison, NOT HELM's scenario)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "",
+      "class": "instruct"
+    },
+    {
+      "repo": "microsoft/Phi-3.5-mini-instruct",
+      "family": "phi",
+      "n_params": 3821079552,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": "Defect Rate avg=4% (no-JB) / 7.5% (with jailbreaks)",
+      "metric_name": "Azure AI RAI Defect Rate",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2503.01743",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Phi-4-mini paper's retrospective comparison of its own predecessor.",
+      "class": "instruct"
+    },
+    {
+      "repo": "microsoft/Phi-3.5-mini-instruct",
+      "family": "phi",
+      "n_params": 3821079552,
+      "benchmark": "HELM_Safety(HELM-native)+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+GSM8K(OLB)+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Not in OLB v2 join.",
+      "class": "instruct"
+    },
+    {
+      "repo": "allenai/OLMo-2-0425-1B-Instruct",
+      "family": "olmo2",
+      "n_params": 1484916736,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": 87.6,
+      "metric_name": "'Safety' composite score, AI2 Tulu-3 evaluation suite (0-100), final RLVR 'OLMo 2 1B' row",
+      "setting": "default",
+      "source_url": "https://huggingface.co/allenai/OLMo-2-0425-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official card 'Performance' table, final row 'OLMo 2 1B' (distinct from the intermediate 'OLMo 2 1B SFT'=93.2 and 'OLMo 2 1B DPO'=89.9 rows -- the final row is the one matching this exact -Instruct repo per AI2's Tulu3 pipeline). Same row: Average=42.7, MMLU=40.0, GSM8K=68.3, IFEval=70.1, MATH=20.7.",
+      "class": "instruct"
+    },
+    {
+      "repo": "allenai/OLMo-2-0425-1B-Instruct",
+      "family": "olmo2",
+      "n_params": 1484916736,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 40.0,
+      "metric_name": "MMLU",
+      "setting": "default",
+      "source_url": "https://huggingface.co/allenai/OLMo-2-0425-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same table/row as above.",
+      "class": "instruct"
+    },
+    {
+      "repo": "allenai/OLMo-2-0425-1B-Instruct",
+      "family": "olmo2",
+      "n_params": 1484916736,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 68.3,
+      "metric_name": "GSM8K",
+      "setting": "default",
+      "source_url": "https://huggingface.co/allenai/OLMo-2-0425-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same table/row.",
+      "class": "instruct"
+    },
+    {
+      "repo": "allenai/OLMo-2-0425-1B-Instruct",
+      "family": "olmo2",
+      "n_params": 1484916736,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Card explicitly states: 'The OLMo-2 models have limited safety training ... the model can produce problematic outputs (especially when prompted to do so).' Not in OLB v2 join.",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-360M-Instruct",
+      "family": "smollm",
+      "n_params": 361821120,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 32.8,
+      "metric_name": "MMLU (cloze)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official card 'Instruction Model' table. Same row: IFEval(avg prompt/inst)=41.0, BBH(3-shot)=27.3, GSM8K(5-shot)=7.43.",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-360M-Instruct",
+      "family": "smollm",
+      "n_params": 361821120,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 7.43,
+      "metric_name": "GSM8K (5-shot)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Same table.",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-360M-Instruct",
+      "family": "smollm",
+      "n_params": 361821120,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. SmolLM2 arXiv report (2502.02737) has no dedicated safety section for any size. Not in OLB v2 join.",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "family": "smollm",
+      "n_params": 1711376384,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 19.3,
+      "metric_name": "MMLU-Pro (MCF)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official card table: IFEval=56.7, GSM8K(5-shot)=48.2. Cross-check: the SmolLM2 arXiv paper's own Table 5 reports GSM8K=48.8 for the same nominal checkpoint (card vs. paper differ by 0.6 points, a smaller but still real cross-source discrepancy) and MMLU-Pro=19.3 (matches).",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "family": "smollm",
+      "n_params": 1711376384,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 48.2,
+      "metric_name": "GSM8K (5-shot), card version (paper reports 48.8)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "family": "smollm",
+      "n_params": 1711376384,
+      "benchmark": "other_card_safety",
+      "number_exists": "yes",
+      "value": 52.4,
+      "metric_name": "'Safety' composite score, AI2 Tulu-3 evaluation suite (0-100)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/allenai/OLMo-2-0425-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "INDEPENDENT THIRD PARTY: AI2's OLMo-2-0425-1B-Instruct card baseline row 'SmolLM2 1.7B'. Same row: MMLU=34.3, GSM8K=45.3, IFEval=51.6.",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "family": "smollm",
+      "n_params": 1711376384,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Not in OLB v2 join.",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM3-3B",
+      "family": "smollm",
+      "n_params": 3075098624,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 53.5,
+      "metric_name": "Global MMLU (No Extended Thinking mode)",
+      "setting": "no_extended_thinking (matches panel thinking_flag=False)",
+      "source_url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official card 'Instruction Model / No Extended Thinking' table. Global MMLU, not vanilla MMLU. Same row: IFEval=76.7, GPQA-Diamond=35.7, AIME2025=9.3, MixEval-Hard=26.9, BFCL=92.3. This same table also gives Qwen2.5-3B IFEval=65.6, Qwen3-1.7B IFEval=74.0, Qwen3-4B IFEval=68.9 (all No-Thinking mode, third-party cross-check of those panel checkpoints).",
+      "class": "instruct"
+    },
+    {
+      "repo": "HuggingFaceTB/SmolLM3-3B",
+      "family": "smollm",
+      "n_params": 3075098624,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. No GSM8K/Arena-Hard/safety number on the card (it uses GSM-Plus, not GSM8K, and has no safety section). Not in OLB v2 join.",
+      "class": "instruct"
+    },
+    {
+      "repo": "tiiuae/Falcon3-1B-Instruct",
+      "family": "falcon3",
+      "n_params": 1669408768,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 46.1,
+      "metric_name": "MMLU (5-shot)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/tiiuae/Falcon3-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official card table. Same row: MMLU-Pro=18.6, IFEval=54.4, GSM8K(5-shot)=43.9, GSM8K(8-shot,CoT)=45.8, MATH-Lvl5=1, ArcChallenge=47.7.",
+      "class": "instruct"
+    },
+    {
+      "repo": "tiiuae/Falcon3-1B-Instruct",
+      "family": "falcon3",
+      "n_params": 1669408768,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 43.9,
+      "metric_name": "GSM8K (5-shot)",
+      "setting": "default",
+      "source_url": "https://huggingface.co/tiiuae/Falcon3-1B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "",
+      "class": "instruct"
+    },
+    {
+      "repo": "tiiuae/Falcon3-1B-Instruct",
+      "family": "falcon3",
+      "n_params": 1669408768,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. TII's Falcon3 launch blog (huggingface.co/blog/falcon3) has no safety/RAI section for any size; no safety number found for this family. Not in OLB v2 join.",
+      "class": "instruct"
+    },
+    {
+      "repo": "h2oai/h2o-danube3-500m-chat",
+      "family": "danube3",
+      "n_params": 513590784,
+      "benchmark": "MMLU",
+      "number_exists": "yes",
+      "value": 26.33,
+      "metric_name": "MMLU (5-shot)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2407.09276",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own official H2O-Danube3 Technical Report Table (vs Qwen2-0.5B-Instruct baseline, not our panel's Qwen2.5-0.5B). Same table: ARC-c=39.25, HellaSwag=61.02, GSM8K(5-shot)=16.00, Winogrande=61.72.",
+      "class": "instruct"
+    },
+    {
+      "repo": "h2oai/h2o-danube3-500m-chat",
+      "family": "danube3",
+      "n_params": 513590784,
+      "benchmark": "GSM8K",
+      "number_exists": "yes",
+      "value": 16.0,
+      "metric_name": "GSM8K (5-shot)",
+      "setting": "default",
+      "source_url": "https://arxiv.org/abs/2407.09276",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "",
+      "class": "instruct"
+    },
+    {
+      "repo": "h2oai/h2o-danube3-500m-chat",
+      "family": "danube3",
+      "n_params": 513590784,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. Own tech report has an MT-Bench/WildBench 'chat benchmark' table (Table 5) but no named safety benchmark. Not in OLB v2 join.",
+      "class": "instruct"
+    },
+    {
+      "repo": "utter-project/EuroLLM-1.7B-Instruct",
+      "family": "eurollm",
+      "n_params": 1656850432,
+      "benchmark": "MMLU+GSM8K+Arena_Hard+HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "https://huggingface.co/utter-project/EuroLLM-1.7B-Instruct",
+      "source_type": "card",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Own card reports only ArcChallenge (avg=0.3496) and HellaSwag (avg=0.4744) multilingual accuracy vs TinyLlama-v1.1 and Gemma-2B -- none of MMLU/GSM8K/Arena-Hard/any safety benchmark from the task's list. The EuroLLM-9B technical report (arXiv:2506.04079) discusses EuroLLM-1.7B only in passing (as 'the earlier release'), with no benchmark table reproduced for it. Not in OLB v2/HELM/AIR-Bench/SALAD local tables. NOTE: EuroLLM-1.7B predates the 9B tech report; its own dedicated report/card (if any) was not separately located in this session's time budget.",
+      "class": "instruct"
+    },
+    {
+      "repo": "granite family (upstream IBM official)",
+      "family": "granite",
+      "n_params": null,
+      "benchmark": "other_card_safety",
+      "number_exists": "upstream_only",
+      "value": "Qualitative only: 'Granite-3.0 models perform best in their parameter range' on the AttaQ safety benchmark among 2B-3B open models (radar-plot figure, no printable scalar; numeric AttaQ/SocialStigmaQA/SALAD-Bench-safety-rate table is only printed in the report for the 8B row, e.g. Granite-3.0-8B-Instruct=46.14/63.44/98.89/95.30 on 4 safety benchmarks)",
+      "metric_name": "AttaQ (7-category harm refusal) + SocialStigmaQA + SALAD-Bench safety rate, family-level comparison vs Llama-3.1/Llama-3.2/Gemma-2 at 2B-3B scale",
+      "setting": "n/a (family-level report claim, predecessor generation)",
+      "source_url": "https://www.rivista.ai/wp-content/uploads/2024/10/paper-1.pdf (IBM Granite 3.0 technical report)",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": false,
+      "notes": "SEALED FAMILY -- reported at family level only, no sealed repo id read or printed. This is the Granite 3.0 (predecessor of 3.3/4.0) technical report's Figure 7(b), which explicitly benchmarks IBM's 2B-3B-class Granite Instruct models against Llama-3.2 and Gemma-2 peers on AttaQ; it establishes that IBM runs a standing family-level safety-benchmark practice (AttaQ/SocialStigmaQA/SALAD) carried forward across Granite generations, but the 2B-3B panel numbers in that report are figure-only (not machine-extractable text) and a dedicated Granite-3.3/4.0-specific published safety table was not located within this session's time budget (IBM's public Granite docs/leaderboard page at ibm.com/granite/docs/models/granite is JS-rendered and returned no static text).",
+      "class": "sealed_family"
+    },
+    {
+      "repo": "granite family (upstream IBM official)",
+      "family": "granite",
+      "n_params": null,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD(as a leaderboard)+TrustLLM+JailbreakBench+HarmBench+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "local:data/external/{helm_safety_v1_17_0.json,helm_airbench_v1_19_0.json,saladbench.json,openllm_v2_contents.parquet}",
+      "source_type": "local_table",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": true,
+      "notes": "Local external_join.json (exact repo_id join, no fuzzy match): helm_safety_v1_17_0.json (81 model names, only 22 resolve to real HF repo_ids per helm_model_meta.json, all mid/large flagships e.g. olmo-2-32b, qwen3-235b, deepseek-v3/r1, mixtral-8x22b -- none sub-4B); helm_airbench_v1_19_0.json same 22 resolved names; saladbench.json = NOT_REACHABLE, dataset holds only raw QA text, no leaderboard/score file exists in OpenSafetyLab/Salad-Data on HF. Re-confirmed by direct read of these 3 local files in this run. No granite-family repo appears in HELM/AIR-Bench's 22 resolved model names, nor in the OLB v2 join (family not in panel.json at all -- sealed rows are tracked separately in sealed/sealed_checkpoints.json, which this census does not read for individual repo ids per the sealing rule).",
+      "class": "sealed_family"
+    },
+    {
+      "repo": "stablelm family (upstream Stability official)",
+      "family": "stablelm",
+      "n_params": null,
+      "benchmark": "HELM_Safety+HELM_XSTest_overrefusal+AIR_Bench+SALAD+TrustLLM+JailbreakBench+HarmBench+other_card_safety+MMLU+GSM8K+Arena_Hard+OLB_v2",
+      "number_exists": "no",
+      "value": null,
+      "metric_name": null,
+      "setting": null,
+      "source_url": "https://arxiv.org/abs/2402.17834 (Stable LM 2 1.6B Technical Report)",
+      "source_type": "paper",
+      "accessed_date": "2026-09-21",
+      "checkpoint_exact_match": false,
+      "notes": "SEALED FAMILY -- reported at family level only. Directly grepped the Stable LM 2 1.6B Technical Report (2402.17834) full text for safety|toxicity|RealToxicity|refusal: a single incidental citation match only, no evaluation section, no safety/toxicity benchmark table anywhere in the report (it covers zero/few-shot academic benchmarks, multilingual evals and MT-Bench-style dialogue quality only). This is the official upstream architecture report for the whole StableLM-2 family; no separate Stability AI blog/report with a family-level safety table was found in this session's time budget. Stability's own model-card boilerplate for this family (seen only incidentally in a general web search snippet, not opened/read directly here to respect the sealing rule) states in prose that the family 'is not trained against adversarial inputs' and 'developers are strongly recommended to pair this model with an input/output classifier' -- a qualitative disclaimer, not a benchmark number.",
+      "class": "sealed_family"
+    }
+  ],
+  "counts": {
+    "panel_size_N_excluding_sealed": 36,
+    "a_exact_checkpoint_any_published_safety_number": 15,
+    "b_allowing_upstream_official_any_published_safety_number": 15,
+    "c_overrefusal_number": {
+      "exact": 5,
+      "upstream_or_exact": 5
+    },
+    "d_capability_benchmark_coverage": {
+      "MMLU": {
+        "exact": 17,
+        "upstream_or_exact": 17,
+        "coverage_fraction_exact": 0.472,
+        "coverage_fraction_upstream": 0.472
+      },
+      "GSM8K": {
+        "exact": 9,
+        "upstream_or_exact": 9,
+        "coverage_fraction_exact": 0.25,
+        "coverage_fraction_upstream": 0.25
+      },
+      "Arena_Hard": {
+        "exact": 8,
+        "upstream_or_exact": 8,
+        "coverage_fraction_exact": 0.222,
+        "coverage_fraction_upstream": 0.222
+      },
+      "OLB_v2": {
+        "exact": 8,
+        "upstream_or_exact": 8,
+        "coverage_fraction_exact": 0.222,
+        "coverage_fraction_upstream": 0.222
+      }
+    },
+    "e_per_benchmark_coverage_fraction": {
+      "JailbreakBench": {
+        "exact": 0,
+        "upstream_or_exact": 0,
+        "fraction_exact": 0.0,
+        "fraction_upstream": 0.0
+      },
+      "SALAD": {
+        "exact": 0,
+        "upstream_or_exact": 0,
+        "fraction_exact": 0.0,
+        "fraction_upstream": 0.0
+      },
+      "HarmBench": {
+        "exact": 0,
+        "upstream_or_exact": 0,
+        "fraction_exact": 0.0,
+        "fraction_upstream": 0.0
+      },
+      "TrustLLM": {
+        "exact": 0,
+        "upstream_or_exact": 0,
+        "fraction_exact": 0.0,
+        "fraction_upstream": 0.0
+      },
+      "AIR_Bench": {
+        "exact": 0,
+        "upstream_or_exact": 0,
+        "fraction_exact": 0.0,
+        "fraction_upstream": 0.0
+      },
+      "HELM_Safety": {
+        "exact": 0,
+        "upstream_or_exact": 0,
+        "fraction_exact": 0.0,
+        "fraction_upstream": 0.0
+      },
+      "HELM_XSTest_overrefusal": {
+        "exact": 4,
+        "upstream_or_exact": 4,
+        "fraction_exact": 0.111,
+        "fraction_upstream": 0.111
+      },
+      "MMLU": {
+        "exact": 17,
+        "upstream_or_exact": 17,
+        "fraction_exact": 0.472,
+        "fraction_upstream": 0.472
+      },
+      "GSM8K": {
+        "exact": 9,
+        "upstream_or_exact": 9,
+        "fraction_exact": 0.25,
+        "fraction_upstream": 0.25
+      },
+      "Arena_Hard": {
+        "exact": 8,
+        "upstream_or_exact": 8,
+        "fraction_exact": 0.222,
+        "fraction_upstream": 0.222
+      },
+      "OLB_v2": {
+        "exact": 8,
+        "upstream_or_exact": 8,
+        "fraction_exact": 0.222,
+        "fraction_upstream": 0.222
+      }
+    },
+    "f_community_finetunes_zero_published_safety_numbers": false,
+    "f_community_finetune_repos_total": 15,
+    "f_community_finetune_repos_WITH_a_safety_number": [
+      "DreamFast/qwen3-4b-heretic",
+      "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+      "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune"
+    ],
+    "note_on_f": "FALSE as a blanket claim: 3 of 15 community fine-tune checkpoints carry a self-reported safety-adjacent number, on ZERO independent/official leaderboards -- all 3 hits are self-published on the fine-tuner's own HF card: huihui-ai's Qwen2.5-0.5B/1.5B-Instruct-CensorTune (0% harmful-instruction pass-rate on a community-hosted HarmBench-behaviors variant, 320 prompts, own TestPassed.py script) and DreamFast's qwen3-4b-heretic (a 3/100-vs-100/100 refusal count from the Heretic abliteration tool's own undisclosed 100-prompt trial log, not a named external benchmark). All other community fine-tunes checked (huihui/mlabonne abliterated Qwen3 variants, Josiefied-Qwen2.5-1.5B-abliterated, Llama-3.2-3B-Instruct-abliterated, gemma-2-2b-it-abliterated, Phi-4-mini-instruct-abliterated, the 3 AIPlans TinyLlama SafeRLHF DPO/IPO/ORPO variants, the Robust-Decoding gemma2 hh-dpo variant, and the near-empty Shortmund09 card) have ZERO published safety numbers of any kind. Capability numbers ARE published for several community fine-tunes via the Open LLM Leaderboard v2 exact-repo-id join (Josiefied-Qwen2.5-1.5B-abliterated, gemma-2-2b-it-abliterated) and via self-reported re-eval tables (Llama-3.2-3B-Instruct-abliterated, both CensorTune repos)."
+  },
+  "accessed_date": "2026-09-21",
+  "cross_check_vs_iter3": {
+    "iter3_claims_checked": [
+      "HELM coverage n=0 for sub-4B panel",
+      "only 2 sub-4B models with published HELM numbers",
+      "identical-weights guardian-pair gap up to 6.7x the across-model variance",
+      "OLB v2 capability join n=16"
+    ],
+    "verdict": "AGREE on all four numeric claims, once the two different panels those claims describe are told apart.",
+    "detail": [
+      {
+        "claim": "HELM coverage n=0 for sub-4B panel",
+        "agreement": "AGREE",
+        "evidence": "Re-read .../gen_art_dataset_1/README.md:26 ('HELM safety, AIR-Bench and SALAD have n=0 exact-id hits for this panel') and independently re-derived the same result in this session by loading data/external/helm_model_meta.json directly: of 99 total HELM model-name records, only 22 resolve to a real HF repo_id, and every one of those 22 is a mid/large flagship (e.g. allenai/olmo-2-1124-32b-instruct, qwen/qwen3-235b-a22b-instruct-2507-fp8, deepseek-ai/deepseek-v3, mistralai/mixtral-8x22b-instruct-v0.1) -- none sub-4B, none in this 36-model panel."
+      },
+      {
+        "claim": "only 2 sub-4B models with published HELM numbers",
+        "agreement": "AGREE, but this claim describes a DIFFERENT and larger corpus than the 36-model dataset panel",
+        "evidence": "Sourced to iter_3/gen_strat/gen_strat_1/arts_pool.json ('PART 3 (HELM, reused v1 limb): 81 models, 36 resolved, 45 closed-API; only 2 sub-4B with published numbers') and restated identically in iter_3/review_paper/review_paper/.terminal_claude_agent_struct_out.json. That '81 models / 36 resolved' HELM limb is a SEPARATE, wider model universe than the 36-CHECKPOINT dev panel used in gen_art_dataset_1/panel.json (81 vs 36 is coincidentally close in count but is a different list -- the dataset panel's own HELM join gets 0/22 resolved names overlapping it, not 2). This census's own live re-check of HELM v1.17.0 (same file, data/external/helm_safety_v1_17_0.json) finds 0 of the 36 dataset-panel repos among the 22 HELM-resolvable names, consistent with both numbers: the wider 81-model HELM limb apparently DID catch 2 sub-4B models somewhere in its broader net, but neither of those 2 (unnamed in the source artifacts found) appears to be one of the 36 repos in THIS panel."
+      },
+      {
+        "claim": "identical-weights guardian-pair gap up to 6.7x the across-model variance",
+        "agreement": "AGREE (not independently re-verifiable from this task's scope, taken as reported)",
+        "evidence": "Same two source artifacts (arts_pool.json and the iter_3 review) state this ceiling figure ('a ceiling for any weights-only readout') in the same breath as the HELM 81-model/36-resolved/2-sub-4B figures. This is a methodological finding from the safety-metric research thread (about how much a per-checkpoint readout can possibly predict), not a benchmark-coverage fact this ecosystem census independently re-measures; it is orthogonal to (and not contradicted by) anything found in this census."
+      },
+      {
+        "claim": "OLB v2 capability join n=16",
+        "agreement": "AGREE, exactly",
+        "evidence": "README.md:27 states 'Open LLM Leaderboard v2 capability columns: n=16.' Independently re-derived in this session by reading results/external_join.json directly: n_per_column.olb2_average = 16 (also confirmed for olb2_ifeval/bbh/math_lvl5/gpqa/musr/mmlu_pro, all =16). This census's own row-by-row listing of that join (see rows tagged benchmark=OLB_v2 in this file) reproduces the same 16 repos, 15 of which are distinct panel checkpoints plus one extra 'google/gemma-2-2b-it' lineage-reference row that duplicates the unsloth/gemma-2-2b-it mirror's numbers."
+      }
+    ],
+    "new_findings_not_in_iter3": [
+      "This census additionally found real, exact-checkpoint safety/over-refusal numbers OUTSIDE the 4 leaderboards iter-3 checked (HELM/AIR-Bench/SALAD/OLB), by mining official technical reports and HF model cards directly: Microsoft's Phi-4-mini paper (XSTest IPRR/VPRR + RAI Defect Rate for Phi-4-mini/Phi-3.5-mini/Llama-3.2-3B/Qwen2.5-3B), AI2's OLMo-2-0425-1B-Instruct card ('Safety' composite for itself, Qwen2.5-1.5B-Instruct and SmolLM2-1.7B-Instruct), the aiXamine paper (Over-Refusal + Safety&Alignment composites for Llama-3.2-1B/3B-Instruct), and the Qwen3Guard technical report (Qwen3-4B and Qwen3-4B-SafeRL WildGuard-judged safety/refusal rates). This raises the exact-checkpoint safety-number count for the 36-model panel to 15/36 (42%), materially higher than a naive 'n=0 on the 4 big leaderboards' reading would suggest -- the numbers exist, but scattered one-off in competitor papers' comparison tables, not on any single safety leaderboard."
+    ]
+  },
+  "positioning_ecosystem": "As of 2026-09-21, 15 of 36 sub-4B panel checkpoints (42%) carry any published safety number, but every one comes from a technical report's or card's own comparison table (Phi-4-mini, OLMo-2, aiXamine, Qwen3Guard), never a dedicated safety leaderboard: HELM Safety, AIR-Bench, SALAD-Bench and TrustLLM each return zero exact-id hits, and JailbreakBench/HarmBench target adversarial-attack research, not routine coverage. Only 5 of 36 (14%) carry any over-refusal number (XSTest-style), again via cross-vendor tables, not a leaderboard scenario. Capability fares better: MMLU-family numbers exist for 17/36 (47%), GSM8K for 9/36 (25%), self-reported Arena-Hard for 8/36 (22%), and Open LLM Leaderboard v2 for 8/36 (22%) -- but that Arena-Hard means a developer's own local run, not a live lmarena entry, which has none for this panel. Community fine-tunes are almost uniformly unmeasured: only 2 of 15 print a self-reported safety number, on a community harmbench variant, not an independent benchmark. The gap is structural: benchmarks built for this size class don't evaluate it.",
+  "sources": [
+    {
+      "url": "https://arxiv.org/abs/2505.09388",
+      "title": "Qwen3 Technical Report",
+      "summary": "Tables 17-20 give MMLU-Redux/Arena-Hard/IFEval for Qwen3-0.6B/1.7B/4B and Qwen2.5/Phi-4-mini/Gemma-3 baselines; no dedicated safety section.",
+      "passages": [
+        {
+          "quote": "Table 20: Comparison among Qwen3-1.7B / Qwen3-0.6B (Non-thinking)... Arena-Hard 17.8 32.8 9.0 23.7 6.5 36.9",
+          "locator": "Table 20"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2412.15115",
+      "title": "Qwen2.5 Technical Report",
+      "summary": "Tables 9-10 give MMLU-Redux/MMLU-Pro/GSM8K/IFEval for Qwen2.5-0.5B/1.5B/3B-Instruct plus Gemma2-2B and Phi3.5-mini baselines.",
+      "passages": [
+        {
+          "quote": "Table 10: Performance comparison of 0.5B-1.5B instruction-tuned models... Qwen2.5-0.5B... GSM8K 49.6",
+          "locator": "Table 10"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2510.14276",
+      "title": "Qwen3Guard Technical Report",
+      "summary": "Section 3.5/Table 10 reports the exact Safety-RL experiment that produced Qwen3-4B-SafeRL, with Non-Think/Think x Guard-only/Hybrid safety-rate, refusal, ArenaHard-v2 and reasoning numbers for base Qwen3-4B and both SafeRL variants.",
+      "passages": [
+        {
+          "quote": "Mode Model Safety Rate Refusal ArenaHard-v2 ... Non-Think Qwen3-4B 47.5 64.7 12.9 9.5 ... + SafeRL (Hybrid) 86.5 98.1 5.3 10.7",
+          "locator": "Table 10, Sec 3.5"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/Qwen/Qwen3-4B-SafeRL",
+      "title": "Qwen3-4B-SafeRL model card",
+      "summary": "Confirms the released checkpoint is the Hybrid-reward variant and reprints the Non-Think/Think performance table.",
+      "passages": [
+        {
+          "quote": "Non-Think | Qwen3-4B-SafeRL | 86.5 | 98.1 | 5.3 | 10.7 | 18.2 | 27.7 | 40.8",
+          "locator": "Performance table"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2503.01743",
+      "title": "Phi-4-Mini Technical Report",
+      "summary": "Tables 10-12 give RAI Defect Rate and XSTest IPRR/VPRR for Phi-4-Mini, Phi-4-Multimodal, Phi-3.5-mini, Llama-3.2-3B and Qwen-2.5-3B; the Model Quality table gives Arena-Hard/MMLU/GSM8K for the same set plus Llama-3.2-3B/Qwen2.5-3B.",
+      "passages": [
+        {
+          "quote": "IPRR 93.5% | 92% | 87% | 92.5% | 92% ... VPRR 20.8% | 26.4% | 21.2% | 15.6% | 25.6%",
+          "locator": "Table 12"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2408.00118",
+      "title": "Gemma 2 Technical Report",
+      "summary": "Table 15 (human-preference safety win-rate vs GPT-4o), Table 17 (PT vs IT MMLU) and Table 18 (RealToxicity/CrowS-Pairs/BBQ) for Gemma-2 IT 2B.",
+      "passages": [
+        {
+          "quote": "Gemma 2 IT 2B 26.5%+-1.8% 57.5% ... Win/Tie/Loss 53%/9%/38%",
+          "locator": "Table 15"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/blog/falcon3",
+      "title": "Falcon3 launch blog (HF)",
+      "summary": "Prose benchmark summary; actual numeric tables are images, not machine-extractable text. No safety section.",
+      "passages": [
+        {
+          "quote": "Falcon3-1B attains competitive results in IFEval (54.4), MUSR (40.7), and SciQ (86.8)",
+          "locator": "Instruct models section"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/tiiuae/Falcon3-1B-Instruct",
+      "title": "Falcon3-1B-Instruct model card",
+      "summary": "Benchmarks table with MMLU/MMLU-Pro/IFEval/GSM8K for Falcon3-1B-Instruct plus Llama-3.2-1B/Qwen2.5-1.5B/SmolLM2-1.7B comparison columns.",
+      "passages": [
+        {
+          "quote": "MMLU (5-shot) | 68.2 | 59.8 | 49.2 | 46.1",
+          "locator": "Benchmarks table"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2407.09276",
+      "title": "H2O-Danube3 Technical Report",
+      "summary": "MMLU/GSM8K table for H2O-Danube3-500M-Chat vs Qwen2-0.5B-Instruct; separate MT-Bench/WildBench chat table, no named safety benchmark.",
+      "passages": [
+        {
+          "quote": "MMLU 5-shot 26.33 43.88 ... GSM8K 5-shot 16.00 34.12",
+          "locator": "smaller-models academic benchmark table"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2502.02737",
+      "title": "SmolLM2: When Smol Goes Big",
+      "summary": "Table 5 compares SmolLM2-1.7B-Instruct, Llama3.2-1B and Qwen2.5-1.5B on IFEval/MT-Bench/MMLU-Pro/GSM8K/MATH; no safety section.",
+      "passages": [
+        {
+          "quote": "IFEval (Average) 56.7 53.5 47.4 ... GSM8K (5-shot) 48.8 37.4 63.3",
+          "locator": "Table 5"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct",
+      "title": "SmolLM2-360M-Instruct model card",
+      "summary": "Own IFEval/MMLU/GSM8K numbers plus a Qwen2.5-0.5B-Instruct comparison row.",
+      "passages": [
+        {
+          "quote": "GSM8K (5-shot) | 7.43 | **26.8** | 1.36",
+          "locator": "Instruction Model table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct",
+      "title": "SmolLM2-1.7B-Instruct model card",
+      "summary": "Own IFEval/MMLU-Pro/GSM8K numbers plus Llama-1B-Instruct/Qwen2.5-1.5B-Instruct comparison rows.",
+      "passages": [
+        {
+          "quote": "GSM8K (5-shot) | **48.2** | 26.8 | 42.8 | 4.62",
+          "locator": "Instruction Model table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+      "title": "SmolLM3-3B model card",
+      "summary": "No-Extended-Thinking table gives IFEval for SmolLM3-3B, Qwen2.5-3B, Llama3.1-3B, Qwen3-1.7B, Qwen3-4B; base table gives GSM8K(5-shot) for Qwen3-4B-Base.",
+      "passages": [
+        {
+          "quote": "Instruction following | IFEval | 76.7 | 65.6 | 71.6 | 74.0 | 68.9",
+          "locator": "No Extended Thinking table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/allenai/OLMo-2-0425-1B-Instruct",
+      "title": "OLMo-2-0425-1B-Instruct model card",
+      "summary": "Performance table with an explicit 'Safety' column (Tulu-3 eval suite) for OLMo 2 1B (final), Qwen 2.5 1.5B and SmolLM2 1.7B baselines.",
+      "passages": [
+        {
+          "quote": "OLMo 2 1B | 42.7 | 9.1 | 35.0 | 34.6 | 68.3 | 70.1 | 20.7 | 40.0 | 87.6 | 12.9 | 48.7",
+          "locator": "Performance table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/utter-project/EuroLLM-1.7B-Instruct",
+      "title": "EuroLLM-1.7B-Instruct model card",
+      "summary": "Only ArcChallenge/HellaSwag multilingual tables; no MMLU/GSM8K/Arena-Hard/safety number.",
+      "passages": [
+        {
+          "quote": "EuroLLM-1.7B 0.3496 ... TinyLlama-v1.1 0.2650 ... Gemma-2B 0.3617",
+          "locator": "Arc Challenge table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+      "title": "Qwen2.5-0.5B-Instruct-CensorTune model card",
+      "summary": "Self-reported harmbench_behaviors pass-rate table (own fine-tune vs original vs abliterated variants) plus an IF_Eval/BBH/GPQA/MMLU-Pro/TruthfulQA re-eval table.",
+      "passages": [
+        {
+          "quote": "Qwen2.5-0.5B-Instruct-CensorTune | 0/320 | 0.00% ... Qwen2.5-0.5B-Instruct | 201/320 | 62.8%",
+          "locator": "pass-rate table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+      "title": "Qwen2.5-1.5B-Instruct-CensorTune model card",
+      "summary": "Same harmbench_behaviors pass-rate pattern as the 0.5B CensorTune card.",
+      "passages": [
+        {
+          "quote": "Qwen2.5-1.5B-Instruct-CensorTune | 0/320 | 0.00% ... Qwen2.5-1.5B-Instruct | 73/320 | 22.81%",
+          "locator": "pass-rate table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+      "title": "Llama-3.2-3B-Instruct-abliterated model card",
+      "summary": "Self-reported IF_Eval/MMLU-Pro/TruthfulQA/BBH/GPQA re-eval vs the original checkpoint; no safety number.",
+      "passages": [
+        {
+          "quote": "IF_Eval | 76.55 | 76.76 ... MMLU Pro | 27.88 | 28.00",
+          "locator": "Evaluations table"
+        }
+      ]
+    },
+    {
+      "url": "https://huggingface.co/DreamFast/qwen3-4b-heretic",
+      "title": "qwen3-4b-heretic model card",
+      "summary": "Self-reported Heretic-tool refusal count (3/100 vs 100/100 original); no named benchmark.",
+      "passages": [
+        {
+          "quote": "Refusals: 3/100 (vs 100/100 original)",
+          "locator": "Model Details"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2504.14985",
+      "title": "aiXamine: Simplified LLM Safety and Security",
+      "summary": "Table 6 leaderboard gives an Over-Refusal composite (OK-Test/OR-Bench/WildGuard/XSTest) and a Safety&Alignment composite for Llama3.2-1B and Llama3.2-3B, among other models.",
+      "passages": [
+        {
+          "quote": "Llama3.2-3B ... 91.09 86.21 93.77 94.67 73.04 ... Llama3.2-1B ... 87.21 54.37 81.86 96.30 63.99",
+          "locator": "Table 6"
+        }
+      ]
+    },
+    {
+      "url": "https://www.rivista.ai/wp-content/uploads/2024/10/paper-1.pdf",
+      "title": "Granite 3.0 Language Models (IBM technical report)",
+      "summary": "Figure 7(b)/Table 17 establish IBM's family-level AttaQ/SocialStigmaQA/SALAD-safety-rate practice for 2B-3B Granite Instruct models vs Llama-3.2/Gemma-2; 2B-3B numbers are figure-only.",
+      "passages": [
+        {
+          "quote": "Granite-3.0 models perform best in their parameter range, outperforming other models in all 7 aspects of safety, including Llama-3.1, Llama-3.2 and Gemma-2 models.",
+          "locator": "Sec on safety evaluation, Figure 7"
+        }
+      ]
+    },
+    {
+      "url": "https://arxiv.org/abs/2402.17834",
+      "title": "Stable LM 2 1.6B Technical Report",
+      "summary": "Full-text grep for safety|toxicity|RealToxicity|refusal returns only one incidental citation match; no safety/toxicity evaluation section exists in this report.",
+      "passages": [
+        {
+          "quote": "(no safety/toxicity evaluation section found; only bibliography citation of an unrelated 'toxicity' paper)",
+          "locator": "full-text grep, 1/1 match = bibliography"
+        }
+      ]
+    },
+    {
+      "url": "local:data/external/helm_safety_v1_17_0.json, helm_airbench_v1_19_0.json, saladbench.json, helm_model_meta.json",
+      "title": "iter_3 gen_art_dataset_1 pinned local tables",
+      "summary": "Re-read directly in this session: 99 total HELM model-name records, 22 resolve to real repo_ids (all mid/large flagships, 0 sub-4B); saladbench.json status=NOT_REACHABLE (no leaderboard file exists in the SALAD-Bench HF dataset).",
+      "passages": [
+        {
+          "quote": "\"status\": \"NOT_REACHABLE\", \"note\": \"...dataset holds only raw QA data, not a published model-score table\"",
+          "locator": "saladbench.json"
+        }
+      ]
+    },
+    {
+      "url": "local:iter_3/gen_art/gen_art_dataset_1/results/external_join.json",
+      "title": "iter_3 dataset panel external/capability join",
+      "summary": "Exact-repo-id join giving n_per_column: helm_safety_mean=0, helm_xstest=0, airbench_refusal=0, salad_score=0, mmlu=1, gsm8k=1, olb2_*=16 for all 7 OLB v2 sub-columns.",
+      "passages": [
+        {
+          "quote": "\"olb2_average\": 16, \"olb2_ifeval\": 16, \"olb2_bbh\": 16, \"olb2_math_lvl5\": 16, \"olb2_gpqa\": 16, \"olb2_musr\": 16, \"olb2_mmlu_pro\": 16",
+          "locator": "n_per_column"
+        }
+      ]
+    },
+    {
+      "url": "local:iter_3/gen_art/gen_art_dataset_1/README.md",
+      "title": "iter_3 dataset panel README",
+      "summary": "States the HELM/AIR-Bench/SALAD n=0 and OLB v2 n=16 findings this census cross-checks.",
+      "passages": [
+        {
+          "quote": "HELM safety, AIR-Bench and SALAD have n=0 exact-id hits for this panel. Open LLM Leaderboard v2 capability columns: n=16.",
+          "locator": "External join section, lines 25-28"
+        }
+      ]
+    },
+    {
+      "url": "local:iter_3/gen_strat/gen_strat_1/arts_pool.json",
+      "title": "iter_3 gen_strat arts_pool (HELM v1 limb)",
+      "summary": "Source of the '81 models, 36 resolved, only 2 sub-4B with published numbers; 6.7x guardian-pair ceiling' figures cross-checked in this census.",
+      "passages": [
+        {
+          "quote": "PART 3 (HELM, reused v1 limb): 81 models, 36 resolved, 45 closed-API; only 2 sub-4B with published numbers; identical-weights guardian-pair gap up to 6.7x the across-model variance",
+          "locator": "arts_pool.json"
+        }
+      ]
+    },
+    {
+      "url": "https://trustllmbenchmark.github.io/TrustLLM-Website/leaderboard.html",
+      "title": "TrustLLM leaderboard",
+      "summary": "JS-rendered page; static fetch returned no model names. TrustLLM's own paper (2401.05561) roster is 16 models, all 7B+ / proprietary API (Llama2, Vicuna, Mistral-7B, ChatGLM2, GPT-4, PaLM 2, ERNIE, etc.) -- none overlap this sub-4B panel.",
+      "passages": []
+    },
+    {
+      "url": "https://arxiv.org/abs/2401.05561",
+      "title": "TrustLLM: Trustworthiness in Large Language Models",
+      "summary": "Confirms the 16-model roster is 7B+/proprietary-API only.",
+      "passages": []
+    }
+  ],
+  "blockers": [
+    "google/gemma-2-2b-it and meta-llama/Llama-3.2-1B-Instruct and meta-llama/Llama-3.2-3B-Instruct official raw READMEs are gated on HF (require login); worked around via the arXiv reports (Gemma 2, N/A for Llama) and third-party comparison tables (Falcon3/SmolLM2/Phi-4-mini/aiXamine cards) that quote the same official numbers, but no direct read of Meta's own Llama-3.2 model-card safety section (if any) was possible in this session.",
+    "IBM's public Granite docs/leaderboard page (ibm.com/granite/docs/models/granite) is JS-rendered; static fetch returned 1 char, so a Granite-3.3/4.0-SPECIFIC safety table (as opposed to the predecessor Granite-3.0 technical report's family-level AttaQ practice) was not located within the time budget.",
+    "TrustLLM's leaderboard.html is JS-rendered (889 chars static); model roster confirmed instead via the TrustLLM paper itself and general web search, not a live leaderboard scrape.",
+    "JailbreakBench and HarmBench were checked via web search only (no scrapable public leaderboard/results page enumerating all tested models was found in the time budget); the working assumption of n=0 for this panel rests on those benchmarks' published usage patterns (adversarial-attack research on frontier/7B+ targets), not an exhaustive per-repo check.",
+    "EuroLLM-1.7B-Instruct's own dedicated technical report/blog (if one exists separately from the EuroLLM-9B report) was not located; only its HF card (ArcChallenge/HellaSwag only) and the EuroLLM-9B report's passing mention were checked.",
+    "Sealed families (granite, stablelm): per the sealing rule, no sealed repo's own HF card/README was opened in this session; family-level findings rest on the Granite 3.0 predecessor technical report and the StableLM-2 1.6B architecture report only, plus one incidental non-opened web-search snippet for a StableLM-2 card disclaimer sentence (noted explicitly in that row).",
+    "Given the very large number of cross-paper capability comparisons uncovered (each vendor's card/report benchmarks its neighbors), this census is thorough for official instruct models but the community fine-tune rows (aside from CensorTune, heretic, Llama-3.2-3B-abliterated) were checked at 'card only, single keyword grep' depth per the task's fallback instruction, not a full manual read of every card."
+  ]
+}

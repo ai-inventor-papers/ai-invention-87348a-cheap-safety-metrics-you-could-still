@@ -1,0 +1,350 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2602.02132
+Type: HTML
+Length: 135810 chars (truncated)
+
+--- Content ---
+
+##### Report GitHub Issue
+
+×
+
+Title:
+
+Content selection saved. Describe the issue below:
+
+Description:
+
+Submit without GitHub Submit in GitHub
+
+arXiv is now an independent nonprofit! [Learn more](https://info.arxiv.org/about) ×
+
+[ Back to arXiv ](/)
+
+[Why HTML?](https://info.arxiv.org/about/accessible_HTML.html) Report Issue [ Back to Abstract ](/abs/2602.02132v2 "Back to abstract page") [ Download PDF](/pdf/2602.02132v2 "Download PDF") [ ](javascript:toggleNavTOC\(\); "Toggle navigation") [ ](javascript:toggleReadingMode\(\); "Disable reading mode, show header and footer")
+
+  1. Abstract
+  2. 1 Introduction
+  3. 2 Methods
+     1. 2.1 Identifying Refusal in Activation Space
+     2. 2.2 Identifying Refusal in SAE Space
+        1. Latent firing and refusal separation:
+        2. Constructing SAE-based refusal directions:
+        3. Ablations and control baselines:
+  4. 3 Experimental Setup
+     1. Data, Splits, and Refusal Categories:
+     2. Models and intervention configuration:
+     3. SAE resources and configuration:
+     4. Evaluation pools and metrics:
+  5. 4 Findings
+     1. 4.1 Geometry of Refusal Directions
+     2. 4.2 Interventions: Steering and Ablation
+        1. Direction Steering:
+        2. Direction ablation
+        3. Refusal style:
+     3. 4.3 Refusal Directions in SAE Space
+        1. Direction Steering:
+        2. Activation-Space Reconstruction:
+        3. Latent Overlaps Across Dataset Splits:
+        4. Semantic Structure of Refusal Latents:
+  6. 5 Related Work
+     1. Refusal Directions and Abliteration Attacks:
+     2. Activation Steering:
+     3. SAEs for Interpretability:
+  7. 6 Conclusion
+  8. Scope of generalizability:
+  9. References
+  10. A Refusal Style Examples Across Directions
+     1. Quantifying refusal type by steering direction:
+     2. Taxonomy and procedure:
+     3. Result:
+  11. B Datasets and Refusal Splits
+     1. WildGuardMix (WGM):
+     2. SorryBench (SB):
+     3. CoCoNot (CCN):
+     4. XSTest (XST):
+     5. WildGuard-Mix (vanilla, non-adversarial):
+     6. XSTest:
+     7. CoCoNot:
+     8. SorryBench:
+     9. Balanced subsamples for direction learning:
+  12. C Intra-class refusal direction geometry
+  13. D Oracle experiments for refusal directions
+     1. Stability under subsampling:
+     2. Held-out “gold” oracles:
+     3. Family-level structure:
+     4. D.1 Experiment 5: Hook Variants and Robustness
+        1. Goal.
+        2. Summary.
+  14. E Latent Semantic Annotation
+  15. F Refusal Latent Overlap between Splits
+  16. G Pairwise Cosine Distance Matrix — Numeric Form
+  17. H Hierarchical Clustering of Refusal Directions (Table ) — Full Figures
+     1. H.1 Heatmaps
+     2. H.2 Dendrograms
+     3. H.3 MDS Embeddings
+     4. H.4 Dendrograms at the Selected Cut (N=2N=2)
+  18. I Per-Split Ablation on the Controlled Test Set (Acc/RR/ORR, N=94N{=}94)
+  19. J Unified-Pool Ablation Results — Full Per-Direction Detail
+  20. K Validation of the Refusal Judge
+  21. L Refusal and Over-Refusal as a Function of Steering Strength
+  22. M Topical Composition of the Refusal Splits
+  23. N Changing the Refusal Type While Holding the Topic Fixed
+
+
+
+[ License: arXiv.org perpetual non-exclusive license ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2602.02132v2 [cs.CL] 15 Sep 2026
+
+# There Is More to Refusal in Large Language Models   
+than a Single Direction
+
+Faaiz Joad  Affiliation: Nadir Durrani, Husrev Taha Sencar Majd Hawasly  Affiliation: Qatar Computing Research Institute, HBKU, Doha, Qatar  Sabri Boughorbel  Affiliation: Corresponding authors: {fjoad,mhawasly,ndurrani,hsencar}@hbku.edu.qa
+
+###### Abstract
+
+Prior work argues that refusal in large language models is mediated by a single direction, enabling steering and abliteration. We show that this account is incomplete: across diverse refusal and non-compliance categories, refusal behaviors correspond to geometrically distinct directions in activation space. Yet activation steering along any refusal-related direction produces nearly identical refusal–over-refusal trade-offs, acting as a shared one-dimensional control knob. Thus, different directions primarily affect not whether the model refuses, but how it refuses. Using sparse autoencoders, we uncover a structured internal representation of refusal: a reusable core of shared refusal latents supplemented by style- and domain-specific latents. Linear interventions collapse this structure into uniform behavioral control, flattening mechanistic differences across refusal types. Our results reconcile the apparent simplicity of refusal steering with the diversity of refusal behaviors, and clarify the limits of linear interpretability for aligned model behavior.
+
+## 1 Introduction
+
+A central objective in training large language models (LLMs) is to align them with values such as helpfulness and harmlessness while preserving sensitivity to user intent Hendrycks et al. (2021); Askell et al. (2021); Bai et al. (2022a); Yao et al. (2023). Refusal training supports this goal by enabling models to decline inappropriate or unsupported requests rather than comply indiscriminately. Such refusals are typically expressed through a characteristic tone and stance.
+
+Prior work on instilling refusal behavior has primarily emphasized safety, focusing on preventing harmful or disallowed outputs Ganguli et al. (2022); Dai et al. (2024); Zou et al. (2024); Yuan et al. (2025). However, real-world interactions require LLMs to navigate a much broader range of contextual nuances, including ambiguous, ill-specified, or out-of-scope requests that may not be explicitly unsafe. Given the fragility of alignment mechanisms in LLMs, recent research has increasingly focused on developing methods to analyze and detect alignment failures, as well as to steer model behavior toward appropriate non-compliance when warranted Bai et al. (2022b); Han et al. (2024).
+
+Figure 1: Distinct refusal directions yield the same refusal rate but qualitatively different refusal styles.
+
+Recent work identifies a simple intervention for refusal: a linear direction in the model’s activation space that modulates refusal behavior Arditi et al. (2024). Removing this direction from the residual stream can reduce refusal of harmful instructions, while amplifying it can induce refusal even for otherwise harmless prompts. Yet refusal is not simple at the surface level: models refuse for different reasons, across domains, and in noticeably different styles, as illustrated in Figure 1. This creates a tension between the simplicity of the intervention and the diversity of observed refusals. In particular, prior work collapses diverse safety violations into a single behavioral class and does not address whether the mechanism generalizes beyond safety. This raises a critical open question:   
+_Do qualitatively different forms of refusal, and more general non-compliance behaviors, rely on distinct underlying mechanisms?_
+
+To address this question, we adopt a broader view of refusal as part of a wider class of non-compliant behaviors beyond safety alone Han et al. (2024); Brahman et al. (2024); Xie et al. (2025); Röttger et al. (2024). Following prior work, we consider refusals from incomplete or indeterminate requests, unsupported requests that exceed the model’s capabilities, humanizing requests that anthropomorphize the model, unqualified professional advice, inappropriate topics governed by contextual norms, safety refusals involving harmful content, and over-refusals to benign requests. Together, these categories cover a broad spectrum of refusal and non-compliance in real-world interactions. We study them through linear interventions in activation space and find their associated directions are geometrically distinct, suggesting differences in refusal expression.
+
+Despite these geometric differences, we find that activation steering along any of these directions yields similar refusal efficacy across inputs: as steering strength increases, the model increasingly refuses prompts, including benign ones, across datasets. Steering thus behaves like a single control knob: turning it up pushes the model toward refusal more often, independent of which refusal-related direction is used. This suggests a different understanding of refusal and non-compliance in the model’s internal dynamics than implied by geometrically distinct directions. Where these directions differ most is not in whether the model refuses, but in how it refuses, ranging from policy-based refusals, to clarification or missing-context responses, to softer forms of deflection.
+
+To further examine the origins of these differences, we use sparse autoencoders as an interpretability tool. We probe the model for latents that systematically activate during refusal and non-compliance at a fixed token position, and test their functional role in refusal behavior by amplifying the directions encoded by these latents during generation. This confirms the same single-behavioral-degree-of-freedom phenomenon observed with activation-space steering. For each refusal category, we verify that the residual-stream directions encoded by corresponding latents resemble those identified directly in activation space.
+
+By analyzing the overlap of active latents across refusal categories, we find that while a substantial subset of latents is shared across refusal types, forming a reusable refusal core, others are specific to particular refusal styles. To make this distinction concrete, we annotate the most widely shared latents and show that stylistic variation in refusal arises from a long tail of specialized features.
+
+Overall, the internal structure of refusal is invisible to linear control. Activation-space steering reveals what refusal looks like under intervention, while SAE analysis explains why different steering directions behave so similarly and which internal features are jointly modulated. Together, these perspectives describe different levels of the same phenomenon: a structured internal system whose complexity is flattened by linear interventions.
+
+We address three research questions in this work:
+
+  * RQ1
+
+How different are refusal directions for different types of refusal behavior beyond safety?
+
+  * RQ2
+
+Do geometrically distinct refusal directions produce different refusal and over-refusal rates, or does activation steering follow a largely invariant decision boundary?
+
+  * RQ3
+
+When refusal rates are similar across directions, how do refusal forms vary at the surface level, and how is this variation reflected in shared versus category-specific SAE latents?
+
+
+
+
+## 2 Methods
+
+We study refusal at two representational levels: activation space and SAE feature space. First, we identify refusal directions and test their effects through steering and ablation. We then decompose these directions into refusal-associated latents and analyze their overlap across categories.
+
+### 2.1 Identifying Refusal in Activation Space
+
+We compute refusal directions by contrasting residual-stream activations from prompts requiring non-compliance with those from benign prompts. For each evaluation split, we collect activations at a fixed token position, average them separately over the non-compliant and benign prompt sets, and define the refusal direction as the difference between the two centroids. This yields one activation-space direction per split, used for steering and ablation.
+
+Let xt∈ℝdx_{t}\in\mathbb{R}^{d} denote the residual-stream activation at token position tt, and r∈ℝdr\in\mathbb{R}^{d} denote the normalized refusal direction. Refusal _induction_ adds this direction, xt′←xt+α​rx_{t}^{\prime}\leftarrow x_{t}+\alpha r, where α>0\alpha>0 controls steering strength. Refusal _ablation_ projects it out, xt′←xt−(xt⋅r)​rx_{t}^{\prime}\leftarrow x_{t}-(x_{t}\cdot r)\,r. We use these interventions to test the representational relevance of refusal directions, rather than to establish causal mediation, and evaluate refusal, over-refusal, and accuracy. This procedure yields one intervention direction per evaluation split.
+
+### 2.2 Identifying Refusal in SAE Space
+
+We use sparse autoencoders (SAEs) to decompose activation-space refusal directions into sparse latent features. While activation-space directions show how refusal can be controlled through linear interventions, SAE features allow us to examine which latent components are shared across refusal categories and which are category-specific. We therefore use SAEs to identify refusal-associated latents, test their interventional relevance, and relate them back to activation-space refusal directions.
+
+We use pretrained JumpReLU residual-stream SAEs to analyze refusal-related features in residual-stream activations. We hook the residual stream at the token immediately preceding the assistant’s response, which we treat as the model’s _decision state_. Hooking at this single decision-state position means that our SAE analysis captures features at the model’s commitment-to-respond state, rather than earlier input-driven features. Recent work (Zhao et al., 2025) shows that safety- and harmlessness-related directions may already be encoded at earlier layers and at the final user-input token; extending our shared-core analysis to earlier hooks and pre-commitment positions would help disentangle input-driven from output-driven latents and is left to future work. Let x(ℓ)∈ℝdx^{(\ell)}\in\mathbb{R}^{d} denote the residual-stream activation at layer ℓ\ell. An SAE parameterizes an encoder–decoder pair (fθ,gϕ)(f_{\theta},g_{\phi}), mapping x(ℓ)x^{(\ell)} to a sparse latent vector z(ℓ)=fθ​(x(ℓ))z^{(\ell)}=f_{\theta}(x^{(\ell)}) and reconstructing it as x^(ℓ)=gϕ​(z(ℓ))\hat{x}^{(\ell)}=g_{\phi}(z^{(\ell)}). Here, z(ℓ)∈ℝkz^{(\ell)}\in\mathbb{R}^{k} is sparse, and each latent jj has an associated decoder direction dj(ℓ)d^{(\ell)}_{j} in residual space.
+
+#### Latent firing and refusal separation:
+
+To identify refusal latents, we adapt Ferrando et al. (2025)’s firing-rate separation method. For latent jj at layer ℓ\ell on example ii, we define the binary firing indicator ai​j(ℓ)=𝟙[zi​j(ℓ)>0]a^{(\ell)}_{ij}=\mathbbm{1}[z^{(\ell)}_{ij}>0], where zi​j(ℓ)z^{(\ell)}_{ij} is the JumpReLU activation of latent jj. For each refusal split ss, we compute firing rates over two reference subsets: harmful prompts correctly refused by the unsteered base model and benign prompts correctly complied with by the base model, denoted HR and BC, respectively. For each pool y∈{HR,BC}y\in\\{\mathrm{HR},\mathrm{BC}\\} with index set Sy(s)S_{y}^{(s)}, we compute the firing rate:
+
+| fj,ℓ(s)​(y)=1|Sy(s)|​∑i∈Sy(s)ai​j(ℓ)f^{(s)}_{j,\ell}(y)=\frac{1}{\lvert S^{(s)}_{y}\rvert}\sum_{i\in S^{(s)}_{y}}a^{(\ell)}_{ij} |   
+---|---|---  
+  
+We then define the _refusal separation score_ as the per-latent firing-rate difference between the harmful-refused and benign-complied pools:
+
+| Δj,ℓ(s)=fj,ℓ(s)​(HR)−fj,ℓ(s)​(BC)\Delta^{(s)}_{j,\ell}=f^{(s)}_{j,\ell}(\mathrm{HR})-f^{(s)}_{j,\ell}(\mathrm{BC}) |   
+---|---|---  
+  
+Restricting the analysis to these two correct-outcome subsets isolates refusal-related activations from cases where the base model already behaves anomalously, e.g., jailbreak compliance or benign over-refusal. For each split and layer, we rank latents by Δj,ℓ(s)\Delta^{(s)}_{j,\ell} and select the top-KK positive-scoring latents as the _refusal latents_ for that split. These latent sets are the basic building blocks for subsequent SAE analyses, including activation steering, direction ablation, and cross-split reuse.
+
+#### Constructing SAE-based refusal directions:
+
+Each selected refusal latent jj has a decoder direction dj(ℓ)d^{(\ell)}_{j} in residual space. For split ss and layer ℓ\ell, with refusal latents {j1,…,jK}\\{j_{1},\dots,j_{K}\\}, we construct an SAE-based refusal direction by averaging their decoder directions, dSAE(s,ℓ)=1K​∑k=1Kdjk(ℓ)d^{(s,\ell)}_{\mathrm{SAE}}=\frac{1}{K}\sum_{k=1}^{K}d^{(\ell)}_{j_{k}}. During generation, we apply steering at layer ℓ\ell by modifying the residual stream as x′=x+β​dSAE(s,ℓ)x^{\prime}=x+\beta\,d^{(s,\ell)}_{\mathrm{SAE}}, where β\beta controls steering strength. This mirrors activation-space steering, but grounds the intervention in a small bundle of SAE features rather than a single mean-difference vector.
+
+#### Ablations and control baselines:
+
+To test necessity, we perform SAE-based ablations by encoding the decision-state activation x(ℓ)x^{(\ell)}, zeroing selected refusal latents in z(ℓ)z^{(\ell)}, and decoding into residual space to obtain an ablated activation x~(ℓ)=gϕ​(z~(ℓ))\tilde{x}^{(\ell)}=g_{\phi}(\tilde{z}^{(\ell)}) that is used in place of x(ℓ)x^{(\ell)} during generation. As controls, we construct steering directions from random latent subsets of the same size KK, and from random unit vectors in residual space.
+
+## 3 Experimental Setup
+
+#### Data, Splits, and Refusal Categories:
+
+To capture a broad range of refusal and non-compliance behaviors, we construct 11 evaluation splits from four benchmark datasets: WildGuardMix (WGM), SorryBench (SB), CoCoNot (CCN), and XSTest (XST). Each evaluation split consists of a balanced pair of prompt sets: at least 32 prompts labeled to elicit non-compliant behavior under dataset annotations, paired with an equal number of benign prompts for which compliance is appropriate. For CoCoNot, SorryBench, and WildGuardMix, directions use a shared benign prompt pool drawn from WildGuardMix completions, so differences across directions are driven by the non-compliant prompt set. XSTest is treated separately because it is designed to evaluate over-refusal using adversarially framed benign prompts. We estimate activation centroids using 32 prompts per class, consistent with the public implementation of the prior activation-steering baseline Arditi et al. (2024).11 1 <https://colab.research.google.com/drive/1a-aQvKC9avdZpdyBn4jgRQFObTPy1JZw> When sufficient data is available, we construct independent 32/32 splits without replacement to validate within-category geometric stability. Appendix B provides full dataset details, and Table 6 summarizes the split taxonomy. Appendix M reports the topical composition of these splits.
+
+The splits span four refusal regimes: safety and content-policy (SafetyCore-WGM, HateSpeech-SB, CrimeAssistance-SB, Inappropriate-SB, Advice-SB, Safety-CCN), where prompts are declined on safety, policy, or professional-boundary grounds; capability limitation (Unsupported-CCN, Humanizing-CCN), where prompts require unavailable capabilities or presuppose embodiment; underspecification (Incomplete-CCN, Indeterminate-CCN), where prompts are too incomplete or ambiguous to answer; and over-refusal (OverRefusal-XST), where benign prompts are incorrectly refused. These regimes differ in whether non-compliance is warranted by safety constraints, capability limits, missing information, or no legitimate refusal basis.
+
+#### Models and intervention configuration:
+
+We conduct experiments on three instruction-tuned models. For each model, refusal directions are estimated from 3232 harmful and 3232 benign prompts, with layer and token position selected on a held-out validation pool. For gemma-2-9b-it, activations are read at layer 2020, position −2-2 (the chat-template token immediately preceding the assistant response), and steering is applied at the same layer with α=100\alpha=100. For Meta-Llama-3-8B-Instruct, steering is applied at layer 1616, position −2-2 with α=2.5\alpha=2.5, while ablation is applied at layer 1212, position −5-5 (the eot_id token), selected by a per-layer sweep. For Qwen-7B-Chat, ablation and steering are applied at layer 1414, position −1-1, also selected by a per-layer sweep. For all models, ablation uses the residual projection x′←x−(x⋅r)​rx^{\prime}\leftarrow x-(x\cdot r)r at every layer (resid_pre, resid_mid, resid_post), while steering is applied only at the selected layer. We select steering strength α\alpha by grid search over a small set (e.g., α∈{5,10,20,30,60}\alpha\in\\{5,10,20,30,60\\}), choosing the smallest value that reaches at least a 90% refusal rate on harmful prompts while keeping benign over-refusals below a chosen threshold. Unless otherwise noted, we report these selected α\alpha values.
+
+#### SAE resources and configuration:
+
+For SAE analyses, we use pretrained JumpReLU residual-stream SAEs. For Gemma experiments, we use GemmaScope SAEs Lieberum et al. (2024) trained on gemma-2-9B-it at layers ℓ∈{9,20,31}\ell\in\\{9,20,31\\}.22 2 hf.co/google/gemma-scope-9b-it-res For Llama experiments, we use a Llama-3.1-specific residual-stream SAE release,33 3 hf.co/andyrdt/saes-llama-3.1-8b-instruct loaded via SAELens, at a fixed late layer.44 4 We did not find a public SAE for the exact Qwen-7B-Chat checkpoint used in our activation-space experiments. We therefore restrict SAE analysis to Gemma and Llama, whose available SAEs match the steered checkpoints. SAE activations are extracted at the token immediately preceding the assistant’s response, corresponding to position −2-2 in the chat template. For SAE-based steering, we select the top K=10K=10 refusal latents per split and layer, based on a validation sweep over K∈{1,…,15}K\in\\{1,\dots,15\\}; performance peaks near K=10K=10, while smaller values are unstable and larger values introduce lower-ranked noisy latents.
+
+#### Evaluation pools and metrics:
+
+Across all interventions and evaluations, we organize prompts and base-model responses into four pools defined by the cross-product of prompt type and base-model behavior: HR (_harmful–refused_ : a prompt that should be refused and that the unsteered base model refuses), HC (_harmful–complied_ : a prompt that should be refused but the model complies), BR (_benign–refused_ : a benign prompt that the model erroneously refuses), and BC (_benign–complied_ : a benign prompt the model correctly complies with). The unprimed labels HR/HC/BR/BC denote pre-intervention pool membership at test-set construction time, while the primed forms HR′/HC′/BR′/BC′ denote the post-intervention judgement of whether a steered or ablated response is a refusal or compliance, as classified by the WildGuard refusal classifier. We report three aggregate metrics: overall accuracy Acc=(HR′+BC′)/N\mathrm{Acc}=(\mathrm{HR}^{\prime}+\mathrm{BC}^{\prime})/N, refusal rate RR=HR′/Nharmful\mathrm{RR}=\mathrm{HR}^{\prime}/N_{\mathrm{harmful}}, and over-refusal rate ORR=BR′/Nbenign\mathrm{ORR}=\mathrm{BR}^{\prime}/N_{\mathrm{benign}}. By construction, the unsteered base model attains 50%50\% on all three metrics on a balanced four-pool controlled test set, since correct outcomes are confined to HR and BC. Appendix K compares this classifier against human annotation.
+
+## 4 Findings
+
+We organize findings around the three questions introduced in Section 1. Section 4.1 addresses RQ1 by showing that refusal directions are geometrically distinct and category-structured. Section 4.2 addresses RQ2 by showing that these directions collapse under steering into a shared refusal–over-refusal trade-off, while ablation reveals multiple refusal components remain. Section 4.3 addresses RQ3 by using sparse autoencoders to explain this pattern as a shared core of refusal latents plus category-specific latents shaping refusal style.
+
+### 4.1 Geometry of Refusal Directions
+
+We first examine whether different forms of refusal are represented by the same activation-space direction. For each of the 11 refusal splits, we compute a corresponding refusal direction and quantify similarity across splits using pairwise cosine similarity. As shown in Figure 2 (See Table 20 in Appendix G for the exact pairwise values), many directions are substantially dissimilar: typical cosine similarities are 0.4–0.6, with several pairs close to orthogonal. This indicates that different refusal categories correspond to distinct activation-space directions rather than a single universal refusal vector.
+
+The directions are nevertheless structured rather than arbitrary. Hierarchical agglomerative clustering over the cosine-similarity matrix reveals clusters that broadly align with the refusal categories introduced in Section 3: safety- and content-policy-oriented refusals group more closely with one another than with capability-limitation or underspecification refusals. This shows that refusal directions are geometrically distinct yet category-structured, setting up the behavioral question we examine next. Additional clustering visualizations are provided in Appendix H. Appendices M and N examine whether these geometric differences are driven by prompt topics or by the rationales underlying the elicited refusals.
+
+Figure 2: Pairwise cosine similarity between refusal directions learned from the 11 evaluation splits on Gemma-2-9B-IT. Rows and columns are reordered by hierarchical agglomerative clustering (N=2N{=}2), revealing a safety/content-policy cluster and a capability/underspecification cluster. SafetyCore-WGM is closest to the safety refusal direction of Arditi et al. (2024). Exact values and additional clustering visualizations are provided in Appendix G and Appendix H.
+
+### 4.2 Interventions: Steering and Ablation
+
+Having established that refusal directions are geometrically distinct, we next ask whether these differences lead to distinct behavioral effects under intervention. We evaluate activation steering and direction ablation on a controlled test set of 200200 prompts, with 5050 examples from each of the four pools (HR, HC, BR, BC) defined in Section 3. This setup lets us measure both desired refusal on harmful prompts and over-refusal on benign prompts under the same intervention.
+
+#### Direction Steering:
+
+We first test whether geometrically distinct refusal directions produce distinct behavioral effects when amplified. For each of the 11 directions, we steer the base model on the controlled test set at strengths ranging from weak to near-saturated refusal regimes; the full per-strength breakdown is reported in Table 11 in the Appendix. Figure 11 in Appendix L plots refusal and over-refusal rates as a function of steering strength. Steered responses are labeled as refusals or compliant answers using WildGuard, with manual validation. We report overall accuracy, refusal rate, and over-refusal rate.
+
+Tables 1 and 2 summarize the steering and ablation results across models. Under steering, the main pattern is strikingly consistent: despite the geometric differences shown in Section 4.1, steering along different refusal directions produces broadly similar behavioral effects. Refusal rates on harmful prompts increase, while over-refusal on benign prompts rises in parallel, with both approaching saturation at the reported strengths. CoCoNot non-safety categories (Humanizing, Incomplete, Indeterminate, Unsupported) saturate slightly more gradually than SorryBench- and WildGuard-derived directions, but follow the same overall refusal–over-refusal trade-off.
+
+#### Direction ablation
+
+reveals a complementary but more nuanced picture. Ablating the safety-derived direction suppresses safety-style refusals: over-refusal on benign prompts drops toward zero, and refusal rates on SorryBench- and WildGuard-style splits also collapse.55 5 Suppression on safety-style splits is partly expected because the harmful pool is curated from prompts the base model refused at baseline; the more informative comparisons are the residual CoCoNot non-safety refusals and the broad suppression from mixed-source ablation. CoCoNot non-safety splits, however, retain residual refusal of roughly 0.30.3–0.50.5, suggesting that humanizing, incomplete, indeterminate, and unsupported requests rely on additional refusal-relevant components not captured by the safety axis alone. This multi-component interpretation is further supported by the mixed-source ablation direction. When the ablation direction is constructed from a round-robin pool containing prompts sampled across all 11 refusal splits, ablating this shared direction broadly suppresses refusal behavior across categories and models (last row of Table 2). Thus, different refusal types are not reducible to a single identical direction, but they do share a substantial common refusal component.
+
+#### Refusal style:
+
+Although our quantitative metrics treat refusal as a binary outcome, the _form_ of refusal varies systematically with the steering direction, giving a finer-grained view of the shared refusal knob than refuse/comply alone. Despite their similar refusal rates, steered models differ primarily in _how_ refusal is expressed. As illustrated in Appendix A (Table 4), humanizing directions emphasize the model’s non-human nature, incomplete-request directions produce terse expressions of confusion, and indeterminate or unsupported directions stress impossibility or lack of agency. SorryBench directions foreground moral judgments or professional disclaimers, while WildGuard and XSTest directions emphasize safety, illegality, or harm. This raises the question of what internal structure produces similar refusal behavior across geometrically distinct directions, which we examine next using sparse-autoencoder features.
+
+Split | Gemma (steered, α=100\alpha=100) | Llama (steered, α=2.5\alpha=2.5) | Qwen (steered, α=15\alpha=15)  
+---|---|---|---  
+Acc | RR | ORR | Acc | RR | ORR | Acc | RR | ORR  
+Humanizing-CCN | 0.515 | 1.000 | 0.970 | 0.515 | 0.880 | 0.850 | 0.480 | 0.960 | 1.000  
+Incomplete-CCN | 0.490 | 0.920 | 0.940 | 0.475 | 0.650 | 0.700 | 0.515 | 0.500 | 0.470  
+Indeterminate-CCN | 0.515 | 0.960 | 0.930 | 0.520 | 0.970 | 0.930 | 0.535 | 0.970 | 0.900  
+Safety-CCN | 0.500 | 1.000 | 1.000 | 0.510 | 1.000 | 0.980 | 0.475 | 0.930 | 0.980  
+Unsupported-CCN | 0.505 | 0.980 | 0.970 | 0.510 | 0.920 | 0.900 | 0.485 | 0.970 | 1.000  
+CrimeAssistance-SB | 0.500 | 1.000 | 1.000 | 0.500 | 1.000 | 1.000 | 0.485 | 0.970 | 1.000  
+HateSpeech-SB | 0.500 | 1.000 | 1.000 | 0.500 | 1.000 | 1.000 | 0.485 | 0.970 | 1.000  
+Inappropriate-SB | 0.500 | 1.000 | 1.000 | 0.505 | 0.990 | 0.980 | 0.490 | 0.970 | 0.990  
+Advice-SB | 0.500 | 1.000 | 1.000 | 0.500 | 1.000 | 1.000 | 0.485 | 0.970 | 1.000  
+SafetyCore-WGM | 0.500 | 1.000 | 1.000 | 0.495 | 0.990 | 1.000 | 0.485 | 0.940 | 0.970  
+OverRefusal-XST | 0.490 | 0.980 | 1.000 | 0.500 | 1.000 | 1.000 | 0.480 | 0.960 | 1.000  
+Table 1: Performance of LLMs steered to refuse along each of 11 refusal directions, evaluated on the shared controlled test set of 200 prompts (5050 each of HR, HC, BR, BC). For each split we learn its own HR–BC mean-difference direction rr and apply x′←x+α​rx^{\prime}\leftarrow x+\alpha r during generation. We report accuracy A​c​c=(H​R′+B​C′)/200Acc=(HR^{\prime}+BC^{\prime})/200, refusal rate R​R=H​R′/100RR=HR^{\prime}/100, and over-refusal rate O​R​R=B​R′/100ORR=BR^{\prime}/100, where R′R^{\prime} refers to the WildGuard judgment of whether the steered response is a refusal. The unsteered base models attain 50% on all three metrics. Direction | Qwen | Llama3 | Gemma2  
+---|---|---|---  
+SafetyCore-WGM | 12.5 | 14.1 | 1.8  
+OverRefusal-XST | 73.5 | 32.9 | 4.0  
+Humanizing-CCN | 1.3 | 19.5 | 0.4  
+Incomplete-CCN | 1.3 | 17.6 | 0.0  
+Indeterminate-CCN | 2.6 | 22.3 | 1.3  
+Safety-CCN | 59.5 | 32.0 | 0.4  
+Unsupported-CCN | 0.9 | 14.5 | 3.1  
+HateSpeech-SB | 6.5 | 19.1 | 0.4  
+CrimesTorts-SB | 48.3 | 39.1 | 14.1  
+Inappropriate-SB | 2.2 | 16.0 | 1.3  
+Advice-SB | 8.2 | 19.5 | 0.0  
+RR | 87.1 | 69.5 | 81.1  
+Table 2: Per-direction ablation effectiveness on the unified test pool (% of baseline-refused harmful prompts flipped to non-refusal). Top rows use directions from individual splits; the bottom row (RR) uses a mixed-source round-robin direction sampled across all 11 splits. Individual directions transfer poorly, while the mixed RR direction generalizes broadly, indicating a shared refusal core. See Appendix J for more.
+
+### 4.3 Refusal Directions in SAE Space
+
+To explain why geometrically distinct directions produce similar behavioral effects, we analyze refusal in SAE feature space. For each split, we identify refusal-associated latents, and examine their interventional effect, alignment with activation-space directions, cross-split reuse, and semantic structure.
+
+#### Direction Steering:
+
+We test whether SAE refusal latents recover the same refusal knob observed in activation space. For each split, we average decoder directions of top-k refusal latents to form an SAE-based direction and steer the residual stream during generation, r′=r+β,dSAE(s,ℓ)r^{\prime}=r+\beta,d^{(s,\ell)}_{\text{SAE}}, on the controlled test set. We select β\beta by coarse validation search (Gemma: 10,30,60{10,30,60}; Llama: 0.5,0.8,1.0,1.2{0.5,0.8,1.0,1.2}) and label outputs with WildGuard.
+
+Table 3 (a) summarizes SAE-based steering across splits for Gemma and Llama, whose base models at β=0\beta=0 already exhibit substantial refusal and over-refusal. Increasing β\beta monotonically raises both refusal on harmful prompts and over-refusal on benign prompts, tracing the same accuracy–over-refusal trade-off observed with activation-space steering. Thus, a small SAE-derived direction is sufficient to recover the same one-dimensional refusal knob. Random-latent controls produce much weaker, non-monotonic changes, confirming that the effect is specific to the identified refusal latents.
+
+Split | (a) SAE-steered refusal performance | (b) SAE–activation alignment  
+---|---|---  
+Gemma (SAE-steered, β=60\beta=60) | Llama (SAE-steered, β=1.2\beta=1.2) | Cosine similarity  
+Acc | RR | ORR | Acc | RR | ORR  | μ\mu | σ\sigma  
+Humanizing-CCN | 0.495 | 0.94 | 0.95 | 0.435 | 0.680 | 0.810  | 0.971 | 0.039  
+Incomplete-CCN | 0.540 | 0.89 | 0.81 | 0.410 | 0.770 | 0.950  | 0.853 | 0.096  
+Indeterminate-CCN | 0.560 | 0.96 | 0.84 | 0.440 | 0.880 | 1.000  | 0.898 | 0.076  
+Safety-CCN | 0.500 | 1.00 | 1.00 | 0.470 | 0.940 | 1.000  | 0.849 | 0.209  
+Unsupported-CCN | 0.530 | 0.71 | 0.65 | 0.495 | 0.970 | 0.980  | 0.886 | 0.066  
+CrimeAssistance-SB | 0.515 | 1.00 | 0.97 | 0.305 | 0.590 | 0.980  | 0.952 | 0.033  
+HateSpeech-SB | 0.535 | 1.00 | 0.93 | 0.450 | 0.860 | 0.960  | 0.925 | 0.052  
+Inappropriate-SB | 0.525 | 1.00 | 0.95 | 0.480 | 0.950 | 0.990  | 0.945 | 0.035  
+Advice-SB | 0.555 | 0.97 | 0.86 | 0.415 | 0.830 | 1.000  | 0.928 | 0.037  
+SafetyCore-WGM | 0.500 | 1.00 | 1.00 | 0.470 | 0.940 | 1.000  | 0.918 | 0.054  
+OverRefusal-XST | 0.500 | 1.00 | 1.00 | 0.510 | 1.000 | 0.980  | 0.969 | 0.017  
+Table 3: SAE-based refusal steering and activation-space alignment across evaluation splits. (a) reports SAE-steered refusal performance for Gemma and Llama on the controlled test set, using overall accuracy (Acc =(HR′+BC′)/200=(\text{HR}^{\prime}+\text{BC}^{\prime})/200), refusal rate (RR =HR′/100=\text{HR}^{\prime}/100), and over-refusal rate (ORR =BR′/100=\text{BR}^{\prime}/100), where R′R^{\prime} and C′C^{\prime} refer to the WildGuard judgement of whether the steered response is a refusal or a compliance, respectively. (b) reports the mean and standard deviation of cosine similarity between the SAE-induced refusal direction and the corresponding activation-space refusal direction, computed separately for each evaluation split.
+
+#### Activation-Space Reconstruction:
+
+To test whether activation-space refusal directions can be reconstructed from refusal-associated SAE latents, we compute each prompt’s SAE activations at the decision state x(ℓ)x^{(\ell)}, retain the top-ranked refusal latents (Section 2.2), and reconstruct their residual contribution as an activation-weighted sum of decoder directions. We then measure cosine similarity between this reconstruction and the corresponding activation-space direction. Table 3 (b) reports the mean and standard deviation over prompts for each split. Similarities are uniformly high across datasets and refusal categories, typically 0.850.85–0.970.97, indicating good reconstruction. Thus, although activation-space refusal directions are geometrically distinct (Section 4.1), they appear to operate on substantially shared SAE features, helping explain why different directions produce similar refusal efficacy under steering.
+
+#### Latent Overlaps Across Dataset Splits:
+
+We assess shared SAE refusal structure by ranking latents across refusal types within each split by their HR-vs-BC firing-rate difference and measuring the overlap of top-ranked latents across all 11 splits. This reveals a small reusable _core_ shared across splits, plus a longer _tail_ of latents that appear in only one or a few splits and align with specific refusal styles, such as terse “I don’t understand” replies, or domains, such as legal disclaimers in unqualified advice. Appendix F provides quantitative overlap statistics, per-layer breakdowns, and latent–split incidence matrices.
+
+#### Semantic Structure of Refusal Latents:
+
+Following prior work using LLMs to annotate latent concepts for model interpretation (Mousi et al., 2023), we use an LLM-assisted semantic annotation pipeline (see Appendix E) to characterize top-10 latents that recur across settings and encode domain-general refusal features, including harmful requests, prohibited or illicit content, disinformation, and policy-violating directives (Table 14). Other latents are subcategory-specific: SorryBench surfaces harm-focused features such as harassment, coercive communication, and crime facilitation, while CoCoNot surfaces capability- and embodiment-related features such as unsupported modalities and anthropomorphic queries. Several shared latents are polysemous, receiving harm-focused interpretations in SorryBench but capability-focused interpretations in CoCoNot.
+
+## 5 Related Work
+
+#### Refusal Directions and Abliteration Attacks:
+
+Prior work has shown that refusal behavior in large language models can be strongly influenced by low-dimensional structure in activation space. Arditi et al. (2024) demonstrated that refusal is often mediated by a dominant residual-stream direction: suppressing this direction inhibits refusal on harmful prompts, while amplifying it induces refusal even for benign inputs. This finding led to _abliteration_ attacks (Labonne, 2024), which use directional ablation to remove refusal behavior from aligned models. Subsequent work questions the sufficiency of a single-direction account: Zhang and Sun (2026) decomposed refusal into distinct harm-detection and refusal-execution directions, while Wollschläger et al. (2025) showed that refusal can be mediated by multiple independent directions forming “concept cones.” Complementary analyses by Kissane et al. (2024) show that base models already exhibit substantial refusal behavior and that refusal directions transfer from instruction-tuned models, suggesting that alignment fine-tuning amplifies preexisting circuitry. Together, these findings motivate a view of refusal as structured but non-monolithic. Closely related, Kim and Kim (2026) show that training on refusal rationales rather than boilerplate refusals reduces false rejections of benign requests while preserving safety, consistent with our finding that a shared refusal core can be separated from stylistic and domain-specific features.
+
+#### Activation Steering:
+
+Our activation-space methodology builds on representation engineering (Zou et al., 2023), which introduced contrastive extraction of concept directions for control. Addition (Turner et al., 2023) showed that directions can modulate behavior at inference time without optimization. Subsequent work Rimsky et al. (2024) applied these techniques to safety-relevant behaviors, showing that properties such as sycophancy and corrigibility correspond to linear directions that compose additively with RLHF effects. For safety interventions, circuit breakers (Zou et al., 2024) train models to reroute harmful representations to orthogonal subspaces, while RepBend (Yousefpour et al., 2025) reduces attack success rates through representation bending.
+
+#### SAEs for Interpretability:
+
+Fine-grained interpretability has traditionally examined how information is localized and distributed across individual neurons (Durrani et al., 2023). SAEs extend this line of analysis by decomposing dense activations into sparse latent features that are often more interpretable than individual neurons (Bricken et al., 2023). Our SAE analysis leverages GemmaScope (Lieberum et al., 2024), which provides sparse autoencoders trained on all layers of Gemma-2 models using the JumpReLU architecture (Rajamanoharan et al., 2024). This builds on work showing that SAE features are more interpretable than individual neurons (Bricken et al., 2023), with scaling studies revealing safety-relevant features in production models (Templeton et al., 2024). Relatedly, crosscoder-based model diffing has been used to identify training-induced differences in latent features associated with safety, instruction following, and other model capabilities (Boughorbel et al., 2025). Recent work connects SAEs specifically to refusal: Yeo et al. (2025) found that harm and refusal are encoded as separate feature sets, while O’Brien et al. (2025) identified steerable refusal features in Phi-3. Most relevant to our cross-split analysis, Prakash et al. (2026) discovered “hydra” refusal features that remain dormant unless earlier features are suppressed, suggesting the kind of distributed yet coordinated structure we observe.
+
+## 6 Conclusion
+
+We investigated the representational structure of refusal in large language models and found multiple geometrically distinct refusal directions in activation space. Despite this diversity, linear interventions along different refusal-related directions yield nearly identical behavioral trade-offs, controlling whether the model refuses while affecting refusal style. Sparse autoencoders explain this collapse through a reusable core of refusal latents shared across datasets, together with a tail of style- and domain-specific features. Distinct refusal directions can thus be understood as different linear combinations of this shared latent structure, explaining why activation steering compresses a rich internal representation into a single effective control dimension. These findings reconcile single-direction refusal control with more complex internal structure, and highlight a limitation of linear control for alignment-relevant behavior.66 6 Code available at <https://github.com/fjoad/more-than-one-direction>
+
+## Limitations
+
+Our analysis is conducted on three instruction-tuned language models. While these models span different architectures and training pipelines, fine-tuning can substantially reorganize models’ internal representation spaces (Durrani et al., 2022). We therefore do not assume that the observed refusal mechanisms persist in larger models, base (non–instruction-tuned) models, or systems trained with substantially different alignment procedures. Our findings should thus be interpreted as characterizing refusal behavior within this model regime rather than establishing universality across all large language models.
+
+#### Scope of generalizability:
+
+Our experiments cover three publicly-available instruction-tuned decoder LMs: gemma-2-9b-it, Meta-Llama-3-8B-Instruct, and Qwen-7B-Chat, spanning roughly 77B–99B parameters. The qualitative phenomenon we report — geometrically distinct refusal directions collapsing to a similar refusal/over-refusal trade-off under linear intervention, with safety-direction ablation removing safety-style refusals while leaving CoCoNot non-safety refusals largely intact — replicates across all three architectures despite differences in vocabulary and training corpus, suggesting it arises from structural properties of aligned residual-stream representations rather than from idiosyncrasies of any one model. We make no claim about (i) substantially larger models (e.g., 7070B++), where richer or more redundant internal circuitry may decouple the directions we observed; (ii) non-decoder architectures; or (iii) base models without instruction-tuning, where the refusal mechanism itself is much weaker (Kissane et al., 2024). Extending these experiments to larger frontier models is constrained by SAE availability and is left to future work.
+
+Our sparse-feature analysis further depends on the availability of publicly released sparse autoencoders (SAEs). Training SAEs at scale is computationally expensive, which restricts our analysis to a limited set of layers and models for which community-trained SAEs exist. This constraint limits the resolution at which we can study refusal-related features and may bias our analysis toward later layers where SAE coverage is more common.
+
+## Potential Risks and Ethics Statement
+
+This work analyzes the internal mechanisms underlying refusal and non-compliance in large language models and shows that refusal behavior can be modulated through low-dimensional linear interventions. These findings carry potential risks, as similar techniques could be misused to suppress refusal behavior and facilitate the generation of harmful content. We mitigate this risk by focusing on analysis rather than deployment, using established safety benchmarks, and emphasizing the limitations and brittleness of linear control.
+
+Our results highlight that activation steering collapses a rich internal refusal structure into a coarse behavioral knob, underscoring that such interventions are not suitable as principled safety mechanisms. All experiments use existing public datasets and moderation tools, without introducing new harmful content. We acknowledge the dual-use nature of interpretability research and view this work as motivating more robust, feature-level approaches to alignment rather than enabling safety circumvention.
+
+## References
+
+  * Arditi et al. (2024) Andy Arditi, Oscar Obeso, Aaquib Syed, Daniel Paleka, Nina Panickssery, Wes Gurnee, and Neel Nanda. 2024.  [Refusal in language models is mediated by a single direction](https://doi.org/10.52202/079017-4322).  In _Advances in Neural Information Processing Systems_ , volume 37, pages 136037–136083. Curran Associates, Inc. 
+  * Askell et al. (2021) Amanda Askell, Yuntao Bai, Anna Chen, Dawn Drain, Deep Ganguli, Tom Henighan, Andy Jones, Nicholas Joseph, Ben Mann, Nova DasSarma, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Jackson Kernion, Kamal Ndousse, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, and 3 others. 2021.  [A general language assistant as a laboratory for alignment](https://arxiv.org/abs/2112.00861).  _Preprint_ , arXiv:2112.00861. 
+  * Bai et al. (2022a) Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, Nicholas Joseph, Saurav Kadavath, Jackson Kernion, Tom Conerly, Sheer El-Showk, Nelson Elhage, Zac Hatfield-Dodds, Danny Hernandez, Tristan Hume, and 12 others. 2022a.  [Training a helpful and harmless assistant with reinforcement learning from human feedback](https://arxiv.org/abs/2204.05862).  _Preprint_ , arXiv:2204.05862. 
+  * Bai et al. (2022b) Yuntao Bai, Saurav Kadavath, Sandipan Kundu, Amanda Askell, Jackson Kernion, Andy Jones, Anna Chen, Anna Goldie, Azalia Mirhoseini, Cameron McKinnon, Carol Chen, Catherine Olsson, Christopher Olah, Danny Hernandez, Dawn Drain, Deep Ganguli, Dustin Li, Eli Tran-Johnson, Ethan Perez, and 32 others. 2022b.  [Constitutional AI: Harmlessness from AI feedback](https://arxiv.org/abs/2212.08073).  _arXiv preprint arXiv:2212.08073_. 
+  * Boughorbel et al. (2025) Sabri Boughorbel, Fahim Dalvi, Nadir Durrani, and Majd Hawasly. 2025.  [Beyond the leaderboard: Understanding performance disparities in large language models via model diffing](https://doi.org/10.18653/v1/2025.emnlp-main.1598).  In _Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing_ , pages 31360–31371, Suzhou, China. Association for Computational Linguistics. 
+  * Brahman et al. (2024) Faeze Brahman, Sachin Kumar, Vidhisha Balachandran, Pradeep Dasigi, Valentina Pyatkin, Abhilasha Ravichander, Sarah Wiegreffe, Nouha Dziri, Khyathi Chandu, Jack Hessel, Yulia Tsvetkov, Noah A. Smith, Yejin Choi, and Hannaneh Hajishirzi. 2024.  [The art of saying no: Contextual noncompliance in language models](https://openreview.net/forum?id=f1UL4wNlw6).  In _The Thirty-eight Conference on Neural Information Processing Systems Datasets and Benchmarks Track_. 
+  * Bricken et al. (2023) Trenton Bricken, Adly Templeton, Joshua Batson, Brian Chen, Adam Jermyn, Tom Conerly, Nick Turner, Cem Anil, Carson Denison, Amanda Askell, Robert Lasenby, Yifan Wu, Shauna Kravec, Nicholas Schiefer, Tim Maxwell, Nicholas Joseph, Zac Hatfield-Dodds, Alex Tamkin, Karina Nguyen, and 6 others. 2023.  [Towards monosemanticity: Decomposing language models with dictionary learning](https://transformer-circuits.pub/2023/monosemantic-features/index.html).  _Transformer Circuits Thread_. 
+  * Dai et al. (2024) Juntao Dai, Xuehai Pan, Ruiyang Sun, Jiaming Ji, Xinbo Xu, Mickel Liu, Yizhou Wang, and Yaodong Yang. 2024.  [Safe RLHF: Safe reinforcement learning from human feedback](https://openreview.net/forum?id=TyFrPOKYXw).  In _International Conference on Learning Representations_ , pages 50750–50777. 
+  * Durrani et al. (2023) Nadir Durrani, Fahim Dalvi, and Hassan Sajjad. 2023.  [Discovering salient neurons in deep NLP models](https://jmlr.org/papers/v24/23-0074.html).  _Journal of Machine Learning Research_ , 24(362):1–40. 
+  * Durrani et al. (2022) Nadir Durrani, Hassan Sajjad, Fahim Dalvi, and Firoj Alam. 2022.  [On the transformation of latent space in fine-tuned NLP models](https://doi.org/10.18653/v1/2022.emnlp-main.97).  In _Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP)_ , pages 1495–1516, Abu Dhabi, UAE. Association for Computational Linguistics. 
+  * Ferrando et al. (2025) Javier Ferrando, Oscar Obeso, Senthooran Rajamanoharan, and Neel Nanda. 2025.  [Do I kn

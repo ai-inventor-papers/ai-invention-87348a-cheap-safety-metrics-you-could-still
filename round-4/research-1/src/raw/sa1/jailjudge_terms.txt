@@ -1,0 +1,312 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2410.12855
+Type: PDF
+Pattern: 55%|F1|refus\w*\s+to\s+(evaluate|judge|grade)|declin\w+ (18 matches in 109167 chars)
+
+--- Content ---
+
+1047:...d defending against jailbreak
+attacks, evaluating the defense capabilities of LLMs against jailbreak attacks also
+attracts lots of attention. Current evaluation methods lack explainability and do
+not generalize well to complex scenarios, resulting in incomplete and inaccurate
+assessments (e.g., direct judgment without reasoning explainability, the F1 score
+of the GPT-4 judge is only 55% in complex scenarios and bias evaluation on
+multilingual scenarios, etc.). To address these challenges, we have developed a
+comprehensive evaluation benchmark, JAILJUDGE, which includes a wide range
+of risk scenarios with complex malicious prompts (e.g., synthetic, adversarial,
+in-the-wild, and multi-language scenarios, etc.) along with high-quali...
+--
+31754:...NTS
+Evaluation Datasets and Metrics. To assess the performance of the jailbreak judge, we use both
+JAILJUDGE ID and OOD datasets. Additionally, we include the public jailbreak judge dataset
+7
+
+Preprint
+Table 2: Jailbreak judge experiments on datasets JAILJUDGE ID and JBB Behaviors.
+Methods
+JAILJUDGE ID
+JBB Behaviors
+Accuracy ↑
+Precision ↑
+Recall ↑
+F1 ↑
+EQ ↑
+Accuracy ↑
+Precision ↑
+Recall ↑
+F1 ↑
+EQ ↑
+StringMatching
+0.7202
+0.5698
+0.6832
+0.6214
+-
+0.8600
+0.8750
+0.8400
+0.8571
+-
+Beaver-dam-7B
+0.8016
+0.8008
+0.5450
+0.6486
+-
+0.7150
+0.9574
+0.4500
+0.6122
+-
+Longformer-action
+0.7976
+0.6601
+0.8194
+0.7312
+-
+0.8900
+0.9239
+0.8500
+0.8854
+-
+Longformer-harmful
+0.7824
+0.6561
+0.7407
+0.6959
+-
+0.5300
+0.6500
+0.1300
+0.2167
+-
+Yu2023gptfuzzer
+0.7942
+0.7817
+0.5377...
+--
+33302:...ailJudge MultiAgent (ours)
+0.9438
+0.9545
+0.8743
+0.9127
+4.5234
+0.9615
+0.9885
+0.9348
+0.9609
+3.6865
+JAILJUDGE Guard (ours)
+0.9193
+0.8843
+0.8743
+0.8793
+4.4945
+0.985
+0.9899
+0.98
+0.9849
+3.6047
+and evaluate on JBB Behaviors Chao et al. (2024) and WILDTEST Han et al. (2024). For all
+evaluations, we report metrics including accuracy, precision, recall, and F1 score. To assess the
+quality of explainability, we employ GPT-4 to rate the explainability quality (EQ) on a scale of 1 to 5,
+where higher scores indicate better clarity and reasoning. More details can be found in Appendix 12.1
+Jailbreak Judge Baselines and Implementations. To evaluate the performance of our jailbreak
+judge, we compare it against ...
+--
+35346:...TS
+Main Experiments. To evaluate the effectiveness of the jailbreak judge methods, we conducted
+experiments using the JAILJUDGE ID and JBB behaviors datasets. Our JailJudge MultiAgent and
+JAILJUDGE Guard consistently outperformed all open-source baselines across both datasets, as
+shown in Table 2. The multi-agent judge achieved the highest average F1 scores, specifically 0.9197
+on the JAILJUDGE ID dataset and 0.9609 on the JBB behaviors dataset. Notably, our approach
+showed more stable performance on the JBB behaviors dataset, likely due to its simpler scenarios
+compared to the more complex JAILJUDGE ID dataset. Additionally, the JailJudge MultiAgent
+surpassed the baseline GPT-4-Reasoning mode...
+--
+36308:...the efficacy of the jailbreak judge in a zero-shot context, we conducted
+experiments using the JAILJUDGE OOD and WILDEST datasets. As summarized in Table 3, our
+jailbreak judge methods consistently outperformed all open baselines across both evaluation sets. For
+instance, on the multilingual JAILJUDGE OOD dataset, the multi-agent judge achieved an F1 score of
+0.711, significantly higher than the GPT-4-Reasoing’s 0.5633, underscoring the benefits of leveraging
+advanced LLMs like GPT-4 for multilingual and zero-shot scenarios. Although JAILJUDGE Guard
+achieved a respectable F1 score of 0.7314 on WILDTEST, it fell short of the multi-agent judge
+on JAILJUDGE OOD due to its limited multilingual training, as shown in Figure 2. Overall, our
+methods demonstrated consistent superiority across both datasets, emphasizing the importance of
+advanced language models like GPT-4 for handling multilingual and zero-shot settings effectively, as
+evidenced by its higher EQ scores and logical consistency in reasoning. The insights findings can be
+summarized as follows.
+8
+
+Preprint
+Table 3: Jailbreak judge experiments on datasets JAILJUDGE OOD and WILDTEST under zero-shot
+setting.
+Methods
+JAILJUDGE OOD
+WILDTEST
+Accuracy ↑
+Precision ↑
+Recall ↑
+F1 ↑
+EQ ↑
+Accuracy ↑
+Precision ↑
+Recall ↑
+F1 ↑
+EQ ↑
+StringMatching
+0.1879
+0.1209
+0.9736
+0.2151
+-
+0.6551
+0.2285
+0.4767
+0.3089
+-
+Beaver-dam-7B
+0.8879
+0.5337
+0.1542
+0.2392
+-
+0.9101
+0.7385
+0.6882
+0.7124
+-
+Longformer-action
+0.2489
+0.1278
+0.9569
+0.2255
+-
+0.6504
+0.2718
+0.6918
+0.3903
+-
+Longformer-harmful
+0.2454
+0.1263
+0.9472
+0.2229
+-
+0.7049
+0.2614
+0.4516
+0.3311
+-
+Yu2023gptfuzzer
+0.7976
+0.1836
+0.2236...
+--
+40560:...2) Reasoning-enhanced GPT-4 (RE-GPT-4);
+(3) RE-GPT-4 augmented with our uncertainty-aware evident judging agent (RE-GPT-4+UAE); and
+(4) the complete multi-agent judge framework. The results, shown in Figure 3 and 4, demonstrate
+that each enhancement progressively improves performance across all datasets. For instance, in
+the JAILJUDGE ID task, the F1 score increased from 0.55 with Vanilla GPT-4 to 0.91 with the
+multi-agent judge. Similarly, in the JBB Behaviors scenario, scores rose from 0.79 to 0.96. Overall,
+our multi-agent judge consistently outperforms the baseline and individually enhanced models,
+underscoring the effectiveness of each component. Additionally, as detailed in Appendix 12.3...
+--
+41919:...s, which rely on keyword matching, often misinterpret benign responses containing specific
+keywords as malicious. Toxic text classifiers Ji et al. (2024b), trained on toxic text datasets, struggle
+to generalize to complex scenarios, such as broad-range risks and adversarial contexts. In contrast,
+9
+
+Preprint
+jv
+zh
+vi
+en
+it
+bn
+ko
+sw
+ar
+th
+Figure 2: F1 scores across ten
+different languages using our
+JailJudge MultiAgent.
+JAILJUDGE ID
+JBB Behaviors
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0
+F1 Score (JAILJUDGE)
+0.75
+0.80
+0.85
+0.90
+0.95
+1.00
+F1 Score (JBB)
+Vanilla GPT-4
+RE-GPT-4
+RE-GPT-4+UAE
+Ours
+Figure 3:
+Ablation study on
+datasets JAILJUDGE ID and
+JBB Behaviors.
+JAILJUDGE OOD
+WILDTEST
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+F1 Score (JAILJUDGE)
+0.30
+0.38
+0.46
+0.54
+0.62
+0.70
+F1 Score (WILDTEST)
+Vanilla GPT-4
+RE-GPT-4
+RE-GPT-4+UAE
+Ours
+Figure 4:
+Ablation study on
+datasets JAILJUDGE OOD and
+WILDTEST.
+AutoDAN
+PAIR
+AdvPrompter AmpleGCG
+0
+20
+40
+60
+80
+ASR (%)
+Naiive Method
+Naiive + ShieldGemma-9B
+Naiive + Llama-Guard-3-8B
+Naiive + JailBoost (Ours)
+Figure 5: Exp. on JailBoost (ASR % ↑).
+Table 4: Exp. on GuardShield (ASR % ↓).
+D...
+--
+93306:...he ratio of correct predictions to the total number of predictions: Accuracy =
+T P +T N
+T P +T N+F P +F N . Precision is the ratio of true positive predictions to the total number of positive
+predictions: Precision =
+T P
+T P +F P . Recall is the ratio of true positive predictions to the total number
+of actual positives: Recall =
+T P
+T P +F N . The F1 Score is the harmonic mean of Precision and Recall:
+F1 Score = 2 × Precision×Recall
+Precision+Recall, where: TP stands for True Positives, TN stands for True Negatives, FP
+stands for False Positives, and FN stands for False Negatives. To evaluate the quality of explainability,
+we employ GPT-4 to rate the explainability quality (EQ) on a scale from 1 to 5, where higher scores
+indicate better clarity an...

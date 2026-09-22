@@ -1,0 +1,611 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2408.00118
+Type: PDF
+Pattern: held-out safety|Safety Evaluations|Table 1[4-9] (12 matches in 64504 chars)
+
+--- Content ---
+
+20654:...e
+85.3
+81.5
+83.7
+Table 12 | We compare, on the HuggingFace
+benchmark, our 27B model with a competitive
+open model, Qwen1.5 32B, that has a similar size.
+We also report the performance of LLaMA-3 70B
+for completeness. Note that our model outper-
+forms Qwen1.5 32B and is only a few percent
+below LLaMA-3 70B despite being 2.5× smaller
+and trained on 2/3rds less data.
+6.2. Post-training Evaluations
+In this section, we evaluate our IT models on a
+set of human evaluations as well as standard aca-
+demic benchmarks. The Gemma 2 models push
+the frontier for post-trained open-weights mod-
+els, setting a new state of the art on the LMSYS
+Chatbot Arena (Chiang et al., 2024).
+LMSYS Chatbot Arena
+Gemma 2 Instruction Tuned models were evalu-
+ated on the Chatbot Arena (Chiang et al., 2024)
+in blind side by side evaluations by human raters
+against other state of the art models. We re-
+port Elo scores in Table 14. Gemma 2.6B, 9B
+and 27B strongly outperform all other open mod-
+els in the same range of parameters, with no-
+tably: Gemma 27B (Elo 1218) ranked higher than
+Llama 3 70B (Elo 1206), Gemma 9B (Elo 1187)
+similar as GPT-4-0314 (Elo 1186), Gemma 2.6B
+(Elo 1126) ranked higher than GPT-3.5-Turbo-
+0613 (Elo 1116).
+Human Preference Evaluations
+We also submit Gemma IT models for side-by-
+side human evaluation studies (which are in-
+dependent from the Chatbot Arena). We used
+held-out collections of single-turn prompts that
+target safety and instruction following (IF). We
+use gpt4o-2024-05-13 as the base model, and
+6
+
+Gemma 2: Improving Open Language Models at a Practical Size
+Gemma-1 Gemma-2 Mistral LLaMA-3 Gemma-1 Gemma-2 Gemma-2
+Benchmark
+metric
+2B
+2B
+7B
+8B
+7B
+9B
+27B
+MMLU
+5-shot
+42.3
+52.2
+62.5
+66.6
+64.4
+71.3
+75.2
+ARC-C
+25-shot
+48.5
+55.7
+60.5
+59.2
+61.1
+68.4
+71.4
+GSM8K
+5-shot
+15.1
+24.3
+39.6
+45.7
+5...
+--
+23477:...arks (all). The numbers for LLaMA-3 8B are either
+from the HuggingFace leaderboard or their blogpost. † we report the evaluation used in LLaMA-3 for
+the baselines, it leads to +3% compared to our evaluation: Gemma-1 7B achieves 44.9% instead of
+41.7%, and Mistral 7B, 44% instead of 41.2%. ⋄we report the evaluation used in LLaMA-3 for the
+baselines, it leads to +4% compared to our evaluation for Gemma-1 7B, i.e., 59.0% instead of 55.1%.
+∗these are evaluations run by us for Gemma 1 (Gemma Team, 2024).
+observe large improvements in win rates and
+preference scores as compared against the older
+Gemma 1.1 7B model. We report safety as a
+win-loss ratio against GPT4o, and we report
+single-sided instruction following scores as ratio
+of prompts where all instructions are followed. In
+particular, we find that regardless of their size,
+Gemma 2 models produce safer, more appropri-
+ate prompts on the held-out safety prompt set
+than GPT4o.
+Human Multi-Turn Evaluations
+We evaluated the multi-turn capabilities of
+Gemma 1.1 7B, Gemma 2 2B, 9B and 27B models
+by tasking human raters to have conversations
+with the models and follow specified given sce-
+narios. We used a diverse, held-out set of 500
+scenarios, each describing a sequence of requests
+to the model, including measuring instances of
+brainstorming, making a plan, or learning some-
+thing new. The average number of user turns
+is 8.4. We found that the conversations with
+Gemma 2 models are rated significantly better
+than Gemma 1.1 in user satisfaction and conver-
+sation goal achievement (Table 16). Moreover,
+we saw that the Gemma 2 models were better
+than Gemma 1.1 7B at maintaining high quality
+of responses for the entire conversation.
+Standard Benchmarks
+It has been observed in Llama-3 (AI@Meta, 2024)
+that instruction fine-tuning can improve the per-
+formance of the models on few-shot benchmarks
+7
+
+Gemma 2: Improving Open Language Models at a Practical Size
+Model
+Elo
+95% CI
+Open
+gpt-4o-2024-05-13
+1286
++2 / -3
+-
+gpt-4o-mini-2024-07-18
+1279
++5 / -4
+-
+claude-3-5-sonnet
+1271
++3 / -4
+-
+gemini-advanced-0514
+1266
++2 / -3
+-
+llama-3.1-405b-instruct
+1262
++8 / -7
++
+gemini-1.5-pro-api-0514
+1261
++2 / -3
+-
+gemini-1.5-pro-api-0409
+1257
++3 / -3
+-
+gpt-4-turbo-2024-04-09
+1256
++2 / -3
+-
+gpt-4-1106-preview
+1250
++3 / -3
+-
+claude-3-opus-20240229
+1248
++2 / -2
+-
+athene-70b-0725
+1245
++8 / -6
++
+gpt-4-0125-preview
+1245
++2 / -2
+-
+llama-3.1-70b-instruct
+1244
++8 / -9
++
+yi-large-preview
+1239
++3 / -3
+-
+gemin...
+--
+26233:...eka-core-20240501
+1199
++3 / -3
+-
+command-r-plus
+1189
++2 / -2
++
+Model
+Elo
+95% CI
+Open
+gemma-2-9b-it
+1187
++3 / -5
++
+qwen2-72b-instruct
+1187
++3 / -3
++
+gpt-4-0314
+1186
++2 / -3
+-
+qwen1.5-110b-chat
+1161
++3 / -3
++
+mistral-large-2402
+1157
++3 / -3
+-
+yi-1.5-34b-chat
+1157
++4 / -3
+-
+reka-flash-21b-20240226
+1155
++4 / -4
+-
+llama-3-8b-instruct
+1151
++2 / -3
++
+command-r
+1148
++3 / -3
++
+claude-1
+1148
++4 / -4
+-
+mistral-medium
+1147
++4 / -4
+-
+reka-flash-21b-20240226
+1147
++3 / -4
+-
+qwen1.5-72b-chat
+1147
++4 / -4
++
+mixtral-8x22b-instruct-v0.1
+1145
++2 / -3
++
+claude-2.0
+1131
++4 / -6
+-
+gemini-pro-dev-api
+1131
++4 / -3
+-
+zephyr-orpo-141b
+1127
++10 / -6
++
+gemma-2-2b-it
+1126
++10 / -10
++
+qwen1.5-32b-chat
+1125
++3 / -3
++
+mistral-next
+1124
++5 / -5
+-
+phi-3-medium-4k-instruct
+1122
++4 / -4
++
+starling-lm-7b-beta
+1118
++4 / -5
++
+claude-2.1
+1118
++3 / -3
+-
+gpt-3.5-turbo-0613
+1116
++3 / -4
+-
+mixtral-8x7b-instruct-v0.1
+1114
++0 / -0
+-
+Table 14 | Evaluation of Gemma 2 Instruction Tuned models on the Chatbot Arena (Chiang et al.,
+2024). The models are evaluated against each other through blind side by side evaluations by human
+raters. Each model is attributed a score, based on the Elo rating system.
+Model
+Instruction Following
+Safety
+Gemma 1.1 IT 7B
+24.3% ± 1.9%
+42.8%
+Win / Tie / Loss
+37.4% / 10.8% / 51.8%
+Gemma 2 IT 2B
+26.5% ± 1.8%
+57.5%
+Win / Tie / Loss
+53% / 9% / 38%
+Gemma 2 IT 9B
+34.1% ± 3.0%
+57.8%
+Win / Tie / Loss
+48.2% / 19.2% / 28.3%
+Gemma 2 IT 27B
+37.7% ± 2.3%
+55%
+Win / Tie / Loss
+49.6% / 10.8% / 39.6%
+Table 15 | Instruction following and safety metrics
+from human raters. The instruction following
+metrics are single-sided and do not have win-loss
+rates, and so are left blank.
+despite not being trained to target few-shot capa-
+bilities. In Table 17, we show a similar improve-
+ment across our models. Overall, we observe
+improvements on the order of several percentage
+points. We conjecture that IT models are better
+at understanding formatted questions, while pre-
+trained models are sensitive to formatting.
+User
+satisfaction
+Conversation
+goal achievement
+Gemma 1.1 IT 7B
+3.32
+3.36
+Gemma 2 IT 2B
+3.64
+3.88
+Gemma 2 IT 9B
+4.04
+4.08
+Gemma 2 IT 27B
+4.20
+4.24
+Table 16 | Human evaluations on 500 multi-turn
+scenarios. The raters attribute a score ranging
+between 1 and 5 for both overall satisfaction and
+conversation goal achievement.
+2B
+9B
+27B
+Model
+PT
+IT
+PT
+IT
+PT
+IT
+MMLU
+52.2
+56.1
+71.3
+72.3
+75.2
+76.2
+MBPP
+30.2
+36.6
+52.4
+59.2
+62.6
+67.4
+Table 17 | Comparing pre-trained (PT) and in-
+struction fine-tuned (IT) models of different sizes
+on few-shot benchmarks.
+8
+
+Gemma 2: Improving Open Language Models at a Practical Size
+7. Memorization and Privacy
+Large language models may, under particular cir-
+cumstances, be vulnerable to attacks causing the
+model to produce memorized1 training data (Nasr
+et al., 2023). To study susceptibility to such at-
+tacks and quantify memorization, we evaluate
+models for verbatim and approximate memoriza-
+tion as was done in several prior studies (Anil
+et al., 2023; Carlini et al., 2022; Gemini Team,
+2024; Kudugunta et al., 2023).
+We follow the evaluation setting of (Gemma
+Team, 2024) which tests for (50 token) memo-
+rizations of training data given a prompt of 50 to-
+kens. We compare the overall memorization rates,
+across a uniform sample of the entire dataset, us-
+ing both an exact match criteria and ap...
+--
+35408:...23). They are designed to help prevent our
+models from generating harmful content, i.e.,
+• Child sexual abuse and exploitation
+• Revealing personally identifiable information
+that can lead to harm (e.g., Social Security
+numbers)
+• Hate speech and harassment
+• Dangerous or malicious content (including
+promoting self-harm or instructing in harm-
+ful activities)
+• Sexually explicit content
+• Medical advice that runs contrary to scientific
+or medical consensus
+We undertook considerable safety filtering of our
+pre-training data to reduce the likelihood of our
+pre-trained and fine-tuned checkpoints producing
+harmful content. For fine-tuned models, we also
+use both SFT and RLHF to steer the model away
+from undesirable behavior.
+8.3. External benchmark evaluations
+Robust and transparent evaluations are key prin-
+ciples of our responsible approach to develop-
+ing Gemma. To this end, we report in Table 18
+Gemma 2 evaluations on public benchmarks.
+8.4. Assurance Evaluations
+We also run our IT models through a set of assur-
+ance evaluations to understand the harms that
+our models can cause. We focus on capabilities
+relevant to extreme risks (Shevlane et al., 2023)
+(Phuong et al., 2024). Specifically, we evaluate on
+offensive cyber-security, code vulnerability detec-
+tion, Chemical, Biological, Radiological and Nu-
+clear (CBRN) knowledge, and self-proliferation.
+We refer the reader to Phuong et al. (2024) for
+full methodological details of these studies.
+10
+
+Gemma 2: Improving Open Language Models at a Practical Size
+Gemma 1.1 IT
+Gemma 2 IT
+Benchmark
+metric
+2.5B
+7B
+2.6B
+9B
+27B
+RealToxicity
+avg tox
+7.03
+8.04
+8.16
+8.25
+8.84
+CrowS-Pairs
+top-1
+45.89
+49.67
+37.67
+37.47
+36.67
+BBQ Ambig
+4-shot, top-1
+58.97
+86.06
+83.20
+88.58
+85.99
+BBQ Disambig
+4-shot, top-1
+53.9
+85.08
+69.31
+82.67
+86.94
+Winogender
+top-1
+50.14
+57.64
+52.91
+79.17
+77.22
+TruthfulQA
+MC2Acc
+44.24
+45.34
+43.72
+50.27
+51.60
+Winobias 1_2
+top-1
+55.93
+59.22
+59.28
+78.09
+81.94
+Winobias 2_2
+top-1
+89.46
+89.2
+88.57
+95.32
+97.22
+Toxigen
+avg tox
+29.64
+38.75
+48.32
+39.30
+38.42
+Table 18 | Safety academic benchmark results of Gemma 2 IT models and Gemma 1.1 IT models. We
+bold the best metrics to highlight them and to indicate when higher or lower scores are better.
+InterCode-CTF
+Internal CTF suite
+Hack the Box
+Gemini 1.0 Ultra
+28/76 [1] (37%)
+3/13 (23%)
+0/13
+Gemini 1.5 Pro
+62/76 (82%)
+4/13 (31%)
+0/13
+CodeGemma 1 7B
+12/76 (16%)
+0/13 (0%)
+0/13
+Gemma 2 27B
+34/76 (45%)
+1/13 (8%)
+0/13
+Table 19 | Offensive cyber-security evaluations on InterCode-CTF, our own internal CTF suite and a
+challenge based on Hack the Box. We report the number of successful hackings.
+Baseline Evaluations
+Baseline assurance captures the model’s violation
+rate for safety policies, using a large number of
+synthetic adversarial user queries, and human
+raters to label the answers as policy violating or
+not. Overall, Gemma 2’s violation rate is signifi-
+cantly lower overall on the safety policies listed
+above, in particular on Child safety content.
+Chemical, Biological, Radiological and Nuclear
+(CBRN) knowledge
+We evaluated knowledge relevant to biological,
+radiological and nuclear risks using an internal
+dataset of closed-ended, knowledge-based multi-
+ple choice questions. For evaluations of chem-
+ical knowledge, we employed a closed-ended
+knowledge-based approach on chemical hazards
+(developed by Macknight et al (Macknight et al.,
+2024). Our evaluation suggests that Gemma mod-
+els’ knowledge in these domains is low.
+Offensive cyber-security
+To evaluate Gemma models’ capabilities at of-
+fensive cybersecurity, we ran Gemma 2 27B
+against some automated capture-the-flag (CTF)
+challenges. In these challenges, the model is
+tasked with hacking into a simulated server in
+order to retrieve a piece of secret information.
+Specifically, we test on InterCode-CTF (Yang et al.,
+2023), our own internal CTF suite4 (Phuong et al.,
+2024); and a challenge based on Hack the Box 5.
+In Table 19, we show that Gemma 2 27B has
+a significant increase in capabilities compared
+to CodeGemma 1.0 7B on the easier of these
+challenge suites, InterCode CTF. (Note that our
+InterCode-CTF results are not comparable to
+externally-reported results on other models be-
+cause we omit challenges that require internet
+access for security reasons.) However, Gemma 2
+is unsurprisingly much less capable than Gemini
+1.5 Pro on these tasks.
+4https://github.com/google-deepmind/
+dangerous-capability-evaluations
+5https://www.hackthebox.com
+11
+
+Gemma 2: Improving Open Language Models at a Practical Size
+PrimeVul
+PrimeVul Paired
+DiverseVul
+SPI
+SecretPatch
+Gemini 1.0 Ultra
+-
+-
+54%
+59%
+74%
+Gemini 1.5 Pro
+60%
+51%
+58%
+56%
+67%
+Gemma 2 27B
+63%
+50%
+57%
+53%
+72%
+Table 20 | |Vulnerability detection results on PrimeVul, DiverseVul and SPI. We report accuracy.
+Challenges
+passed
+end-to-end
+Challenges
+with success on
+all m...

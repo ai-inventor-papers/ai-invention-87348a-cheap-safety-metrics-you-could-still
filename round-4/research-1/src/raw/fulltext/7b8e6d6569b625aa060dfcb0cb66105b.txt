@@ -1,0 +1,514 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/DreamFast/qwen3-4b-heretic
+Type: HTML
+Length: 17411 chars
+
+--- Content ---
+
+[ Hugging Face](/)
+
+  * [ Models ](/models)
+  * [ Datasets ](/datasets)
+  * [ Spaces ](/spaces)
+  * [ Buckets new](/storage)
+  * [ Docs ](/docs)
+  * [ Enterprise ](/enterprise)
+  * [Pricing](/pricing)
+  *     * Website
+
+      * [ Tasks](/tasks)
+      * [ HuggingChat](/chat)
+      * [ Collections](/collections)
+      * [ Languages](/languages)
+      * [ Organizations](/organizations)
+    * Community
+
+      * [ Blog](/blog)
+      * [ Posts](/posts)
+      * [ Daily Papers](/papers)
+      * [ Hardware](/hardware)
+      * [ Learn](/learn)
+      * [ Discord](/join/discord)
+      * [ Forum](https://discuss.huggingface.co/)
+      * [ GitHub](https://github.com/huggingface)
+    * Solutions
+
+      * [ Team & Enterprise](/enterprise)
+      * [ Hugging Face PRO](/pro)
+      * [ Enterprise Support](/support)
+      * [ Inference Providers](/inference/models)
+      * [ Inference Endpoints](/inference-endpoints)
+      * [ Storage Buckets](/storage)
+
+  * * * *
+
+  * [Log In](/login)
+  * [Sign Up](/join)
+
+
+
+# 
+
+[ ](/DreamFast)
+
+[DreamFast](/DreamFast)
+
+/
+
+[qwen3-4b-heretic](/DreamFast/qwen3-4b-heretic)
+
+Like 38
+
+[ Text Generation ](/models?pipeline_tag=text-generation)[ Transformers ](/models?library=transformers)[ Safetensors ](/models?library=safetensors)[ GGUF ](/models?library=gguf)[ English ](/models?language=en)[ qwen3 ](/models?other=qwen3)[ abliteration ](/models?other=abliteration)[ heretic ](/models?other=heretic)[ uncensored ](/models?other=uncensored)[ qwen ](/models?other=qwen)[ z-image ](/models?other=z-image)[ zimage ](/models?other=zimage)[ flux ](/models?other=flux)[ flux-2 ](/models?other=flux-2)[ flux-klein ](/models?other=flux-klein)[ flux-2-klein-4b ](/models?other=flux-2-klein-4b)[ comfyui ](/models?other=comfyui)[ image-generation ](/models?other=image-generation)[ text-encoder ](/models?other=text-encoder)[ fp8 ](/models?other=fp8)[ int8 ](/models?other=int8)[ int4 ](/models?other=int4)[ nvfp4 ](/models?other=nvfp4)[ mxfp8 ](/models?other=mxfp8)[ convrot ](/models?other=convrot)[ learned-rounding ](/models?other=learned-rounding)[ conversational ](/models?other=conversational)[ text-generation-inference ](/models?other=text-generation-inference)
+
+License: apache-2.0
+
+[ Model card ](/DreamFast/qwen3-4b-heretic)[ Files Files and versions xet ](/DreamFast/qwen3-4b-heretic/tree/main)[ Community 2 ](/DreamFast/qwen3-4b-heretic/discussions)
+
+Deploy
+
+Copy to bucket new
+
+Use this model
+
+### Instructions to use DreamFast/qwen3-4b-heretic with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+  * Libraries
+  * [ Transformers](/DreamFast/qwen3-4b-heretic?library=transformers)
+
+How to use DreamFast/qwen3-4b-heretic with Transformers:
+        
+        # Use a pipeline as a high-level helper
+        from transformers import pipeline
+        
+        pipe = pipeline("text-generation", model="DreamFast/qwen3-4b-heretic")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        pipe(messages)
+        
+        # Load model directly
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        
+        tokenizer = AutoTokenizer.from_pretrained("DreamFast/qwen3-4b-heretic")
+        model = AutoModelForCausalLM.from_pretrained("DreamFast/qwen3-4b-heretic", device_map="auto")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        inputs = tokenizer.apply_chat_template(
+        	messages,
+        	add_generation_prompt=True,
+        	tokenize=True,
+        	return_dict=True,
+        	return_tensors="pt",
+        ).to(model.device)
+        
+        outputs = model.generate(**inputs, max_new_tokens=40)
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+
+  * Inference
+  * Inference Providers
+  * Notebooks
+  * [ Google Colab](/DreamFast/qwen3-4b-heretic/colab)
+  * [ Kaggle](/DreamFast/qwen3-4b-heretic/kaggle)
+  * Local Apps [Settings](/settings/local-apps "Set up your favorite local applications")
+  * [ llama.cpp ](/DreamFast/qwen3-4b-heretic?local-app=llama.cpp)
+
+How to use DreamFast/qwen3-4b-heretic with llama.cpp:
+
+##### Install (macOS, Linux)
+        
+        curl -LsSf https://llama.app/install.sh | sh
+        # Start a local OpenAI-compatible server with a web UI:
+        llama serve -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+        # Run inference directly in the terminal:
+        llama cli -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+
+##### Install from WinGet (Windows)
+        
+        winget install llama.cpp
+        # Start a local OpenAI-compatible server with a web UI:
+        llama serve -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+        # Run inference directly in the terminal:
+        llama cli -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+
+##### Use pre-built binary
+        
+        # Download pre-built binary from:
+        # https://github.com/ggerganov/llama.cpp/releases
+        # Start a local OpenAI-compatible server with a web UI:
+        ./llama-server -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+        # Run inference directly in the terminal:
+        ./llama-cli -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+
+##### Build from source code
+        
+        git clone https://github.com/ggerganov/llama.cpp.git
+        cd llama.cpp
+        cmake -B build
+        cmake --build build -j --target llama-server llama-cli
+        # Start a local OpenAI-compatible server with a web UI:
+        ./build/bin/llama-server -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+        # Run inference directly in the terminal:
+        ./build/bin/llama-cli -hf DreamFast/qwen3-4b-heretic:Q4_K_M
+
+##### Use Docker
+        
+        docker model run hf.co/DreamFast/qwen3-4b-heretic:Q4_K_M
+
+  * [ LM Studio ](lmstudio://open_from_hf?model=DreamFast/qwen3-4b-heretic)
+  * [ Jan ](jan://models/huggingface/DreamFast/qwen3-4b-heretic)
+  * [ vLLM ](/DreamFast/qwen3-4b-heretic?local-app=vllm)
+
+How to use DreamFast/qwen3-4b-heretic with vLLM:
+
+##### Install from pip and serve model
+        
+        # Install vLLM from pip:
+        pip install vllm
+        # Start the vLLM server:
+        vllm serve "DreamFast/qwen3-4b-heretic"
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:8000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "DreamFast/qwen3-4b-heretic",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker
+        
+        docker model run hf.co/DreamFast/qwen3-4b-heretic:Q4_K_M
+
+  * [ SGLang ](/DreamFast/qwen3-4b-heretic?local-app=sglang)
+
+How to use DreamFast/qwen3-4b-heretic with SGLang:
+
+##### Install from pip and serve model
+        
+        # Install SGLang from pip:
+        pip install sglang
+        # Start the SGLang server:
+        python3 -m sglang.launch_server \
+            --model-path "DreamFast/qwen3-4b-heretic" \
+            --host 0.0.0.0 \
+            --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "DreamFast/qwen3-4b-heretic",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker images
+        
+        docker run --gpus all \
+            --shm-size 32g \
+            -p 30000:30000 \
+            -v ~/.cache/huggingface:/root/.cache/huggingface \
+            --env "HF_TOKEN=<secret>" \
+            --ipc=host \
+            lmsysorg/sglang:latest \
+            python3 -m sglang.launch_server \
+                --model-path "DreamFast/qwen3-4b-heretic" \
+                --host 0.0.0.0 \
+                --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "DreamFast/qwen3-4b-heretic",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+  * [ Ollama ](/DreamFast/qwen3-4b-heretic?local-app=ollama)
+
+How to use DreamFast/qwen3-4b-heretic with Ollama:
+        
+        ollama run hf.co/DreamFast/qwen3-4b-heretic:Q4_K_M
+
+  * [ Unsloth Desktop ](unsloth://open_from_hf?model=DreamFast%2Fqwen3-4b-heretic)
+  * [ Docker Model Runner ](/DreamFast/qwen3-4b-heretic?local-app=docker-model-runner)
+
+How to use DreamFast/qwen3-4b-heretic with Docker Model Runner:
+        
+        docker model run hf.co/DreamFast/qwen3-4b-heretic:Q4_K_M
+
+  * [ Lemonade ](/DreamFast/qwen3-4b-heretic?local-app=lemonade)
+
+How to use DreamFast/qwen3-4b-heretic with Lemonade:
+
+##### Pull the model
+        
+        # Download Lemonade from https://lemonade-server.ai/
+        lemonade pull DreamFast/qwen3-4b-heretic:Q4_K_M
+
+##### Run and chat with the model
+        
+        lemonade run user.qwen3-4b-heretic-Q4_K_M
+
+##### List all available models
+        
+        lemonade list
+
+  * [ Atomic Chat ](atomic-chat://models/huggingface/DreamFast/qwen3-4b-heretic)
+
+
+
+  * Qwen 3 4B - Heretic (Abliterated)
+    * Model Details
+    * Files
+      * HuggingFace Format (for transformers, llama.cpp conversion)
+      * ComfyUI Format (for Z-Image / FLUX.2 Klein 4B text encoder)
+      * GGUF Format (for llama.cpp and ComfyUI-GGUF)
+      * Quantization Format Notes
+    * Usage
+      * With ComfyUI (Z-Image / FLUX.2 Klein 4B)
+      * With Transformers
+      * With llama.cpp
+    * Abliteration Process
+    * Limitations
+    * License
+    * Acknowledgments
+
+
+
+#  Qwen 3 4B - Heretic (Abliterated) 
+
+💬 **Community:** Join the [Abliterlitics Discord](https://discord.gg/AqmDnBjPvM) for discussion, model releases and support.
+
+An abliterated version of [Qwen 3 4B](https://huggingface.co/Qwen/Qwen3-4B) created using [Heretic](https://github.com/p-e-w/heretic) v1.2.0. This model has reduced refusals while maintaining model quality, making it suitable as an uncensored text encoder for image generation models like [Z-Image](https://huggingface.co/Tongyi-MAI/Z-Image) and [FLUX.2 Klein 4B](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B). Available in five ComfyUI-native quantized formats (FP8, INT8, INT4, NVFP4, MXFP8), all produced with SVD-guided learned rounding for maximum fidelity.
+
+##  Model Details 
+
+  * **Base Model:** Qwen/Qwen3-4B
+  * **Abliteration Method:** [Heretic](https://github.com/p-e-w/heretic) v1.2.0
+  * **Trials:** 200
+  * **Trial Selected:** Trial 96
+  * **Refusals:** 3/100 (vs 100/100 original)
+  * **KL Divergence:** 0.0000 (zero measurable model damage)
+
+
+
+##  Files 
+
+###  HuggingFace Format (for transformers, llama.cpp conversion) 
+    
+    
+    model-00001-of-00002.safetensors
+    model-00002-of-00002.safetensors
+    config.json
+    tokenizer.json
+    tokenizer_config.json
+    
+
+###  ComfyUI Format (for Z-Image / FLUX.2 Klein 4B text encoder) 
+    
+    
+    comfyui/qwen3-4b-heretic.safetensors              # bf16, 7.5GB
+    comfyui/qwen3-4b-heretic_fp8_e4m3fn.safetensors   # fp8 row-wise, 4.2GB
+    comfyui/qwen3-4b-heretic_int8.safetensors          # int8 ConvRot row-wise, 4.2GB
+    comfyui/qwen3-4b-heretic_int4.safetensors          # int4 W4A4 ConvRot, 2.5GB
+    comfyui/qwen3-4b-heretic_nvfp4.safetensors         # nvfp4, 2.7GB
+    comfyui/qwen3-4b-heretic_mxfp8.safetensors         # mxfp8, 4.3GB
+    
+
+> **Quality:** All quantized variants use SVD-guided learned rounding (AdaRound via [convert_to_quant](https://github.com/silveroxides/convert_to_quant)), which optimizes each weight's rounding direction to minimize output reconstruction error — noticeably higher fidelity than naive round-to-nearest quantization.
+
+###  GGUF Format (for llama.cpp and ComfyUI-GGUF) 
+
+Quant | Size | Notes  
+---|---|---  
+F16 | ~7.5GB | Lossless reference  
+Q8_0 | ~4GB | Excellent quality  
+Q6_K | ~3GB | Very good quality  
+Q5_K_M | ~2.7GB | Good quality  
+**Q4_K_M** | **~2.3GB** | **Recommended balance**  
+Q3_K_M | ~1.9GB | For low VRAM only  
+  
+###  Quantization Format Notes 
+
+All variants load natively in ComfyUI 0.30.0+ (no plugins) via the `comfy_quant` metadata embedded in each file.
+
+Format | Size | Bits | Notes  
+---|---|---|---  
+**FP8** (E4M3, row-wise) | 4.2GB | 8 | Best speed/quality balance; works on Ada/Hopper+  
+**INT8** (ConvRot row-wise) | 4.2GB | 8 | Hadamard-rotated; broad GPU support  
+**MXFP8** | 4.3GB | 8 | Microscaling FP8 (E8M0 block scales); Blackwell-accelerated  
+**INT4** (W4A4 ConvRot) | 2.5GB | 4 | Smallest; Hadamard-rotated signed INT4  
+**NVFP4** (E2M1) | 2.7GB | 4 | NVIDIA FP4; Blackwell FP4 tensor cores for best perf  
+  
+NVFP4/MXFP8 inference is fastest on Blackwell (RTX 5090/5080, SM100+), but ComfyUI also supports software dequantization on older GPUs (tested working on RTX 4090). INT8 and INT4 both use Hadamard rotation (ConvRot); INT4 W4A4 uses ComfyUI's `convrot_w4a4` path.
+
+##  Usage 
+
+###  With ComfyUI (Z-Image / FLUX.2 Klein 4B) 
+
+  1. Download a ComfyUI format file:
+
+     * **FP8** (recommended): `comfyui/qwen3-4b-heretic_fp8_e4m3fn.safetensors` (4.2GB)
+     * **INT4** (smallest): `comfyui/qwen3-4b-heretic_int4.safetensors` (2.5GB)
+     * **NVFP4** : `comfyui/qwen3-4b-heretic_nvfp4.safetensors` (2.7GB)
+     * **INT8** : `comfyui/qwen3-4b-heretic_int8.safetensors` (4.2GB)
+     * **MXFP8** : `comfyui/qwen3-4b-heretic_mxfp8.safetensors` (4.3GB)
+     * **bf16** (full precision): `comfyui/qwen3-4b-heretic.safetensors` (7.5GB)
+  2. Place in `ComfyUI/models/text_encoders/`
+
+  3. In your Z-Image workflow, use the `ClipLoader` node and select the heretic file
+
+
+
+
+###  With Transformers 
+    
+    
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    import torch
+    
+    model = AutoModelForCausalLM.from_pretrained(
+        "DreamFast/qwen3-4b-heretic",
+        device_map="auto",
+        torch_dtype=torch.bfloat16
+    )
+    tokenizer = AutoTokenizer.from_pretrained("DreamFast/qwen3-4b-heretic")
+    
+    prompt = "Describe a dramatic sunset over a cyberpunk city"
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    outputs = model.generate(**inputs, max_new_tokens=200)
+    print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+    
+
+###  With llama.cpp 
+    
+    
+    llama-server -m qwen3-4b-heretic-Q4_K_M.gguf
+    
+
+##  Abliteration Process 
+
+Created using Heretic v1.2.0 with 200 optimization trials:
+    
+    
+    ? Which trial do you want to use?
+    > [Trial  96] Refusals:  3/100, KL divergence: 0.0000  <-- selected
+      [Trial  90] Refusals:  5/100, KL divergence: 0.0000
+      [Trial  95] Refusals:  9/100, KL divergence: 0.0000
+      [Trial 122] Refusals: 90/100, KL divergence: 0.0000
+      ...
+    
+
+Trial 96 was selected for having the fewest refusals (3/100) with zero measurable KL divergence, indicating the abliteration surgically removed the refusal mechanism with no damage to model capabilities.
+
+##  Limitations 
+
+  * This model inherits all limitations of the base Qwen 3 4B model
+  * Abliteration reduces but does not completely eliminate refusals (3/100 remain)
+
+
+
+##  License 
+
+This model is released under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0), following the base Qwen 3 4B model license.
+
+##  Acknowledgments 
+
+  * [Qwen](https://huggingface.co/Qwen) for the Qwen 3 4B model
+  * [Heretic](https://github.com/p-e-w/heretic) by p-e-w for the abliteration tool
+  * [Tongyi-MAI Z-Image](https://huggingface.co/Tongyi-MAI/Z-Image) for Z-Image
+  * [Black Forest Labs](https://huggingface.co/black-forest-labs) for FLUX.2 Klein
+
+
+
+Downloads last month
+    5,609
+
+Safetensors[](https://huggingface.co/docs/safetensors)
+
+Model size
+
+4B params
+
+Tensor type
+
+BF16 
+
+·
+
+Chat template
+
+Files info
+
+Inference Providers [NEW](https://huggingface.co/docs/inference-providers)
+
+Featherless AI
+
+[ Text Generation](/tasks/text-generation "Learn more about text-generation")
+
+Examples
+
+Input a message to start chatting with **DreamFast/qwen3-4b-heretic**.
+
+Send
+
+View Code Snippets
+
+[ Compare providers](/inference/models?model=DreamFast%2Fqwen3-4b-heretic)
+
+##  Model tree for DreamFast/qwen3-4b-heretic [](/docs/hub/model-cards#specifying-a-base-model)
+
+Base model
+
+[Qwen/Qwen3-4B-Base](/Qwen/Qwen3-4B-Base)
+
+Finetuned
+
+[Qwen/Qwen3-4B](/Qwen/Qwen3-4B)
+
+Quantized
+
+([321](/models?other=base_model:quantized:Qwen/Qwen3-4B))
+
+this model
+
+Finetunes
+
+[4 models](/models?other=base_model:finetune:DreamFast/qwen3-4b-heretic)
+
+Quantizations
+
+[1 model](/models?other=base_model:quantized:DreamFast/qwen3-4b-heretic)
+
+##  Space using DreamFast/qwen3-4b-heretic 1
+
+[😻 Loveago/DreamFast-qwen3-4b-heretic ](/spaces/Loveago/DreamFast-qwen3-4b-heretic)
+
+##  Collection including DreamFast/qwen3-4b-heretic
+
+#### [ComfyUI Abliterated Text Encoders Collection Abliterated text encoders for ComfyUI image and video generation. Includes GGUF and Safetensors. • 7 items • Updated Jul 16 • 4](/collections/DreamFast/comfyui-abliterated-text-encoders)
+
+System theme
+
+Company
+
+[TOS](/terms-of-service) [Privacy](/privacy) [About](/huggingface) [Careers](https://apply.workable.com/huggingface/) [](/)
+
+Website
+
+[Models](/models) [Datasets](/datasets) [Spaces](/spaces) [Pricing](/pricing) [Docs](/docs)
+

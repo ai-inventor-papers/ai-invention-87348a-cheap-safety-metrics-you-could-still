@@ -1,0 +1,74 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2603.06594
+Type: PDF
+Pattern: flip\w*|57%|100% (5 matches in 56720 chars)
+
+--- Content ---
+
+7:A Coin Flip for Safety: LLM Judges Fail to Reliably Measure
+Adversarial Robustness
+Leo Schwinn 1 2 * Moritz Ladenburger 1 * Tim Beyer 1 Mehrnaz Mofakhami 2 Gauthier Gidel 2 3 4
+Stephan G¨unnemann 1
+Abstract
+Automated “LLM-as-a-Judge” frameworks have
+become the de facto standard for scalable eval-
+uation across...
+--
+4946:...s and model robustness may become artifacts of
+judge unreliability rather than measures of genuine safety.
+We emphasize the following:
+LLM judges are substantially less reliable for adversarial
+safety evaluations than previously assumed, performing on
+average only slightly better than a random coin-flip.
+In this paper, we conduct an extensive audit of LLM judges
+in typical adversarial evaluation settings using manual hu-
+man labeling as a gold standard. We analyze failure modes
+across varying attacks, victim models, and semantic behav-
+ior categories, quantifying how reliable judges are under
+real...
+--
+8638:... (Maloyan & Namiot,
+2025). Adversarial confusion exploits judges through high-
+perplexity suffixes or obfuscated inputs that confound anal-
+ysis. Li et al. (2025) evaluated 15 attack techniques in their
+RobustJudge framework, finding that optimization-based
+attacks could cause judges to misclassify 100% of harmful
+outputs as safe. While defenses such as input retokenization
+and ensemble voting provide partial mitigation (Li et al.,
+2025), these findings establish that current judges can be
+systematically defeated by prompt-level attacks.
+Failure Modes and Distribution Sensitivity. Beyond ac-
+tive ...
+--
+36948:...d behaviors to the
+dataset, sorted by their average judge accuracy (from easiest
+to hardest). We observe a monotonic decrease in accuracy
+as more difficult behaviors are included. Notably, by select-
+ing the subset of the 41 most consistent behaviors, we can
+increase the average judge accuracy from 57% to 70%.
+0
+20
+40
+60
+80
+100
+Number of kept samples
+0.6
+0.8
+Accuracy
+Figure 9. Analysis of judge reliability for the construction of
+ReliableBench. (a) The average judge accuracy decreases as more
+behaviors are added to the dataset (sorted by difficulty). Retaining
+the top 41 behaviors improves accura...
+--
+40385:... al., 2024).
+In this work, we demonstrate that the current reliance on
+LLM-as-a-Judge for safety evaluation is flawed. Our human
+audit reveals that under the distribution shifts inherent to
+adversarial robustness evaluations, state-of-the-art judges
+perform, on average, no better than a random coin flip. We
+show that these inconsistencies can distort attack success
+rates, suggesting that some reported gains in attack effec-
+tiveness, such as for BoN, can be attributed to judge insuf-
+ficiencies. To help researchers address these limitations in
+future works, we introduce ReliableBench, a more relia...

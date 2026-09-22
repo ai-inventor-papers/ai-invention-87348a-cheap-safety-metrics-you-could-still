@@ -1,0 +1,553 @@
+{
+ "incumbent_table": [
+  {
+   "key": "AMS",
+   "arxiv": "2608.05578",
+   "title": "Detecting Safety Training Modification in Language Models via Activation Analysis",
+   "venue": "IEEE Access 14:91723-91737 (Messenger2026)",
+   "statistic": "sigma on harmful-content concept predicts JailbreakBench compliance: Pearson r=-0.546 (p=.043,n=14); Spearman rho=-0.423 (p=.13, n.s.); LOO on the PASS/WARNING/CRITICAL threshold only = 71% (10/14) accuracy.",
+   "reads": "activations (contrastive-pair hidden representations; 16 pairs x3 concepts, layer swept over range(0.4L,0.8L) picked in-sample)",
+   "needs_parent_or_base": {
+    "value": false,
+    "quote": "PASS (>3.5σ), WARNING (2.0-3.5σ), CRITICAL (<2.0σ)"
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "Tier 2 (optional): Compare direction vectors against baseline via cosine similarity (>0.8 required) and separation drift (<20% required) -- only the OPTIONAL Tier 2 needs a baseline; the core Tier-1 score does not."
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "We run 20 stratified JailbreakBench harmful behaviors against all 14 models and report Pearson and Spearman correlations between σ ... and behavioral compliance rate."
+   },
+   "prompt_count": "16 contrastive pairs x 3 concepts (Tier 1, zero free-text prompts); 20 stratified JailbreakBench prompts per model for the post-hoc behavioral correlation",
+   "forward_passes": "96 (16 pairs x 3 concepts x ~2 for layer sweep)",
+   "runtime_per_model": "10-40 seconds on GPU (96 forward passes)",
+   "target_predicted": "JailbreakBench compliance rate over 20 stratified harmful behaviors, per model",
+   "headline_number": {
+    "value": "r=-0.546",
+    "ci_or_p": "p=0.043",
+    "n": 14,
+    "type": "Pearson correlation, in-sample (no holdout)"
+   },
+   "locator": "arXiv 2608.05578v1, Abstract; Section VI 'Evaluation Metrics'; Section VII-E; Table I footnote (p.24505)",
+   "holdout_actually_used": "Leave-one-out cross-validation was applied ONLY to the PASS/WARNING/CRITICAL classification threshold (71%=10/14); the headline behavioral correlation (r=-0.546) is fit and reported in-sample on all 14 models, with no holdout.",
+   "n_models": 14,
+   "n_families": 4,
+   "comparable": false,
+   "noncomparable_reason": "The only number with any holdout is a threshold accuracy, not the correlation; the correlation itself is in-sample across 14 models and needs 20 generated+judged JailbreakBench completions per model (not a forward-pass-only screen).",
+   "verbatim_quote_for_headline": "σ on the harmful-content concept predicts compliance with Pearson r = −0.546 (p = 0.043); the rank-order Spearman correlation is weaker (ρ = −0.423, p = 0.13).",
+   "verified": true,
+   "raw_file": "raw/sa2/ams_verify.txt"
+  },
+  {
+   "key": "RAS_SafeVec",
+   "arxiv": "2606.25750",
+   "title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+   "venue": "arXiv preprint (Huang2026)",
+   "statistic": "RAS is 216.88x faster than judge-based scoring on average (Table 2); requires a per-family reference model plus a per-family calibration set with measured ASR of calibration models; raw scores are explicitly not comparable across families.",
+   "reads": "activations (cosine similarity of hidden states to a family reference refusal direction)",
+   "needs_parent_or_base": {
+    "value": true,
+    "quote": "We still use google/gemma-3-4b-it as the reference model because it is the official safety-aligned instruction model and provides a clean family-specific anchor."
+   },
+   "needs_calibration_set": {
+    "value": true,
+    "quote": "Raw scores are not directly comparable across families, but calibrated RAS consistently ranks aligned models above unsafe variants... family-specific calibration remains necessary."
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": true,
+    "quote": "Tables 1, 3, and 4 report raw unsafe scores, jailbreak scores, and ASR for the reference and calibration models."
+   },
+   "prompt_count": "safe / jailbreak prompt sets per family used to build the reference direction; exact per-family n not captured in this pass",
+   "forward_passes": "1 forward pass per target model for scoring (no generation)",
+   "runtime_per_model": "RAS 14.13s average vs judge-based 2969.14s average (Table 2); per-model row e.g. Llama-3.1-8B-Instruct 14.13s vs 572.47s",
+   "target_predicted": "ASR (attack success rate) of calibration/uncensored models within the same family",
+   "headline_number": {
+    "value": "216.88x (text) / 210.13x (Table 2 'Average' row)",
+    "ci_or_p": null,
+    "n": 3,
+    "type": "speedup ratio, timing benchmark not a correlation"
+   },
+   "locator": "arXiv 2606.25750, Section 4.2 RQ3 'Cross-Family Robustness' and RQ4 'Efficiency', Table 1, Table 2",
+   "holdout_actually_used": "None stated; the reference model is fixed per family and calibration models are drawn from the same family being scored, not a held-out lineage.",
+   "n_models": "3 reference models (Llama-3.1-8B-Instruct, Gemma-3-4b-it, Qwen2.5-7B-Instruct) plus per-family calibration/uncensored variants",
+   "n_families": 3,
+   "comparable": false,
+   "noncomparable_reason": "Needs a family-specific reference model and a calibration set with other models' measured ASR before it can be interpreted at all; the paper states raw scores are not cross-family comparable, which is the opposite of a parent-free leave-one-lineage-out screen.",
+   "verbatim_quote_for_headline": "On average, RAS is 216.88× faster in our setting.",
+   "verified": true,
+   "raw_file": "raw/sa2/ras_verify.txt"
+  },
+  {
+   "key": "GFS_SkinDeep",
+   "arxiv": "2606.22676",
+   "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+   "venue": "arXiv preprint (Lee2026)",
+   "statistic": "cPCA-based Geometric Fragility Score requires BOTH the aligned model and its base model plus ~1000 matched prompts; cross-model validation is a qualitative n=7 LoRA-fragility ranking (Table 8), not a printed retention/correlation coefficient.",
+   "reads": "activations from two models jointly (aligned model M and base model M0)",
+   "needs_parent_or_base": {
+    "value": true,
+    "quote": "Algorithm 1 SKIN-DEEP diagnostic computation. Input. Aligned model M, base model M0, and matched prompt sets Dsafe, Dgen"
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "When an analysis requires a base model, the base checkpoint is version-matched to its aligned counterpart. (own matched prompt sets, not a third-party calibration set)"
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "not applicable; GFS is evaluated against the model's own post-LoRA refusal rate, not other models' ASR"
+   },
+   "prompt_count": "~1000 matched safe/general prompts (per prior-iteration verification); LoRA fragility ranking uses 7 models",
+   "forward_passes": null,
+   "runtime_per_model": null,
+   "target_predicted": "post-LoRA-fine-tuning refusal-rate drop, qualitatively, on 7 models (4 core + 3 hold-out-like additions)",
+   "headline_number": {
+    "value": null,
+    "ci_or_p": null,
+    "n": 7,
+    "type": "qualitative ranking (Table 8: 4 DPO-only models placed ranks 1-4); no printed numeric retention coefficient or correlation"
+   },
+   "locator": "arXiv 2606.22676, Appendix (Algorithm 1, near p.44589 offset in PDF text); 'LoRA fragility set' paragraph (p.14949 offset); Table 8",
+   "holdout_actually_used": "None; the 4-model core set fits the cPCA direction and is evaluated together with 3 additional models in one in-sample LoRA-fragility table, not a leave-one-lineage-out design.",
+   "n_models": 7,
+   "n_families": 4,
+   "comparable": false,
+   "noncomparable_reason": "Cannot be computed without the pre-alignment base checkpoint for every scored model (cPCA explicitly contrasts M vs M0), which a parent-free screen must assume is unavailable; its only cross-model evidence is a 7-model qualitative ranking, never a benchmark-correlated scalar.",
+   "verbatim_quote_for_headline": "Input. Aligned model M, base model M0, and matched prompt sets Dsafe, Dgen. Output. Evidence table E and scalar GFS.",
+   "verified": true,
+   "raw_file": "raw/sa2/gfs_verify2.txt"
+  },
+  {
+   "key": "N_GLARE",
+   "arxiv": "2511.14195",
+   "title": "N-GLARE: A Non-Generative Latent Representation-Efficient LLM Safety Evaluator",
+   "venue": "ACL 2026 (Lin2026)",
+   "statistic": "4 probing conditions (offline multi-turn attack trajectories) over 7000+ cases, one forward pass per turn, no generation; Table 2 reports rank-correlation robustness broken out by n / dataset / model as separate factors -- this is an internal robustness check, never a single cross-model headline correlation.",
+   "reads": "activations (hidden representations via a single forward pass per turn on the subject model)",
+   "needs_parent_or_base": {
+    "value": false,
+    "quote": "N-GLARE requires access to internal hidden representations, which limits its direct applicability to fully black-box models that expose only text outputs."
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "modeling benign behavior as a low-dimensional manifold and inferring safety from trajectory separability (reference manifold built from the subject model's own benign distribution, not a third-party calibration set with measured ASR)"
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "not applicable; N-GLARE is compared against a traditional online red-teaming pipeline's cost, not other models' measured ASR"
+   },
+   "prompt_count": "7000+ offline multi-turn attack trajectory cases",
+   "forward_passes": "1 forward pass per turn per subject model (offline dataset), no online generation/attack synthesis/evaluator inference",
+   "runtime_per_model": "framed as token-equivalent cost vs. red-teaming baseline (Appendix D cost decomposition), not reduced to one wall-clock number",
+   "target_predicted": "traditional online red-teaming JSS/ASR outcome (efficiency and rank-correlation comparison, not an external safety benchmark)",
+   "headline_number": {
+    "value": null,
+    "ci_or_p": null,
+    "n": null,
+    "type": "NEVER quote Table 2's Kendall/Spearman-by-(n,dataset,model) breakdown as a headline; no single cross-model headline correlation number was found in this pass"
+   },
+   "locator": "arXiv 2511.14195, Table 2 (rank-correlation summary by n/dataset/model factors); Limitations paragraph (p.31187 offset); Appendix D.1-D.5 (efficiency pipeline)",
+   "holdout_actually_used": "None of the kind needed here; Table 2's factors (n, dataset, model) are internal robustness axes, not a leave-one-lineage-out safety-benchmark correlation.",
+   "n_models": null,
+   "n_families": null,
+   "comparable": false,
+   "noncomparable_reason": "Requires internal hidden representations across 4 fixed probing conditions and 7000+ offline multi-turn trajectories per subject model; its published rank-correlation numbers are an internal robustness table, never a per-checkpoint correlation with an external safety benchmark, so none of them may be used as 'the' headline.",
+   "verbatim_quote_for_headline": "N-GLARE requires access to internal hidden representations, which limits its direct applicability to fully black-box models that expose only text outputs.",
+   "verified": true,
+   "raw_file": "raw/sa2/nglare_verify.txt"
+  },
+  {
+   "key": "Leong_TASA",
+   "arxiv": "2502.13946",
+   "title": "On the Role of Attention Heads in Large Language Model Safety (Template-Anchored Safety Alignment / TASA)",
+   "venue": "arXiv preprint (Leong2025) -- REPLICATION row for our C9",
+   "statistic": "Head-wise activation patching of the template region recovers most of the harmful->benign refusal-logit swing with few heads, using the normalized indirect effect (NIE) 'for a fair cross-model comparison' across 6 models; qualitative pattern only (Fig. 4/5), no single printed correlation scalar.",
+   "reads": "activations (attention-head-level activation patching, harmful vs harmless matched pairs)",
+   "needs_parent_or_base": {
+    "value": false,
+    "quote": "not applicable; no base/pre-alignment model is used, only the instruction-tuned models themselves"
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "not applicable; Danlz/Deval are the model's own matched harmful/harmless prompt pairs, not a third-party calibration set"
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "not applicable; TempPatch ASR is measured on the same model being probed, not other models used for calibration"
+   },
+   "prompt_count": "matched Danlz/Deval harmful/harmless pairs, token-length matched per model (exact n not captured in this pass); 520 AdvBench prompts used for the downstream TempPatch attack evaluation",
+   "forward_passes": "one activation-patching forward pass per head/region per example; number of heads patched varies by model (Figure 4)",
+   "runtime_per_model": null,
+   "target_predicted": "the same model's own TempPatch jailbreak ASR, not an external cross-model safety benchmark",
+   "headline_number": {
+    "value": null,
+    "ci_or_p": null,
+    "n": 6,
+    "type": "qualitative cross-model pattern (Fig. 4/5: template region NIE >> instruction region NIE for most models); no single scalar correlation coefficient found"
+   },
+   "locator": "arXiv 2502.13946v2 (HTML), Section 3.3 'Causal Role of The Template Region' near 'For a fair cross-model comparison, we use the normalized indirect effect (NIE)'; Section 3.1 'Models'",
+   "holdout_actually_used": "None; all 6 models are used in-sample to demonstrate the same qualitative template-anchoring pattern, no leave-one-lineage-out design.",
+   "n_models": 6,
+   "n_families": 4,
+   "comparable": false,
+   "noncomparable_reason": "Targets explaining a single-model jailbreak mechanism (template anchoring) via head-level patching and reports no per-model scalar validated against an external safety benchmark across held-out lineages; relevant to us only as prior art for the NIE-style within-model normalization that our C9 also uses for cross-model fairness.",
+   "verbatim_quote_for_headline": "For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m(x+)−m(x−)). The value of NIE represents the proportion of refusal logit recovered by patching that intermediate state.",
+   "verified": true,
+   "raw_file": "raw/sa2/leong_verify.txt"
+  },
+  {
+   "key": "Li_SteeringSlope",
+   "arxiv": "2603.24543",
+   "title": "Steering vector alignment with the refusal direction predicts attack-success-rate slope",
+   "venue": "arXiv preprint (Li2026) -- COMPARATOR row for our C16",
+   "statistic": "Per-model OLS regression slope gamma_1 of ASR-slope-under-steering on cosine-similarity-to-refusal-direction, fit separately for 6 models; significant (p<.001, R2>=0.85) for all models above 3B, but null for the smallest (Qwen 3B, p=.696); slope steepens with scale (-36.52 Llama 7B to -193.40 Qwen 32B).",
+   "reads": "activations (steering-vector cosine similarity) and generations/logits (ASR requires attack evaluation)",
+   "needs_parent_or_base": {
+    "value": false,
+    "quote": "not applicable; each model's own difference-in-means refusal direction and its own steering vectors are used"
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "not applicable; ASR is measured on the model itself under Prefix-Injection/Prompt-Only/Refusal-Suppression attacks, no external calibration set"
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "not applicable; each model's regression uses only that model's own steering vectors and its own ASR"
+   },
+   "prompt_count": null,
+   "forward_passes": null,
+   "runtime_per_model": null,
+   "target_predicted": "ASR slope across steering multipliers m in [-1.5,1.5] under Prefix-Injection attack, per model, regressed on cos(v, refusal direction)",
+   "headline_number": {
+    "value": "gamma_1 = -193.40 (Qwen 32B) to -36.52 (Llama 7B); Qwen 3B gamma_1=1.46 (null)",
+    "ci_or_p": "p<0.001, R2>=0.85 for models>3B; Qwen 3B p=0.696",
+    "n": 6,
+    "type": "per-model OLS regression slope, each fit in-sample"
+   },
+   "locator": "arXiv 2603.24543, Table 1 / Figure 5, Section 'Effect of model scale'; Table 2 ablation-effectiveness-by-model",
+   "holdout_actually_used": "None; each model's regression is fit and reported in-sample, with no cross-model or leave-one-out validation of the slope itself.",
+   "n_models": 6,
+   "n_families": 3,
+   "comparable": false,
+   "noncomparable_reason": "The regression is fit and reported separately per model with no held-out lineage, requires full multiplier-sweep steering plus attack-success judging (not a few-prompt forward-pass screen), and the smallest model breaks the pattern entirely (p=.696), making it a scale-dependent mechanism finding rather than a validated cross-family safety score.",
+   "verbatim_quote_for_headline": "For every model larger than 3B, the relationship is statistically significant (p < 0.001) and exceptionally strong, with refusal alignment explaining over 85% of the variance in ASR slope (R2 >= 0.85).",
+   "verified": true,
+   "raw_file": "raw/sa2/li_verify.txt"
+  },
+  {
+   "key": "Labunets_StableRank",
+   "arxiv": "2608.25390",
+   "title": "Refusal geometry reflects refusal training: diverse refusal prefixes can raise stable rank and weaken refusal vector ablation attacks",
+   "venue": "arXiv preprint (Labunets2026) -- nearest miss for our C15",
+   "statistic": "Higher stable rank of gradients/activation-changes/refusal residuals is associated with weaker single-vector difference-in-means ablation attacks, evidenced across frozen-model analyses and controlled synthetic fine-tuning, but the core empirical case study is confined to ONE model's own training lineage (OLMo-2-0425-1B: base/SFT/DPO/RLVR1/Instruct checkpoints).",
+   "reads": "weights (gradients) and activations",
+   "needs_parent_or_base": {
+    "value": true,
+    "quote": "we evaluate its additional checkpoints: allenai/OLMo-2-0425-1B (olmo_base), allenai/OLMo-2-0425-1B-SFT (olmo_sft), allenai/OLMo-2-0425-1B-DPO (olmo_dpo), allenai/OLMo-2-0425-1B-RLVR1 (olmo_rlvr), and allenai/OLMo-2-0425-1B-Instruct (olmo_inst)"
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "not applicable; uses the model's own AdvBench/WildJailbreak/XSTest-Response target datasets, not a third-party calibration set"
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "not applicable; refusal-rate-after-ablation is measured on the same OLMo lineage, not other models"
+   },
+   "prompt_count": "AdvBench (adv), WildJailbreak eval+train splits, XSTest-Response subsets (xst_hr, xst_hr_jb, xst_rf, xst_rf_jb); exact n not captured in this pass",
+   "forward_passes": null,
+   "runtime_per_model": null,
+   "target_predicted": "refusal rate after single-vector difference-in-means ablation attack, within one model's own training checkpoints",
+   "headline_number": {
+    "value": null,
+    "ci_or_p": null,
+    "n": 1,
+    "type": "single-lineage case study (5 checkpoints of one OLMo-2-0425-1B model); no cross-family correlation coefficient found in this pass"
+   },
+   "locator": "arXiv 2608.25390, Section 4.1 'Target models' / 'Experimental setup'; Section 4.2 training-stage analysis",
+   "holdout_actually_used": "None; all analysis is within one OLMo lineage's own checkpoints, never held out against a different architecture family.",
+   "n_models": 1,
+   "n_families": 1,
+   "comparable": false,
+   "noncomparable_reason": "Empirical validation of stable-rank-vs-ablation-robustness is a single-lineage case study on one 1B OLMo model's own training checkpoints; it does not test cross-architecture generalization, making it the nearest miss to our C15 (which needs held-out lineages) but not itself comparable.",
+   "verbatim_quote_for_headline": "Across frozen-model analyses and controlled synthetic fine-tuning, we find evidence of a hardening lever: diverse refusal starts can raise stable ranks of gradients and activation changes, making refusals harder to remove with a vector ablation attack.",
+   "verified": true,
+   "raw_file": "raw/sa2/labunets_verify.txt"
+  },
+  {
+   "key": "HRCI",
+   "arxiv": "2606.16349",
+   "title": "From Refusal Geometry to Safety Geometry: Harmfulness-Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+   "venue": "arXiv preprint (Lan2026)",
+   "statistic": "HRCI_repr is a per-checkpoint DISCRIMINATOR, not a predictor: it falls from 0.0784 (R2D2 step 50) to 0.0205 (step 500), a 73.9% drop, coincident with fixed-source ASR rising 0->0.25; but on the SFT trajectory low coupling (0.0217->0.0190) coexists with persistent high ASR throughout -- authors' own verdict: 'low coupling is not a safety score'.",
+   "reads": "activations (harmfulness-carrier and refusal-carrier representational coupling, extracted per checkpoint)",
+   "needs_parent_or_base": {
+    "value": false,
+    "quote": "not applicable; H/R carriers are extracted from each checkpoint directly, no base model needed"
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "not applicable; aligned anchors (Llama-3.1-Instruct, Qwen2.5-Instruct) calibrate the protocol design itself, not a per-target calibration set"
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "not applicable; ASR is the model's own fixed-source HarmBench ASR at each of its own training checkpoints"
+   },
+   "prompt_count": null,
+   "forward_passes": null,
+   "runtime_per_model": null,
+   "target_predicted": "the same model's own ASR / XSTest-refusal / benign-helpfulness trajectory across training steps, not a cross-model safety benchmark",
+   "headline_number": {
+    "value": "73.9% drop (0.0784 -> 0.0205)",
+    "ci_or_p": null,
+    "n": "5-anchor step trajectory, 2 trajectories (R2D2 vs SFT)",
+    "type": "per-checkpoint coupling-index trend, not a correlation coefficient"
+   },
+   "locator": "arXiv 2606.16349v3, Section 4.4 RQ4 (PDF offset ~p.28287-29223)",
+   "holdout_actually_used": "None; single Mistral-7B-v0.1 SFT/R2D2 trajectory analyzed in-sample, no cross-family holdout.",
+   "n_models": "2 aligned anchors (Llama-3.1-Instruct, Qwen2.5-Instruct) + 1 Mistral-7B-v0.1 trajectory (SFT and R2D2 variants)",
+   "n_families": 3,
+   "comparable": false,
+   "noncomparable_reason": "The authors explicitly disclaim it as a safety score (SFT keeps low coupling while remaining high-ASR); it is a per-checkpoint discriminator inside one training trajectory, never validated as a predictive cross-family metric.",
+   "verbatim_quote_for_headline": "By step 500, HRCIrepr has fallen to 0.0205, a 73.9% drop from step 50... Thus low coupling is not a safety score.",
+   "verified": true,
+   "raw_file": "raw/sa2/hrci_verify.txt"
+  },
+  {
+   "key": "Hurtado_TwoSignalAudit",
+   "arxiv": "2607.01854",
+   "title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+   "venue": "arXiv preprint (Hurtado2026)",
+   "statistic": "Combined z-sum of a reference-anchored activation refusal-gap and a WeightWatch weight-recovery energy gives AUROC 0.95 [.90,.98] in-sample; leave-one-family-out balanced accuracy 0.89 (FPR 0.11), missing only 4 of 57 uncensored checkpoints; a spoofed reference defeats both axes with no training.",
+   "reads": "activations (refusal gap) and weights (WeightWatch recovery energy E1)",
+   "needs_parent_or_base": {
+    "value": true,
+    "quote": "a spoofed reference evades both axes with no training (deltaW=0, rho=1 by constr[uction])"
+   },
+   "needs_calibration_set": {
+    "value": false,
+    "quote": "not a calibration set in the RAS sense; it is a fixed reference (parent) checkpoint per family used to anchor the activation-gap and weight-energy axes"
+   },
+   "needs_measured_ASR_of_other_models": {
+    "value": false,
+    "quote": "not applicable; labels are uncensored-vs-benign ground truth, not other models' measured ASR"
+   },
+   "prompt_count": null,
+   "forward_passes": null,
+   "runtime_per_model": null,
+   "target_predicted": "binary abliterated-vs-benign checkpoint label (triage), not a graded score regressed against a safety benchmark",
+   "headline_number": {
+    "value": "AUROC 0.95",
+    "ci_or_p": "[.90,.98]",
+    "n": "57 uncensored + 37 benign checkpoints (94 total); held-out via leave-one-family-out",
+    "type": "AUROC / balanced accuracy"
+   },
+   "locator": "arXiv 2607.01854, Contributions paragraph (p.2538 offset); Table 1; Figure 2 ROC",
+   "holdout_actually_used": "leave-one-family-out balanced accuracy 0.89 -- a genuine cross-family holdout (unlike AMS's threshold-only LOO), though the score itself still needs the reference checkpoint.",
+   "n_models": "94 (57 uncensored + 37 benign checkpoints)",
+   "n_families": null,
+   "comparable": false,
+   "noncomparable_reason": "Needs a reference (parent) checkpoint per family for the activation refusal-gap axis, and is a binary abliteration detector rather than a graded score correlated with a safety benchmark; it is nonetheless the strongest genuine held-out-family transfer result among the incumbents and is the comparability bar our leave-one-lineage-out design must clear.",
+   "verbatim_quote_for_headline": "Standardizing and summing a reference-anchored activation refusal-gap and the WeightWatch weight-recovery energy gives a threshold-free score at AUROC 0.95, significantly above either signal alone, that transfers across unseen families (leave-one-family-out balanced accuracy 0.89).",
+   "verified": true,
+   "raw_file": "raw/sa2/hurtado_verify.txt"
+  }
+ ],
+ "positioning_incumbents": "Existing cheap, white-box safety metrics fall into two groups, neither of which is a parent-free, leave-one-lineage-out, few-prompt, per-checkpoint screen validated against benchmark safety. The first needs a reference: \\citet{Lee2026}'s Skin-Deep fragility score contrasts an aligned model against its own base checkpoint; \\citet{Huang2026}'s RAS needs a per-family reference model plus a calibration set with other models' measured ASR, and states explicitly that raw scores are not cross-family comparable; \\citet{Hurtado2026}'s two-signal audit reaches AUROC 0.95 and a genuine leave-one-family-out balanced accuracy of 0.89, but only by anchoring to a reference checkpoint per family, and only for a binary abliteration label. The second is parent-free but not predictive: \\citet{Messenger2026}'s AMS holds out only its classification threshold (71\\%, 10/14) while its headline behavioral correlation (r=-0.546, p=.043, n=14) is in-sample; \\citet{Lin2026}'s N-GLARE needs 7000+ offline trajectories and reports rank-correlation robustness, not a cross-model headline; and \\citet{Lan2026}'s HRCI is explicitly disclaimed by its own authors as \"not a safety score.\" Cross-model regressions such as \\citet{Li2026}'s per-model steering slope and \\citet{Leong2025}'s template-region NIE are fit in-sample per model, with no held-out lineage.",
+ "table1_rows": [
+  {
+   "incumbent": "AMS (Messenger2026)",
+   "access": "activations, 96 fwd passes",
+   "n": 14,
+   "holdout": "threshold only",
+   "headline": "r=-0.546, p=.043 (in-sample)",
+   "comparable": false
+  },
+  {
+   "incumbent": "RAS/SafeVec (Huang2026)",
+   "access": "activations + reference model + calibration set",
+   "n": 3,
+   "holdout": "none (in-family)",
+   "headline": "216.88x faster, raw scores non-cross-family",
+   "comparable": false
+  },
+  {
+   "incumbent": "Skin-Deep/GFS (Lee2026)",
+   "access": "activations, aligned+base model, ~1000 prompts",
+   "n": 7,
+   "holdout": "none",
+   "headline": "qualitative n=7 ranking, no coefficient",
+   "comparable": false
+  },
+  {
+   "incumbent": "N-GLARE (Lin2026)",
+   "access": "activations, 7000+ trajectories",
+   "n": null,
+   "holdout": "none (robustness table only)",
+   "headline": "Table 2 taus are a robustness check, not headline",
+   "comparable": false
+  },
+  {
+   "incumbent": "TASA (Leong2025)",
+   "access": "activations, head-level patching",
+   "n": 6,
+   "holdout": "none",
+   "headline": "qualitative NIE pattern, no scalar",
+   "comparable": false
+  },
+  {
+   "incumbent": "Steering slope (Li2026)",
+   "access": "activations + generations, per-model OLS",
+   "n": 6,
+   "holdout": "none",
+   "headline": "gamma_1 -193.40..-36.52, p<.001 (R>3B); null <=3B",
+   "comparable": false
+  },
+  {
+   "incumbent": "Stable rank (Labunets2026)",
+   "access": "weights + activations, one lineage",
+   "n": 1,
+   "holdout": "none (single lineage)",
+   "headline": "qualitative hardening-lever case study",
+   "comparable": false
+  },
+  {
+   "incumbent": "HRCI (Lan2026)",
+   "access": "activations, per-checkpoint",
+   "n": 3,
+   "holdout": "none (single trajectory)",
+   "headline": "73.9% drop; authors: 'not a safety score'",
+   "comparable": false
+  },
+  {
+   "incumbent": "Two-signal audit (Hurtado2026)",
+   "access": "activations + weights + reference",
+   "n": 94,
+   "holdout": "leave-one-family-out",
+   "headline": "AUROC 0.95; LOFO bal.acc 0.89",
+   "comparable": false
+  }
+ ],
+ "missing_bib_keys": [],
+ "sources": [
+  {
+   "url": "https://arxiv.org/pdf/2608.05578",
+   "title": "Detecting Safety Training Modification in Language Models via Activation Analysis",
+   "authors": "Glen Messenger et al.",
+   "year": 2026,
+   "summary": "AMS: activation-based model scanner, 14 models/4 families, LOO threshold 71%, Pearson r=-0.546 (p=.043) in-sample correlation with JailbreakBench compliance.",
+   "passages": [
+    {
+     "quote": "σ on the harmful-content concept predicts compliance with Pearson r = −0.546 (p = 0.043); the rank-order Spearman correlation is weaker (ρ = −0.423, p = 0.13).",
+     "locator": "arXiv 2608.05578v1 abstract / Section VII-E"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2606.25750",
+   "title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+   "authors": "Chang-Chieh Huang et al.",
+   "year": 2026,
+   "summary": "RAS/SafeVec: per-family reference-anchored cosine safety score, needs calibration set with measured ASR, 216.88x faster than judge scoring on average.",
+   "passages": [
+    {
+     "quote": "On average, RAS is 216.88× faster in our setting.",
+     "locator": "arXiv 2606.25750, Section 4.2 RQ4, Table 2"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2606.22676",
+   "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+   "authors": "Dongyub Jude Lee et al.",
+   "year": 2026,
+   "summary": "GFS: cPCA fragility score needing aligned+base model pair; n=7 qualitative LoRA-fragility ranking, no printed correlation coefficient.",
+   "passages": [
+    {
+     "quote": "Input. Aligned model M, base model M0, and matched prompt sets Dsafe, Dgen",
+     "locator": "arXiv 2606.22676, Appendix Algorithm 1"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2511.14195",
+   "title": "N-GLARE: A Non-Generative Latent Representation-Efficient LLM Safety Evaluator",
+   "authors": "Zheyu Lin et al.",
+   "year": 2026,
+   "summary": "ACL 2026; needs internal hidden reps, 7000+ offline trajectories; Table 2 rank-correlation is a robustness check by n/dataset/model, never a headline.",
+   "passages": [
+    {
+     "quote": "N-GLARE requires access to internal hidden representations, which limits its direct applicability to fully black-box models that expose only text outputs.",
+     "locator": "arXiv 2511.14195, Limitations"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/html/2502.13946v2",
+   "title": "Template-Anchored Safety Alignment (TASA)",
+   "authors": "Leong et al.",
+   "year": 2025,
+   "summary": "Head-level activation patching of the template region; uses normalized indirect effect (NIE) for fair cross-model comparison across 6 models/4 families; prior art for C9's normalization.",
+   "passages": [
+    {
+     "quote": "For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m(x+)−m(x−)).",
+     "locator": "arXiv 2502.13946v2, Section 3.3"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2603.24543",
+   "title": "Steering vector alignment predicts attack-success-rate slope",
+   "authors": "Li et al.",
+   "year": 2026,
+   "summary": "Per-model OLS regression of ASR slope on cosine-to-refusal-direction across 6 models; significant for models >3B (p<.001, R2>=.85), null for Qwen 3B (p=.696); slope scales with model size.",
+   "passages": [
+    {
+     "quote": "For every model larger than 3B, the relationship is statistically significant (p < 0.001) and exceptionally strong, with refusal alignment explaining over 85% of the variance in ASR slope (R2 >= 0.85).",
+     "locator": "arXiv 2603.24543, Table 1 / Section 'Effect of model scale'"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2608.25390",
+   "title": "Refusal geometry reflects refusal training",
+   "authors": "Andrey Labunets",
+   "year": 2026,
+   "summary": "Stable rank of gradients/activations vs ablation robustness, validated as a single OLMo-2-0425-1B lineage case study (base/SFT/DPO/RLVR1/Instruct).",
+   "passages": [
+    {
+     "quote": "We perform measurements against allenai/OLMo-2-0425-1B-Instruct ... we evaluate its additional checkpoints: allenai/OLMo-2-0425-1B (olmo_base), allenai/OLMo-2-0425-1B-SFT (olmo_sft), allenai/OLMo-2-0425-1B-DPO (olmo_dpo), allenai/OLMo-2-0425-1B-RLVR1 (olmo_rlvr), and allenai/OLMo-2-0425-1B-Instruct (olmo_inst)",
+     "locator": "arXiv 2608.25390, Section 4.1"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2606.16349",
+   "title": "From Refusal Geometry to Safety Geometry: Harmfulness-Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+   "authors": "Wenhao Lan et al.",
+   "year": 2026,
+   "summary": "HRCI_repr per-checkpoint coupling discriminator; authors' own verdict: 'low coupling is not a safety score' (SFT trajectory stays high-ASR despite low coupling).",
+   "passages": [
+    {
+     "quote": "By step 500, HRCIrepr has fallen to 0.0205, a 73.9% drop from step 50 ... Thus low coupling is not a safety score.",
+     "locator": "arXiv 2606.16349v3, Section 4.4 RQ4"
+    }
+   ]
+  },
+  {
+   "url": "https://arxiv.org/pdf/2607.01854",
+   "title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+   "authors": "Gabriel Hurtado et al.",
+   "year": 2026,
+   "summary": "Combined activation-gap + WeightWatch z-sum audit: AUROC 0.95 in-sample, leave-one-family-out balanced accuracy 0.89; needs a reference (parent) checkpoint per family; spoofable by a fake reference.",
+   "passages": [
+    {
+     "quote": "Standardizing and summing a reference-anchored activation refusal-gap and the WeightWatch weight-recovery energy gives a threshold-free score at AUROC 0.95, significantly above either signal alone, that transfers across unseen families (leave-one-family-out balanced accuracy 0.89).",
+     "locator": "arXiv 2607.01854, Contributions"
+    }
+   ]
+  }
+ ],
+ "blockers": [
+  "Web search for a NEW reference-free/cheap white-box safety scorer specifically dated 2026-08..2026-09 found nothing beyond the already-known AMS (2608.05578, Aug 2026); a June 2026 'benchmarkless comparative safety scoring' paper (2605.06652) and a May 2026 'Geometry-Lite' probe (2605.20241) surfaced but are outside the requested Aug-Sep window and were not added as rows."
+ ]
+}

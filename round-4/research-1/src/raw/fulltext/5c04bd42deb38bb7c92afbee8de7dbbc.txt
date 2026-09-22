@@ -1,0 +1,471 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct
+Type: HTML
+Length: 15942 chars
+
+--- Content ---
+
+[ Hugging Face](/)
+
+  * [ Models ](/models)
+  * [ Datasets ](/datasets)
+  * [ Spaces ](/spaces)
+  * [ Buckets new](/storage)
+  * [ Docs ](/docs)
+  * [ Enterprise ](/enterprise)
+  * [Pricing](/pricing)
+  *     * Website
+
+      * [ Tasks](/tasks)
+      * [ HuggingChat](/chat)
+      * [ Collections](/collections)
+      * [ Languages](/languages)
+      * [ Organizations](/organizations)
+    * Community
+
+      * [ Blog](/blog)
+      * [ Posts](/posts)
+      * [ Daily Papers](/papers)
+      * [ Hardware](/hardware)
+      * [ Learn](/learn)
+      * [ Discord](/join/discord)
+      * [ Forum](https://discuss.huggingface.co/)
+      * [ GitHub](https://github.com/huggingface)
+    * Solutions
+
+      * [ Team & Enterprise](/enterprise)
+      * [ Hugging Face PRO](/pro)
+      * [ Enterprise Support](/support)
+      * [ Inference Providers](/inference/models)
+      * [ Inference Endpoints](/inference-endpoints)
+      * [ Storage Buckets](/storage)
+
+  * * * *
+
+  * [Log In](/login)
+  * [Sign Up](/join)
+
+
+
+# 
+
+[ ](/HuggingFaceTB)
+
+[HuggingFaceTB](/HuggingFaceTB)
+
+/
+
+[SmolLM2-360M-Instruct](/HuggingFaceTB/SmolLM2-360M-Instruct)
+
+Like 222
+
+Follow
+
+Hugging Face Smol Models Research 4.07k
+
+[ Text Generation ](/models?pipeline_tag=text-generation)[ Transformers ](/models?library=transformers)[ TensorBoard ](/models?library=tensorboard)[ ONNX ](/models?library=onnx)[ Safetensors ](/models?library=safetensors)[ Transformers.js ](/models?library=transformers.js)[ English ](/models?language=en)[ llama ](/models?other=llama)[ conversational ](/models?other=conversational)[ text-generation-inference ](/models?other=text-generation-inference)
+
+arxiv: 2502.02737
+
+License: apache-2.0
+
+[ Model card ](/HuggingFaceTB/SmolLM2-360M-Instruct)[ Files Files and versions xet ](/HuggingFaceTB/SmolLM2-360M-Instruct/tree/main)[ Metrics Training metrics ](/HuggingFaceTB/SmolLM2-360M-Instruct/tensorboard)[ Community 14 ](/HuggingFaceTB/SmolLM2-360M-Instruct/discussions)
+
+Deploy
+
+Copy to bucket new
+
+Use this model
+
+### Instructions to use HuggingFaceTB/SmolLM2-360M-Instruct with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+  * Libraries
+  * [ Transformers](/HuggingFaceTB/SmolLM2-360M-Instruct?library=transformers)
+
+How to use HuggingFaceTB/SmolLM2-360M-Instruct with Transformers:
+        
+        # Use a pipeline as a high-level helper
+        from transformers import pipeline
+        
+        pipe = pipeline("text-generation", model="HuggingFaceTB/SmolLM2-360M-Instruct")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        pipe(messages)
+        
+        # Load model directly
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        
+        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-360M-Instruct")
+        model = AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM2-360M-Instruct", device_map="auto")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        inputs = tokenizer.apply_chat_template(
+        	messages,
+        	add_generation_prompt=True,
+        	tokenize=True,
+        	return_dict=True,
+        	return_tensors="pt",
+        ).to(model.device)
+        
+        outputs = model.generate(**inputs, max_new_tokens=40)
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+
+  * [ Transformers.js](/HuggingFaceTB/SmolLM2-360M-Instruct?library=transformers.js)
+
+How to use HuggingFaceTB/SmolLM2-360M-Instruct with Transformers.js:
+        
+        // npm i @huggingface/transformers
+        import { pipeline } from '@huggingface/transformers';
+        
+        // Allocate pipeline
+        const pipe = await pipeline('text-generation', 'HuggingFaceTB/SmolLM2-360M-Instruct');
+
+  * Notebooks
+  * [ Google Colab](/HuggingFaceTB/SmolLM2-360M-Instruct/colab)
+  * [ Kaggle](/HuggingFaceTB/SmolLM2-360M-Instruct/kaggle)
+  * Local Apps [Settings](/settings/local-apps "Set up your favorite local applications")
+  * [ vLLM ](/HuggingFaceTB/SmolLM2-360M-Instruct?local-app=vllm)
+
+How to use HuggingFaceTB/SmolLM2-360M-Instruct with vLLM:
+
+##### Install from pip and serve model
+        
+        # Install vLLM from pip:
+        pip install vllm
+        # Start the vLLM server:
+        vllm serve "HuggingFaceTB/SmolLM2-360M-Instruct"
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:8000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "HuggingFaceTB/SmolLM2-360M-Instruct",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker
+        
+        docker model run hf.co/HuggingFaceTB/SmolLM2-360M-Instruct
+
+  * [ SGLang ](/HuggingFaceTB/SmolLM2-360M-Instruct?local-app=sglang)
+
+How to use HuggingFaceTB/SmolLM2-360M-Instruct with SGLang:
+
+##### Install from pip and serve model
+        
+        # Install SGLang from pip:
+        pip install sglang
+        # Start the SGLang server:
+        python3 -m sglang.launch_server \
+            --model-path "HuggingFaceTB/SmolLM2-360M-Instruct" \
+            --host 0.0.0.0 \
+            --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "HuggingFaceTB/SmolLM2-360M-Instruct",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker images
+        
+        docker run --gpus all \
+            --shm-size 32g \
+            -p 30000:30000 \
+            -v ~/.cache/huggingface:/root/.cache/huggingface \
+            --env "HF_TOKEN=<secret>" \
+            --ipc=host \
+            lmsysorg/sglang:latest \
+            python3 -m sglang.launch_server \
+                --model-path "HuggingFaceTB/SmolLM2-360M-Instruct" \
+                --host 0.0.0.0 \
+                --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "HuggingFaceTB/SmolLM2-360M-Instruct",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+  * [ Docker Model Runner ](/HuggingFaceTB/SmolLM2-360M-Instruct?local-app=docker-model-runner)
+
+How to use HuggingFaceTB/SmolLM2-360M-Instruct with Docker Model Runner:
+        
+        docker model run hf.co/HuggingFaceTB/SmolLM2-360M-Instruct
+
+
+
+
+  * SmolLM2
+    * Table of Contents
+    * Model Summary
+      * How to use
+      * Transformers
+      * Chat in TRL
+      * Transformers.js
+    * Evaluation
+    * Base Pre-Trained Model
+    * Instruction Model
+    * Limitations
+    * Training
+      * Model
+      * Hardware
+      * Software
+    * License
+    * Citation
+
+
+
+#  SmolLM2 
+
+[](https://cdn-uploads.huggingface.co/production/uploads/61c141342aac764ce1654e43/oWWfzW4RbWkVIo7f-5444.png)
+
+##  Table of Contents 
+
+  1. Model Summary
+  2. Limitations
+  3. Training
+  4. License
+  5. Citation
+
+
+
+##  Model Summary 
+
+SmolLM2 is a family of compact language models available in three size: 135M, 360M, and 1.7B parameters. They are capable of solving a wide range of tasks while being lightweight enough to run on-device. More details in our paper: <https://arxiv.org/abs/2502.02737>
+
+SmolLM2 demonstrates significant advances over its predecessor SmolLM1, particularly in instruction following, knowledge, reasoning. The 360M model was trained on 4 trillion tokens using a diverse dataset combination: FineWeb-Edu, DCLM, The Stack, along with new filtered datasets we curated and will release soon. We developed the instruct version through supervised fine-tuning (SFT) using a combination of public datasets and our own curated datasets. We then applied Direct Preference Optimization (DPO) using [UltraFeedback](https://huggingface.co/datasets/HuggingFaceH4/ultrafeedback_binarized).
+
+The instruct model additionally supports tasks such as text rewriting, summarization and function calling (for the 1.7B) thanks to datasets developed by [Argilla](https://huggingface.co/argilla) such as [Synth-APIGen-v0.1](https://huggingface.co/datasets/argilla/Synth-APIGen-v0.1). You can find the SFT dataset here: <https://huggingface.co/datasets/HuggingFaceTB/smol-smoltalk> and finetuning code in the [alignement handbook](https://github.com/huggingface/alignment-handbook/tree/main/recipes/smollm2)
+
+For more details refer to: <https://github.com/huggingface/smollm>. You will find pre-training, post-training, evaluation and local inference code.
+
+###  How to use 
+
+###  Transformers 
+    
+    
+    pip install transformers
+    
+    
+    
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    checkpoint = "HuggingFaceTB/SmolLM2-360M-Instruct"
+    
+    device = "cuda" # for GPU usage or "cpu" for CPU usage
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+    # for multiple GPUs install accelerate and do `model = AutoModelForCausalLM.from_pretrained(checkpoint, device_map="auto")`
+    model = AutoModelForCausalLM.from_pretrained(checkpoint).to(device)
+    
+    messages = [{"role": "user", "content": "What is the capital of France."}]
+    input_text=tokenizer.apply_chat_template(messages, tokenize=False)
+    print(input_text)
+    inputs = tokenizer.encode(input_text, return_tensors="pt").to(device)
+    outputs = model.generate(inputs, max_new_tokens=50, temperature=0.2, top_p=0.9, do_sample=True)
+    print(tokenizer.decode(outputs[0]))
+    
+
+###  Chat in TRL 
+
+You can also use the TRL CLI to chat with the model from the terminal:
+    
+    
+    pip install trl
+    trl chat --model_name_or_path HuggingFaceTB/SmolLM2-360M-Instruct --device cpu
+    
+
+###  Transformers.js 
+    
+    
+    npm i @huggingface/transformers
+    
+    
+    
+    import { pipeline } from "@huggingface/transformers";
+    
+    // Create a text generation pipeline
+    const generator = await pipeline(
+      "text-generation",
+      "HuggingFaceTB/SmolLM2-135M-Instruct",
+    );
+    
+    // Define the list of messages
+    const messages = [
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: "What is the capital of France?" },
+    ];
+    
+    // Generate a response
+    const output = await generator(messages, { max_new_tokens: 128 });
+    console.log(output[0].generated_text.at(-1).content);
+    // "The capital of France is Paris."
+    
+
+##  Evaluation 
+
+In this section, we report the evaluation results of SmolLM2. All evaluations are zero-shot unless stated otherwise, and we use [lighteval](https://github.com/huggingface/lighteval) to run them.
+
+##  Base Pre-Trained Model 
+
+Metrics | SmolLM2-360M | Qwen2.5-0.5B | SmolLM-360M  
+---|---|---|---  
+HellaSwag | **54.5** | 51.2 | 51.8  
+ARC (Average) | **53.0** | 45.4 | 50.1  
+PIQA | **71.7** | 69.9 | 71.6  
+MMLU (cloze) | **35.8** | 33.7 | 34.4  
+CommonsenseQA | **38.0** | 31.6 | 35.3  
+TriviaQA | **16.9** | 4.3 | 9.1  
+Winogrande | 52.5 | **54.1** | 52.8  
+OpenBookQA | **37.4** | **37.4** | 37.2  
+GSM8K (5-shot) | 3.2 | **33.4** | 1.6  
+  
+##  Instruction Model 
+
+Metric | SmolLM2-360M-Instruct | Qwen2.5-0.5B-Instruct | SmolLM-360M-Instruct  
+---|---|---|---  
+IFEval (Average prompt/inst) | **41.0** | 31.6 | 19.8  
+MT-Bench | 3.66 | **4.16** | 3.37  
+HellaSwag | **52.1** | 48.0 | 47.9  
+ARC (Average) | **43.7** | 37.3 | 38.8  
+PIQA | **70.8** | 67.2 | 69.4  
+MMLU (cloze) | **32.8** | 31.7 | 30.6  
+BBH (3-shot) | 27.3 | **30.7** | 24.4  
+GSM8K (5-shot) | 7.43 | **26.8** | 1.36  
+  
+##  Limitations 
+
+SmolLM2 models primarily understand and generate content in English. They can produce text on a variety of topics, but the generated content may not always be factually accurate, logically consistent, or free from biases present in the training data. These models should be used as assistive tools rather than definitive sources of information. Users should always verify important information and critically evaluate any generated content.
+
+##  Training 
+
+###  Model 
+
+  * **Architecture:** Transformer decoder
+  * **Pretraining tokens:** 4T
+  * **Precision:** bfloat16
+
+
+
+###  Hardware 
+
+  * **GPUs:** 64 H100
+
+
+
+###  Software 
+
+  * **Training Framework:** [nanotron](https://github.com/huggingface/nanotron/tree/main)
+
+
+
+##  License 
+
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+##  Citation 
+    
+    
+    @misc{allal2025smollm2smolgoesbig,
+          title={SmolLM2: When Smol Goes Big -- Data-Centric Training of a Small Language Model}, 
+          author={Loubna Ben Allal and Anton Lozhkov and Elie Bakouch and Gabriel Martín Blázquez and Guilherme Penedo and Lewis Tunstall and Andrés Marafioti and Hynek Kydlíček and Agustín Piqueres Lajarín and Vaibhav Srivastav and Joshua Lochner and Caleb Fahlgren and Xuan-Son Nguyen and Clémentine Fourrier and Ben Burtenshaw and Hugo Larcher and Haojun Zhao and Cyril Zakka and Mathieu Morlon and Colin Raffel and Leandro von Werra and Thomas Wolf},
+          year={2025},
+          eprint={2502.02737},
+          archivePrefix={arXiv},
+          primaryClass={cs.CL},
+          url={https://arxiv.org/abs/2502.02737}, 
+    }
+    
+
+Downloads last month
+    302,119
+
+Safetensors[](https://huggingface.co/docs/safetensors)
+
+Model size
+
+0.4B params
+
+Tensor type
+
+BF16 
+
+·
+
+Chat template
+
+Files info
+
+Inference Providers [NEW](https://huggingface.co/docs/inference-providers)
+
+[ Text Generation](/tasks/text-generation "Learn more about text-generation")
+
+This model isn't deployed by any Inference Provider. [🙋 1 Ask for provider support](/spaces/huggingface/InferenceSupport/discussions/12009)
+
+##  Model tree for HuggingFaceTB/SmolLM2-360M-Instruct [](/docs/hub/model-cards#specifying-a-base-model)
+
+Base model
+
+[HuggingFaceTB/SmolLM2-360M](/HuggingFaceTB/SmolLM2-360M)
+
+Quantized
+
+([42](/models?other=base_model:quantized:HuggingFaceTB/SmolLM2-360M))
+
+this model
+
+Adapters
+
+[51 models](/models?other=base_model:adapter:HuggingFaceTB/SmolLM2-360M-Instruct)
+
+Finetunes
+
+[180 models](/models?other=base_model:finetune:HuggingFaceTB/SmolLM2-360M-Instruct)
+
+Merges
+
+[2 models](/models?other=base_model:merge:HuggingFaceTB/SmolLM2-360M-Instruct)
+
+Quantizations
+
+[118 models](/models?other=base_model:quantized:HuggingFaceTB/SmolLM2-360M-Instruct)
+
+##  Spaces using HuggingFaceTB/SmolLM2-360M-Instruct 100
+
+[🌍 VIDraft/global-llm-leaderboard ](/spaces/VIDraft/global-llm-leaderboard)[📊 EuroEval/euroeval_leaderboard ](/spaces/EuroEval/euroeval_leaderboard)[🏃 K00B404/LLM_Quantization ](/spaces/K00B404/LLM_Quantization)[🏢 Harley-ml/SmolLM2_Chat ](/spaces/Harley-ml/SmolLM2_Chat)[✍👀 agents-course/decoding_visualizer ](/spaces/agents-course/decoding_visualizer)[💻 FallnAI/Quantize-HF-Models ](/spaces/FallnAI/Quantize-HF-Models)[🏃 openfree/LLM_Quantization ](/spaces/openfree/LLM_Quantization)[🌖 stanley-00/slm-testing ](/spaces/stanley-00/slm-testing) \+ 95 Spaces \+ 92 Spaces
+
+##  Collection including HuggingFaceTB/SmolLM2-360M-Instruct
+
+#### [SmolLM2 Collection State-of-the-art compact LLMs for on-device applications: 1.7B, 360M, 135M • 16 items • Updated May 5, 2025 • 314](/collections/HuggingFaceTB/smollm2)
+
+##  Paper for HuggingFaceTB/SmolLM2-360M-Instruct
+
+#### [SmolLM2: When Smol Goes Big -- Data-Centric Training of a Small Language Model Paper • 2502.02737 • Published Feb 4, 2025 • 260 ](/papers/2502.02737)
+
+System theme
+
+Company
+
+[TOS](/terms-of-service) [Privacy](/privacy) [About](/huggingface) [Careers](https://apply.workable.com/huggingface/) [](/)
+
+Website
+
+[Models](/models) [Datasets](/datasets) [Spaces](/spaces) [Pricing](/pricing) [Docs](/docs)
+

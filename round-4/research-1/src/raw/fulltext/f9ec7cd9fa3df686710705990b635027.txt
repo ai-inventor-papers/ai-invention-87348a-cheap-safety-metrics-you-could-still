@@ -1,0 +1,322 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2609.10594
+Type: HTML
+Length: 52277 chars (truncated)
+
+--- Content ---
+
+##### Report GitHub Issue
+
+×
+
+Title:
+
+Content selection saved. Describe the issue below:
+
+Description:
+
+Submit without GitHub Submit in GitHub
+
+arXiv is now an independent nonprofit! [Learn more](https://info.arxiv.org/about) ×
+
+[ Back to arXiv ](/)
+
+[Why HTML?](https://info.arxiv.org/about/accessible_HTML.html) Report Issue [ Back to Abstract ](/abs/2609.10594v1 "Back to abstract page") [ Download PDF](/pdf/2609.10594v1 "Download PDF") [ ](javascript:toggleNavTOC\(\); "Toggle navigation") [ ](javascript:toggleReadingMode\(\); "Disable reading mode, show header and footer")
+
+  1. Abstract
+  2. 1 Introduction
+  3. 2 Background
+  4. 3 Evaluators Under Measurement
+  5. 4 Experiment Setup
+     1. 4.1 Datasets
+     2. 4.2 Label Alignment and Metrics
+     3. 4.3 Judge Backbone
+  6. 5 Experiment Results
+     1. 5.1 Main Results
+     2. 5.2 Discussion
+  7. 6 Limitations
+  8. 7 Conclusion
+  9. References
+  10. 8 Related Work
+     1. 8.1 Risks of Large Language Models
+     2. 8.2 Safety Training and Its Limits
+     3. 8.3 Jailbreak Attacks
+     4. 8.4 Defenses That Evaluators Also Score
+
+
+
+[ License: CC BY 4.0 ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2609.10594v1 [cs.CR] 07 Sep 2026
+
+# An Empirical Measurement of Jailbreaking Evaluators
+
+Yujie Mu  Affiliation: Independent Researcher 
+
+###### Abstract
+
+Expert evaluation of jailbreak responses is costly and difficult to scale, so the community increasingly relies on automated evaluators to determine whether an attack succeeds. However, jailbreak studies typically validate their chosen evaluator independently, repeatedly spending resources on similar evaluation efforts while making results across papers difficult to compare. Different evaluators also encode different definitions of jailbreak success, meaning that reported attack strength and apparent progress can depend substantially on which evaluator is used. We systematically compare six evaluators that recur in recent jailbreak attack and defense research: HarmBench, JailbreakBench, JailbreakRadar, StrongReject, JADES, and JailMeter. To our knowledge, no prior study has evaluated all six on the same human-labeled data under a controlled setup. We evaluate them on JailbreakQR and JailMeter-Eva, using human judgments as the reference, and measure agreement with humans, error types, and consistency across attack families. For evaluators that require a general-purpose LLM judge, we use a shared backbone to control for model-specific variation. We found that JADES exhibits the best overall performance, while HarmBench and StrongReject also demonstrate good performance.
+
+###### keywords
+
+large language models, jailbreak attacks, safety evaluation, empirical measurement, benchmark 
+
+### 1 Introduction
+
+Jailbreak attacks have become a central topic in the study of large language model safety, with a growing body of work proposing new attacks, defenses, and benchmarks Chao et al. (2024); Chu et al. (2025c); Mazeika et al. (2024). A core question underlying all of this work is whether a jailbreak attempt actually succeeds. Answering this question through expert human evaluation is costly and difficult to scale, especially when modern studies evaluate thousands of prompt-response pairs across multiple models and attack settings. As a result, the community increasingly relies on automated evaluators to determine whether a model response constitutes a successful jailbreak.
+
+These evaluators directly affect how jailbreak research is interpreted. Attack papers use them to compute attack success rates, defense papers use them to measure robustness, and benchmarks use them to rank attacks and models. However, different evaluators encode different definitions of jailbreak success. A response considered successful by one evaluator may therefore be rejected by another, even when the underlying attack and model response remain unchanged. Consequently, reported attack strength and apparent progress across studies can depend substantially on the evaluator being used.
+
+Despite this importance, evaluator validation remains fragmented. Jailbreak studies commonly validate their chosen evaluator independently, often on different datasets, against different baselines, and under different experimental settings. This practice repeatedly spends resources on similar evaluation efforts while making results across papers difficult to compare. More importantly, it leaves the field without a common empirical picture of how widely used jailbreak evaluators behave when applied to the same data under the same conditions.
+
+Several evaluators have become recurrent components of recent jailbreak attack and defense research. HarmBench uses a classifier to determine whether a response exhibits a specified harmful behavior Mazeika et al. (2024). JailbreakBench and JailbreakRadar use LLM-based judges to classify jailbreak responses Chao et al. (2024); Chu et al. (2025c). StrongReject evaluates responses using a structured rubric Souly et al. (2024). JADES decomposes harmful requests into weighted sub-questions and scores responses against them Chu et al. (2025a). JailMeter instead evaluates evidence extracted from the response Huang et al. (2026). These evaluators were designed around different formulations of jailbreak success and were originally validated under different experimental conditions. To our knowledge, no prior study has systematically evaluated all six on the same human-labeled data under a controlled setup.
+
+In this work, we provide such a comparison. We evaluate HarmBench, JailbreakBench, JailbreakRadar, StrongReject, JADES, and JailMeter on two human-labeled datasets, JailbreakQR and JailMeter-Eva, using human judgments as the reference Chu et al. (2025a); Huang et al. (2026). We measure how closely each evaluator agrees with human judgments, characterize the types of errors it makes, and examine whether its behavior remains consistent across different attack families. For evaluators that require a general-purpose LLM judge, we use the same backbone model, eliminating a source of variation that would otherwise confound differences between evaluation methods. Our results show that JADES achieves the strongest overall performance, while HarmBench and StrongReject also perform well across the evaluated settings.
+
+Our contributions are as follows.
+
+  1. [1.]
+
+  2. 1.
+
+We conduct a systematic comparison of six widely used jailbreak evaluators—HarmBench, JailbreakBench, JailbreakRadar, StrongReject, JADES, and JailMeter—under a unified evaluation protocol on two human-labeled datasets.
+
+  3. 2.
+
+We control the general-purpose judge backbone across all evaluators that require one, isolating differences caused by the evaluation methodology rather than by the underlying judge model.
+
+  4. 3.
+
+We provide a unified empirical assessment of current jailbreak evaluators, showing that JADES achieves the best overall performance, while HarmBench and StrongReject also demonstrate strong performance.
+
+
+
+
+### 2 Background
+
+Early jailbreak studies often judged attack success using simple string matching. A response was treated as successful if it did not begin with a predefined refusal phrase Zou et al. (2023). This approach is inexpensive and fully reproducible, but it provides only a weak proxy for actual compliance: a response may avoid an explicit refusal while still failing to provide useful harmful content. Another line of work reuses toxicity or moderation classifiers Google Jigsaw (2024); OpenAI (2024); Inan et al. (2023); Han et al. (2024). These classifiers estimate whether a response contains harmful content, but harmfulness is not equivalent to successful fulfillment of a harmful request. A response may contain toxic language without answering the request, while a harmful answer may be expressed in neutral language.
+
+More recent work increasingly relies on capable language models as evaluators. This follows the broader practice of using LLMs to grade open-ended text Zheng et al. (2023); Liu et al. (2023), although such judges are themselves known to exhibit systematic biases Wang et al. (2023a). JailbreakBench and JailbreakRadar adopt this general LLM-as-a-judge paradigm Chao et al. (2024); Chu et al. (2025c). HarmBench instead trains a dedicated classifier to determine whether a response exhibits a specified harmful behavior Mazeika et al. (2024). StrongReject retains an LLM judge but replaces a single holistic verdict with a structured rubric Souly et al. (2024). Prior work in other evaluation settings has shown that rubric-based assessment can align more closely with human judgments than holistic scoring Hunter et al. (1996); Jönsson and Balan (2018); Attali (2014).
+
+More recent evaluators further modify what information is presented to the judge and how the final score is constructed. JADES argues that direct holistic judgment can be distorted by irrelevant or superficially compliant content, and therefore decomposes the harmful request into weighted sub-questions before scoring the response Chu et al. (2025a). JailMeter instead separates evidence extraction from the final judgment, with the goal of reducing interference from jailbreak-specific prompt structure Huang et al. (2026). Together, these approaches reflect substantially different definitions and operationalizations of jailbreak success.
+
+The harmful requests evaluated by these methods are commonly drawn from safety benchmarks such as Do-Not-Answer Wang et al. (2023b) and SALAD-Bench Li et al. (2024). These benchmarks also differ in scope, adoption, and implementation quality Chu et al. (2026c). Appendix 8 provides additional background on the jailbreak attacks that generate these responses and the defenses whose effectiveness is measured using such evaluators.
+
+### 3 Evaluators Under Measurement
+
+Let qq denote a harmful question and JJ a jailbreak attack. The attack transforms qq into a prompt p=J⁡(q)p=J(q), which is submitted to a target model MM to obtain a response r=M⁡(p)r=M(p). An evaluator EE then maps the pair (q,r)(q,r) to a verdict, E:(q,r)↦vE:(q,r)\mapsto v, where v∈𝕍Ev\in\mathbb{V}_{E}. Some evaluators return a binary verdict directly, whereas others produce a score in [0,1][0,1] that is subsequently thresholded. Let h⁡(q,r)h(q,r) denote the human annotation, which we use as the reference label. For a dataset DD, we measure evaluator agreement as
+
+| Agreement(E,D)=1|D|∑(q,r)∈D[ϕ(E(q,r))=h(q,r)],\mathrm{Agreement}(E,D)=\frac{1}{|D|}\sum_{(q,r)\in D}\mathbf{1}\\!\left[\phi(E(q,r))=h(q,r)\right], |  | (1)  
+---|---|---|---  
+  
+where ϕ\phi maps the evaluator’s native output to the label space of DD. We use the term _agreement_ rather than correctness because human annotations may themselves contain noise. Moreover, aggregate agreement can conceal systematic errors on particular subsets, motivating our later analysis across error types and attack families.
+
+Table 1 summarizes the six evaluators considered in this work.
+
+HarmBench formulates jailbreak evaluation as behavior classification Mazeika et al. (2024). Its dedicated classifier, fine-tuned from Llama 2 13B Touvron et al. (2023), takes a harmful behavior description together with the generated response and predicts whether the response constitutes an instance of that behavior. Unlike the remaining evaluators, HarmBench does not require a general-purpose LLM judge at inference time.
+
+JailbreakBench uses a prompted instruction-following model to produce a single holistic verdict for the response according to a fixed evaluation rubric Chao et al. (2024).
+
+JailbreakRadar evaluates a response using three criteria Chu et al. (2025c): whether it contributes substantive content beyond merely repeating the prompt, whether it provides any requested information or expresses willingness to do so, and whether it remains relevant to the original harmful question. A jailbreak is considered successful only when all three criteria are satisfied. Its criterion therefore emphasizes whether the response provides useful progress toward the adversarial request, including through indirect, incomplete, or fictionalized content.
+
+StrongReject is motivated by the observation that apparent compliance does not necessarily imply that a response contains useful harmful information Souly et al. (2024). It first applies a refusal gate: responses classified as refusals receive a score of zero. Non-refusal responses are then rated for how convincing and how specific they are, and the two ratings are normalized and aggregated into a final score. StrongReject also provides a fine-tuned scoring model; Section 4.3 specifies the variant used in our experiments.
+
+JADES decomposes the harmful question into weighted sub-questions, identifies response sentences relevant to each sub-question, scores the resulting sub-answers on a five-level scale Likert (1932); Boone and Boone (2012), and aggregates the scores according to their weights Chu et al. (2025a). This design replaces a single holistic judgment with decompositional scoring over the information required to fulfill the harmful request.
+
+JailMeter first extracts the parts of the response that are relevant to the original harmful question through an information-bottleneck formulation, and then evaluates the extracted evidence Huang et al. (2026). Its final decision considers both whether the response captures the harmful intent and whether it provides a sufficiently complete answer.
+
+Table 1: Summary of the six jailbreak evaluators considered in this work. Evaluator | Evaluation mechanism | Native output | LLM judge  
+---|---|---|---  
+HarmBench Mazeika et al. (2024) | Fine-tuned behavior classifier | Boolean | No  
+JailbreakBench Chao et al. (2024) | Holistic prompted judgment | Boolean | Yes  
+JailbreakRadar Chu et al. (2025c) | Three-criterion prompted judgment | Boolean | Yes  
+StrongReject Souly et al. (2024) | Refusal gate + rubric scoring | Score [0,1][0,1] | Yes  
+JADES Chu et al. (2025a) | Decomposition + weighted scoring | Score [0,1][0,1] | Yes  
+JailMeter Huang et al. (2026) | Evidence extraction + judgment | Boolean | Yes  
+  
+### 4 Experiment Setup
+
+#### 4.1 Datasets
+
+We evaluate all six evaluators on two human-labeled datasets, JailbreakQR and JailMeter-Eva. The two datasets differ in label granularity, target models, and attack families, providing complementary evaluation settings. Table 2 summarizes their main characteristics.
+
+JailbreakQR Chu et al. (2025a). JailbreakQR is constructed from 260 harmful questions drawn from JailbreakBench and JailbreakRadar and evaluated under five jailbreak attacks: GCG Zou et al. (2023), DSN Zhou et al. (2024), LAA Andriushchenko et al. (2024), PAIR Chao et al. (2023), and JailbreakChat Shen et al. (2024). The target models are Vicuna 13B Chiang et al. (2023), Llama 2 7B Chat Touvron et al. (2023), GPT-3.5 Turbo, and GPT-4 OpenAI (2023). From the resulting prompt-response pairs, 400 are sampled for human annotation. Each pair is labeled by three annotators as failed, partially successful, or successful, with disagreements resolved by majority vote. The reported ordinal Krippendorff’s α\alpha is 0.823 Krippendorff (2018).
+
+JailMeter-Eva Huang et al. (2026). JailMeter-Eva contains 330 non-refusal responses generated by GPT-4o mini. The dataset covers eight attacks: CodeChameleon Lv et al. (2024), Crescendo Russinovich et al. (2024), PastTense Andriushchenko and Flammarion (2024), JSP, CodeAttack Ren et al. (2024), PAIR Chao et al. (2023), DeepInception Li et al. (2023), and DRA Liu et al. (2024a). The samples span six harm categories and use binary labels, with 73 responses labeled as successful jailbreaks. By excluding explicit refusals, JailMeter-Eva focuses evaluation on harder cases in which the model produces substantive content but the success of the jailbreak remains ambiguous.
+
+Table 2: Summary of the two human-labeled evaluation datasets. Property | JailbreakQR | JailMeter-Eva  
+---|---|---  
+Pairs | 400 | 330  
+Label space | Failed / Partial / Successful | Failed / Successful  
+Annotators / agreement | 3 / α=0.823\alpha=0.823 | NA  
+Models / attack families | 4 / 5 | 1 / 8  
+Refusals included | Yes | No  
+  
+#### 4.2 Label Alignment and Metrics
+
+The evaluators and datasets use different output spaces, so we define a common label mapping for comparison. For binary evaluation, the human label _failed_ is mapped to negative, while _partially successful_ and _successful_ are mapped to positive. For score-based evaluators, we use their published decision thresholds. JADES uses 0.25 for binary classification and 0.25 and 0.75 for ternary classification Chu et al. (2025a). StrongReject uses its released threshold Souly et al. (2024). We report accuracy, precision, recall, F1, and false positive rate (FPR). We include FPR because false positives directly inflate the measured attack success rate, whereas recall captures the evaluator’s ability to identify successful jailbreaks.
+
+#### 4.3 Judge Backbone
+
+Five of the six jailbreak evaluators rely on one or more LLMs. As evaluator performance can vary with the underlying judge model, we fix this component across all applicable methods. Specifically, JailbreakBench, JailbreakRadar, StrongReject, JADES, and JailMeter use orcarouter/Qwen3.8-27B-Uncensored with temperature set to 1.0. We retain each evaluator’s published prompt template and decision procedure. For StrongReject, we use the rubric-based LLM judge rather than its released fine-tuned scorer so that it is evaluated under the same shared-backbone setting as the other prompt-based methods.
+
+We use an uncensored backbone to reduce evaluator-side refusals when processing harmful content, which would otherwise introduce errors unrelated to the evaluation criterion itself.
+
+This control does not apply to HarmBench, which uses its released dedicated classifier and does not call a general-purpose judge. Accordingly, our experiments primarily compare evaluator methodologies under a controlled judge backbone rather than reproducing every evaluator exactly in its originally released configuration.
+
+### 5 Experiment Results
+
+#### 5.1 Main Results
+
+Figure 1 reports binary agreement with the human labels. The left panel presents results on JailbreakQR, while the right panel presents results on JailMeter-Eva. JailMeter-Eva excludes refusals before sampling and therefore focuses more heavily on ambiguous non-refusal responses.
+
+Figure 1: Binary agreement with human labels. Values are percentages. Cell shading is normalised within each column so that the darker end always marks the better result, which for FPR means the smaller number. The highlighted row marks the strongest evaluator overall.
+
+Findings. JADES achieves the strongest overall performance on both datasets. On JailbreakQR, it reaches 92.3% accuracy and 92.5% F1, while also producing the lowest false positive rate at 5.8%. StrongReject follows with 89.5% accuracy and 89.8% F1, while HarmBench also performs consistently well with 88.3% accuracy and 88.5% F1. In contrast, JailbreakBench and JailbreakRadar show noticeably lower agreement with human judgments, with JailbreakBench obtaining the lowest F1 score at 81.2%.
+
+The same ordering largely persists on JailMeter-Eva. JADES again performs best, reaching 95.2% accuracy, 89.3% F1, and an FPR of only 3.9%. StrongReject remains the second strongest evaluator with 93.0% accuracy and 85.0% F1, followed by HarmBench. JailbreakBench and JailbreakRadar again perform substantially worse, particularly in precision and F1. This consistency across the two datasets suggests that the observed differences are not specific to a single benchmark or attack distribution.
+
+A notable pattern appears on JailMeter-Eva. Although most evaluators achieve relatively high accuracy, their precision and F1 scores are substantially lower than on JailbreakQR. For example, JailbreakBench reaches 85.5% accuracy but only 64.7% precision and 69.6% F1. This gap reflects the class imbalance of JailMeter-Eva and shows that accuracy alone can overstate evaluator quality in this setting. The false positive rate provides an important complementary view because false positives directly inflate the measured attack success rate. JADES and StrongReject achieve the lowest FPRs on both datasets, indicating that their stronger overall performance is not obtained simply by labeling more responses as successful jailbreaks.
+
+#### 5.2 Discussion
+
+The results show that evaluator choice can materially affect conclusions about jailbreak success. Even under a shared judge backbone, the six evaluators exhibit substantial differences in agreement with human labels. This indicates that evaluator design itself, rather than only the underlying judge model, is an important source of variation in jailbreak measurement.
+
+The strongest methods also share a common property. JADES and StrongReject do not rely solely on a single unrestricted holistic judgment. StrongReject explicitly separates refusal detection from the assessment of response specificity and convincingness, while JADES decomposes the harmful request into smaller criteria before aggregating the resulting scores. Their consistently stronger performance suggests that adding structure to the evaluation process can improve agreement with human judgments. By contrast, evaluators based primarily on a single prompted verdict, such as JailbreakBench and JailbreakRadar, show larger performance gaps in our experiments.
+
+JADES exhibits the strongest performance across all five reported metrics on both datasets. Its advantage is particularly visible in FPR, where it reduces false positives to 5.8% on JailbreakQR and 3.9% on JailMeter-Eva. This is important for jailbreak research because a false positive directly counts a failed or insufficient response as a successful attack and therefore inflates the reported attack success rate. The results suggest that decompositional evaluation may better distinguish substantive harmful compliance from responses that only appear compliant at a surface level.
+
+StrongReject also performs consistently well across both datasets. Its results suggest that explicitly modeling refusal and response quality provides a strong alternative to purely holistic classification. HarmBench, despite using a dedicated classifier rather than the shared LLM judge, also remains competitive, indicating that task-specific classifiers can provide reliable jailbreak evaluation when trained on suitable human-labeled data.
+
+Finally, the results highlight the importance of evaluating jailbreak evaluators on more than one dataset. JailbreakQR contains a broader mixture of responses, including refusals, whereas JailMeter-Eva deliberately excludes refusals and concentrates on more ambiguous non-refusal cases. The relative ordering of the evaluators remains broadly stable across these settings, but the larger drops in precision and F1 on JailMeter-Eva show that difficult non-refusal responses remain substantially harder to classify. A reliable jailbreak evaluator should therefore be assessed not only by aggregate accuracy, but also by its error profile and robustness across different attack distributions.
+
+### 6 Limitations
+
+Our study is limited by the scope of the available evaluation data. Both JailbreakQR and JailMeter-Eva are English-only and moderate in size, so the results may not generalize to other languages, domains, target models, or future jailbreak strategies. Human annotations serve as our reference labels, but they are themselves imperfect. For example, JailbreakQR reports an ordinal Krippendorff’s α\alpha of 0.823, indicating that some evaluator–human disagreements may reflect annotation uncertainty rather than evaluator error alone.
+
+A second limitation concerns dataset provenance. Each dataset was introduced by work that also proposed one of the evaluators considered in this study. Although the evaluation sets are not training data for these evaluators, the design of an evaluator and the construction of its associated dataset may reflect related assumptions about what constitutes a successful jailbreak. We therefore place greater emphasis on performance that remains consistent across both datasets rather than on results from either dataset in isolation.
+
+Our shared-backbone setup also provides only partial control. We use the same general-purpose judge model for all evaluators that support such a configuration, which isolates variation caused by their evaluation procedures. However, HarmBench uses its own dedicated classifier, and StrongReject is evaluated with its rubric-based judge rather than its released fine-tuned scorer. Our results therefore compare evaluator methodologies under a controlled experimental setting rather than reproducing every system exactly in its native configuration. Evaluating each released system with its originally recommended model and settings would answer a complementary question.
+
+Finally, this work focuses on jailbreak evaluation rather than the development of new attacks. We introduce no new jailbreak method and generate no new harmful benchmark content. Our experiments use previously released datasets and attack outputs. Accordingly, the primary contribution of this work is methodological: improving the reliability and comparability of how jailbreak success is measured.
+
+### 7 Conclusion
+
+Automated evaluators have become a central component of jailbreak research because expert human evaluation is costly and difficult to scale. However, widely used evaluators implement different definitions and procedures for determining whether a jailbreak succeeds, making results across studies difficult to compare.
+
+In this work, we systematically compared six jailbreak evaluators—HarmBench, JailbreakBench, JailbreakRadar, StrongReject, JADES, and JailMeter—on two human-labeled datasets under a unified evaluation protocol. For evaluators that rely on a general-purpose LLM judge, we fixed the judge backbone to reduce model-specific variation. We evaluated agreement with human judgments, error characteristics, and consistency across different attack families.
+
+Our results show that JADES achieves the strongest overall performance across both datasets, while StrongReject and HarmBench also demonstrate consistently strong agreement with human judgments. The remaining evaluators exhibit larger gaps, particularly on the more ambiguous non-refusal examples in JailMeter-Eva. These findings show that evaluator choice is itself an important source of variation in jailbreak measurement and that more structured evaluation procedures can provide more reliable agreement with human judgments.
+
+We hope this comparison provides a common reference for selecting and evaluating jailbreak evaluators and reduces the need for individual studies to repeatedly establish evaluator reliability under incompatible experimental settings.
+
+## References
+
+  * Akkus et al. (2025) A. Akkus, M. P. Aghdam, M. Li, J. Chu, M. Backes, Y. Zhang, and S. Sav Generated data with fake privacy: hidden dangers of fine-tuning large language models on generated data.  In Proceedings of the 34th USENIX Security Symposium,  Berkeley, CA.  Cited by: §8.1. 
+  * Alon and Kamfonas (2023) G. Alon and M. Kamfonas Detecting language model attacks with perplexity.  Note: Preprint at <https://arxiv.org/abs/2308.14132> Cited by: §8.4. 
+  * Andriushchenko et al. (2024) M. Andriushchenko, F. Croce, and N. Flammarion Jailbreaking leading safety-aligned LLMs with simple adaptive attacks.  Note: Preprint at <https://arxiv.org/abs/2404.02151> Cited by: §4.1, §8.3. 
+  * Andriushchenko and Flammarion (2024) M. Andriushchenko and N. Flammarion Does refusal training in LLMs generalize to the past tense?.  Note: Preprint at <https://arxiv.org/abs/2407.11969> Cited by: §4.1, §8.3. 
+  * Askell et al. (2021) A. Askell, Y. Bai, A. Chen, D. Drain, D. Ganguli, T. Henighan, A. Jones, N. Joseph, B. Mann, N. DasSarma, et al. A general language assistant as a laboratory for alignment.  Note: Preprint at <https://arxiv.org/abs/2112.00861> Cited by: §8.2. 
+  * Attali (2014) Y. Attali A ranking method for evaluating constructed responses.  Educational and Psychological Measurement 74 (5), pp. 795–808.  Cited by: §2. 
+  * Bai et al. (2022) Y. Bai, S. Kadavath, S. Kundu, A. Askell, J. Kernion, A. Jones, A. Chen, A. Goldie, A. Mirhoseini, C. McKinnon, et al. Constitutional AI: harmlessness from AI feedback.  Note: Preprint at <https://arxiv.org/abs/2212.08073> Cited by: §8.2. 
+  * Boone and Boone (2012) H. N. Boone and D. A. Boone Analyzing Likert data.  Journal of Extension 50 (2), pp. 1–5.  Cited by: §3. 
+  * Carlini et al. (2021) N. Carlini, F. Tramer, E. Wallace, M. Jagielski, A. Herbert-Voss, K. Lee, A. Roberts, T. Brown, D. Song, U. Erlingsson, A. Oprea, and C. Raffel Extracting training data from large language models.  In Proceedings of the 30th USENIX Security Symposium,  Berkeley, CA.  Cited by: §8.1. 
+  * Chao et al. (2024) P. Chao, E. Debenedetti, A. Robey, M. Andriushchenko, F. Croce, V. Sehwag, E. Dobriban, N. Flammarion, G. J. Pappas, F. Tramer, H. Hassani, and E. Wong JailbreakBench: an open robustness benchmark for jailbreaking large language models.  In Advances in Neural Information Processing Systems 37, Datasets and Benchmarks Track,  Red Hook, NY.  Cited by: §1, §1, §2, Table 1, §3. 
+  * Chao et al. (2023) P. Chao, A. Robey, E. Dobriban, H. Hassani, G. J. Pappas, and E. Wong Jailbreaking black box large language models in twenty queries.  Note: Preprint at <https://arxiv.org/abs/2310.08419> Cited by: §4.1, §4.1, §8.3. 
+  * Chiang et al. (2023) W.-L. Chiang, Z. Li, Z. Lin, Y. Sheng, Z. Wu, H. Zhang, L. Zheng, S. Zhuang, Y. Zhuang, J. E. Gonzalez, I. Stoica, and E. P. Xing Vicuna: an open-source chatbot impressing GPT-4 with 90%* ChatGPT quality.  Note: <https://lmsys.org/blog/2023-03-30-vicuna/> Cited by: §4.1. 
+  * Chu et al. (2026a) J. Chu, Y. Leng, M. Li, Y. Shen, X. Shen, and Y. Zhang GEO-Flag: detecting and measuring GEO-optimized web content.  Note: Preprint at <https://arxiv.org/abs/2608.16824> Cited by: §8.1. 
+  * Chu et al. (2025a) J. Chu, M. Li, Z. Yang, Y. Leng, C. Lin, C. Shen, M. Backes, Y. Shen, and Y. Zhang JADES: a universal framework for jailbreak assessment via decompositional scoring.  Note: Preprint at <https://arxiv.org/abs/2508.20848> Cited by: §1, §1, §2, Table 1, §3, §4.1, §4.2. 
+  * Chu et al. (2025b) J. Chu, Y. Liu, X. He, M. Backes, Y. Zhang, and A. Salem Neeko: model hijacking attacks against generative adversarial networks.  In 2025 IEEE International Conference on Multimedia and Expo (ICME),  Piscataway, NJ, pp. 1–6.  Cited by: §8.1. 
+  * Chu et al. (2025c) J. Chu, Y. Liu, Z. Yang, X. Shen, M. Backes, and Y. Zhang JailbreakRadar: comprehensive assessment of jailbreak attacks against LLMs.  In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics,  Stroudsburg, PA.  Cited by: §1, §1, §2, Table 1, §3, §8.3. 
+  * Chu et al. (2026b) J. Chu, Y. Qu, Y. Leng, M. Backes, Y. Shen, S. Zannettou, and Y. Zhang Understanding LLM behavior when encountering user-supplied harmful content in harmless tasks.  Note: Preprint at <https://arxiv.org/abs/2603.11914> Cited by: §8.1. 
+  * Chu et al. (2024) J. Chu, Z. Sha, M. Backes, and Y. Zhang Reconstruct your previous conversations! Comprehensively investigating privacy leakage risks in conversations with GPT models.  In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing,  Stroudsburg, PA, pp. 6584–6600.  Cited by: §8.1. 
+  * Chu et al. (2026c) J. Chu, X. Shen, Y. Leng, M. Backes, Y. Shen, and Y. Zhang Benchmark of benchmarks: unpacking influence and code repository quality in LLM safety benchmarks.  Note: Preprint at <https://arxiv.org/abs/2603.04459> Cited by: §2. 
+  * Deng et al. (2024) G. Deng, Y. Liu, Y. Li, K. Wang, Y. Zhang, Z. Li, H. Wang, T. Zhang, and Y. Liu MASTERKEY: automated jailbreaking of large language model chatbots.  In Proceedings of the Network and Distributed System Security Symposium,  Reston, VA.  Cited by: §8.3. 
+  * Deng et al. (2023) Y. Deng, W. Zhang, S. J. Pan, and L. Bing Multilingual jailbreak challenges in large language models.  Note: Preprint at <https://arxiv.org/abs/2310.06474> Cited by: §8.3. 
+  * Google Jigsaw (2024) Google Jigsaw Perspective API.  Note: <https://www.perspectiveapi.com> Cited by: §2. 
+  * Guo et al. (2024) X. Guo, F. Yu, H. Zhang, L. Qin, and B. Hu COLD-Attack: jailbreaking LLMs with stealthiness and controllability.  Note: Preprint at <https://arxiv.org/abs/2402.08679> Cited by: §8.3. 
+  * Han et al. (2024) S. Han, K. Rao, A. Ettinger, L. Jiang, B. Y. Lin, N. Lambert, Y. Choi, and N. Dziri WildGuard: open one-stop moderation tools for safety risks, jailbreaks, and refusals of LLMs.  Note: Preprint at <https://arxiv.org/abs/2406.18495> Cited by: §2. 
+  * Hazell (2023) J. Hazell Large language models can be used to effectively scale spear phishing campaigns.  Note: Preprint at <https://arxiv.org/abs/2305.06972> Cited by: §8.1. 
+  * Huang et al. (2026) Q. Huang, J. Zhang, J. Wu, Y. Li, W. Zhang, Y. Rong, J. Yao, S. Zhang, and X. Jia JailMeter: an evidence-based evaluation framework for jailbreak attacks on large language models.  In Findings of the Association for Computational Linguistics: ACL 2026,  Stroudsburg, PA, pp. 16006–16029.  External Links: [Document](https://dx.doi.org/10.18653/v1/2026.findings-acl.786) Cited by: §1, §1, §2, Table 1, §3, §4.1. 
+  * Huang et al. (2023) Y. Huang, S. Gupta, M. Xia, K. Li, and D. Chen Catastrophic jailbreak of open-source LLMs via exploiting generation.  Note: Preprint at <https://arxiv.org/abs/2310.06987> Cited by: §8.3. 
+  * Hunter et al. (1996) D. M. Hunter, R. M. Jones, and B. S. Randhawa The use of holistic versus analytic scoring for large-scale assessment of writing.  Canadian Journal of Program Evaluation 11 (2), pp. 61–85.  Cited by: §2. 
+  * Inan et al. (2023) H. Inan, K. Upasani, J. Chi, R. Rungta, K. Iyer, Y. Mao, M. Tontchev, Q. Hu, B. Fuller, D. Testuggine, and M. Khabsa Llama Guard: LLM-based input-output safeguard for human-AI conversations.  Note: Preprint at <https://arxiv.org/abs/2312.06674> Cited by: §2. 
+  * Jain et al. (2023) N. Jain, A. Schwarzschild, Y. Wen, G. Somepalli, J. Kirchenbauer, P. Chiang, M. Goldblum, A. Saha, J. Geiping, and T. Goldstein Baseline defenses for adversarial attacks against aligned language models.  Note: Preprint at <https://arxiv.org/abs/2309.00614> Cited by: §8.4. 
+  * Jiang et al. (2024) F. Jiang, Z. Xu, L. Niu, Z. Xiang, B. Ramasubramanian, B. Li, and R. Poovendran ArtPrompt: ASCII art-based jailbreak attacks against aligned LLMs.  Note: Preprint at <https://arxiv.org/abs/2402.11753> Cited by: §8.3. 
+  * Jiang et al. (2025) Y. Jiang, M. Li, M. Backes, and Y. Zhang Adjacent words, divergent intents: jailbreaking large language models via task concurrency.  In ICML Workshop on Reliable and Responsible Foundation Models,  Cited by: §8.3. 
+  * Jönsson and Balan (2018) A. Jönsson and A. Balan Analytic or holistic: a study of agreement between different grading models.  Practical Assessment, Research, and Evaluation 23 (12), pp. 1–13.  Cited by: §2. 
+  * Kang et al. (2023) D. Kang, X. Li, I. Stoica, C. Guestrin, M. Zaharia, and T. Hashimoto Exploiting programmatic behavior of LLMs: dual-use through standard security attacks.  Note: Preprint at <https://arxiv.org/abs/2302.05733> Cited by: §8.1. 
+  * Krippendorff (2018) K. Krippendorff Content analysis: an introduction to its methodology.  SAGE Publications, Thousand Oaks.  Cited by: §4.1. 
+  * Leng et al. (2026a) Y. Leng, J. Chu, M. Li, C. Lin, C. Shen, M. Backes, Y. Shen, and Y. Zhang When understanding becomes a risk: authenticity and safety risks in the emerging image generation paradigm.  In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition,  Piscataway, NJ.  Cited by: §8.1. 
+  * Leng et al. (2026b) Y. Leng, J. Chu, Y. Qu, M. Li, Y. Shen, and Y. Zhang Innocent panels, hateful stories: evaluating and detecting hateful intent in multi-turn visual story generation.  Note: Preprint at <https://arxiv.org/abs/2608.05210> Cited by: §8.1. 
+  * Li et al. (2025) A. Li, Y. Mo, M. Li, Y. Wang, and Y. Wang Are smarter LLMs safer? Exploring safety-reasoning trade-offs in prompting and fine-tuning.  Note: Preprint at <https://arxiv.org/abs/2502.09673> Cited by: §8.2. 
+  * Li et al. (2024) L. Li, B. Dong, R. Wang, X. Hu, W. Zuo, D. Lin, Y. Qiao, and J. Shao SALAD-Bench: a hierarchical and comprehensive safety benchmark for large language models.  In Findings of the Association for Computational Linguistics: ACL 2024,  Stroudsburg, PA.  Cited by: §2. 
+  * Li et al. (2023) X. Li, Z. Zhou, J. Zhu, J. Yao, T. Liu, and B. Han DeepInception: hypnotize large language model to be jailbreaker.  Note: Preprint at <https://arxiv.org/abs/2311.03191> Cited by: §4.1, §8.3. 
+  * Likert (1932) R. Likert A technique for the measurement of attitudes.  Archives of Psychology 140, pp. 1–55.  Cited by: §3. 
+  * Liu et al. (2024a) T. Liu, Y. Zhang, Z. Zhao, Y. Dong, G. Meng, and K. Chen Making them ask and answer: jailbreaking large language models in few queries via disguise and reconstruction.  Note: Preprint at <https://arxiv.org/abs/2402.18104> Cited by: §4.1, §8.3. 
+  * Liu et al. (2024b) X. Liu, N. Xu, M. Chen, and C. Xiao AutoDAN: generating stealthy jailbreak prompts on aligned large language models.  In The Twelfth International Conference on Learning Representations,  Vienna, Austria.  Cited by: §8.3. 
+  * Liu et al. (2023) Y. Liu, D. Iter, Y. Xu, S. Wang, R. Xu, and C. Zhu G-Eval: NLG evaluation using GPT-4 with better human alignment.  In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing,  Stroudsburg, PA.  Cited by: §2. 
+  * Lv et al. (2024) H. Lv, X. Wang, Y. Zhang, C. Huang, S. Dou, J. Ye, T. Gui, Q. Zhang, and X. Huang CodeChameleon: personalized encryption framework for jailbreaking large language models.  Note: Preprint at <https://arxiv.org/abs/2402.16717> Cited by: §4.1, §8.3. 
+  * Mazeika et al. (2024) M. Mazeika, L. Phan, X. Yin, A. Zou, Z. Wang, N. Mu, E. Sakhaee, N. Li, S. Basart, B. Li, D. A. Forsyth, and D. Hendrycks HarmBench: a standardized evaluation framework for automated red teaming and robust refusal.  In Proceedings of the 41st International Conference on Machine Learning,  Vienna, Austria.  Cited by: §1, §1, §2, Table 1, §3. 
+  * Mehrotra et al. (2023) A. Mehrotra, M. Zampetakis, P. Kassianik, B. Nelson, H. Anderson, Y. Singer, and A. Karbasi Tree of attacks: jailbreaking black-box LLMs automatically.  Note: Preprint at <https://arxiv.org/abs/2312.02119> Cited by: §8.3. 
+  * OpenAI (2023) OpenAI GPT-4 technical report.  Note: Preprint at <https://arxiv.org/abs/2303.08774> Cited by: §4.1. 
+  * OpenAI (2024) OpenAI Moderation overview.  Note: <https://platform.openai.com/docs/guides/moderation> Cited by: §2. 
+  * Ouyang et al. (2022) L. Ouyang, J. Wu, X. Jiang, D. Almeida, C. L. Wainwright, P. Mishkin, C. Zhang, S. Agarwal, K. Slama, A. Ray, et al. Training language models to follow instructions with human feedback.  In Advances in Neural Information Processing Systems,  Red Hook, NY.  Cited by: §8.2. 
+  * Perez et al. (2022) E. Perez, S. Huang, H. F. Song, T. Cai, R. Ring, J. Aslanides, A. Glaese, N. McAleese, and G. Irving Red teaming language models with language models.  Note: Preprint at <https://arxiv.org/abs/2202.03286> Cited by: §8.2. 
+  * Qu et al. (2023) Y. Qu, X. Shen, X. He, M. Backes, S. Zannettou, and Y. Zhang Unsafe diffusion: on the generation of unsafe images and hateful memes from text-to-image models.  In Proceedings of the 2023 ACM SIGSAC Conference on Computer and Communications Security,  New York, NY.  Cited by: §8.1. 
+  * Rando et al. (2022) J. Rando, D. Paleka, D. Lindner, L. Heim, and F. Tramèr Red-teaming the Stable Diffusion safety filter.  Note: Preprint at <https://arxiv.org/abs/2210.04610> Cited by: §8.1. 
+  * Ren et al. (2024) Q. Ren, C. Gao, J. Shao, J. Yan, X. Tan, W. Lam, and L. Ma Exploring safety generalization challenges of large language models via code.  Note: Preprint at <https://arxiv.org/abs/2403.07865> Cited by: §4.1, §8.3. 
+  * Robey et al. (2023) A. Robey, E. Wong, H. Hassani, and G. J. Pappas SmoothLLM: defending large language models against jailbreaking attacks.  Note: Preprint at <https://arxiv.org/abs/2310.03684> Cited by: §8.4. 
+  * Russinovich et al. (2024) M. Russinovich, A. Salem, and R. Eldan Great, now write an article about that: the Crescendo multi-turn LLM jailbreak attack.  Note: Preprint at <https://arxiv.org/abs/2404.01833> Cited by: §4.1, §8.3. 
+  * Shen et al. (2024) X. Shen, Z. Chen, M. Backes, Y. Shen, and Y. Zhang Do anything now: characterizing and evaluating in-the-wild jailbreak prompts on large language models.  In Proceedings of the 2024 ACM SIGSAC Conference on Computer and Communications Security,  New York, NY.  Cited by: §4.1, §8.3. 
+  * Souly et al. (2024) A. Souly, Q. Lu, D. Bowen, T. Trinh, E. Hsieh, S. Pandey, P. Abbeel, J. Svegliato, S. Emmons, O. Watkins, and S. Toyer A StrongREJECT for empty jailbreaks.  In Advances in Neural Information Processing Systems 37,  Red Hook, NY.  Cited by: §1, §2, Table 1, §3, §4.2. 
+  * Staab et al. (2024) R. Staab, M. Vero, M. Balunović, and M. Vechev Beyond memorization: violating privacy via inference with large language models.  In The Twelfth International Conference on Learning Representations,  Vienna, Austria.  Cited by: §8.1. 
+  * Touvron et al. (2023) H. Touvron, L. Martin, K. Stone, et al. Llama 2: open foundation and fine-tuned chat models.  Note: Preprint at <https://arxiv.org/abs/2307.09288> Cited by: §3, §4.1. 
+  * Wang et al. (2023a) P. Wang, L. Li, L. Chen, Z. Cai, D. Zhu, B. Lin, Y. Cao, Q. Liu, T. Liu, and Z. Sui Large language models are not fair evaluators.  Note: Preprint at <https://arxiv.org/abs/2305.17926> Cited by: §2. 
+  * Wang et al. (2023b) Y. Wang, H. Li, X. Han, P. Nakov, and T. Baldwin Do-Not-Answer: a dataset for evaluating safeguards in LLMs.  Note: Preprint at <https://arxiv.org/abs/2308.13387> Cited by: §2. 
+  * Wei et al. (2023) A. Wei, N. Haghtalab, and J. Steinhardt Jailbroken: how does LLM safety training fail?.  Note: Preprint at <https://arxiv.org/abs/2307.02483> Cited by: §8.3. 
+  * Wolf et al. (2023) Y. Wolf, N. Wies, Y. Levine, and A. Shashua Fundamental limitations of alignment in large language models.  Note: Preprint at <https://arxiv.org/abs/2304.11082> Cited by: §8.2. 
+  * Yong et al. (2023) Z.-X. Yong, C. Menghini, and S. H. Bach Low-resource languages jailbreak GPT-4.  Note: Preprint at <https://arxiv.org/abs/2310.02446> Cited by: §8.3. 
+  * Yu et al. (2023) J. Yu, X. Lin, Z. Yu, and X. Xing GPTFuzzer: red teaming large language models with auto-generated jailbreak prompts.  Note: Preprint at <https://arxiv.org/abs/2309.10253> Cited by: §8.3. 
+  * Yuan et al. (2023) Y. Yuan, W. Jiao, W. Wang, J. Huang, P. He, S. Shi, and Z. Tu GPT-4 is too smart to be safe: stealthy chat with LLMs via cipher.  Note: Preprint at <https://arxiv.org/abs/2308.06463> Cited by: §8.3. 
+  * Zheng et al. (2023) L. Zheng, W.-L. Chiang, Y. Sheng, S. Zhuang, Z. Wu, Y. Zhuang, Z. Lin, Z. Li, D. Li, E. P. Xing, H. Zhang, J. E. Gonzalez, and I. Stoica Judging LLM-as-a-judge with MT-Bench and Chatbot Arena.  Note: Preprint at <https://arxiv.org/abs/2306.05685> Cited by: §2. 
+  * Zhou et al. (2024) Y. Zhou, J. Lou, Z. Huang, Z. Qin, Y. Yang, and W. Wang Don’t say no: jailbreaking LLM by suppressing refusal.  Note: Preprint at <https://arxiv.org/abs/2404.16369> Cited by: §4.1, §8.3. 
+  * Zou et al. (2023) A. Zou, Z. Wang, N. Carlini, M. Nasr, J. Z. Kolter, and M. Fredrikson Universal and transferable adversarial attacks on aligned language models.  Note: Preprint at <https://arxiv.org/abs/2307.15043> Cited by: §2, §4.1, §8.3. 
+
+
+
+### 8 Related Work
+
+#### 8.1 Risks of Large Language Models
+
+Large language models are increasingly embedded in content creation and information retrieval, and online content is now also being optimized for model-driven retrieval systems Chu et al. (2026a). This growing deployment surface has motivated extensive work on the security, privacy, and safety risks of generative models.
+
+Privacy risks arise at several stages of the model lifecycle. Language models can memorize and reproduce sensitive training examples Carlini et al. (2021), leak information from prior conversations to adversarial users Chu et al. (2024), and infer personal attributes that were never explicitly stated in the input Staab et al. (2024). Synthetic data generated by language models can also propagate latent privacy risks into subsequent fine-tuning pipelines Akkus et al. (2025).
+
+Related concerns extend to generative vision systems. Image-generation models can be compromised to perform hidden secondary tasks Chu et al. (2025b), while diffusion models may generate unsafe or hateful visual content Qu et al. (2023). Their safety mechanisms are themselves subject to red-teaming and circumvention Rando et al. (2022). More recent image-generation paradigms introduce additional concerns around authenticity and provenance Leng et al. (2026a), while harmful intent may also emerge compositionally across multiple turns or images rather than within a single output Leng et al. (2026b).
+
+Generative models can also facilitate broader security abuse. Harmful objectives may be concealed within apparently benign tasks Chu et al. (2026b), and language-model capabilities can reduce the effort required for spear-phishing Hazell (2023) and other conventional security attacks Kang et al. (2023). These risks motivate the safety mechanisms whose robustness is subsequently tested through jailbreak evaluation.
+
+#### 8.2 Safety Training and Its Limits
+
+Modern language models are commonly subjected to safety alignment before deployment. Representative approaches include reinforcement learning from human feedback Ouyang et al. (2022), alignment through model-written principles and feedback Bai et al. (2022), and automated red-teaming procedures for identifying unsafe behaviors Perez et al. (2022); Askell et al. (2021).
+
+These mechanisms substantially improve model behavior but do not provide complete protection. Prior work identifies structural limitations that make robust alignment difficult under adversarial prompting Wolf et al. (2023), and increased model capability does not necessarily translate into stronger safety behavior Li et al. (2025). Jailbreak attacks directly exploit this gap between intended safety policies and model behavior under adversarial inputs.
+
+#### 8.3 Jailbreak Attacks
+
+Jailbreak attacks span several broad methodological families. One family consists of human-authored prompts collected from public communities and real-world use. The well-known DAN-style role-playing prompts are representative examples of such in-the-wild jailbreaks Shen et al. (2024).
+
+A second family transforms or obfuscates the harmful request so that its intent becomes more difficult for safety mechanisms to recognize. Existing techniques encode requests through low-resource or multilingual formulations Yong et al. (2023); Deng et al. (2023), ciphers Yuan et al. (2023), ASCII art Jiang et al. (2024), source code Ren et al. (2024), or personalized encoding and transformation schemes Lv et al. (2024). Although these methods differ in representation, they share the goal of preserving harmful semantics while changing the surface form presented to the model.
+
+Optimization-based attacks instead search for prompts that maximize a jailbreak objective. Examples include gradient-guided adversarial suffixes Zou et al. (2023), evolved human-readable prompts Liu et al. (2024b), iterative attacker models that refine jailbreak prompts over multiple queries Chao et al. (2023); Mehrotra et al. (2023), template-based fuzzing Yu et al. (2023), random-search strategies Andriushchenko et al. (2024), refusal-suppression objectives Zhou et al. (2024), and attacks that manipulate controllable decoding behavior Guo et al. (2024).
+
+Other attacks exploit inference-time behavior or multi-turn interaction. These approaches manipulate decoding parameters Huang et al. (2023), embed harmful requests within nested fictional scenarios Li et al. (2023), progressively escalate harmful intent across dialogue turns Russinovich et al. (2024), reformulate harmful requests in the past tense Andriushchenko and Flammarion (2024), disguise and subsequently reconstruct the original request Liu et al. (2024a), automate jailbreak discovery against deployed systems Deng et al. (2024), or place malicious requests alongside benign ones Jiang et al. (2025). Broader analyses have studied why safety alignment fails across multiple jailbreak mechanisms Wei et al. (2023), while JailbreakRadar provides a unified taxonomy and large-scale empirical comparison of attack strategies Chu et al. (2025c).
+
+Our work does not introduce a new jailbreak attack. Instead, we use outputs produced by existing attack families as evaluation material for studying how different jailbreak evaluators interpret the same model responses.
+
+#### 8.4 Defenses That Evaluators Also Score
+
+Jailbreak evaluators are used not only to measure attack effectiveness but also to quantify the effectiveness of defenses. Existing defenses include perplexity-based filters that reject suspicious or unnatural adversarial suffixes Alon and Kamfonas (2023), SmoothLLM, which perturbs adversarial prompts and aggregates model outputs Robey et al. (2023), and baseline defense pipelines that combine detection, preprocessing, and adversarial training Jain et al. (2023).
+
+The measured effectiveness of these defenses ultimately depends on how jailbreak success is defined and detected. As a result, evaluator choice affects conclusions not only about the strength of attacks but also about the robustness gains attributed to

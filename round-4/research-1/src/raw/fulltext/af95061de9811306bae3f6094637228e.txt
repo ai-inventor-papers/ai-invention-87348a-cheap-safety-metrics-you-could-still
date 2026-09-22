@@ -1,0 +1,1439 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.25390
+Type: PDF
+Length: 92098 chars (truncated)
+
+--- Content ---
+
+Refusal geometry reflects refusal training: diverse
+refusal prefixes can raise stable rank and weaken
+refusal vector ablation attacks
+Andrey Labunets
+UC San Diego
+alabunets@ucsd.edu
+Abstract
+Refusal training protects AI models from jailbreaks by training models to decline
+unsafe queries, reducing the risk of misuse. Recent work finds that refusal behavior
+in aligned language models can be mediated by a single activation direction or a
+low-dimensional refusal subspace shared across harmful prompts: ablating those
+directions suppresses refusals while largely preserves other model capabilities. Yet
+it remains unclear why safety-critical features in a wide range of models emerge in
+a concentrated, low-dimensional structure. In a case study of OLMo-2-0425-1B-
+Instruct we find that the refusal geometry reflects refusal training: activation updates
+resulting from refusal-completion first-token losses explain the resulting refusal
+direction and refusal subspace. We study refusal directions through the training
+dynamics across refusal datasets and reveal that their brittleness is associated with
+repetitive refusal starts, which in turn is linked to concentration of gradients and
+refusal features in a low-dimensional subspace. Across frozen-model analyses and
+controlled synthetic fine-tuning, we find evidence of a hardening lever: diverse
+refusal starts can raise stable ranks of gradients and activation changes, making
+refusals harder to remove with a vector ablation attack.
+1
+Introduction
+State-of-the-art AI systems are beginning to exhibit dual-use capabilities that could pose severe
+risks if misused, such as exploit generation [41], or assistance with biological threat creation or
+bio-weaponization [11, 34]. This motivates the now-standard view that, as models become more
+capable, protections should prevent harmful outputs and catastrophic misuse of AI [9, 42].
+AI safety and security study ways to reduce these risks, which is typically done with multi-layered
+approaches. Frontier-safety frameworks emphasize capability evaluations, confidentiality of model
+weights, deployment-time mitigations, monitoring, access controls, and broader ecosystem-level
+defenses [9, 27, 29, 32, 42]. Model-weight security is important because weight access can allow
+protections to be modified or removed; at the same time, weights access scenario is realistic for open
+models, insider compromise, model theft, and sufficiently capable adversaries [11, 18, 19].
+A central technical layer of protection for deployed models, including open-weights models, is safety
+alignment: models are trained to remain helpful on benign requests while refusing instructions that
+request harmful assistance or dangerous capabilities [5, 6, 21]. These protections are also evaluated
+against jailbreak attacks that aim to bypass safety alignment [7, 10, 13, 15, 16]. This safety-aligned
+behavior is often induced by training on harmful prompts paired with safe refusal completions.
+Recent evidence, however, shows that in local, white-box settings those refusals in aligned language
+models can be mediated by a low-dimensional mechanism: refusal direction, or a single vector
+in representation space, projections on which strongly control refuse/comply behavior [17]. More
+Preprint.
+arXiv:2608.25390v2  [cs.LG]  3 Sep 2026
+
+broadly, activation-steering methods construct directions for specified concepts or behaviors, using
+prompt pairs, contrastive datasets, supervised concept labels, or optimized target completions to
+control properties such as topic, sentiment, factuality, deception, or safety-relevant behavior [2, 8, 20,
+23, 26, 28]. Refusal ablation, however, is a particularly important special case because it targets the
+shared refuse/comply response mechanism itself.
+Existing research mechanistically studied representations of refusal and their geometry, showing
+that refusal concepts span multiple orthogonal and independent directions, where auxiliary principal
+components mediate distinct safety-relevant features [35, 39]. In particular, [35] shows that safety-
+aligned behavior is controlled by a low-dimensional space. We use refusal subspace to denote
+such an affine subspace of refusal-related activations. A separate line of work studied forms of
+concentration leading to low-rank or low-effective-dimensionality representations, including shallow
+concentration on early safety tokens [21], low-stable-rank transformer activations [44], rank collapse
+in pure attention [4], neural collapse in final and intermediate classifier representations [3, 14],
+and regularities in refusals [36]. However, the explanation of why meaningful, safety-critical
+representations of refusal across a broad range of harmful prompts and topics collapse to a single
+effective direction or a low-dimensional subspace remained elusive.
+In this work, we bridge this gap by studying robustness to refusal ablation attacks analytically and
+empirically in OLMo-2-0425-1B-Instruct:
+(a) Low-dim refusal residuals
+(b) Diverse refusal residuals
+1
+4
+8
+12
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Refusal rate
+Refusal rate
+before intervention
+after ablation
+(c) Refusal ablation attack
+Figure 1: Higher stable rank resists refusal ablation (conceptual schematic). When residuals are
+less concentrated, a shared single-vector ablation cannot fully disable the refusal mechanism, so the
+refusal score after attack remains higher.
+Figure 1 illustrates our hypothesized mechanism: concentrated update directions produce refusal
+residuals with lower effective dimensionality, making refusal more vulnerable to a shared single-
+vector ablation. Concretely, in these settings, we show the following contributions:
+• Training-origin geometry. We show that cross-entropy losses on the first tokens of harmful
+prompts’ completions induce activation changes with partial geometric correspondence
+to the refusal subspace: their means exhibit completion-dependent signed alignment with
+the refusal direction, and their principal directions partially overlap direction space of
+refusal subspace. For refusal completions, the per-gradient-step activation-change and final
+refusal-residual matrices also have comparable low stable rank.
+• Prefix concentration and spectral collapse. We identify concentrated refusal-start support
+in safety datasets — especially repeated first tokens — as one mechanism that can produce
+low-stable-rank gradients, activation changes, and refusal residuals.
+• Cross-layer stable rank transfer. We introduce stable rank transfer factors and show
+that refusal-diversity-induced stable rank increases propagate back through late layers with
+bounded ratios across evaluated conditions.
+• Shared effective Jacobian explanation. We define top-k source-subspace shared maps and
+a relative transfer factor fit error that yields data-dependent two-sided stable-rank bounds on
+the gradients and gradient-induced activation changes. On the fitted supports, these maps
+2
+
+reconstruct a meaningful though incomplete component of their cross-layer relation and
+account for its observed rank amplification or contraction.
+• Rank–vulnerability connection. Across frozen-model analyses and controlled fine-tuning,
+greater refusal-start diversity is associated with higher stable ranks and weaker difference-
+in-means single-vector ablation, providing evidence of a simple hardening lever.
+2
+Background and definitions
+2.1
+Transformer architecture and notation
+We consider a decoder-only transformer language model for next-token prediction with vocabulary
+V = {1, . . . , |V |}, hidden size d, and l ∈{0, . . . , L} layers (transformer blocks). Training examples
+are pairs token sequences, prompt x and a completion, with tokens from V . We index training
+examples by i. We use activation to denote a column vector of transformer hidden state at a specified
+layer and token position. For example i, let h(l)
+i
+∈Rd denote the layer-l activation at the first-
+assistant-token prediction position, while, more broadly, all activations across N training examples at
+layer l and the same final position are denoted as a matrix of transposed activation column vectors:
+H(l) =
+
+
+h(l)⊤
+1...
+h(l)⊤
+N
+
+∈RN×d.
+(1)
+The model classifier head (unembedding) is parametrized by a matrix W ∈Rd×|V | (which consists
+of embedding vectors w1, ..., w|V |) and bias b ∈R|V |, yielding logits o, a probability distribution p,
+and a sampled token y ∈V with probability p(y):
+o = W ⊤h(L) + b ∈R|V |,
+(2)
+p = softmax(o) ∈∆|V |−1 =
+n
+p ∈R|V | : p ≥0,
+|V |
+X
+k=1
+pk = 1
+o
+,
+pk =
+exp(ok)
+P|V |
+j=1 exp(oj)
+(3)
+All activations in this paper used for refusal-vector estimation are evaluated at the same position, which
+is the first-assistant token output position, consistent with [17]. For SVD of a matrix M = UMΣMV ⊤
+M,
+we write V(M) = span(VM) to denote the right-singular subspace of M.. We define stable rank as
+sr(M) = ∥M∥2
+F /∥M∥2
+2.
+2.2
+Refusal mediation and existing attacks
+One of the well-known refusal ablation attacks involves estimating a refusal direction from a pair
+of harmless and harmful datasets [17]. For a fixed layer l let hharm,i, hbenign,j ∈Rd denote the
+corresponding activations for harmful and benign prompts i and j evaluated at the first assistant token
+position as described above, where 1 ≤i ≤nh and 1 ≤j ≤nb. Define empirical means for those
+activations:
+µharm =
+1
+nh
+nh
+X
+i=1
+hharm,i,
+µbenign =
+1
+nb
+nb
+X
+j=1
+hbenign,j,
+(4)
+We operationalize the refusal direction with the difference-in-means estimator:
+ρ = µharm −µbenign ∈Rd.
+(5)
+The refusal ablation attack removes a projection on this normalized refusal vector from activations h
+at a run-time when a model is prompted, producing new activations h(abl):
+h(abl) ←−h −⟨h⊤· ˆρ⟩ˆρ
+(6)
+In the above, ˆρ = ρ/∥ρ∥2 denotes normalized refusal direction. This refusal ablation attack jailbreaks
+the model, making it respond to harmful prompts it was trained to refuse.
+3
+
+Additionally, we define benign-centered refusal residual matrix as:
+∆H =
+
+
+(hharm,1 −µbenign)⊤
+...
+(hharm,nh −µbenign)⊤
+
+∈Rnh×d
+(7)
+Given Equation (5), we can say that the matrix ∆H is a matrix of per-prompt refusal residuals ρi: its
+mean equals the difference-in-means refusal direction:
+µ∆= 1
+nh
+nh
+X
+i=1
+(hharm,i −µbenign) = µharm −µbenign = ρ ∈Rd
+(8)
+Let ∆Hc = ∆H −1nhµ⊤
+∆denote the centered refusal-residual matrix. We operationalize the refusal
+subspace as the affine subspace µ∆+ V(∆Hc), where V(∆Hc) is its direction subspace.
+3
+Refusal training gradients shape refusal residuals in transformer
+We analyze a transformer under supervised refusal training and show how repeated refusal-completion
+first tokens can concentrate activation gradients and, in turn, refusal residuals. We conjecture that
+those refusal-completion gradients at refusal safety-training induce activation changes which can
+contribute to the refusal direction. Limitations and assumptions are outlined in Section B.
+Cross-entropy gradients to last layer activations.
+Consider the cross-entropy loss on the first
+token r ∈V of a refusal completion, represented by the one-hot target vector er:
+ℓCE(er, p) = −log p(r) = −or + log Z(o).
+(9)
+The activation gradient ∇hℓCE(er, p) defines the hypothetical feature-space step
+h+ = h −γ∇hℓCE(er, p),
+(10)
+We use this gradient, also termed as virtual update by [43], as a diagnostic to track feature trajectory.
+For the last-layer activation h, the gradient is
+gi = ∇hℓCE
+i
+(eri, pi) = W(pi −eri) = −wri + Wpi ∈Rd.
+(11)
+Or, in a matrix form, for a set of N examples with target refusals tokens ri, a one-hot matrix
+Er = [er1, . . . , erN ]⊤representing those refusal tokens, and a prediction matrix P = [p1, . . . , pN]⊤,
+the cross-entropy gradients to last-layer activations:
+GCE
+H = (P −Er)W ⊤∈RN×d.
+(12)
+The mean activation gradient is:
+¯g = 1
+N
+N
+X
+i=1
+gi = W(¯p −¯er) = −¯wr + W ¯p ∈Rd.
+(13)
+In the static refusal case with ri = r for all i and ¯er = er, the mean direction becomes: ¯g =
+−wr + W ¯p.
+Shared direction across training example gradients.
+We can observe in Equation (11) and
+Equation (13) that in case of static, repeating refusal token r, gradients across N examples will be
+concentrated around shared direction wr. In case other term Wp does not cancel or bias wr too much
+(for example, when p has large mass elsewhere), gradients concentrated around wr will be low rank.
+From gradients to gradient-induced activation updates.
+Activations are changed after parameter
+updates (training steps) minimizing aforementioned loss: the raw gradient gi is not itself the realized
+activation change. Concretely, let Ji := ∇θhi(θ) be its Jacobian. Then, ∇θℓCE
+i
+= J⊤
+i gi. Under a
+small parameter update the realized change would be:
+hi(θ −η∇θℓCE
+i
+) −hi(θ) ≈−ηJiJ⊤
+i gi.
+(14)
+4
+
+We define the gradient-induced activation update as the realized finite difference, taken with a
+negative sign for gradient-aligned comparison:
+gi = −
+ hi(θ −η∇θℓCE
+i
+) −hi(θ)
+
+≈ηJiJ⊤
+i gi ∈Rd.
+(15)
+Stacking these updates across N examples gives the gradient-induced activation update matrix G:
+G =
+
+
+g⊤
+1...
+g⊤
+N
+
+∈RN×d.
+(16)
+Training-time origin of refusal directions
+Assuming gradient descent over harmful prompts paired
+with refusal completions, we hypothesize that the refusal subspace µ∆+ V(∆Hc) is approximated
+by the sign-reversed affine subspace of gradient-induced activation updates −µG + V(Gc), where Gc
+denotes a mean-centered matrix G
+µ∆+ V(∆Hc) ≈−µG + V(Gc).
+(17)
+Concretely, we test the above prediction using these three diagnostics:
+cos(µ∆, µG) ≈−1,
+training steps move activations opposite to gradients,
+(18)
+V(∆Hc) ≈V(Gc),
+right singular vectors span similar subspaces,
+(19)
+sr(∆H) ≈sr(G)
+their stable ranks are very close.
+(20)
+Stable rank of first-token target matrix.
+Let Er ∈RN×|V | be the one-hot matrix of refusal first
+tokens r1, . . . , rN. Across N examples, for a token k ∈V , let ck = #{i : ri = k} denote its count ,
+fk = ck/N denote its empirical frequency, and let m = |{k : ck > 0}| be the number of observed
+first-token buckets. The following lemma, whose full statement, proof, and a corollary appear in
+Section E.1, shows that first-token concentration directly controls the stable rank of Er.
+Lemma 3.1 (Stable rank of refusal first-token targets). The stable rank of Er is
+sr(Er) =
+N
+maxk ck
+=
+1
+maxk fk
+.
+(21)
+In particular, sr(Er) = 1 when all examples share the same first refusal token. For a fixed number m
+of observed first-token buckets, sr(Er) is maximized by balanced counts across the buckets
+max sr(Er) =
+N
+⌈N/m⌉.
+(22)
+Thus, a repeated refusal-completion first token, such as the token beginning “I’m sorry,” minimizes
+sr(Er), while balanced first-token frequencies increase it. Since the last-layer first-token gradient
+matrix is GCE
+H
+= (P −Er)W ⊤, this gives a testable prediction: when the prediction term P and
+unembedding W do not collapse this target-rank signal, we can expect that increasing refusal first-
+token diversity can increase the stable rank of gradients G and their corresponding gradient-induced
+activation updates G. We therefore report sr(Er), sr(P −Er), and sr((P −Er)W ⊤) separately to
+measure P and W ⊤preserve or distort the first-token target-matrix signal.
+Stable rank distortion across layers: an idealized case.
+Assume in idealized case that for some
+corresponding Jacobian J(l) =
+∂h(l)
+∂h(l−1) ∈Rd×d, gradients at previous layer l −1 satisfy
+G(l−1) = G(l)J(l),
+(23)
+while that Jacobian is shared across training examples. Assume also that the Jacobian is well-
+conditioned, i.e. its condition number κ(J(l)) = ∥J(l)∥2∥(J(l))−1∥2 is small. Under these assump-
+tions, an inequality below bounds how much stable rank can change throughout remaining layers
+1 ≤l ≤L −1 under this layerwise map; see Section E.2 for the proof.
+Theorem 3.2 (Bounded stable rank distortion under a well-conditioned factor). Let A ∈RN×n, let
+B ∈Rn×n be invertible, and let κ(B) = ∥B∥2∥B−1∥2 be a condition number. Then
+1
+κ(B)2 sr(A) ≤sr(AB) ≤κ(B)2 sr(A).
+(24)
+5
+
+Applying Theorem 3.2 to Equation (23) gives
+1
+κ(J(l))2 sr(G(l)) ≤sr(G(l−1)) ≤κ(J(l))2 sr(G(l)).
+(25)
+Iterating from layer L to layer l yields
+sr(G(L))
+QL
+k=l+1 κ(J(k))2 ≤sr(G(l)) ≤
+ 
+L
+Y
+k=l+1
+κ(J(k))2
+!
+sr(G(L)).
+(26)
+Assuming in our case G(L) = GCE
+H = (P −Er)W ⊤as per Equation (12), we obtain the layerwise
+prediction for l-layer gradients G(l), bounded by functions of G(L) from both sides:
+sr((P −Er)W ⊤)
+QL
+k=l+1 κ(J(k))2 ≤sr(G(l)) ≤
+ 
+L
+Y
+k=l+1
+κ(J(k))2
+!
+sr((P −Er)W ⊤).
+(27)
+This gives another testable prediction: under our idealized conditions, stable rank increases of last-
+layer’s gradients G(L) can also propagate back, increasing stable rank of layer-l gradients G(l). The
+next parts refine the idealized condition above by introducing a data-dependent variant of a shared
+factor and data-dependent stable rank transfer factors in order to construct tighter bounds.
+Definition 3.3 (Stable rank transfer factor). For nonzero gradient matrices G(L) and G(l) computed
+for the same N examples at layers L and l respectively, their stable rank transfer factor is the ratio of
+their stable ranks:
+τ L→l := sr
+ G(l)
+sr
+ G(L).
+(28)
+Thus, τ L→l > 1 denotes stable rank amplification, while τ L→l < 1 denotes stable rank contraction
+between the selected layers. We similarly define transfer factors for gradient-induced updates G.
+To refine impractical assumptions of Equation (23), instead of relying on an idealized, shared Jacobian,
+we introduce an appropriate approximation, or a shared cross-layer relation map.
+Definition 3.4 (Top-k source-subspace shared map). For nonzero gradient matrices G(L) and G(l)
+computed for the same N examples at layers L and l respectively, a top-k source-subspace shared
+map bJL→l
+k
+is a shared data-dependent low-rank linear approximation for the observed cross-layer
+relation between gradients fitted on N examples and restricted to a top-k principal subspace of G(L).
+It is defined as follows:
+bJL→l
+k
+= V (L)
+k
+ΓL→l
+k
+,
+(29)
+bG(l)
+k = G(L) bJL→l
+k
+.
+(30)
+where matrix V (L)
+k
+∈Rd×k denotes top k right singular vectors of G(L), therefore rank( bJL→l
+k
+) ≤k.
+ΓL→l
+k
+∈Rk×d is a coefficient matrix estimated from N gradients. bG(l)
+k is the layer-l gradient matrix
+implied by the top-k source-subspace shared map bJL→l
+k
+.
+For a nonzero bG(l)
+k , the map-implied stable rank transfer factor is the stable rank transfer factor our
+shared map implies on G(L):
+bτ L→l
+k
+=
+sr
+
+bG(l)
+k
+
+sr
+ G(L)
+(31)
+Next, we account of errors resulting from the above approximation.
+Definition 3.5 (Relative transfer factor fit error). For the observed τ L→l stable rank transfer factor, a
+shared top-k source-subspace map bJL→l
+k
+, and a stable rank transfer factor bτ L→l
+k
+implied by it, define
+a relative transfer factor error of bJL→l
+k
+as follows:
+ϵL→l
+τ,k
+=
+bτ L→l
+k
+−τ L→l
+τ L→l
+.
+(32)
+6
+
+Theorem 3.2 gives a worst-case condition-number bound under an idealized shared linear factor.
+Lemma 3.6 instead shows how an upper bound on the transfer-factor fit error yields a data-dependent
+two-sided bound on the stable rank of G(l) (see Lemma E.5 for the proof); we will later estimate that
+upper bound empirically.
+Lemma 3.6 (Stable rank bounds from transfer factor fit error). Let G(L), G(l) ∈RN×d be nonzero
+gradient matrices, and let bJL→l
+k
+be a top-k source-subspace shared map with fitted output
+bG(l)
+k = G(L) bJL→l
+k
+.
+Suppose that the relative transfer-factor fit error is bounded by some ϵmax:
+ϵL→l
+τ,k
+≤ϵmax < 1.
+Then
+bτ L→l
+k
+1 + ϵmax
+sr
+
+G(L)
+≤sr
+
+G(l)
+≤
+bτ L→l
+k
+1 −ϵmax
+sr
+
+G(L)
+.
+When ϵmax is obtained by measuring the fit error on the same N examples used to estimate bJL→l
+k
+,
+Lemma 3.6 is an in-sample fit certificate rather than an independent prediction of sr(G(l)). It becomes
+a predictive propagation bound only when an independently established error bound ϵmax is assumed
+to continue holding for additional source gradient matrices. Moreover, agreement at the level of
+stable rank does not imply matrix-level agreement; we evaluate the latter separately using relative
+Frobenius error, relative spectral error, and row-wise cosine similarity.
+4
+Empirical validation
+4.1
+Experimental setup
+Target models.
+We perform measurements against allenai/OLMo-2-0425-1B-Instruct, an
+instruction-tuned OLMo 2 1B model with 16 transformer blocks, 16 attention heads, and hidden
+dimension d = 2048. For the training-stage analysis in Section 4.2, we evaluate its additional check-
+points: allenai/OLMo-2-0425-1B (olmo_base), allenai/OLMo-2-0425-1B-SFT (olmo_sft),
+allenai/OLMo-2-0425-1B-DPO (olmo_dpo), allenai/OLMo-2-0425-1B-RLVR1 (olmo_rlvr),
+and allenai/OLMo-2-0425-1B-Instruct (olmo_inst) [24].
+Target datasets.
+We use AdvBench (adv), WildJailbreak evaluation and training splits (wld,
+wld_tr), and XSTest-Response subsets (xst_hr, xst_hr_jb, xst_rf, xst_rf_jb) as target
+prompt sets. Our frozen-model ablation analyses on these datasets use layer 7 for refusal vec-
+tor estimation. For controlled fine-tuning, we use CAMEL chemistry dataset camel-ai/chemistry [12]
+by pairing its prompts with refusals sampled from a predefined set of refusals we manually collect;
+we use layer 8 to estimate refusal vector.
+Metrics.
+We use refusal (harm) rate, or a proportion of refused (or harmful) prompts to all prompts
+as downstream metrics, using allenai/wildguard as a judge LLM for refusal (harm) scores;
+refusal delta (change under attack) is a difference between pre-intervention and post-intervention
+refusal rates. To test the affine-subspace prediction in Equation (17), we compare three quantities
+for a benign-centered residual matrix ∆H paired with gradient-induced activation updates G (or,
+similarly, paired with raw gradients G): (1) cosine similarity between their ∆H and G mean vectors;
+(2) stable rank on the uncentered ∆H and G; (3) average principal-angle overlap between their
+centered top-k right-singular subspaces. We report stable ranks and transfer-factor summary statistics
+across conditions. Shared-map fits are evaluated using source-subspace energy, relative Frobenius
+and spectral errors, row-wise cosine similarity, and relative transfer-factor fit error, with identity and
+scalar-identity baselines. Full definitions appear in Section F.
+4.2
+Refusal direction across released post-training checkpoints
+We first ask when the difference-in-means vector becomes a functional refusal direction. Using 60
+AdvBench prompts, we estimate refusal vectors ρ at each layer for the OLMo checkpoints and measure
+refusal rates before/after ablation, refusal vector norm, cosine similarity to the final olmo_inst
+7
+
+olm_base
+olm_sft
+olm_dpo
+olm_rlvr
+olm_inst
+Checkpoints
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Refusal rate
+Refusal rate
+before intervention
+after ablation
+olm_base
+olm_sft
+olm_dpo
+olm_rlvr
+olm_inst
+Checkpoints
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+delta
+Refusal delta
+Figure 2: Descriptive comparison of released OLMo checkpoints along Base →SFT →DPO →
+RLVR1 →Instruct. The base checkpoint is not attack-effective under this estimator. A functional
+refusal direction is present by SFT, while post-SFT checkpoints exhibit larger refusal deltas than SFT.
+direction, and stable rank of ∆H. Figure 2 shows that the base checkpoint has little refusal behavior
+and a negligible refusal delta under this estimator, whereas all four post-base checkpoints refuse
+nearly all selected prompts before intervention. A functional refusal-mediating direction is present
+at the SFT checkpoint, but its refusal delta is substantially smaller than those of the DPO, RLVR1,
+and Instruct checkpoints. Because the checkpoints differ in their objectives, data, and optimization
+histories, this comparison does not isolate the causal effect of any individual post-training stage.
+Figure 13 shows that the refusal vectors estimated at SFT and the later checkpoints remain highly
+aligned with the final olmo_inst direction across layers, while their stable rank and vector norm
+profiles largely overlap. Thus, the released post-SFT checkpoints approximately preserve the refusal
+geometry even though SFT is less attack-effective in our settings. Finally, Figure 12 shows that, for
+olmo_inst, directions estimated at layers 7–10 produce the largest refusal deltas.
+4.3
+Gradient-induced activation updates match benign-centered refusal residuals
+We next test the affine-subspace prediction in Equation (17): benign-centered refusal residuals ∆H
+should share their mean direction, principal subspace, and stable rank with gradient-induced activation
+updates G, up to the sign induced by gradient descent. Using the target datasets introduced above,
+we compute ∆H and G for three target-completion types: (1) model-generated refusal completions,
+(2) post-ablation completions, and (3) fixed pseudorandom English-token completions. For each
+dataset and output type, we compare ∆H and G using mean-direction cosine similarity, average
+principal-angle overlap between centered right-singular subspaces, and stable rank. We make similar
+comparisons for ∆H and raw gradients G as well.
+The left column of Figure 3 shows that refusal-based means are negatively aligned with the difference-
+in-means refusal vector, while ablated-jailbreak-based and random-English-based means are positively
+aligned with it. Thus, refusal and non-refusal targets move along approximately the same refusal axis
+but in opposite directions, supporting Equation (18). This effect appears primarily for the refusal
+directions estimated at middle layer 7 and partially from the last layer 15. The same column also shows
+average principal-angle overlap between V(∆Hc) and V(Gc). At layer 15, refusal-target updates
+subspace overlap refusal subspace more than both random-English and ablated-jailbreak controls
+gradient update subspaces for every evaluated dataset, indicating stronger last-layer agreement
+between direction subspaces of refusal gradient updates V(Gc) and refusal subspace V(∆Hc). At
+layer 7, overall subspace overlap is lower, and the overlap appears to be more strongly associated with
+the dataset than with the completion type: the three target types within a dataset are relatively close,
+while the evaluation split of WildJailbreak (wld) has lower overlap than its training split (wld_tr)
+and most other datasets.
+The right column of Figure 3 shows that, for refusal targets, the stable ranks of G and ∆H are close
+across datasets for both layer 7 and layer 15. The observed stable ranks are below the sample size
+N = 60, around 1–3, indicating genuine spectral concentration and excluding trivial rank cap from
+insufficient datapoints. We observe the same qualitative relationship across most transformer layers.
+8
+
+−0.6
+−0.4
+−0.2
+0.0
+0.2
+0.4
+0.6
+0.8
+cosine mean
+0.18
+0.19
+0.20
+0.21
+0.22
+0.23
+0.24
+0.25
+avg overlap
+Avg Overlap vs Cosine Mean
+outputs
+refusals
+random
+jailbreaks
+dataset
+adv
+wld
+wld_tr
+xst_hr
+xst_hr_jb
+xst_rf
+xst_rf_jb
+1.6
+1.8
+2.0
+2.2
+2.4
+2.6
+2.8
+stable rank grad
+1.3
+1.4
+1.5
+1.6
+1.7
+1.8
+1.9
+2.0
+stable rank
+Stable Rank vs Stable Rank Grad
+outputs
+refusals
+dataset
+adv
+wld
+wld_tr
+xst_hr
+xst_hr_jb
+xst_rf
+xst_rf_jb
+−0.2
+0.0
+0.2
+0.4
+0.6
+cosine mean
+0.20
+0.25
+0.30
+0.35
+0.40
+0.45
+0.50
+0.55
+avg overlap
+Avg Overlap vs Cosine Mean
+outputs
+refusals
+random
+jailbreaks
+dataset
+adv
+wld
+wld_tr
+xst_hr
+xst_hr_jb
+xst_rf
+xst_rf_jb
+1.70
+1.75
+1.80
+1.85
+1.90
+1.95
+2.00
+2.05
+2.10
+stable rank grad
+1.40
+1.45
+1.50
+1.55
+1.60
+1.65
+1.70
+1.75
+stable rank
+Stable Rank vs Stable Rank Grad
+outputs
+refusals
+dataset
+adv
+wld
+wld_tr
+xst_hr
+xst_hr_jb
+xst_rf
+xst_rf_jb
+Figure 3: Gradient-induced activation updates explain benign-centered refusal residuals. Left column:
+mean alignment and average principal-angle overlap. Right column: stable rank comparison. Top
+row: layer 7; bottom row: layer 15.
+Together, these three diagnostics support the main empirical implication of Equation (17): signed
+mean-direction alignment, partial and layer-dependent principal-subspace overlap, and closely
+matched stable ranks. They support an approximate affine-subspace relationship.
+As a complementary uncentered diagnostic, at the refusal-estimating layer 7, the leading right-singular
+axis of G has mean absolute cosine similarity 0.56 with the refusal direction and 0.96 with the mean
+of G across the seven evaluated datasets. Thus, the dominant uncentered gradient-update axis of G
+is nearly collinear, up to sign, with the mean gradient-update vector of G and moderately aligned
+with the refusal direction. Together with the low stable rank of G, this makes the mean-direction
+and leading-axis descriptions of its update geometry nearly equivalent in this setting and motivates a
+direct comparison between difference-in-means refusal ablation and ablation along the top largest
+principal directions.
+4.4
+Refusal first-token diversity increases gradient stable ranks
+We next test on a frozen model whether varying refusal first tokens on a fixed prompt set changes the
+stable ranks of first-token gradients from the last layer to refusal-mediating middle layers. Using the
+WildJailbreak training split, we fix 80 harmful prompts whose model-generated refusals begin with
+the common first token “I”. For each m ∈{1, 2, 4, 6, 8, 10, 12, 14, 16}, we pair each prompt with a
+refusal sampled independently with replacement from a pool of m short phrases with distinct first
+tokens. For each setting, we compute Er, P, and P −Er, the last-layer activation gradient matrix
+(P −Er)W ⊤, and the layerwise gradient matrices G(l) for the first-token cross-entropy loss. We
+use raw gradients in this experiment to test the cross-layer rank-transfer analysis from Section 3;
+gradient-induced activation updates are considered in the next subsection.
+Figure 4 shows that all target-space quantities and gradients across layers 7-15 increase with the
+number of refusals: gradient stable rank increase is bounded and quickly saturates for the last layer
+due to constant P, but amplified throughout mid-layers on a backward pass. Across the nine settings,
+the observed layerwise transfer factor mean ± sample standard deviation are τ 15→7 = 2.270±0.175,
+with range [1.925, 2.469]. Thus, every evaluated setting exhibits approximately twofold stable-rank
+amplification from layer 15 to layer 7. By contrast, the end-to-end Er →G(7) ratio is more variable,
+with mean 0.942 ± 0.486 and range [0.504, 1.942].
+For the m = 16 setting, we additionally fit the top-k source-subspace shared map from G(15) to G(7)
+on the same 80 examples and sweep k. At k = 20, the selected source subspace captures 99.8%
+9
+
+1 2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+2
+4
+6
+8
+Stable rank
+Target and last-layer gradient stable ranks
+Er
+P
+P
+Er
+(P
+Er)W
+1 2
+4
+6
+8
+10 12 14 16
+Number of refusal starts
+1
+2
+3
+4
+Stable rank
+Gradient stable ranks vs. refusals #
+layer7
+layer9
+layer11
+layer13
+layer15
+Er →G(7)
+(P −Er) →G(7)
+G(15) →G(7)
+source-to-target pair
+0.5
+1.0
+1.5
+2.0
+2.5
+Transfer factor
+Stable-rank transfer factors (gradients)
+min--max
+mean +/- std
+Figure 4: Stable ranks and transfer under refusal-start diversification. Left: stable ranks of the target-
+space quantities and the resulting last-layer gradient. Middle: stable ranks of the first-token gradients
+at selected middle-to-late layers. Right: across-setting layerwise stable rank transfer factor mean±std
+and min/max. The stable ranks of Er, P −Er, and G(l) increase overall. The G(15) →G(7) transfer
+factor varies substantially less than the end-to-end Er →G(7) ratio.
+of the source-gradient energy; the relative Frobenius and spectral errors are 0.594 and 0.316, the
+mean row-wise cosine similarity is 0.806, and the relative transfer-factor fit error is 0.343. The fitted
+map yields lower reconstruction and transfer-factor errors and higher row-wise cosine similarity than
+the identity and best scalar-identity baselines. This provides evidence that the observed in-sample
+cross-layer relation admits a meaningful but incomplete shared linear approximation. The complete
+rank sweep and reduced-map spectrum are reported in Figures 14 and 15.
+4.5
+Refusal first-token diversity increases residual rank and weakens single-vector ablation
+We next test on a frozen model whether increasing the diversity of first tokens across refusal phrases
+(through varying selection of prompts in the dataset) increases the effective rank of benign-centered
+refusal residuals and gradient-induced activations updates. Using the WildJailbreak training split, we
+select harmful prompts that the target model refuses, keeping the baseline refusal rate fixed across
+subsets. We construct nine 80-example subsets drawing from m ∈{1, 2, 4, 6, 8, 10, 12, 14, 16}
+refusal first-token buckets. For each subset, we compute benign-centered refusal residuals ∆H,
+raw first-token activation gradients G(l), gradient-induced activation updates G(l), and refusal and
+harmfulness scores before and after difference-in-means ablation. Both G(l) and G(l) are computed
+using the original WildJailbreak response paired with each selected prompt. We then plot the ablation
+score deltas against the stable rank of ∆H. We select layer 7 as the earliest layer in the range of
+effective layers.
+1 2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+1.6
+1.8
+2.0
+2.2
+Stable rank
+Activations stable ranks vs. refusals #
+(mean ± std across layers)
+1 2
+4
+6
+8 10 12 14 16
+Number of refusal starts
+1.4
+1.6
+1.8
+2.0
+2.2
+2.4
+Stable rank
+Activations stable ranks vs. refusals #
+layer7
+layer9
+layer11
+layer13
+layer15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+layer
+1.5
+2.0
+2.5
+3.0
+3.5
+stable_rank
+stable_rank vs layer
+1
+4
+8
+12
+16
+Figure 5: Stable rank of benign-centered refusal residuals ∆H. Left plot averaged ranks over layers
+7-15. Increasing refusal first-token diversity raises sr(∆H) in middle-to-late layers.
+Figure 5 shows that increasing the number of refusal first-token buckets raises ∆H stable rank. The
+effect is visible across middle-to-late layers, while the residual representation at earlier layers retain
+their stable ranks. Figure 17 shows similar trend for gradient-induced activation updates, but with
+saturation at the end. As the refusal first tokens become more diverse, the stable rank of G also
+increases across most layers, however it saturates at 12-16 refusal starts.
+10
+
+1 2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+2
+4
+6
+8
+10
+Stable rank
+Dataset-target and actual-refusal stable ranks
+Er (dataset)
+Er (outputs)
+P
+P
+Er
+(P
+Er)W
+1 2
+4
+6
+8
+10 12 14 16
+Number of refusal starts
+1
+2
+3
+4
+5
+6
+Stable rank
+Gradient stable ranks vs. refusals #
+layer7
+layer9
+layer11
+layer13
+layer15
+1 2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+2.0
+2.5
+3.0
+3.5
+4.0
+4.5
+Stable rank
+Gradient updates stable ranks vs. refusals #
+layer7
+layer9
+layer11
+layer13
+layer15
+Figure 6: Stable rank propagation under refusal-start diversification by prompt selection. Left: stable
+ranks of the first-token target matrix Er, prediction matrix P, logit-gradient matrix P −Er, and last-
+layer activation-gradient matrix (P −Er)W ⊤. Middle: stable ranks of the first-token gradients G(l).
+Right: stable ranks of the corresponding gradient-induced activation updates G(l). The target-space
+and layerwise stable ranks increase overall as refusal-start support broadens.
+Figure 6 shows the same overall rank increase from the dataset-target quantities through the raw
+gradients G(l) and the gradient-induced activation updates G(l). Notably, the dataset-derived Er
+rank rises sharply across the prompt subsets, whereas the model’s actual output-refusal-start Er rank
+remains much lower. Thus, the dataset responses contain substantially more first-token diversity than
+the frozen model realizes in its own completions.
+Er →G(7)
+(P −Er) →G(7)
+G(15) →G(7)
+source-to-target pair
+1
+2
+3
+Transfer factor
+Stable-rank transfer factors (gradients)
+min--max
+mean +/- std
+Er →(7)
+(P −Er) →(7)
+(15) →(7)
+source-to-target pair
+0.0
+0.5
+1.0
+1.5
+2.0
+Transfer factor
+Stable-rank transfer factors (gradient updates)
+min--max
+mean +/- std
+Figure 7: Variation of stable rank transfer factor for raw gradients and gradient-induced activation
+updates across experimental settings. Left: raw gradient transfer factor. Right: gradient-induced
+activation deltas transfer factor. Raw gradients consistently amplify stable rank between layers 15
+and 7, whereas the gradient update matrices undergo mild stable-rank contraction on average.
+Across the nine settings, raw gradient transfer factor is τ 15→7
+G
+= 2.161 ± 0.418, reported as mean
+± sample standard deviation, with range [1.671, 2.993]. Every evaluated setting therefore exhibits
+stable rank amplification from G(15) to G(7), by approximately a factor of two on average, although
+the amplification magnitude varies across subsets. For gradient-induced activation updates, the
+corresponding factor is τ 15→7
+G
+= 0.829 ± 0.132, with range [0.698, 1.088] indicating mild stable-
+rank contraction on average. The layer-15-to-layer-7 update transfer is more stable across subsets
+than the full target-to-middle-layer ratios. The complete in-sample shared-map rank sweeps and
+reduced-map spectra for G and G are reported in Figures 18 to 21.
+We then test whether higher stable rank of ∆H corresponds to weaker single-vector ablation. Figure 8
+reports harmfulness scores before and after ablation, and plots the harmfulness delta against sr(∆H).
+Subsets with higher-rank ∆H have smaller harmfulness deltas, suggesting that a less one-dimensional
+residual subspace is harder to suppress with one vector. Figure 9 shows, similarly, that the refusal
+delta slightly decreases as sr(∆H) increases, indicating that higher-rank residuals ∆H weaken the
+effect of single-vector refusal ablation.
+Overall, this fixed-model subset analysis supports the rank mechanism: increasing refusal first-token
+diversity raises the effective rank of both ∆H and G, while higher activation stable rank is associated
+with smaller refusal and harmfulness deltas under single-vector ablation.
+11
+
+1
+2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+harm
+harm rate
+harm after ablation
+harm before intervention
+1
+2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+harm delta
+harm delta
+1.9
+2.0
+2.1
+2.2
+2.3
+stable rank
+0.15
+0.20
+0.25
+0.30
+0.35
+harm delta
+Harm Delta vs Stable Rank
+# refusals
+1
+2
+4
+6
+8
+10
+12
+14
+16
+Figure 8: Harmfulness score decomposition and harmfulness delta versus sr(∆H). Higher refusal
+residuals stable rank is associated with smaller harmfulness deltas under difference-in-means ablation.
+1
+2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Refusal rate
+Refusal rate
+before intervention
+after ablation
+1
+2
+4
+6
+8
+10
+12
+14
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+delta
+Refusal delta
+1.9
+2.0
+2.1
+2.2
+2.3
+stable rank
+0.60
+0.62
+0.64
+0.66
+0.68
+0.70
+0.72
+0.74
+refusal delta
+Refusal Delta vs Stable Rank
+# refusals
+1
+2
+4
+6
+8
+10
+12
+14
+16
+Figure 9: Refusal score decomposition and refusal delta versus sr(∆H). Higher activation stable
+rank is associated with smaller refusal deltas, consistent with weaker single-vector ablation.
+4.6
+Diverse-refusal fine-tuning raises refusal residuals rank and weakens ablation
+We next test whether the rank–vulnerability pattern from Section 4.5 also appears when simulating
+refusal training on the prompts are initially benign and not refused. The primary prediction is that
+increasing refusal first-token diversity should raise refusal residuals stable rank and reduce the refusal
+delta after difference-in-means single vector ablation. Attacking by ablating more principal directions
+is possible only if this does not degrade performance and the directions generalize across the prompts
+(we leave multiple-vector ablation attacks out of scope). We keep the prompt set fixed and vary only
+the generated refusal-style completions by sampling 40 new-topic prompts from camel-ai/chemistry
+and pairing them with refusal completions sampled from m ∈{1, 4, 8, 12, 16} distinct first-token
+buckets with balanced counts within each dataset, which directly manipulates the stable rank of
+the refusal first-token matrix Er. We fine-tune OLMo-2-0425-1B-Instruct separately on these
+datasets for each m and select each time the earliest checkpoint that reaches or exceeds refusal rate
+threshold 0.6, so that later measurements are done under close base refusal rates. For intervention,
+we select layer 8 as the earliest layer in the range of effective layers.
+Additionally, for m = 8 and m = 16, we track refusal rates across optimization steps. Figure 22
+shows that the ablation effect is largest in a narrow optimization window. This suggests that, although
+the number of optimization steps for each m is different, fixing the resulting checkpoints at first-
+reached baseline rates of 0.6 compares largest attack affects.
+At the matched checkpoints, we first measure the stable rank of the resulting residuals ∆H. Figure 10
+shows that stable rank of ∆H increases with the number of refusal first-token buckets with the largest
+effect across mid-to-late layers. This supports the rank mechanism: more diverse refusal starts induce
+less concentrated activation changes.
+We then evaluate whether this rank increase weakens single-vector ablation. Figure 11 shows refusal
+scores before and after ablation at the matched checkpoints as well as stable rank of ∆H plotted
+against refusal deltas. Figure 23 shows that, similar to the previous sections, with diverse fine-
+tuning, stable rank of target quantities as well as gradient-induced update deltas increase on average,
+12
+
+1
+4
+8
+12
+16
+Number of refusal starts
+1.2
+1.3
+1.4
+1.5
+Stable rank
+Activations stable ranks vs. refusals #
+(mean ± std across layers)
+1
+4
+8
+12
+16
+Number of refusal starts
+1.3
+1.4
+1.5
+Stable rank
+Activations stable ranks vs. refusals #
+layer8
+layer9
+layer11
+layer13
+layer15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+layer
+1.2
+1.3
+1.4
+1.5
+1.6
+stable_rank
+stable_rank vs layer
+1
+4
+8
+12
+16
+Figure 10: Stable rank of refusal residuals under diverse-refusal fine-tuning. Left plot averages ranks
+across layers 8-15. Stable ranks across layers and their per-layer averages increase with the number
+of refusal first-token buckets with the clearest separation in middle-to-late layers.
+1
+4
+8
+12
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Refusal rate
+Refusal rate
+before intervention
+after ablation
+1
+4
+8
+12
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+delta
+Refusal delta
+1.325 1.350 1.375 1.400 1.425 1.450 1.475 1.500 1.525
+stable rank
+0.30
+0.35
+0.40
+0.45
+0.50
+0.55
+0.60
+refusal delta
+Refusal Delta vs Stable Rank
+# refusals
+1
+4
+8
+12
+16
+Figure 11: Refusal ablation at checkpoints matched by baseline refusal score. Left and middle plots:
+diverse refusals yield smaller deltas under difference-in-means ablation. Right plot: diverse refusal
+starts are associated with higher refusal residuals stable rank and smaller refusal deltas
+undergoing mild stable rank expansion from layer 15 to layer 7. Finally, rightmost Figure 11 directly
+relates geometry to attackability. More diverse refusal starts are associated with higher refusal
+residuals stable rank and smaller refusal deltas under ablation. This suggests that increasing refusal
+first-token diversity weakens the single dominant refusal vector by spreading the fine-tuning update
+over more effective directions.
+Overall, this controlled fine-tuning experiment suggests the rank–vulnerability pattern can hold
+broadly. Even on non-harmful chemistry prompts, concentrating refusal first tokens produces lower-
+rank refusal residuals and stronger single-vector ablation, while diversifying refusal starts raises the
+refusal residuals stable ranks and reduces the ablation effect at matched baseline refusal score.
+5
+Conclusion
+As AI systems enter dual-use domains, robustness failures can be catastrophic and unevenly impact
+at-risk communities. Our work takes a step toward understanding AI vulnerabilities at the root cause
+and designing defenses from first principles.
+We asked why refusal behavior can concentrate in a low-dimensional activation-space mechanism
+that is shared across many harmful categories and can be effectively suppressed. In OLMo-2-0425-
+1B-Instruct, we find that the refusal directions reflect refusal safety-training: cross-entropy gradients
+from the first tokens of refusal completions induce activation updates whose mean and principal
+directions align with refusal direction and refusal subspace. This connects the empirical difference-
+in-means refusal vector to the training updates that create it. This mechanism suggests a simple
+source of brittleness exist: concentrated refusal first tokens induce low-stable-rank activation changes,
+making refusal behavior easier to suppress with a single-vector refusal ablation. Across fixed-model
+and controlled fine-tuning experiments, increasing refusal first-token diversity raises stable rank
+13
+
+of the activation-change matrix and is associated with smaller refusal deltas. At the same time,
+refusal-completion diversity alone is unlikely a complete defense.
+Overall, our results suggest that refusal robustness to ablation is partly shaped by the geometry
+of refusal training updates. Token-level properties of the training completions, especially refusal-
+prefix concentration and first-token frequency, can shape the dimensionality of the learned refusal
+mechanism. Understanding this link between data, gradients, and activation geometry may be a step
+toward principled mechanistic understanding of defenses against jailbreaks. Finally, our controlled
+fine-tuning experiments on non-harmful datasets motivate study whether similar mechanisms hold
+for a broader set of features than for refusal or safety-related features.
+14
+
+References
+[1]
+Roger A. Horn and Charles R. Johnson. Matrix Analysis. 2nd. Cambridge: Cambridge Univer-
+sity Press, 2012. ISBN: 978-0521548236.
+[2]
+Sumanth Dathathri, Andrea Madotto, Janice Lan, Jane Hung, Eric Frank, Piero Molino, Jason
+Yosinski, and Rosanne Liu. Plug and Play Language Models: A Simple Approach to Controlled
+Text Generation. 2020. arXiv: 1912.02164 [cs.CL]. URL: https://arxiv.org/abs/
+1912.02164.
+[3]
+Vardan Papyan, XY Han, and David L Donoho. “Prevalence of neural collapse during the
+terminal phase of deep learning training”. In: Proceedings of the National Academy of Sciences
+117.40 (2020), pp. 24652–24663.
+[4]
+Yihe Dong, Jean-Baptiste Cordonnier, and Andreas Loukas. Attention Is Not All You Need:
+Pure Attention Loses Rank Doubly Exponentially with Depth. 2021. arXiv: 2103.03404
+[cs.LG]. URL: https://arxiv.org/abs/2103.03404.
+[5]
+Yuntao Bai, Saurav Kadavath, Sandipan Kundu, Amanda Askell, Jackson Kernion, Andy
+Jones, Anna Chen, Anna Goldie, Azalia Mirhoseini, Cameron McKinnon, et al. Constitutional
+AI: Harmlessness from AI Feedback. 2022. arXiv: 2212.08073 [cs.CL]. URL: https:
+//arxiv.org/abs/2212.08073.
+[6]
+Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll L. Wainwright, Pamela Mishkin,
+Chong Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, John Schulman, Jacob Hilton,
+Fraser Kelton, Luke Miller, Maddie Simens, Amanda Askell, Peter Welinder, Paul Christiano,
+Jan Leike, and Ryan Lowe. Training Language Models to Follow Instructions with Human
+Feedback. 2022. arXiv: 2203.02155 [cs.CL]. URL: https://arxiv.org/abs/2203.
+02155.
+[7]
+Ethan Perez, Saffron Huang, Francis Song, Trevor Cai, Roman Ring, John Aslanides, Amelia
+Glaese, Nat McAleese, and Geoffrey Irving. Red Teaming Language Models with Language
+Models. 2022. arXiv: 2202.03286 [cs.CL]. URL: https://arxiv.org/abs/2202.
+03286.
+[8]
+Nishant Subramani, Nivedita Suresh, and Matthew E. Peters. Extracting Latent Steering
+Vectors from Pretrained Language Models. 2022. arXiv: 2205.05124 [cs.CL]. URL: https:
+//arxiv.org/abs/2205.05124.
+[9]
+Markus Anderljung, Joslyn Barnhart, Anton Korinek, Jade Leung, Cullen O’Keefe, Jess
+Whittlestone, Shahar Avin, Miles Brundage, Justin Bullock, Duncan Cass-Beggs, Ben Chang,
+Tantum Collins, Tim Fist, Gillian Hadfield, Alan Hayes, Lewis Ho, Sara Hooker, Eric Horvitz,
+Noam Kolt, Jonas Schuett, Yonadav Shavit, Divya Siddarth, Robert Trager, and Kevin Wolf.
+Frontier AI Regulation: Managing Emerging Risks to Public Safety. 2023. arXiv: 2307.03718
+[cs.CY]. URL: https://arxiv.org/abs/2307.03718.
+[10]
+Patrick Chao, Alexander Robey, Edgar Dobriban, Hamed Hassani, George J. Pappas, and
+Eric Wong. Jailbreaking Black Box Large Language Models in Twenty Queries. 2023. arXiv:
+2310.08419 [cs.LG]. URL: https://arxiv.org/abs/2310.08419.
+[11]
+Anjali Gopal, Nathan Helm-Burger, Lennart Justen, Emily H. Soice, Tiffany Tzeng, Geetha
+Jeyapragasan, Simon Grimm, Benjamin Mueller, and Kevin M. Esvelt. Will Releasing the
+Weights of Future Large Language Models Grant Widespread Access to Pandemic Agents?
+2023. arXiv: 2310.18233 [cs.AI]. URL: https://arxiv.org/abs/2310.18233.
+[12]
+Guohao Li, Hasan Abed Al Kader Hammoud, Hani Itani, Dmitrii Khizbullin, and Bernard
+Ghanem. CAMEL: Communicative Agents for “Mind” Exploration of Large Scale Language
+Model Society. 2023. arXiv: 2303.17760 [cs.AI]. URL: https://arxiv.org/abs/2303.
+17760.
+[13]
+Anay Mehrotra, Manolis Zampetakis, Paul Kassianik, Blaine Nelson, Hyrum Anderson, Yaron
+Singer, and Amin Karbasi. Tree of Attacks: Jailbreaking Black-Box LLMs Automatically. 2023.
+arXiv: 2312.02119 [cs.LG]. URL: https://arxiv.org/abs/2312.02119.
+[14]
+Akshay Rangamani, Marius Lindegaard, Tomer Galanti, and Tomaso A Poggio. “Feature
+learning in deep classifiers through intermediate neural collapse”. In: International conference
+on machine learning. PMLR. 2023, pp. 28729–28745.
+[15]
+Alexander Wei, Nika Haghtalab, and Jacob Steinhardt. Jailbroken: How Does LLM Safety
+Training Fail? 2023. arXiv: 2307.02483 [cs.LG]. URL: https://arxiv.org/abs/2307.
+02483.
+15
+
+[16]
+Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr, J. Zico Kolter, and Matt Fredrikson.
+Universal and Transferable Adversarial Attacks on Aligned Language Models. 2023. arXiv:
+2307.15043 [cs.CL]. URL: https://arxiv.org/abs/2307.15043.
+[17]
+Andy Arditi, Oscar Obeso, Aaquib Syed, Daniel Paleka, Nina Panickssery, Wes Gurnee, and
+Neel Nanda. Refusal in Language Models Is Mediated by a Single Direction. 2024. ar

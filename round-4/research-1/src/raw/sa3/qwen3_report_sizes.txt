@@ -1,0 +1,129 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2505.09388v1
+Type: HTML
+Pattern: Qwen3-0.6B|Qwen3-1.7B|Qwen3-4B\b (110 matches in 124832 chars)
+
+--- Content ---
+
+10596:...arizing the key findings and outlining potential directions for future research.
+
+## 2 Architecture
+
+The Qwen3 series includes 6 dense models, namely Qwen3-0.6B, Qwen3-1.7B, Qwen3-4B, Qwen3-8B, Qwen3-14B, and Qwen3-32B, and 2 MoE models, Qwen3-30B-A3B and Qwen3-235B-A22B. The flagship model, Qwen3-235B-A22B, has a total of 235B pa...
+--
+12409:...51,669.
+
+Table 1: Model architecture of Qwen3 dense models. Models | Layers | Heads (Q / KV) | Tie Embedding | Context Length  
+---|---|---|---|---  
+Qwen3-0.6B | 28 | 16 / 8 | Yes | 32K  
+Qwen3-1.7B | 28 | 16 / 8 | Yes | 32K  
+Qwen3-4B | 36 | 32 / 8 | Yes | 128K  
+Qwen3-8B | 36 | 32 / 8 | No | 128K  
+Qwen3-14B | 40 | 40 / 8 | No | 128K  
+Qwen3-32B | 64 | 64 / 8 | No | 128K  
+Table 2...
+--
+20461:....
+
+  3. (3)
+
+The overall performance of the Qwen3 dense base models is comparable to the Qwen2.5 base models at higher parameter scales. For example, Qwen3-1.7B/4B/8B/14B/32B-Base achieve comparable performance to Qwen2.5-3B/7B/14B/32B/72B-Base, respectively. Especially in STEM, coding, and reasoning benchmar...
+--
+27279:... 
+MGSM | 38.92 | 63.60 | 74.68 | 76.02  
+MMMLU | 59.65 | 71.34 | 78.34 | 75.72  
+IINCLUDE | 44.94 | 53.98 | 60.26 | 59.40  
+Table 7: Comparison among Qwen3-4B-Base and other strong open-source baselines. The highest and second-best scores are shown in bold and underlined, respectively. | Gemma-3-4B | Qwen2.5-3B | Qwen2.5-7B | Qwen3-4B  
+---|---|---|---|---  
+| Base | Base | Base | Base  
+Architecture | Dense | Dense | Dense | Dense  
+# Total Params | 4B | 3B | 7B | 4B  
+# Activated...
+--
+28358:...  
+MGSM | 33.11 | 47.53 | 63.60 | 67.74  
+MMMLU | 59.62 | 65.55 | 71.34 | 71.42  
+INCLUDE | 49.06 | 45.90 | 53.98 | 56.29  
+Table 8: Comparison among Qwen3-1.7B-Base, Qwen3-0.6B-Base, and other strong open-source baselines. The highest and second-best scores are shown in bold and underlined, respectively. | Qwen2.5-0.5B | Qwen3-0.6B | Gemma-3-1B | Qwen2.5-1.5B | Qwen3-1.7B  
+---|---|---|---|---|---  
+| Base | Base | Base | Base | Base  
+Architecture | Dense | Dense | Dense | Dense | Dense  
+# Total Params | 0.5B | 0.6B ...
+--
+45875:...-to-Weak Distillation
+
+The Strong-to-Weak Distillation pipeline is specifically designed to optimize lightweight models, encompassing 5 dense models (Qwen3-0.6B, 1.7B, 4B, 8B, and 14B) and one MoE model (Qwen3-30B-A3B). This approach enhances model performance while effectively imparting robust mode-switching...
+--
+63650:...6 73.8 MT-AIME2024 13.1 23.0 15.3 23.2 24.6 PolyMath 17.4 20.3 18.3 22.0 23.3 MLogiQA 53.1 58.5 58.0 58.9 53.3
+
+Table 17: Comparison among Qwen3-8B / Qwen3-4B (Thinking) and other reasoning baselines. The highest and second-best scores are shown in bold and underlined, respectively.
+
+DeepSeek-R1 -Distill-Qwen-14B DeepSeek-R1 -Distill-Qwen-32B Qwen3-4B Qwen3-8B Architecture Dense Dense Dense Dense # Activated Params 14B 32B 4B 8B # Total Params 14B 32B 4B 8B General Tasks MMLU-Redux 84.1 88.2 83.7 8...
+--
+64880:...s 73.8 78.6 69.8 74.4 MT-AIME2024 33.7 44.6 60.7 65.4 PolyMath 28.6 35.1 40.0 42.7 MLogiQA 53.6 63.3 65.9 69.0
+
+Table 18: Comparison among Qwen3-8B / Qwen3-4B (Non-thinking) and other non-reasoning baselines. The highest and second-best scores are shown in bold and underlined, respectively.
+
+LLaMA-3.1-8B -Instruct Gemma-3 -12B-IT Qwen2.5-7B -Instruct Qwen2.5-14B -Instruct Qwen3-4B Qwen3-8B Architecture Dense Dense Dense Dense Dense Dense # Activated Params 8B 12B 7B 14B 4B 8B # Total Params 8B 12B 7B 14B 4B 8B General Tasks MML...
+--
+66386:...7 66.9 MT-AIME2024 0.4 16.7 5.5 8.5 13.9 16.6 PolyMath 5.8 17.6 11.9 15.0 16.6 18.8 MLogiQA 41.9 54.5 49.5 51.3 49.9 51.4
+
+Table 19: Comparison among Qwen3-1.7B / Qwen3-0.6B (Thinking) and other reasoning baselines. The highest and second-best scores are shown in bold and underlined, respectively.
+
+DeepSeek-R1 -Distill-Qwen-1.5B DeepSeek-R1 -Distill-Llama-8B Qwen3-0.6B Qwen3-1.7B Architecture Dense Dense Dense Dense # Activated Params 1.5B 8B 0.6B 1.7B # Total Params 1.5B 8B 0.6B 1.7B General Tasks MMLU-Redux 45.4 66.4 55.6 73...
+--
+67544:... 14 languages 27.3 40.1 43.1 59.1 MT-AIME2024 12.4 13.2 7.8 36.1 PolyMath 14.5 10.8 11.4 25.2 MLogiQA 29.0 32.8 40.9 56.0
+
+Table 20: Comparison among Qwen3-1.7B / Qwen3-0.6B (Non-thinking) and other non-reasoning baselines. The highest and second-best scores are shown in bold and underlined, respectively.
+
+Gemma-3 -1B-IT Phi-4-mini Qwen2.5-1.5B -Instruct Qwen2.5-3B -Instruct Qwen3-0.6B Qwen3-1.7B Architecture Dense Dense Dense Dense Dense Dense # Activated Params 1.0B 3.8B 1.5B 3.1B 0.6B 1.7B # Total Params 1.0B 3.8B 1.5B 3.1B 0.6B 1.7B Genera...
+--
+70056:...r activated and total parameters, allowing for more efficient and cost-effective performance.
+
+
+
+
+##### Qwen3-8B / 4B / 1.7B / 0.6B
+
+For Qwen3-8B and Qwen3-4B, we compare them with DeepSeek-R1-Distill-Qwen-14B and DeepSeek-R1-Distill-Qwen-32B in the thinking mode, and LLaMA-3.1-8B-Instruct (Dubey et al., 2024), Gemma-3-12B-IT (Team et al., 2025), Qwen2.5-7B-Instruct, and Qwen2.5-14B-Instruct in the non-thinking mode, respectively. For Qwen3-1.7B and Qwen3-0.6B, we compare them with DeepSeek-R1-Distill-Qwen-1.5B and DeepSeek-R1-Distill-Llama-8B in the thinking mode, and Gemma-3-1B-IT, Phi-4-mini, Qwen2.5-1.5B-Instruct, and Qwen2.5-3B-Instruct in the non-thinking mode, respectively. We present the evaluation results of Qwen3-8B and Qwen3-4B in Table 17 and 18 and those of Qwen3-1.7B and Qwen3-0.6B in Table 19 and 20, respectively. Overall, these edge-side models exhibit impressive performance and outperform baselines even with more parameters, ...
+--
+81317:...ruct | 92.9 | 96.9 | 97.1 | 95.5 | 95.5 | 90.3 | 82.0  
+| Qwen2.5-72B-Instruct | 95.1 | 97.7 | 97.2 | 97.7 | 96.5 | 93.0 | 88.4  
+Non-thinking Mode | Qwen3-4B | 85.2 | 95.1 | 93.6 | 91.0 | 87.8 | 77.8 | 66.0  
+Qwen3-8B | 89.1 | 96.3 | 96.0 | 91.8 | 91.2 | 82.1 | 77.4  
+Qwen3-14B | 94.6 | 98.0 | 97.8 | 96.4 ...
+--
+81707:... 
+Qwen3-30B-A3B | 91.6 | 96.5 | 97.0 | 95.3 | 92.4 | 89.1 | 79.2  
+Qwen3-235B-A22B | 95.0 | 97.7 | 97.2 | 96.4 | 95.1 | 93.3 | 90.6  
+Thinking Mode | Qwen3-4B | 83.5 | 92.7 | 88.7 | 86.5 | 83.2 | 83.0 | 67.2  
+Qwen3-8B | 84.4 | 94.7 | 94.4 | 86.1 | 80.8 | 78.3 | 72.0  
+Qwen3-14B | 90.1 | 95.4 | 93.6 | 89.8 ...
+--
+84487:...7 51.8 74.3 Qwen3-30B-A3B 74.9 71.2 80.0 81.9 76.7 48.5 72.2 Qwen3-14B 76.2 67.5 83.6 81.1 73.3 50.3 72.0 Qwen3-8B 74.1 70.0 78.2 79.2 70.0 43.7 69.2 Qwen3-4B 69.1 68.8 72.7 75.7 66.7 42.3 65.9 Qwen3-1.7B 56.0 55.0 72.7 64.5 46.7 30.2 54.2 Qwen3-0.6B 39.2 42.5 54.5 48.8 13.3 14.3 35.4 Non-thinking Mode GPT-4o-2024-1120 67.5 52.5 89.1 80.6 10.0 15.5 52.5 Gemma-3-27b-IT 73.5 57.5 89.1 77.7 30.0 22.4...
+--
+85033:...7 24.7 58.8 Qwen3-30B-A3B 72.1 53.8 85.5 78.3 33.3 25.0 58.0 Qwen3-14B 76.2 63.7 78.2 77.4 40.0 25.0 60.1 Qwen3-8B 73.1 50.0 80.0 73.7 16.7 21.3 52.5 Qwen3-4B 65.8 50.0 60.0 68.3 13.3 17.3 45.8 Qwen3-1.7B 47.9 43.8 50.9 54.3 10.0 11.6 36.4 Qwen3-0.6B 35.5 37.5 43.6 39.5 3.3 5.8 27.5
+
+Table 25: Benchmark scores for language: French (fr). The highest and second-best scores are shown in bold and unde...
+--
+85710:...3 47.1 74.4 Qwen3-30B-A3B 75.2 67.5 83.3 81.0 76.7 46.9 71.8 Qwen3-14B 77.6 71.2 73.8 80.4 73.3 44.2 70.1 Qwen3-8B 73.8 66.2 85.7 77.9 70.0 45.3 69.8 Qwen3-4B 71.3 63.7 71.4 74.5 66.7 40.2 64.6 Qwen3-1.7B 52.6 56.2 54.8 64.8 60.0 28.7 52.8 Qwen3-0.6B 36.1 48.8 47.6 48.4 6.7 14.0 33.6 Non-thinking Mode GPT-4o-2024-1120 67.8 56.2 85.7 81.8 10.0 15.3 52.8 Gemma-3-27b-IT 73.9 57.5 73.8 78.3 23.3 21.5 ...
+--
+86255:...0 23.0 57.0 Qwen3-30B-A3B 75.6 52.5 69.0 77.9 26.7 27.3 54.8 Qwen3-14B 78.4 63.7 73.8 75.1 33.3 24.4 58.1 Qwen3-8B 71.9 52.5 71.4 71.7 20.0 21.4 51.5 Qwen3-4B 64.2 47.5 61.9 67.6 20.0 19.2 46.7 Qwen3-1.7B 46.1 43.8 64.3 53.2 3.3 11.6 37.0 Qwen3-0.6B 32.8 35.0 38.1 39.4 6.7 4.6 26.1
+
+Table 26: Benchmark scores for language: Portuguese (pt). The highest and second-best scores are shown in bold and ...
+--
+86935:...0 52.4 73.7 Qwen3-30B-A3B 76.1 71.2 71.4 81.0 76.7 49.3 71.0 Qwen3-14B 77.3 68.8 75.0 81.6 83.3 46.7 72.1 Qwen3-8B 73.9 67.5 75.0 78.6 56.7 44.8 66.1 Qwen3-4B 70.6 62.5 71.4 75.1 73.3 44.2 66.2 Qwen3-1.7B 55.6 60.0 53.6 64.6 46.7 28.2 51.4 Qwen3-0.6B 38.7 33.8 42.9 47.5 10.0 12.7 30.9 Non-thinking Mode GPT-4o-2024-1120 66.8 57.5 78.6 80.7 10.0 15.0 51.4 Gemma-3-27b-IT 72.9 55.0 75.0 77.1 33.3 20.9...
+--
+87481:...0 23.9 56.7 Qwen3-30B-A3B 72.3 47.5 67.9 77.8 26.7 24.0 52.7 Qwen3-14B 75.5 58.8 75.0 76.5 26.7 25.8 56.4 Qwen3-8B 71.9 56.2 71.4 72.9 20.0 19.7 52.0 Qwen3-4B 66.1 50.0 73.2 66.7 10.0 18.1 47.4 Qwen3-1.7B 49.5 33.8 39.3 52.9 6.7 12.8 32.5 Qwen3-0.6B 36.6 37.5 42.9 37.5 3.3 5.7 27.2
+
+Table 27: Benchmark scores for language: Italian (it). The highest and second-best scores are shown in bold and und...
+--
+88116:...6 90.9 81.6 80.0 49.7 75.8 Qwen3-30B-A3B 75.9 94.5 81.9 80.0 48.1 76.1 Qwen3-14B 79.0 94.5 80.2 70.0 47.0 74.1 Qwen3-8B 74.6 89.1 77.5 76.7 46.1 72.8 Qwen3-4B 69.8 83.6 74.4 76.7 44.5 69.8 Qwen3-1.7B 54.6 74.5 64.2 53.3 29.6 55.2 Qwen3-0.6B 37.8 45.5 45.9 6.7 13.3 29.8 Non-thinking Mode GPT-4o-2024-1120 67.6 98.2 80.7 13.3 15.2 55.0 Gemma-3-27b-IT 74.6 90.9 78.4 23.3 20.5 57.5 Qwen2.5-72...
+--
+88606:...4 92.7 79.5 30.0 23.0 59.3 Qwen3-30B-A3B 73.9 87.3 77.7 33.3 24.8 59.4 Qwen3-14B 75.8 89.1 75.7 26.7 27.6 59.0 Qwen3-8B 72.1 85.5 72.9 13.3 23.8 53.5 Qwen3-4B 63.0 78.2 67.8 23.3 19.3 50.3 Qwen3-1.7B 46.1 70.9 53.4 6.7 11.9 37.8 Qwen3-0.6B 35.1 43.6 39.0 0.0 4.5 24.4
+
+Table 28: Benchmark scores for language: Arabic (ar). The highest and second-best scores are shown in bold and underline...
+--
+89223:...2 73.2 80.1 86.7 47.0 70.6 Qwen3-30B-A3B 66.2 66.1 77.2 83.3 47.3 68.0 Qwen3-14B 71.2 67.9 77.4 83.3 46.6 69.3 Qwen3-8B 65.0 67.9 74.4 76.7 44.9 65.8 Qwen3-4B 62.5 55.4 67.7 66.7 41.2 58.7 Qwen3-1.7B 55.0 44.6 53.2 36.7 25.8 43.1 Qwen3-0.6B 40.0 41.1 38.9 10.0 11.7 28.3 Non-thinking Mode GPT-4o-2024-1120 51.2 78.6 80.9 13.3 12.9 47.4 Gemma-3-27b-I...
+--
+[50 more matches not shown]

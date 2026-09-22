@@ -1,0 +1,940 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://www.rivista.ai/wp-content/uploads/2024/10/paper-1.pdf
+Type: PDF
+Length: 164479 chars (truncated)
+
+--- Content ---
+
+IBM
+Granite Language Models
+GRANITE 3.0 LANGUAGE MODELS
+Granite Team, IBM1
+1See Contributions and Acknowledgments section for full author list.
+Please send correspondence to granite-inquiries@ibm.com.
+ABSTRACT
+This report presents Granite 3.0, a new set of lightweight, state-of-the-art, open
+foundation models ranging in scale from 400 million to 8 billion active parameters.
+Equipped with native support of multilingual, coding, function calling, and strong
+safety performance, these models target enterprise use cases, including on-premise
+and on-device settings. Evaluations on a comprehensive set of tasks demonstrate
+that our models consistently reach state-of-the-art performance for their size (as
+shown in Figure 1 and 2). This report also discloses technical details of pre-training
+and post-training that may help the research community accelerate the collective
+efforts to develop open foundation models. We publicly release pre-trained and
+post-trained versions of all our Granite 3.0 models under a standard permissive
+Apache 2.0 license allowing both research and commercial use. With support from
+the open source community, the Granite 3.0 models have been integrated with a
+range of existing tools for quantization, fine-tuning, and deployment.
+20
+30
+40
+50
+60
+Granite-3.0-8B
+Llama-3.1-8B
+Granite-3.0-2B
+Mistral-7B
+Granite-3.0-3B-A800M
+Gemma-2B
+Llama-3.1-3B
+Granite-3.0-1B-A400M
+SmolLM-1.7B
+Llama-3.2-1B
+SmolLM-360M
+Average Performance
+Base Models
+Figure 1: Average performance of base models across 19 tasks from 6 domains.
+20
+30
+40
+50
+60
+Granite-3.0-8B
+Llama-3.1-8B
+Granite-3.0-2B
+Mistral-7B
+Llama-3.1-3B
+Gemma-2B
+Granite-3.0-3B-A800M
+Llama-3.2-1B
+Granite-3.0-1B-A400M
+SmolLM-1.7B
+SmolLM-360M
+Average Performance
+Instruct Models
+Figure 2: Average performance of instruct models across 23 tasks from 8 domains.
+1
+
+IBM
+Granite Language Models
+0.2
+0.6
+1
+Human Exams
+Commonsense
+Reading
+Comprehension
+Reasoning
+Code
+Math
+Base Models
+Granite-3.0-8B
+Llama-3.1-8B
+Mistral-7B
+(a)
+0.2
+0.6
+1
+Instruction
+Following
+Reasoning
+Multilingual
+RAG
+Code
+Cybersecurity
+Function
+Calling
+Safety
+Instruct Models
+Granite-3.0-8B
+Llama-3.1-8B
+Mistral-7B
+(b)
+Figure 3: The relative performance of Granite-3.0-8B and baseline models across different domains.
+See Table 8 and Table 9 for details of benchmarks included in each category.
+1
+INTRODUCTION
+The adoption of large language models (LLMs) across different applications has spread quickly.
+While commercial options that are consumer-facing via a web interface or API call are widely
+available, there is a demand for on-premise models. For accessibility, being able to fine-tune a
+pretrained LLM for on-premise use requires models with lower hardware requirements.
+There are many lightweight models like Gemma (Team et al., 2024) and Llama (Dubey et al., 2024)
+that perform well and fit the bill. However, in an enterprise setting, the adoption of LLMs can have
+further constraints. The provenance and transparency around data usage and processing can have
+legal and compliance implications. In particular, the license that an LLM is released under can also
+restrict companies from using a model on their specific use cases.
+In this report, we present the Granite 3.0 family of language models natively supporting multilin-
+guality, coding, reasoning, and tool usage, including the potential to be run on constrained compute
+resources. All the models are publicly released under an Apache 2.0 license for both research and
+commercial use. The models’ data curation and training procedures were designed for enterprise
+usage and customization in mind, with a process that evaluates datasets for governance, risk and
+compliance (GRC) criteria, in addition to IBM’s standard data clearance process and document
+quality checks. Specifically, Granite 3.0 includes 4 different models of varying sizes:
+• Dense Models: 2B and 8B parameter models, trained on 12 trillion tokens in total.
+• Mixture-of-Expert (MoE) Models: Sparse 1B and 3B MoE models, with 400M and 800M
+activated parameters respectively, trained on 10 trillion tokens in total.
+Accordingly, these models provide a range of options with different compute requirements to choose
+from, with appropriate trade-offs with their performance on downstream tasks. At each scale, we
+release a base model — checkpoints of models after pretraining, as well as instruct checkpoints —
+models finetuned for dialogue, instruction-following, helpfulness, and safety. The base models are
+trained from scratch with a two-stage training procedure. In stage 1, our dense and MoE models are
+trained on 10 trillion and 8 trillion tokens, respectively. Stage 1 training data consists of unstructured
+multilingual language data from diverse sources across academia, the internet, enterprise (e.g.,
+financial, legal), and code, including publicly available datasets with permissive licenses. In stage 2,
+we train on a mixture of 2 trillion tokens of data. Some of the data sources for stage 2 are the same as
+the stage 1 data sources, mixed with a small amount of high-quality open-source and synthetic corpora
+with permissive licenses. The data mixtures are derived through a data mixture search focusing
+on robustness across different domains and tasks. The instruct models are derived by supervised
+fine-tuning (SFT) of the pre-trained checkpoints, followed by model alignment using reinforcement
+learning (PPO, BRAIn (Pandey et al., 2024)). We find that both SFT and PPO/BRAIn are important
+for improved performance on downstream automatic evaluations, including better chat capabilities.
+2
+
+IBM
+Granite Language Models
+Additionally, the models were trained with techniques that leverage different methods found in the
+existing literature: µP (Yang & Hu, 2020; Yang et al., 2022; 2023) allowed for hyperparameter
+transfer after a hyperparameter search on smaller models, and Power scheduler (Shen et al., 2024c)
+allowed for learning rate transfer across batch size and total number of training tokens. For our MoE
+models, we used a dropless MoE (Gale et al., 2023) approach for better model performance using the
+ScatterMoE (Tan et al., 2024) implementation.
+Experiment results show that our Granite 3.0 models outperform models of similar parameter sizes
+on many benchmarks, demonstrating strong performance in knowledge, reasoning, function calling,
+multilingual, code support, as well as enterprise tasks like cybersecurity and retrieval augmented
+generation (RAG). Figure 3 shows that our Granite-3.0-8B models consistently outperform Llama-
+3.1-8B and Mistral-7B on various domains. The key advantages of Granite 3.0 models are:
+• Lightweight: Our largest dense model has 8 billion parameters, and our smallest MoE
+model has an activated parameter count of 400 million, enabling hosting, or even fine-tuning,
+on more limited compute resources.
+• Robust Models with Permissive License: Combined with excellent performance across
+various benchmarks, our Granite 3.0 models provide a great foundation for enterprise
+customization. All our models, including instruct variants, use an Apache 2.0 license,
+allowing for more consumer and enterprise usage flexibility over the more restrictive licenses
+of other available models in the same class.
+• Trustworthy Enterprise-Grade LLM: All our models are trained on license-permissible
+data collected following IBM’s AI Ethics principles1 for trustworthy enterprise usage. We
+describe in great detail the sources of our data, data processing pipeline, and data mixture
+search to strengthen trust in our models for mission-critical and regulated applications.
+We describe the model architecture and background on MoE models in Section 2. Then, we describe
+our data collection, filtering, and preprocessing pipeline in Section 3. We then go into detail about our
+data mixture and hyperparameter search for pretraining in Section 4, followed by our post-training
+methodology in Section 5, and our compute infrastructure in Section 6. Section 7 describes the
+results of our comprehensive evaluation of the trained models, including a comparison with other
+open-source LLMs. Finally, Section 8 discusses the social harms and risks of this project.
+2
+MODEL ARCHITECTURE
+The Granite 3.0 language models are based on two architectures: a decoder-only dense transformer
+and a decoder-only sparse Mixture-of-Expert (MoE) transformer.
+Table 1: Hyperparameters for Granite 3.0 models.
+Model
+2B
+8B
+1B-A400M
+3B-A800M
+Embedding size
+2048
+4096
+1024
+1536
+Number of layers
+40
+40
+24
+32
+Attention head size
+64
+128
+64
+64
+Number of attention heads
+32
+32
+16
+24
+Number of KV heads
+8
+8
+8
+8
+MLP hidden size
+8192
+12800
+512
+512
+MLP activation
+SwiGLU
+SwiGLU
+SwiGLU
+SwiGLU
+Number of Experts
+–
+–
+32
+40
+MoE TopK
+–
+–
+8
+8
+Initialization std
+0.1
+0.1
+0.1
+0.1
+Sequence Length
+4096
+4096
+4096
+4096
+Position Embedding
+RoPE
+RoPE
+RoPE
+RoPE
+#Parameters
+2.5B
+8.1B
+1.3B
+3.3B
+#Active Parameters
+2.5B
+8.1B
+400M
+800M
+#Training tokens
+12T
+12T
+10T
+10T
+1https://www.ibm.com/impact/ai-ethics
+3
+
+IBM
+Granite Language Models
+2.1
+DENSE MODELS
+Granite 3.0 2B and 8B dense models share a similar architecture as popular language models like
+Llama and our previous Granite Code models Mishra et al. (2024), ensuring strong compatibility
+with open-source inference and fine-tuning pipelines. We use Grouped Query Attention (GQA;
+Ainslie et al. 2023) with 8 key-value heads to get a good balance between memory cost and model
+performance, and Rotary Position Embedding (RoPE; Su et al. 2024) to model the relative position
+between tokens. For the MLP layers, Granite 3.0 Dense models use SwiGLU as the activation
+function. Before each MLP and attention layer, we use RMSNorm to normalize the layer’s input. We
+also share parameters between the input embedding and the output linear transform. This reduces
+the size of the model, and we have observed that the tying of these embeddings have zero, or even a
+positive impact on model performance.
+2.2
+MIXTURE-OF-EXPERT MODELS
+Granite 3.0 1B and 3B MoE models use similar architecture as Granite Dense models, with the
+MLP layers substituted with MoE layers. A Mixture of Experts (MoE) layer comprises N modules
+f1, . . . , fN and a router g(e | x). Given an input x to the MoE layer, the router predicts a probability
+distribution over the N modules. Of these, we select the top k experts. When k < N, we are using a
+Sparse Mixture of Experts (SMoE; Shazeer et al. 2017). For this series of Granite MoE models, we
+use a linear layer to model the router:
+s = Wrouterx,
+(1)
+g(e | x) =
+
+softmax (Topk (s))i ,
+si ∈Topk (s)
+0,
+si /∈Topk (s)
+(2)
+where Wrouter is the expert embedding matrix of shape (N, Demb), and Topk is the operator that
+selects the top k logits from s. The final output of the SMoE is then given by
+y =
+N
+X
+e=1
+g(e | x) · fe(x)
+(3)
+When g(e | x) = 0, fe(x) will not need to be evaluated, thus reducing computation cost during
+training and inference. The key designs of the Granite MoE models are summarized below:
+Dropless Token Routing.
+Since each token selects experts independently, some experts could
+receive more tokens than others. In previous MoE models, like Switch Transformer (Fedus et al.,
+2022) and Deepseek-V2 (Liu et al., 2024a), a capacity cap is set for each expert or device, and the
+extra tokens that exceed the cap are dropped. As observed in Gale et al. (2023), this cap negatively
+affects the model training stability and loss. In our training, we use ScatterMoE (Tan et al., 2024), a
+dropless MoE implementation, to avoid token dropping and improve training efficiency.
+Fine-grained Experts.
+Recent studies (Krajewski et al., 2024; Dai et al., 2024) suggest that setting
+the size of experts in MoE to mirror the feed-forward layer is not optimal. Instead, increasing the
+expert granularity, number of experts, and number of activated experts could increase the possible
+combinations of experts and result in better model performance. Following these observations, we use
+fine-grained experts and a larger number of activated experts in Granite 3.0 MoE models. Specifically,
+we use a top-k of 8 out of 32 and 40 experts respectively for the 1B and 3B MoE models.
+Load Balancing Loss.
+To avoid routing tokens repeatedly to the same expert and wasting the extra
+capacity in other experts, we use the frequency-based auxiliary loss introduced in Fedus et al. (2022)
+Lb = N
+N
+X
+i=1
+fiPi
+(4)
+where N is the number of experts, fi is the fraction of tokens dispatched to expert i, and Pi is the
+fraction of the router probability allocated for expert i. Intuitively, this loss penalises over-usage of
+4
+
+IBM
+Granite Language Models
+experts, thus ‘balancing’ the load. To improve the training stability, we also use the router z-loss
+introduced in Zoph et al. (2022):
+Lz = 1
+B
+B
+X
+i=1
+
+log
+N
+X
+j=1
+exp(xi
+j)
+
+
+2
+(5)
+where B is the number of tokens, x is the logits given by router. This loss penalises logits of the
+router when it has extreme values, allowing the router to adapt better during training in order to better
+assign experts. The final loss is the weighted sum of language model loss and two auxiliary losses.
+3
+TRAINING DATA
+Granite 3.0 language models are trained using data from various sources such as unstructured natural
+language text and code data from the Web curated by IBM, a collection of synthetic datasets generated
+by IBM, and publicly available high-quality datasets with permissible licenses. For governance, all
+our data undergoes a data clearance process subject to technical, business, and governance review.
+This comprehensive process captures critical information about the data, including but not limited to
+their content description, ownership, intended use, data classification, licensing information, usage
+restrictions, how the data will be acquired, as well as an assessment of sensitive information (i.e,
+personal information). For code, we annotate each code file with license information associated with
+the respective repository, found via Github APIs and only keep files with permissive licenses for
+model training. In addition, we also filter out all data obtained from sources that match URLs in
+IBM’s URLs blocking-list. Below, we provide a brief overview about our data processing steps and
+refer to the Appendix B.1 for details on individual datasets used in different stages of model training.
+3.1
+CURATED WEB DATA
+We curate a massive collection of unstructured data from the Web, obtained from academic, enterprise
+(e.g., financial, legal, biomedical), code, and other publicly available sources, e.g., open-source
+datasets like FineWeb (Penedo et al., 2023), DCLM (Li et al., 2024a) for language and Github Code
+Clean2, StarCoderdata3 for code domain. To ensure the quality of our curated web data, we have
+developed a comprehensive data preprocessing procedure, as follows.
+Text Extraction.
+Text extraction is the first step in the processing of unstructured data crawled
+from web, and is used to extract text from various documents into a standardized format for further
+processing. After text extraction, we adopt fasText 4 for language identification at a document level
+to detect the dominant language. With language identification, we specifically select documents
+annotated with 12 languages namely English, German, Spanish, French, Japanese, Portuguese, Arabic,
+Czech, Italian, Korean, Dutch, or Chinese as the dominant language. While our training data consists
+of primarily-English data, we utilize high-quality documents from these other eleven languages to
+improve multilinguality of Granite 3.0 models.
+Deduplication.
+Deduplication aims to identify and remove duplicate documents to improve overall
+quality of a dataset. We adopt an aggressive deduplication strategy including both exact and fuzzy
+deduplication to remove documents having (near) identical content. For exact deduplication, we first
+compute SHA256 hash on the document content and remove records having identical hashes. Then,
+we follow a two-step fuzzy deduplication strategy: (1) computing MinHashes of all the documents
+and then utilize Locally Sensitive Hashing (LSH) to group them based on their MinHash fingerprints,
+and (2) measuring Jaccard similarity between each pair of documents in the same bucket to annotate
+documents except one as duplicates based on a similarity threshold. We apply this near-deduplication
+process to both language and code data to enhance the richness and diversity of the training dataset.
+2https://huggingface.co/datasets/codeparrot/github-code-clean
+3https://huggingface.co/datasets/bigcode/starcoderdata
+4https://huggingface.co/facebook/fasttext-language-identification
+5
+
+IBM
+Granite Language Models
+HAP and Malware Filtering.
+To reduce the likelihood of generating hateful, abusive, or profane
+(HAP) language from the models, we make diligent efforts to filter HAP content from our training set.
+We compute HAP scores based on a HAP detector trained by IBM 5 at the sentence level and filter
+out documents which exceeds a certain threshold. For code documents, we first create a dictionary of
+HAP keywords and then annotate each document with the number of occurrences of such keywords
+in the content including comments. We filter out documents which exceeds the HAP threshold,
+computed based on a distributional analysis as well as manual inspection of code files. Please refer to
+Mishra et al. (2024) for more details on the processing of code data. We also scan our datasets using
+ClamAV6 to identify and remove instances of malware, especially in the source codes.
+Document Quality Filtering.
+Quality annotation aims to identify documents with low linguistic
+value using both heuristics and a classifier. Specifically, we follow Gopher quality filtering crite-
+ria (Rae et al., 2021) to remove low quality documents that contain for example bullet points ratio of
+greater than 90%, ellipsis line ratio of greater than 30% and symbol to word ratio of greater than 10%,
+etc. Besides heuristics, we also adopt a classifier-based filtering that assigns a perplexity score using
+the KenLM linear classifier 7, pre-trained on a small collection of known high quality documents
+(e.g., Wikipedia articles). For any document, the KenLM linear classifier provides a score of the
+document’s similarity to a training corpus, indicating overall quality for model training.
+We also apply several heuristics to filter out lower-quality code (Mishra et al., 2024): (1) remove files
+with fewer than 25% alphabetic characters, (2) filter out files where the string “<?xml version=”
+appears within the first 100 characters, (3) for HTML files, only keep files where the visible text
+makes up at least 20% of the HTML code and has a minimum length of 100 characters, (4) for JSON
+and YAML files, only keep files that have a character count ranging from 50 to 5000 characters.
+3.2
+SYNTHETIC DATA
+Existing permissive datasets are becoming increasingly inadequate for training models with specific
+capabilities, e.g., coding, reasoning, and safety etc during post-training. While collecting high-quality
+data from humans is a potential solution for this, it is a time-consuming and costly endeavor. To
+address this challenge, we conduct an in-depth exploration of synthetic data generation (SDG) as
+an alternative for Granite models. Recently, the introduction of synthetic data pipelines such as,
+Self-Instruct (Wang et al., 2023), Evol-Instruct (Xu et al., 2023), and MagPie (Xu et al., 2024)
+leveraged ways to synthetically produce datasets nearly as comprehensive, competitive, and diverse
+as those created by humans. Inspired by these recent methods, our synthetic datasets are composed
+of input-output pairs, cover single and multi-turn scenarios, and target a generic or specific nature. In
+this section, we provide an overview about the synthetic datasets, what data domains they contribute
+to, and how we filter them for effective post-training of our models.
+Generic Instruction Data.
+We build generic instruction data in form of instruction-response pairs
+primarily using Evol-Instruct (Xu et al., 2023) and MagPie (Xu et al., 2024) methods. Specifically
+Evol-Instruct takes an initial seed of instruction data to generate improved complex versions of them
+by randomly selecting in-depth or in-breadth evolving prompt templates. We verify the quality of
+evolved instructions through a set of heuristics (e.g., character length, word count, seed instruction
+leakage) and exclude instructions that do not pass this quality verification from the final dataset.
+We repeat this evolution 5 times, and at each iteration, a mix of either original seed instructions or
+evolved instructions (that passed the quality check) are used as input for the following iteration. A
+list of synthetic datasets generated using Evol-Instruct can be found in Appendix B.2.
+Unlike Evol-Instruct, MagPie generates high-quality instruction data without relying on prompt
+engineering or seed questions. Instead, it directly constructs instruction data by prompting a LLM with
+a pre-query template for sampling instructions. Following (Xu et al., 2024), we use 12 combinations
+of temperature and top-p parameters by prompting a couple of teacher models with their respective
+pre-queries followed by greedy sampling to generate the corresponding responses. Our final unfiltered
+samples target varied between 5M and 10M depending on the LLM used for generation. In addition,
+we also extend filtered versions of our single-turn datasets to create multi-turn datasets to enhance
+5https://huggingface.co/collections/ibm-granite/granite-guardian-66db06b1202a56cf7b079562
+6https://www.clamav.net/
+7https://huggingface.co/edugp/kenlm
+6
+
+IBM
+Granite Language Models
+chat capabilities. We only use open-source teacher models with a non-restrictive license to generate
+instructions and their respective responses. A list of synthetic datasets generated using Evol-Instruct
+and MagPie can be found in Appendix B.2.
+Code.
+As demand for software development surges, it is more critical than ever to increase software
+development productivity, and LLMs provide promising path for augmenting human programmers.
+To improve coding capabilities of Granite 3.0 models, we focus on generating high quality synthetic
+code data and creating quality filters to remove bad samples from our training data. Specifically,
+inspired by Starcoder2-Instruct8, we extend the OSS self-instruct pipeline to 6 coding languages:
+JavaScript, TypeScript, C, C++, Go, and Python, and use filtered pretraining data as the seed data
+with granite-34b-code-instruct as the teacher model for generating instruction-response pairs.
+We generate 235,000 samples with this method, which serves as one of the major code generation
+dataset in our supervised finetuning. Beyond code generation, we also generate samples to cover
+tasks like code explanation, docstring, and pseudocode generation by using a generate, backtranslate,
+and filter process, as in (Dubey et al., 2024). Specifically, we prompt a teacher model to generate
+code explanation, docstring, and pseudocode from the seed functions. These tasks are intentionally
+grouped together so the model’s reasoning can improve with the combination of tasks. For filtering,
+we prompt the model to grade the original seed function against the synthetic code for both fidelity
+and complexity, and we keep samples that only pass a predefined threshold. We also adopt a similar
+pipeline for generation synthetic data for tasks like unit test generation and code debugging, helping
+our models to perform better on code fixing and explanation.
+We also leverage SDG to collect multi-turn data, by incorporating execution output as feedback along
+with human feedback. Following (Zheng et al., 2024), we generate 50k multi-turn dialogues with
+code execution and synthetic code reviews. We identify python samples via model classification
+and heuristics in two open source datasets, namely Glaive Code Assistant 9 and Code Instructions
+Alpaca 10. We filter the instructions by complexity using LLMaJ with a complexity scale of 1-5.
+We then use the instruction from the filtered dataset as the initial prompt in an mulit-turn agentic
+pipeline that consists of agents for writing, executing and reviewing code built with the AutoGen
+framework. Dialogues that produce trajectories with executable code with passing unit tests after a
+round of synthetic code review and update are included in the final dataset.
+Reasoning.
+Reasoning with LLMs has been in the forefront (Plaat et al., 2024; Zhang et al., 2024a),
+given both the evolution of benchmarks and the inconclusive discussions around the reasoning abilities
+of LLMs (Kojima et al., 2023; Mirzadeh et al., 2024). However, the progress with chain-of-thought
+and evolution of Agentic behaviors has shifted focus towards innovative mechanisms to generate
+reasoning and planning traces with human validation of each step (et al., 2024; Lightman et al., 2023).
+We employ two main techniques for generating synthetic reasoning data:
+• Code-Assisted Synthetic Data Generation: We use code-assisted SDG for primarily algorithmic
+tasks (Li et al., 2023b). Within each reasoning category, we use domain-specific seed prompts
+and seed data to introduce diversity. Python code execution is used both to generate and validate
+chain-of-thought and the final answer for various reasoning tasks.
+• Knowledge-based Data Generation:
+We utilize multiple knowledge graphs such as
+ATOMIC (Hwang et al., 2021) and Wikidata (Vrandeˇci´c & Kr¨otzsch, 2014) to generate multi-hop
+reasoning data with the chain-of-thought that includes commonsense and encyclopedia knowledge.
+The initial knowledge graph seed structures are a combination of template-based and random-walk-
+based techniques, enabling the grounding of the reasoning traces being generated. Grounding helps
+in eliminating incorrect reasoning traces with both right and wrong final answers.
+Retrieval Augmented Generation (RAG)
+RAG is widely recognized as a promising approach
+to address common challenges in large language models, such as factual inaccuracies, outdated
+knowledge, and limitations in domain-specific expertise (Chen et al., 2024a). To generate synthetic
+data for improving RAG capabilities, following (Lee et al., 2024b), we first input a document and
+prompt an LLM to generate a user question. These questions span various types commonly found
+8https://huggingface.co/blog/sc2-instruct
+9https://huggingface.co/datasets/glaiveai/glaive-code-assistant-v3
+10https://huggingface.co/datasets/TokenBender/code instructions 122k alpaca style
+7
+
+IBM
+Granite Language Models
+in information-seeking tasks, and to ensure that the generated questions align with the designated
+question types, we incorporate question-type-specific CoT prompts, to guide the language model
+in reasoning through the grounding document (Lee et al., 2024b). We then employ a retriever
+(ELSER with sentence-transformers/all-MiniLM-L6-v2 sentence embeddings) to dynamically
+select the top-k relevant passages from a pre-constructed document index, extending the user questions
+generated in the first step into multi-turn, multi-document grounded conversations. The retrieved
+passages, along with the query, are provided to the LLM, which is then prompted to generate a
+response. For subsequent turns, we first prompt the LLM to generate a query given dialog history and
+retrieved passages and then generate the answer as described above. Furthermore, an LLM-as-a-Judge
+module is used to filter out dialogues with incorrect responses by evaluating all context-response
+pairs within each dialogue. A larger language model assesses the accuracy of responses based on
+dialogue history and the current query, and any dialogues containing incorrect question-answer pairs
+are discarded. The multi-turn RAG data generation use two pblicly available datasets, QuAC (Choi
+et al., 2018) and MultiDoc2Dial (Feng et al., 2021) as seed datasets.
+Tool Use.
+Tool (or function) calling is now considered one of the fundamental capabilities that
+LLMs need to possess (Abdelaziz et al., 2024). In real-world applications, tool invocation can vary
+in complexity, ranging from a single turn with a single tool (the simplest case) to more challenging
+multi-turn interactions involving multiple sequential/nested tool calls. To train LLMs to utilize tools
+requires a broad spectrum of training data covering different tool calling scopes.
+In the recent past, there has been extensive research on transforming existing curated and manually
+annotated datasets into a function calling format. While we leverage curated datasets such as API-
+BLEND (Basu et al., 2024) and APIGen (Chen et al., 2024b), these datasets do not address the
+evolving landscape of function calling benchmarks such as multi-turn tool calls, nested tool calls, and
+tool relevance, etc. To address this, we extend existing SDG techniques to introduce new features of
+function calling in LLMs. These pipelines also include generating data that calls APIs via different
+programming languages (Guo et al., 2024).
+Cybersecurity.
+To create a comprehensive and diverse dataset capable of supporting instruction
+tuning for various security-related tasks, we adopt the process in Levi et al. (2024), which consists of
+two main steps, as follows. In the first generation step, we concentrate on producing high-quality
+instructions derived from predefined schemas. These schemas are formulated through expert-driven
+analysis of a diverse set of security datasets, examining the relationships between different entities
+across datasets. This approach ensures that the instructions capture the nuances of various security
+concepts and tasks. More specifically, each predefined schema has rules that dictate how the data
+source should be processed into instructions, using parsers developed specifically for these security
+data sources. This guarantees that the generated instructions focus on the important and unique
+characteristics of the data source and are representative of real-world security scenarios. In the
+second generation step, the diversity and complexity of the initial generated dataset is expanded by
+employing a hybrid synthetic content-grounded data generation process. Specifically, we combine
+Evol-Instruct (Xu et al., 2023) and Self-Instruct (Wang et al., 2022) alongside content-grounded
+generation and evaluation pipelines. Additionally, we implement a routing mechanism between the
+two generation methods to help reduce hallucinations.
+This process leverages the initial set of instructions and data from the first generation step to generate
+additional instructions that follow the established schemas while increasing the model’s overall
+generalizability. By incorporating content-grounded synthetic data, we increase the diversity and
+volume of the final dataset, ultimately leading to more robust and capable security models.
+We leverage various publicly available security data sources, namely MITRE ATT&CK11, CWE12,
+CVE13, CAPEC14, Security Wikipedia, Security interview Q&A, Threat reports, BRON (Hemberg
+et al., 2020), SIEM alert rules, Sigma rules15, and Security Stack Exchange to generate both rules-
+based and synthetic security instructions. Our final synthetic security dataset consists of various
+11https://attack.mitre.org
+12https://cwe.mitre.org
+13https://cve.mitre.org
+14https://capec.mitre.org
+15https://github.com/SigmaHQ/sigma
+8
+
+IBM
+Granite Language Models
+instruction types, such as open/closed book question answering, yes/no questions, multi-choice
+Q&A, CoT, logic validation, odd/leave one out multi-choice Q&A, question generation, query/rule
+explanation and generation, TTP mapping, and others.
+Multilingual.
+To improve our model’s machine translation quality, we include parallel text from
+datasets such as ParaCrawl 16, WikiMatrix (Schwenk et al., 2019a), and NLLB/CCMatrix (Schwenk
+et al., 2019b). We apply extensive filtering based on language-specific heuristics and model-based
+scoring to select only the highest-quality translation pairs from these datasets. For example, filtering
+heuristics include steps such as removing samples that do not have a minimum amount of words or
+where source and target have too many tokens in common, contain too many repeated characters
+or tokens, or contain too many UTF-8 control characters. We also all apply more language-specific
+filtering heuristics, e.g., for CJK languages or Arabic, we set a minimum threshold for the percent of
+characters in the target language script. Model-based filtering comprises language id and calculating
+alignment scores via a multilingual sentence embedding model (Artetxe & Schwenk, 2019).
+Moreover, to enhance multilingual capabilities in multi-turn conversation scenarios, we translate
+a subset of the publicly available Daring Anteater 17 SFT dataset into our targeted languages. For
+translation, we use an existing LLM to translate each turn separately, but make sure that text formatting
+and especially code blocks within each turn are preserved during translation.
+Safety.
+To safeguard our models, we leverage synthetic data as a powerful source for augmenting
+AI safety training and aligning models in a targeted way. An AI risk taxonomy is a repository that
+classifies and structures categories of risk. IBM Research uses its AI risk taxonomy as part of a
+broader set of safety measures that apply to its development of foundation models. The taxonomy
+helps to categorize known risks, which are used to generate synthetic data, for the purpose of aligning
+language models. We leverage the following taxonomy for SDG that covers 7 high-level categories:
+• Malicious Use: illegal activities, unethical or unsafe actions, and violence and extremism.
+• System Risks: security and operational risks.
+• Information Hazards: sensitive and personal information.
+• Discrimination: a wide range of discrimination, including implicit and explicit bias.
+• Societal Risks: disinformation, propaganda, and voter suppression.
+• Human-Chatbot Interactions: mental health, child harm, and self-harm.
+• Multi-Modal Requests: various forms of undesirable requests related to multi-modal support.
+Our safety taxonomy has been informed by internal research as well as opensource AI risk taxonomies
+research conducted by MIT and MLCommons 18. A diverse set of people distributed across different
+IBM locations worldwide with diverse expertise and socio-cultural background contributed quality
+seeds to address inappropriate prompts. Additionally, research into adversarial attacks also informed
+the seeds gathered to safeguard our model against jailbreaks and prompt injection attacks. Specifically,
+our synthetic safety data includes prompt-response pairs across a broad range of scenarios, covering
+direct requests across a safety taxonomy with direct questions, comparative questions, hypothetical
+prompts, adversarial attacks, and multi-turn interactions designed to expose unsafe behavior. Once
+generated, quality and consistency checks of the synthetic data are also applied which includes both
+extensive automated and manual reviews. An iterative approach was also used to improve the safety
+alignment data by analyzing the resulting model’s behavior and producing more synthetic data to
+increase the safety coverage as needed.
+Quality Filtering.
+When using synthetic data, we run several stages of filtering over it, removing
+samples that are very short, easy for a reference model, unclear instructions or duplicated samples. We
+follow (Xu et al., 2024) and leverage (1) LLM-as-judge (Zheng et al., 2023) to determine the category,
+quality, and difficulty of instructions, and (2) the computation of minimum neighbor distance in the
+16http://paracrawl.eu
+17https://huggingface.co/datasets/nvidia/Daring-Anteater
+18https://mlcommons.org/
+9
+
+IBM
+Granite Language Models
+1.5%
+1.5%
+4.0%
+4.5%
+19.0%
+69.5%
+Stage 1 Mix
+Technical
+Math
+Academic
+Domain
+Code
+Web
+(a)
+45%
+11%
+10%
+10%
+10%
+5%
+5% 4%
+Stage 2 Mix
+Web
+Domain
+Code
+Math
+Instruction
+Multilingual
+Academic
+Technical
+(b)
+Figure 4: Data mixture for pretraining stages. The percentage for individual datasets has been merged
+into different categories. Best viewed in color.
+embedding space to identify near duplicates (Douze et al., 2024). Our sample annotation pipeline uses
+Mistral-7B-Instruct-v0.3 19 as the reference model (judge) and consists of the following steps:
+• Instructions Annotation: We annotate the generated instructions with category (creative writing,
+advice seeking, planning, and math, etc), difficulty (‘very easy’, ‘easy’, ‘medium’, ‘hard’, or ‘very
+hard’), and instruction quality (‘very poor’, ‘poor’, ‘average’, ‘good’, and ‘excellent’).
+• Responses Annotation: We asses the quality of responses conditioned on their respective instruction
+using an LLM as judge (in a scale of 1-5).
+• Sample-level Annotation: Particularly important for multi-turn datasets, we prompt an LLM for
+assessing overall quality of a conversation between a user and an assistant (including all turns).
+• Duplicates Annotation: We measure the similarity using minimum neighbor distance in the
+embedding space (Xu et al., 2024). For multi-turn data, however, we concatenate the inputs from all
+turns and compute minimum neighbor distance in the embedding space using the full conversations.
+4
+PRE-TRAINING
+Granite 3.0 language models are trained on 10T to 12T tokens of language and code data, sourced
+from different domains. Data is tokenized via byte pair encoding (BPE, (Sennrich et al., 2015)),
+employing the same tokenizer as StarCoder (Li et al., 2023d). In this section, we provide details on
+our two stage training, data mixture and power scheduler used in pretraining the models.
+4.1
+DATA MIXTURE
+Beyond training data quality, the data mixture is another important aspect of model performance. We
+craft the pretraining data mixture with two goals: 1) maximize the model’s performance across a
+diverse set of domains and tasks without bias toward a specific type of data or task; 2) leverage both
+high-quality and medium-quality data for optimal performance. To achieve these two goals, we adopt
+the 2-stage data mixture strategy used in MiniCPM (Hu et al., 2024) and JetMoE (Shen et al., 2024b).
+In stage 1, we pre-train the model on a large quantity of medium-quality data to learn and memorize
+the knowledge from diverse domains. In stage 2, we continue pre-training the model on a smaller set
+of high-quality data mixed with medium-quality data to encourage the model to mimic the behavior
+of high-quality data and improve the model’s performance on downstream tasks.
+19https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3
+10
+
+IBM
+Granite Language Models
+4.1.1
+STAGE 1 DATA MIXTURE
+The stage 1 data mixture search focuses on achieving robust language model performance across
+different domains Di. Inspired by distributionally robust language model (Oren et al., 2019) and
+DoReMi (Xie et al., 2024), our target was to minimize the weighted sum of relative domain losses,
+with respect to a baseline:
+min
+θ
+L(θ, α) :=
+|D|
+X
+i=1
+αi ·
+"
+1
+P
+x∈Di |x|
+X
+x∈Di
+(ℓθ(x) −ℓref,i(x))
+#
+(6)
+where θ is the mixture percentage of pre-training data, ℓθ(x) is the negative log-likelihoods of the
+proxy model for data mixture search, ℓref,i(x) is the reference model for domain Di, |x| is the number
+of tokens in an example x, and α is the weights for different domains. Reference models are small
+language models trained with in-domain data from Di. Our assumption here is that the loss reflects
+the difficulty of the target domain. By subtracting the reference model loss, we normalize the proxy
+model loss by removing the difficulty factor. This way, we can avoid forcing the model to learn
+difficult domains even if the model cannot improve further in this domain (Oren et al., 2019).
+In the data mixture search, we train thousands of small proxy models with randomly sampled data
+mixtures to find the optimal data mixture. Each proxy model is a small language model with 10M
+parameters trained on 15B tokens. The ratio of the number of tokens to parameters is approximately
+the same as our 8B dense model. Oren et al. (2019) and Xie et al. (2024) suggest that the maximum
+relative domain loss should be minimized to achieve a distributional robust language model. However,
+in practice, we notice that some domains are more difficult to learn in this multi-domain learning
+setting due to conflicts between domains or format mismatches. In other words, if we focus on
+reducing the maximum relative domain loss, the performance of other domains will be sacrificed. To
+account for that, we minimize the average relative domain loss:
+min
+θ
+L(θ) :=
+|D|
+X
+i=1
+1
+|D| ·
+"
+1
+P
+x∈Di |x|
+X
+x∈Di
+(ℓθ(x) −ℓref,i(x))
+#
+(7)
+After running many experiments, we select the proxy model with minimum L(θ) and use its data
+mixture as our stage 1 data mixture. Figure 4(a) shows the data mixture of stage 1.
+4.1.2
+STAGE 2 DATA MIXTURE
+The stage 2 data mixture search focuses on improving model performance on a diverse set of
+downstream tasks from natural language, code, and math domains. Similar to the stage 1, we
+maximize the weighted sum of performance on the three domains:
+max
+θ
+L(θ, α) :=
+|D|
+X
+i=1
+αi ·
+"
+1
+|Di|
+X
+t∈Di
+Acct(θ)
+#
+(8)
+where Acct is proxy model performance on the task t. We use the average across multiple tasks from
+each domain as the targeted metric to avoid over-fitting on a specific task.
+However, in stage 2, we cannot use the small proxy models for the mixture search, because most
+downstream tasks require a model that is large enough to achieve meaningful performance. Thus, we
+conduct the mixture search with our 2B dense model. Even with the 2B dense model, we still cannot
+run thousands of experiments to find the optimal search. Instead, we run a few hundred experiments
+with 30B tokens from a randomly sampled mixture and use linear regression to fit the correlation
+between the data mixture and task performance. Figure 5 shows the correlation between the predicted
+and ground-truth accuracy for different domains. We can see a strong correlation between the two
+sets of values. Based on the linear regression results, we craft the final stage 2 mixture to achieve
+robust performance across different domains. Figure 4(b) shows the data mixture of stage 2.
+4.2
+TRAINING HYPERPARAMETERS
+In Shen et al. (2024c), we proposed a systematic way of doing a hyperparameter search on a small
+scale and 0-shot transfer the hyperparameter to a large scale. The core part of this method is maximum
+update parameterization and a power scheduler.
+11
+
+IBM
+Granite Language Models
+48.0%
+49.0%
+50.0%
+51.0%
+52.0%
+48%
+49%
+50%
+51%
+52%
+Natural Language
+17%
+19%
+21%
+23%
+17%
+19%
+21%
+23%
+Code
+16%
+20%
+24%
+28%
+16%
+20%
+24%
+28%
+Math
+Figure 5: The predicted and ground-truth accuracy for different data mixture samples. The x-axis is
+the ground truth accuracy, and the y-axis is the predicted accuracy.
+Maximal Update Parameterization. (µP) (Yang & Hu, 2020; Yang et al., 2022; 2023) controls
+initialization, layer-wise learning rates, and activation magnitudes to ensure analytically stable
+training, independent of a model’s width and depth. In addition to improving training stability, µP
+improves the transferability of training hyperparameters from small proxy models to large models, a
+technique called µTransfer. The hyperparameter transferability of µP is theoretically justified and
+empirically demonstrated for width (Yang et al., 2022) and depth (Yang et al., 2023).
+Table 2: List of changes applied when using µP. mwidth is width multiplier, defined as dm/dbase, where dbase is
+the embedding width, dm is the target model size.
+Name
+Function
+Embedding multiplier
+Multiply the embedding output with memb
+Residual Multiplier
+Multiply the output of each attention and MLP layer with mres
+before adding to residual connection
+Initialization std
+Initialize internal weight matrices (excluding input and output
+embedding) with standard deviation initstd/√mwidth
+Learning rate scaling
+Set learning rate of internal weight matrices to η/mwidth
+Attention logit scaling
+Divide attention logits by dhead
+We follow the µP config used in CerebrasGPT (Dey et al., 2023) to study the transferability of batch
+size and learning rate across different numbers of training tokens and model sizes. Table 2 lists the
+µP changes we applied to model initialization, learning rate, and multipliers.
+Power Scheduler. is a new learning rate schedule that includes a linear warmup, a slow power decay,
+and a fast exponential decay:
+Power (n) =
+
+
+
+
+
+n
+Nwarmup · ηmax
+if n ≤Nwarmup
+min
+ ηmax, βanb
+if Nwarmup < n ≤N −Ndecay
+f(n, N, Ndecay) · βa (N −Ndecay)b
+if N −Ndecay < n
+(9)
+where β is the batch size, n is the number of tokens already trained, a is the amplitude of the learning
+rate, b is a power-law exponent for decaying the learning with respect to the number of trained tokens,
+and ηmax is the learning rate upper bound that rejects very large learning. Shen et al. (2024c) shows
+two benefits of a power scheduler: 1) it enables zero-shot transferability of learning rate between
+different batch sizes and numbers of training tokens, such that we can use small batch size and number
+of training tokens to search for optimal learning rate, then use it for large scale training runs; 2) it
+doesn’t require a predefined number of training tokens or steps, such that we can start the training
+and do early exit or add additional tokens to the training and still get optimally converged model.
+Combining these two methods, we conducted the hyperparameter search on a very small scale (36M
+parameters, up to 128B tokens) to get the optimal hyperparameters. We then zero-shot transferred
+this set of hyperparameters to all of our model training. More details about the hyperparameter search
+can be found in Shen et al. (2024c).
+12
+
+IBM
+Granite Language Models
+For all our models, we use AdamW optimizer (Diederik, 2014) with β1 = 0.9, β2 = 0.95 and weight
+decay of 0.1 for training all our models. For the learning rate, we use the power scheduler with a = 4,
+b = −0.51, and ηmax = 0.02, and an initial linear warmup step of 2500 iterations. We use a batch
+size of 4M tokens during both stages of pretraining.
+4.3
+MODEL PARALLELISM
+We use a combination of 3D parallelism (Tensor Parallelism (Shoeybi et al., 2020), Pipeline Paral-
+lelism (Narayanan et al., 2021b) and Data Parallelism (Li et al., 2020)) for training all our models.
+We use tensor parallelism to split the weight matrices and activations and pipeline parallelism to slice
+the model along the layers. We put an equal compute load on each pipeline stage except the first
+and last pipeline stages, which contain the embedding matrix and the LM head, respectively. The
+2B dense model is trained with 256 GPUs using tensor parallel sharding on 2 GPUs, and the 8B
+dense model is trained on 768 GPUs using 4x tensor parallelism and 4x pipeline parallelism. We
+use the 1F1B (1-Forward 1-Backward) schedule (Narayanan et al., 2021a;b) for efficient pipeline
+parallelism to reduce the memory consumption for the in-flight microbatches. The 1F1B schedule
+makes the memory consumption proportional to the pipeline depth instead of the number of in-flight
+microbatches, which can be quite large when training such models. We shard the optimizer on the
+Data Parallel process group similar to ZeRO-1 (Rajbhandari et al., 2020) for reducing the optimizer
+memory footprint during training. Because tensor parallelism is extremely latency sensitive and
+blocking in nature, we only do tensor parallelism within a server node while pipeline parallelism and
+data Parallelism can span across nodes. We only use data parallelism without any model parallelism
+to train the MoE models. They are trained using 128 and 256 GPUs using ZeRO-1 sharding (Rajb-
+handari et al., 2020) to shard the optimizer across multiple GPUs. To accelerate training, we use
+FlashAttention 2 (Dao et al., 2022; Dao, 2023), the persistent layernorm kernel, Fused RMSNorm
+kernel (depending on the model), and the Fused Adam kernel available in NVIDIA’s Apex library.
+5
+POST-TRAINING
+We develop the post-training (instruct) variants of our Granite 3.0 models by further training the
+pre-trained checkpoints, focusing on instruction-following capabilities and alignment with human
+values. We employ a diverse set of techniques with a structured chat format, including curriculum-
+based supervised finetuning, model alignment using proximal policy optimization (PPO), best-of-N
+sampling, BRAIn (Pandey et al., 2024), and model merging.
+5.1
+STRUCTURED CHAT TEMPLATE
+While a pre-trained model may generate reasonable responses to directives—or, instructions—a
+standardized chat format is commonly used in post-training. A common format not only reinforces
+the structure of query and response pairs used in the applications of instruct-styled models but also
+allows for further control sequences to denote different actors within a single input provided to the
+model, such as information from external systems. To support both human-AI and machine-AI
+interactions with the instruction-following variants of Granite, we develop a structured interface
+that enhances the model’s ability to follow directives as including follow ups. The structure is split
+in multiple sections, or turns, where knowledge is commonly formatted and then aggregated for
+the model. For basic uses, turns include sections for just the human and the model; however, for
+enterprise uses, flexibility was added so that turns can include system information, external tools and
+functions available, further context, and even other agents and their responses (see Table 3).
+Additionally, we carefully study the impact of specific/control tokens used in the structure of the
+prompt template, as shown in Table 4. Through ablations studies of different tokenizers, we find most
+BPE tokenizers fail to create guaranteed boundary lines when simple separators such as a newline are
+used. This not only makes masking during supervised finetuning unreliable but also leaks prompt
+control se

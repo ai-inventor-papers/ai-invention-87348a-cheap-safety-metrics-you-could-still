@@ -1,0 +1,330 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2502.13946v2
+Type: HTML
+Length: 84229 chars (truncated)
+
+--- Content ---
+
+##### Report GitHub Issue
+
+×
+
+Title:
+
+Content selection saved. Describe the issue below:
+
+Description:
+
+Submit without GitHub Submit in GitHub
+
+arXiv is now an independent nonprofit! [Learn more](https://info.arxiv.org/about) ×
+
+[ Back to arXiv ](/)
+
+[Why HTML?](https://info.arxiv.org/about/accessible_HTML.html) Report Issue [ Back to Abstract ](/abs/2502.13946v2 "Back to abstract page") [ Download PDF](/pdf/2502.13946v2 "Download PDF") [ ](javascript:toggleNavTOC\(\); "Toggle navigation") [ ](javascript:toggleReadingMode\(\); "Disable reading mode, show header and footer")
+
+  1. Abstract
+  2. 1 Introduction
+  3. 2 Background
+     1. Generation Process of LLMs.
+     2. Activation Patching.
+     3. Chat Template.
+  4. 3 The Template-Anchored Safety Alignment in Aligned LLMs
+     1. 3.1 Preliminaries
+        1. Datasets.
+        2. Models.
+     2. 3.2 Attention Shifts to The Template Region
+        1. Method.
+        2. Results.
+     3. 3.3 Causal Role of The Template Region
+        1. Evaluation Metric.
+        2. Method.
+        3. Results.
+  5. 4 How Does TASA Cause Inference-time Vulnerabilities of LLMs
+     1. 4.1 TASA’s Impact on Response Generation
+        1. Method.
+        2. Results.
+     2. 4.2 Probing Attack Effects on Template
+        1. Method.
+        2. Results.
+  6. 5 Detaching Safety Mechanism from The Template Region
+     1. Transferability of Probes.
+     2. Detaching Safety Mechanism.
+  7. 6 Related Works
+     1. Safety Vulnerabilities of Aligned LLMs.
+     2. Mechanistic Interpretability for LLM Safety.
+  8. 7 Conclusion
+  9. References
+  10. A Implementation Details
+     1. A.1 TempPatch
+     2. A.2 Jailbreak Attacks
+     3. A.3 Detaching Safety Mechanism
+     4. A.4 Chat Templates
+  11. B Critical Intermediate States within Template for Safety Decision-making
+  12. C Transferability of Harmful Probes
+  13. D Examples of TempPatch
+  14. E Further Discussions
+     1. E.1 Distinct Pattern of Llama-2-7B in 
+     2. E.2 Non-semantic tokens might expand the template anchor effects
+
+
+
+[ License: CC BY-NC-SA 4.0 ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2502.13946v2 [cs.CL] 03 Jun 2025
+
+# Why Safeguarded Ships Run Aground? Aligned Large Language Models’ Safety Mechanisms Tend to Be Anchored in The Template Region
+
+Chak Tou Leong  Affiliation:  Department of Computing, The Hong Kong Polytechnic University  Qingyu Yin  Affiliation:  Zhejiang Universitychak-tou.leong@connect.polyu.hk qingyu.yin@zju.edu.cnjian51.wang@polyu.edu.hk cswjli@comp.polyu.edu.hk Jian Wang  Wenjie Li  Affiliation:  Department of Computing, The Hong Kong Polytechnic University 
+
+###### Abstract
+
+The safety alignment of large language models (LLMs) remains vulnerable, as their initial behavior can be easily jailbroken by even relatively simple attacks. Since infilling a fixed template between the input instruction and initial model output is a common practice for existing LLMs, we hypothesize that this template is a key factor behind their vulnerabilities: LLMs’ safety-related decision-making overly relies on the aggregated information from the template region, which largely influences these models’ safety behavior. We refer to this issue as template-anchored safety alignment. In this paper, we conduct extensive experiments and verify that template-anchored safety alignment is widespread across various aligned LLMs. Our mechanistic analyses demonstrate how it leads to models’ susceptibility when encountering inference-time jailbreak attacks. Furthermore, we show that detaching safety mechanisms from the template region is promising in mitigating vulnerabilities to jailbreak attacks. We encourage future research to develop more robust safety alignment techniques that reduce reliance on the template region.
+
+11footnotetext: Corresponding author.
+
+## 1 Introduction
+
+Figure 1: LLMs may inadvertently anchor their safety mechanisms to the template region: safety-related decision-making overly relies on the aggregated information (e.g., harmfulness of input) from that region, potentially causing vulnerabilities.
+
+Large language models (LLMs) are trained using safety alignment techniques and guided by ethical principles to ensure their interactions with users remain safe and helpful Bai et al. (2022a); Dai et al. (2024); Ji et al. (2023); Bai et al. (2022b). These alignment methods enable LLMs to identify and decline potentially harmful or unethical queries. Recent studies Zhang and Wu (2024); Lin et al. (2024); Li and Kim (2024) have revealed that safety alignment in LLMs is often superficial, where the alignment adapts a model’s generative distribution primarily over its beginning output tokens Qi et al. (2024a). This excessive focus on specific regions introduces vulnerabilities: adversarially optimized inputs Zou et al. (2023b); Chao et al. (2023); Liao and Sun (2024) or carefully crafted jailbreak prompts Wei et al. (2023); Shen et al. (2024b) targeting a model’s initial behavior can easily bypass safety mechanisms, undermining the model’s ability to maintain safety. However, the root causes of these vulnerabilities remain unclear, making it difficult to develop effective alignment strategies to address them.
+
+Existing aligned LLMs commonly incorporate a specific template inserted between the user’s input instruction and the model’s initial output Touvron et al. (2023); Jiang et al. (2023); Team et al. (2024), encoding essential role information in structuring interactions with users. As illustrated in Figure 1, the template for a safety-tuned LLM remains fixed, regardless of the input instruction. Positioned immediately before the model’s initial output, this template region aggregates information from the input and facilitates the critical transition from understanding instructions to generating responses. Due to its pivotal position, the template region serves as a potential anchor point for safety-related decision-making Jiang et al. (2025). We hypothesize that LLMs’ safety mechanisms may inadvertently take shortcuts to the tokens in the template region, relying too heavily on their aggregated information to assess the harmfulness of the input. We refer to this issue as Template-Anchored Safety Alignment (TASA), which leads to safety-related vulnerabilities. Specifically, jailbreak attacks that simply manipulate the model’s interpretation of the input via instructions can exploit this reliance to bypass safeguards and generate harmful responses. To thoroughly analyze TASA and its implications, our work is divided into the following three phases.
+
+First, we conduct comprehensive experiments to verify that TASA is widespread across various safety-tuned LLMs (Section 3). Our findings reveal that these models tend to shift their attention from the instruction region to the template region when processing harmful requests. Further analysis confirms that this shift is systematic rather than coincidental: models consistently rely more on the information from the template region when making safety-related decisions. Specifically, we observe that interventions in intermediate states derived from the template region, compared to the instruction region, significantly increase the likelihood of initial compliance decisions.
+
+Second, we establish a strong connection between TASA and inference-time vulnerabilities (Section 4). To investigate this, we perform interventions exclusively in the template region during the model’s response generation to harmful inputs. Notably, these interventions prove highly effective at inducing LLMs to comply with harmful requests, even without altering instructions. Furthermore, by probing harmfulness features across layers and positions within the template region, we observe that common inference-time attacks cause significant interferences in these positions. This finding explains how such attacks exploit TASA to compromise model safety.
+
+Third, we demonstrate that safety mechanisms anchored in the template region can be detached during response generation, enhancing the robustness of a model’s safety (Section 5). This approach stems from our observation that harmfulness probes trained on template positions in specific layers can be directly transferred to identify harmful outputs during response generation. By leveraging these probes, we can detect harmful content in inference and steer activations to mitigate interference from attacks. Our experiments validate that this method is both simple and effective, showing a significant reduction in attack success rates.
+
+In summary, this work investigates template-anchored safety alignment (TASA), a pervasive yet under-explored phenomenon in LLMs. We uncover its connection to inference-time vulnerabilities and propose initial strategies to alleviate this issue. Our findings highlight the importance of future safety alignment in developing more robust techniques that reduce models’ reliance on potential shortcuts.
+
+## 2 Background
+
+#### Generation Process of LLMs.
+
+Following prior works Elhage et al. (2021); Geva et al. (2023), we demonstrate how a Transformer Vaswani et al. (2017) decoder-based LLM computes new tokens autoregressively. Given a prompt with tokens t1,…,tTt_{1},\dots,t_{T}, tokens are first embedded into vectors 𝒙1,…,𝒙T{\bm{x}}_{1},\dots,{\bm{x}}_{T}. Each vector at position ii forms an initial residual stream 𝒙i0{\bm{x}}^{0}_{i}. Through each layer ℓ∈[1,L]\ell\in[1,L], the residual stream is updated according to 𝒙iℓ=𝒙iℓ−1+𝒂iℓ+𝒎iℓ{\bm{x}}^{\ell}_{i}={\bm{x}}^{\ell-1}_{i}+{\bm{a}}^{\ell}_{i}+{\bm{m}}^{\ell}_{i}, where 𝒂iℓ{\bm{a}}^{\ell}_{i} and 𝒎iℓ{\bm{m}}^{\ell}_{i} represent the attention and MLP outputs, respectively. For simplicity, we omit the layer normalization and position embedding calculations.
+
+Each attention head hh employs four projection matrices: 𝑾Qℓ,h,𝑾Kℓ,h,𝑾Vℓ,h∈ℝd×dH{\bm{W}}^{\ell,h}_{Q},{\bm{W}}^{\ell,h}_{K},{\bm{W}}^{\ell,h}_{V}\in\mathbb{R}^{d\times\frac{d}{H}} and 𝑾Oℓ,h∈ℝdH×d{\bm{W}}^{\ell,h}_{O}\in\mathbb{R}^{\frac{d}{H}\times d}. The attention map 𝑨∈ℝT×T{\bm{A}}\in\mathbb{R}^{T\times T} for each head is computed as: 𝑨ℓ,h=φ⁡((𝒙ℓ​𝑾Qℓ,h)​(𝒙ℓ​𝑾Kℓ,h)Td/H+𝑴){\bm{A}}^{\ell,h}=\varphi\left(\frac{({\bm{x}}^{\ell}{\bm{W}}^{\ell,h}_{Q})({\bm{x}}^{\ell}{\bm{W}}^{\ell,h}_{K})^{T}}{\sqrt{d/H}}+{\bm{M}}\right), φ\varphi denotes row-wise softmax normalization, and 𝑴{\bm{M}} is a lower triangular matrix for causal masking. The final outputs from the attention module is competed as 𝒂ℓ=∑h=1H(𝑨ℓ,h​𝒙ℓ​𝑾Vℓ,h)​𝑾Oℓ,h{\bm{a}}^{\ell}=\sum_{h=1}^{H}({\bm{A}}^{\ell,h}{\bm{x}}^{\ell}{\bm{W}}^{\ell,h}_{V}){\bm{W}}^{\ell,h}_{O}. The MLP then independently applies non-linear transformations on each token’s representation.
+
+Finally, the model unembeds the final position’s representation into logits, applies softmax to obtain next-token probabilities, and samples tokens autoregressively until the generation is complete.
+
+#### Activation Patching.
+
+Consider a metric m∈ℝm\in{\mathbb{R}} evaluated via a computation graph (e.g., an LLM), 𝐫∈ℝd{\mathbf{r}}\in{\mathbb{R}}^{d} represent a node (e.g., an intermediate activation11 1 We use these terms activation, representation and hidden state interchangeably throughout this paper.) in this graph. Following prior work Vig et al. (2020); Finlayson et al. (2021); Marks et al. (2024), we assess the importance of 𝐫{\mathbf{r}} for a pair of inputs (xclean,xpatch)\left(x_{\text{clean}},x_{\text{patch}}\right) by measuring its indirect effect (IE) Pearl (2001)) with respect to mm:
+
+|  | IE⁡(m,𝐫,xclean,xpatch)=\displaystyle\mathrm{IE}\left(m;{\mathbf{r}};x_{\text{clean}},x_{\text{patch}}\right)= |   
+---|---|---|---  
+|  | m⁡(xclean|do⁡(𝐫=𝐫patch))−m⁡(xclean).\displaystyle m\left(x_{\text{clean}}|\mathrm{do}({\mathbf{r}}={\mathbf{r}}_{\text{patch}})\right)-m(x_{\text{clean}}). |  | (1)  
+  
+In this formulation, 𝐫patch{\mathbf{r}}_{\text{patch}} represents the value that 𝐫{\mathbf{r}} is given in the computation of m⁡(xpatch)m(x_{\text{patch}}), and m⁡(xclean|do​(𝐫=𝐫patch))m(x_{\text{clean}}|\text{do}({\mathbf{r}}={\mathbf{r}}_{\text{patch}})) represents the metric’s value when computing m⁡(xclean)m(x_{\text{clean}}) with an intervention that explicitly sets 𝐫{\mathbf{r}} to 𝐫patch{\mathbf{r}}_{\text{patch}} . We illustrate this patching process at left side of Figure 4. As an example, consider the inputs xclean=x_{\text{clean}}= ‘How to make a bomb’ and xpatchx_{\text{patch}} = ‘How to read a book’, with metric m⁡(x)=P⁡(model complies|x)m(x)=P\left(\textit{model complies}|x\right) representing the model’s compliance probability. When 𝐫{\mathbf{r}} is an intermediate activation from a specific input position, larger values of IE​(m,𝐫,xclean,xpatch)\text{IE}(m;{\mathbf{r}};x_{\text{clean}},x_{\text{patch}}) suggest that the activation from this position is highly influential on the model’s compliance (equivalently, refusal) decision on this pair of inputs Wang et al. (2023); Heimersheim and Nanda (2024).
+
+#### Chat Template.
+
+Figure 2: Chat template from Llama-3-Instruct series.
+
+To encode necessary information about roles and interaction turns in the input, existing LLMs employ a predefined chat template to format user inputs and model outputs. Figure 2 shows an example chat template, where a user’s instruction (spanning positions 11 to SS) is enclosed between special tokens - one indicating the beginning of user input, and another indicating both its end and the start of the LLM’s response (positions S+1S+1 to TT). Due to the causal attention mechanism of LLMs, the beginning of the template positioned before the user’s instruction does not incorporate any information from the instruction. Therefore, our analysis focuses on the ending part of the template, which we refer to as the template region.
+
+## 3 The Template-Anchored Safety Alignment in Aligned LLMs
+
+More heads become less focused on this region. More heads become more focused on this region. L17H21 of Llama-3-8B-Instruct Figure 3: Left: Distributions of attention shift across different LLMs. The long positive tails of the template region’s shift distribution demonstrate that their attentions shift systematically from the instruction to the template region when processing harmful inputs. Right: Attention heatmaps (17th-layer, 21st-head) from Llama-3-8B-Instruct consistently illustrate this distinct pattern.
+
+### 3.1 Preliminaries
+
+#### Datasets.
+
+We construct two datasets, 𝒟anlz{\mathcal{D}}_{\text{anlz}} and 𝒟eval{\mathcal{D}}_{\text{eval}}, designed to analyze the behavioral differences of LLMs when handling harmless versus harmful inputs and to evaluate their refusal capabilities, respectively. Each dataset consists of paired harmful and harmless instructions. For 𝒟anlz{\mathcal{D}}_{\text{anlz}}, harmful instructions are sourced from JailbreakBench Chao et al. (2024), while for 𝒟eval{\mathcal{D}}_{\text{eval}}, they are drawn from HarmBench’s standard behavior test set Mazeika et al. (2024). The harmless counterparts in both datasets are sampled from Alpaca-Cleaned 22 2 https://huggingface.co/datasets/yahma/alpaca-cleaned, a filtered version of Alpaca Taori et al. (2023) that excludes refusal-triggering content. To ensure a precise comparative analysis, each harmless instruction matches its harmful counterpart in token length. Since tokenization methods vary across models, we maintained separate versions of 𝒟anlz{\mathcal{D}}_{\text{anlz}} and 𝒟eval{\mathcal{D}}_{\text{eval}} for each model.
+
+#### Models.
+
+To validate the generality of our findings, we study a diverse set of safety fine-tuned models: Gemma-2 (2b-it, 9b-it) Team et al. (2024), Llama-2-7b-Chat Touvron et al. (2023), Llama-3 (3.2-3b-Instruct, 8B-Instruct) Dubey et al. (2024), and Mistral-7B-Instruct Jiang et al. (2023).
+
+### 3.2 Attention Shifts to The Template Region
+
+In modern LLMs based on attention mechanisms, the distribution of attention weights across different heads reflects which regions of information collectively influence the model’s next token predictions Bibal et al. (2022). A notable observation is that when the model refuses harmful requests, its response often exhibits distinct patterns from the outset, for instance, initiating with the token ‘Sorry’ as the first output Zou et al. (2023b); Qi et al. (2024a). This suggests that if the model’s safety function primarily depends on the template region, then when processing harmful inputs, the attention weights at the final input position should focus more on the template region, while exhibiting comparatively less focus on the instruction region.
+
+Figure 4: Left: Illustration of the activation patching process from harmless to harmful inputs. Right: Normalized indirect effects when patching activations are from two different regions (instruction v.s. template) across various LLMs, revealing that these models’ safety functions are primarily anchored in the template regions.
+
+#### Method.
+
+To investigate whether the attention weights exhibit increased focus on the template region when processing harmful inputs, we analyze attention weight distributions across all heads for both the instruction and template regions. More importantly, we examine how these distributions differ between harmless and harmful inputs.
+
+Formally, for hh-th attention head in layer ℓ\ell, we compute the average attention weight accumulation over regions of interest. Let 𝐀T,iℓ,h,j\mathbf{A}^{\ell,h,j}_{T,i} denote the attention weight at the final position TT of the input that attends to the position ii in jj-example, we define the regional attention accumulation for harmless (++) and harmful (−-) inputs as:
+
+| αR±​(ℓ,h)=1|𝒟anlz|​∑j=1|𝒟anlz|∑i∈ℐR𝐀T,iℓ,h,j,±,\alpha^{\pm}_{R}(\ell,h)=\frac{1}{|{\mathcal{D}}_{\text{anlz}}|}\sum_{j=1}^{|{\mathcal{D}}_{\text{anlz}}|}\sum_{i\in{\mathcal{I}}_{R}}\mathbf{A}^{\ell,h,j,\pm}_{T,i}, |  | (2)  
+---|---|---|---  
+  
+where R∈{inst,temp}R\in\\{\text{inst},\text{temp}\\} indicates the region, with ℐinst={1,…,S}{\mathcal{I}}_{\text{inst}}=\\{1,\dots,S\\} and ℐtemp={S+1,…,T}{\mathcal{I}}_{\text{temp}}=\\{S+1,\dots,T\\} being the position indices for the instruction and template region, respectively.
+
+When processing harmful inputs compared to harmless ones, the attention shift is computed as:
+
+| δR​(ℓ,h)=αR−​(ℓ,h)−αR+​(ℓ,h),\delta_{R}(\ell,h)=\alpha^{-}_{R}(\ell,h)-\alpha^{+}_{R}(\ell,h), |  | (3)  
+---|---|---|---  
+  
+where a positive δR​(ℓ,h)\delta_{R}(\ell,h) indicates that region RR receives more attention from the given head when processing harmful inputs relative to harmless ones, whereas a negative value suggests the opposite.
+
+#### Results.
+
+Figure 3 shows the distribution histograms of δR\delta_{R} from all heads across the compared LLMs. We observe that the template distributions exhibit longer and more pronounced tails on the positive side compared to the negative side, while the instruction distributions show the opposite trend. This consistent phenomenon observed across various safety-tuned LLMs suggests that these models tend to focus more on the template region when processing harmful inputs, providing strong evidence for the existence of TASA.
+
+To illustrate this phenomenon more concretely, we showcase the behavior of a specific attention head (17th-layer, 21st-head) from Llama-3-8B-Instruct on the right side of Figure 3. This example demonstrates how an individual head behaves differently when processing harmless versus harmful inputs. We observe that the attention weights at the final input position (i.e., ‘\n\n’) show a clear focus shift from a concrete noun ‘tea’ in the instruction to a role-indicating token ‘assistant’ in the template region when the input is harmful.
+
+### 3.3 Causal Role of The Template Region
+
+While safety-tuned LLMs shift their attention toward the template region when processing harmful inputs, does this shift indicate a reliance on template information for safety-related decisions? To confirm this, we verify whether intermediate states from the template region exert a greater influence on models’ safety capabilities than those from the instruction region.
+
+#### Evaluation Metric.
+
+Quantifying the influence of intermediate states typically involves causal effects, such as IE (see Section 2). However, evaluating an LLM’s safety capability by analyzing complete responses for each of its numerous internal states would be highly inefficient. To address this, we adopt a lightweight surrogate metric following prior work Lee et al. (2024a); Arditi et al. (2024). This approach uses a linear probe on the last hidden states to estimate a model’s likelihood of complying with harmful inputs. The predicted logits for harmful inputs serve as an efficient proxy to measure the causal effects of intermediate states on safety capability, where higher logits for harmful inputs indicate weaker safety capability. Following difference-in-mean method Arditi et al. (2024); Marks and Tegmark (2024), we obtain the probe 𝒅+∈ℝd{\bm{d}}^{+}\in{\mathbb{R}}^{d} as follows:
+
+| 𝒅+=1|𝒟anlz|​∑j=1|𝒟anlz|𝒙TL,j,+−1|𝒟anlz|​∑j=1|𝒟anlz|𝒙TL,j,−,{\bm{d}}^{+}=\frac{1}{|{\mathcal{D}}_{\text{anlz}}|}\sum_{j=1}^{|{\mathcal{D}}_{\text{anlz}}|}{\bm{x}}^{L,j,+}_{T}-\frac{1}{|{\mathcal{D}}_{\text{anlz}}|}\sum_{j=1}^{|{\mathcal{D}}_{\text{anlz}}|}{\bm{x}}^{L,j,-}_{T}, |  | (4)  
+---|---|---|---  
+  
+where 𝒙TL,j,±{\bm{x}}^{L,j,\pm}_{T} is the residual stream from example jj of either harmless (++) or harmful (−-). We then compute m⁡(x)=𝒙TL​𝒅+m(x)={\bm{x}}_{T}^{L}{\bm{d}}^{+} and refer to it as the compliance metric.
+
+A 5-fold cross-validation of the probe achieves an average accuracy of 98.7±0.7%98.7\pm 0.7\% across models, demonstrating its effectiveness in distinguishing between safe and unsafe model behaviors.
+
+#### Method.
+
+Consider a scenario where we input the last token in the template and aim to obtain whether the model intends to comply the input, as measured by the compliance probe. In this forward pass, the residual stream of the last token aggregates context information by fusing the previous value states 𝒗<Tℓ,h≔𝒙<Tℓ​𝑾Vℓ,h{\bm{v}}^{\ell,h}_{<T}\coloneqq{\bm{x}}_{<T}^{\ell}{\bm{W}}^{\ell,h}_{V} in every attention head. To compute the causal effects of intermediate states from different regions, we calculate the IE when patching the value states of harmful input with those of harmless input for one region, while leaving the states unchanged for the other region. Specifically, we compute the IE as:
+
+|  | IER′ℓ,h​(m,𝒟anlz)=\displaystyle\mathrm{IE}^{\ell,h}_{R^{\prime}}\left(m;{\mathcal{D}}_{\text{anlz}}\right)= |   
+---|---|---|---  
+|  |  𝔼(x+,x−)∼𝒟anlz​[m⁡(x−|do⁡(𝒗ℐR′ℓ,h=𝒗ℐR′ℓ,h,+))−m⁡(x+)],\underset{\left(x^{+},x^{-}\right)\sim{\mathcal{D}}_{\text{anlz}}}{\mathbb{E}}\left[m\left(x^{-}|\mathrm{do}\left({\bm{v}}_{{\mathcal{I}}_{R^{\prime}}}^{\ell,h}={\bm{v}}_{{\mathcal{I}}_{R^{\prime}}}^{\ell,h,+}\right)\right)-m(x^{+})\right], |  | (5)  
+  
+where R′∈{inst,temp′,all}R^{\prime}\in\\{\text{inst},\text{temp}^{\prime},\text{all}\\} indicates a specific region, with ℐinst={1,…,K}{\mathcal{I}}_{\text{inst}}=\\{1,\dots,K\\}, ℐtemp′={K+1,…,T−1}{\mathcal{I}}_{\text{temp}^{\prime}}=\\{K+1,\dots,T-1\\} and ℐall={1,…,T−1}{\mathcal{I}}_{\text{all}}=\\{1,\dots,T-1\\}. Notably, we exclude the last position TT from patching to avoid direct impact on the compliance probe.
+
+Given that different heads have varying influences on safety capability, we first patch two regions together to quantify the importance of each head by IEallℓ,h​(m,𝒟anlz)\mathrm{IE}^{\ell,h}_{\text{all}}\left(m;{\mathcal{D}}_{\text{anlz}}\right). Then we cumulatively patch the value states of heads for each region, starting from the most important head to the least, to obtain IER′ℋ​(m,𝒟anlz)\mathrm{IE}^{\mathcal{H}}_{R^{\prime}}\left(m;{\mathcal{D}}_{\text{anlz}}\right). Here, ℋ={(ℓ1,h1),…}{\mathcal{H}}=\\{(\ell_{1},h_{1}),\dots\\} represents the head indexes sorted by their importance scores. A higher IER′ℋ\mathrm{IE}^{\mathcal{H}}_{R^{\prime}} indicates the information from region R′R^{\prime} has a greater causal effect on the model’s compliance decision, and vice versa. For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m⁡(x−)−m⁡(x+))(m(x^{-})-m(x^{+})).
+
+#### Results.
+
+Figure 4 shows the trend of NIE in different regions as the number of patched heads increases. We have these key observations: (1) When patching the template region, a substantial increase in NIE is achieved by patching only a small number of heads that are critical to safety capabilities. In contrast, patching the instruction region does not bring significant improvement. This indicates that the core computation of safety functions primarily occurs in heads processing information from the template region. (2) For most models, even as the number of patched heads increases steadily, the NIE of the instruction region remains a remarkable gap compared to that of the template region. This indicates that safety-tuned LLMs tend to rely on information from the template region rather than the instruction region when making initial compliance decisions. Even when reversed instruction information is forcibly injected, it has limited influence on the prediction results.
+
+Overall, these results confirm that the safety alignment of LLMs is indeed anchored: current safety alignment mechanisms primarily rely on information aggregated from the template region to make initial safety-related decisions .
+
+## 4 How Does TASA Cause Inference-time Vulnerabilities of LLMs
+
+While TASA has been broadly observed across various safety-tuned LLMs, its role in causing vulnerabilities, particularly in the context of jailbreak attacks, remains unclear. To investigate this, we address two key questions: First, to what extent does TASA influence the model’s initial output and affect its overall safety? Second, how is TASA connected to jailbreak attacks during generation?
+
+Figure 5: Performance of different attack methods. Surprisingly, simply intervening information from the template region (i.e., TempPatch) can significantly increase attack success rates. Figure 6: Probed harmful rates in the residual streams across layers and template positions (from the 5th to the 1st closest to the ending position) of Llama-3-8B-Instruct. The background intensity reflects the importance of each layer’s states for safety-related decisions, as aligned with Figure 10.
+
+### 4.1 TASA’s Impact on Response Generation
+
+To investigate the impact of TASA on the model’s safety capability, we intervene in the information from template positions during response generation for harmful requests, and evaluate whether the model can still produce refusal responses.
+
+#### Method.
+
+During the forward process of each token in the response, we replace the value states of a specific proportion of attention heads at template positions with the corresponding value states from processing the harmless input (see Section A.1). We refer to this operation as TempPatch and evaluate its performance on the Harmbench test set33 3 The implementation is available at <https://github.com/cooperleong00/TASA>.. For comparison, we also evaluate three representative jailbreak attack methods: (1) AIM Wei et al. (2023), a carefully crafted attack prompt; (2) PAIR Chao et al. (2023), which iteratively optimizes attack instructions using an attacker LLM; and (3) AmpleGCG Liao and Sun (2024), an efficient approach for generating adversarial suffixes Zou et al. (2023b) (see Section A.2). To assess compliance, we employ a compliance detector Xie et al. (2024) to identify whether the model complies with the provided inputs. The effectiveness of each method is measured by the attack success rate (ASR), defined as the proportion of inputs for which the model complies.
+
+#### Results.
+
+As shown in Figure 5, TempPatch significantly increases the ASRs of LLMs, achieving results that are comparable to or even surpass those of other specialized jailbreak attack methods. These findings further validate the deep connection between TASA and the safety mechanisms of LLMs. Moreover, while other attack methods demonstrate limited effectiveness against certain models, particularly the Llama-3 8B and 3B variants, TempPatch achieves notably higher ASR in comparison. This contrast suggests that what might seem like stronger safety alignment could actually depend more on shortcut-based safety mechanisms, which may potentially introduce unseen vulnerabilities when faced with scenarios outside the training distribution.
+
+### 4.2 Probing Attack Effects on Template
+
+To understand how jailbreak attacks affect information processing in the template region, we probe how harmfulness features are represented in the intermediate states under different attack scenarios.
+
+#### Method.
+
+We feed both harmful and harmless inputs from 𝒟anlz{\mathcal{D}}_{\text{anlz}} into Llama-3-8B-Instruct and collect residual streams at the template region across all layers. At each intermediate location, we construct a probe 𝒅−≔−𝒅+{\bm{d}}^{-}\coloneqq-{\bm{d}}^{+}, using the method described in Equation 4, but applied in the reverse direction. This probe is used to determine whether a state is harmful, defined as the predicted logit exceeding a decision threshold. The threshold is set at the midpoint between the average logits of harmful and harmless inputs. To quantify the harmfulness features at a specific intermediate location, we calculate the _harmful rate_ , defined as the proportion of intermediate states classified as harmful.
+
+#### Results.
+
+Figure 6 illustrates the harmful rate of residual streams across different layers and template positions. Our analysis highlights two key findings: (1) Successful attacks consistently reduce the harmful rate in residual streams across all template positions, indicating a uniform disruption in the processing of harmfulness features throughout the template region. (2) Notable patterns emerge at the last positions close to the ending (e.g., from ‘assistant’ to ‘\n\n’): For failed attacks, the harmful rate starts low but rises sharply in the middle layers, eventually plateauing at levels comparable to those of typical harmful inputs. In contrast, successful attacks exhibit only a modest increase across layers. These observations suggest that intermediate template regions are critical for aggregating harmful information: Successful attacks deeply suppress this aggregation process, whereas failed attacks are ultimately “exposed”.
+
+Recalling the insights about TASA (Section 3), the loss of harmfulness information in the template region caused by attacks disrupts initial safety evaluations, leading to incorrect decisions and ultimately resulting in unsafe behaviors .
+
+## 5 Detaching Safety Mechanism from The Template Region
+
+Since an anchored safety mechanism likely causes vulnerabilities, it is worth exploring whether a detached safety mechanism during generation could, conversely, improve the model’s overall safety robustness. This would involve detaching its safety functions from two aspects: (i) the process of identifying harmful content and (ii) the way this processed information is utilized during generation.
+
+#### Transferability of Probes.
+
+Regarding the first aspect, we inspect whether the harmfulness processing functions in the template region can transfer effectively to response generation. To investigate this, we collect harmful responses from successful jailbreaking attempts and harmless responses using instructions in 𝒟anlz{\mathcal{D}}_{\text{anlz}}. We then evaluate whether the harmfulness probes derived from the template region in Section 4.2 can still distinguish if a response is harmful. Specifically, we collect the residual streams from all layers at the first 50 positions of each response and measure the probes’ accuracy in classifying harmfulness.
+
+Figure 7: Harmful probes from middle layers (i.e., layer 14 in Llama-3-8B-Instruct) can be transferred to response generation while maintaining high accuracy.
+
+Figure 7 shows the harmfulness probes of Llama-3-8B-Instruct in the ending position of the template. It reveals that harmfulness probes from the middle layers achieve relatively high accuracy and remain consistent across response positions. This result suggests that harmfulness probes from specific layers in the template region can be effectively transferred to identify harmful content in generated responses. We also present harmful probes from other positions in the template region in Appendix C, which provides similar insights.
+
+#### Detaching Safety Mechanism.
+
+To address the harmfulness-to-generation aspect, we need to examine how harmfulness features evolve during the generation process. The right-most plot in Figure 6 highlights distinct patterns between successful and failed attacks when generating the first response token. In failed attacks, the harmfulness feature quickly peaks and sustains that level throughout the generation process, whereas in successful attacks, it decreases and remains at a low level. This observation suggests that additional harmfulness features should be injected during generation to counteract their decline in effective attacks.
+
+Based on this finding, we propose a simple straightforward method to detach the safety mechanism: use the probe to monitor whether the model is generating harmful content during response generation and, if detected, inject harmfulness features to trigger refusal behavior. Formally, for a harmful probe 𝒅τℓ,−{\bm{d}}^{\ell,-}_{\tau} obtained from position τ\tau and layer ℓ\ell, the representation at position ii during generation is steered as follows:
+
+| 𝒙iℓ←{𝒙iℓ+α​𝒅τℓ,−if ​𝒙iℓ​𝒅τℓ,−>λ𝒙iℓotherwise,{\bm{x}}_{i}^{\ell}\leftarrow\begin{cases}{\bm{x}}_{i}^{\ell}+\alpha{\bm{d}}^{\ell,-}_{\tau}&\text{if }{\bm{x}}_{i}^{\ell}{\bm{d}}^{\ell,-}_{\tau}>\lambda\\\ {\bm{x}}_{i}^{\ell}&\text{otherwise}\end{cases}, |  | (6)  
+---|---|---|---  
+  
+where α\alpha is a factor controlling the strength of injection and λ\lambda is a decision threshold (See Section A.3 for further details).
+
+We evaluate this approach against AIM, AmpleGCG, and PAIR attacks. We compare ASRs for response generations with and without detaching the safety mechanism, as shown in Table 1. The results demonstrate that detaching the safety mechanism from the template and applying it directly to response generation effectively reduces ASRs, strengthening the model’s safety robustness.
+
+Model | Attacks | w/o Detach | w/ Detach | Δ%\Delta\%  
+---|---|---|---|---  
+Gemma-2-9b-it | AIM | 89.3%89.3\% | 0.0%0.0\% | −89.3%-89.3\%  
+AmpleGCG | 62.3%62.3\% | 5.7%5.7\% | −56.6%-56.6\%  
+PAIR | 94.3%94.3\% | 11.9%11.9\% | −82.4%-82.4\%  
+Llama-3-8B-Instruct | AIM | 0.0%0.0\% | 0.0%0.0\% | 0.0%0.0\%  
+AmpleGCG | 29.6%29.6\% | 3.1%3.1\% | −26.5%-26.5\%  
+PAIR | 56.6%56.6\% | 16.2%16.2\% | −40.4%-40.4\%  
+  
+Table 1: Success rates of attacks with (w/) and without (w/o) detaching safety mechanism from the template region during response generation.
+
+## 6 Related Works
+
+#### Safety Vulnerabilities of Aligned LLMs.
+
+Although significant research has focused on aligning LLMs to develop safety mechanisms enabling them to reject harmful requests Bai et al. (2022a); Dai et al. (2024); Ji et al. (2023); Bai et al. (2022b), recent studies show these safety mechanisms remain vulnerable Wei et al. (2023); Qi et al. (2024b); Wei et al. (2024). These vulnerabilities enable attacks on aligned LLMs during inference through jailbreak prompts, which are typically crafted through manual design Wei et al. (2023), iterative refinement with LLM feedback Chao et al. (2023); Mehrotra et al. (2024), and optimization via gradient or heuristic methods Zou et al. (2023b); Liu et al. (2024b); Liao and Sun (2024) Such attacks exploit two key characteristics of aligned LLMs - the competition between helpfulness and harmlessness objectives (Wei et al., 2023; Ortu et al., 2024; Anil et al., 2024), and superficial alignment Zhang and Wu (2024); Lin et al. (2024); Li and Kim (2024); Qi et al. (2024a). Compared to previous studies, our work identifies an underexplored characteristic of aligned LLMs: their over-reliance on the template region for safety-related decisions. This dependency introduces a new attack surface Verma et al. (2025), exposing the limitations of current alignment strategies.
+
+#### Mechanistic Interpretability for LLM Safety.
+
+Mechanistic Interpretability (MI) aims to reverse-engineer specific model functions or behaviors to make their internal workings human-interpretable. This research examines various components like individual neurons (Gurnee et al., 2023; Stolfo et al., 2024), representations (Marks and Tegmark, 2024; Gurnee and Tegmark, 2024), and larger functional units such as MLPs (Geva et al., 2021; Geva et al., 2022) and attention heads (McDougall et al., 2023; Gould et al., 2024). Building on this foundation, recent research has leveraged MI to understand and enhance LLM safety Bereska and Gavves (2024). One line of research analyzes safety behaviors at the representation level and explores ways to manipulate safety-related representations Leong et al. (2023); Zou et al. (2023a); Arditi et al. (2024); Cao et al. (2024); Lee et al. (2024b); Li et al. (2024b); Shen et al. (2024a); Xu et al. (2024). Another investigates components directly connected to safety, such as neurons Chen et al. (2024), attention heads Zhu et al. (2024); Zhou et al. (2024), or MLPs Lee et al. (2024a); Luo et al. (2024). Some researchers examine specific aspects like safety-related parameters Wei et al. (2024); Yi et al. (2024) or the risks to safety mechanisms during fine-tuning Li et al. (2024a); Leong et al. (2024). Decomposing representations into interpretable sparse features enables automated explanations of safety mechanisms Kirch et al. (2024); Templeton (2024) and suggests promising directions for achieving more effective safety alignment at representation levels Liu et al. (2024a); Yin et al. (2024); Zou et al. (2024); Rosati et al. (2024).
+
+## 7 Conclusion
+
+This work investigates template-anchored safety alignment (TASA), a widespread yet understudied phenomenon in aligned LLMs. We reveal how it relates to vulnerabilities during inference and suggest preliminary approaches to address this problem. Our work emphasizes the need to develop more robust safety alignment techniques that reduce the risk of learning potential shortcuts.
+
+## Limitations
+
+Limited Generalization. While we have conducted systematic analysis on multiple mainstream models to demonstrate the widespread existence of the TASA issue, we acknowledge that this does not mean that all safety-aligned LLMs necessarily have significant TASA vulnerabilities. Our primary contribution lies in empirically demonstrating the existence of such vulnerabilities in real-world systems, rather than asserting their universality. Some aligned LLMs may actively or passively mitigate this issue through the following mechanisms: 1) Training data accidentally included defense patterns for relevant adversarial samples Lyu et al. (2024); Zhang et al. (2024); Qi et al. (2024a); 2) Feature suppression methods used in the safety alignment process happened to affect the activation conditions of the TASA trigger mechanism Zou et al. (2024); Rosati et al. (2024); 3) The model scale has not reached the critical threshold for vulnerability to emerge.
+
+Limited Solution. As a direct response to the TASA issue analysis, in Section 5 we attempt to detach the safety mechanism from the template region using activation steering Leong et al. (2023); Zou et al. (2023a); Arditi et al. (2024). Since we haven’t updated the model itself, we acknowledge that this method doesn’t eliminate the learned safety shortcuts. We view this approach as a proof-of-concept for detachable safety mechanisms rather than a comprehensive solution. Building on our findings, robust mitigation may require systematic integration of adversarial defense patterns during training Lyu et al. (2024); Zhang et al. (2024); Qi et al. (2024a), or proactive suppression of shortcut-prone features during alignment Zou et al. (2024); Rosati et al. (2024), which we leave for future work.
+
+## Ethic Statements
+
+This work reveals a new vulnerability in aligned LLMs, namely that LLMs’ alignment may learn shortcut-based safety mechanisms, causing them to rely on information from template regions to make safety decisions. Although exposing new vulnerabilities could potentially be exploited by malicious actors, given that direct interference with information processing at template region can only be performed on white-box models, we believe the benefits of new insights into current safety alignment deficiencies far outweigh the risks. We hope these new findings will promote the development of more robust safety alignment methods.
+
+## Acknowledgements
+
+This work was supported by the Research Grants Council of Hong Kong (15207821, 15213323). The authors would like to thank the anonymous reviewers for their valuable feedback and constructive suggestions.
+
+## References
+
+  * Anil et al. (2024) Cem Anil, Esin Durmus, Nina Rimsky, Mrinank Sharma, Joe Benton, Sandipan Kundu, Joshua Batson, Meg Tong, Jesse Mu, Daniel J Ford, Francesco Mosconi, Rajashree Agrawal, Rylan Schaeffer, Naomi Bashkansky, Samuel Svenningsen, Mike Lambert, Ansh Radhakrishnan, Carson Denison, Evan J Hubinger, Yuntao Bai, Trenton Bricken, Timothy Maxwell, Nicholas Schiefer, James Sully, Alex Tamkin, Tamera Lanham, Karina Nguyen, Tomasz Korbak, Jared Kaplan, Deep Ganguli, Samuel R. Bowman, Ethan Perez, Roger Baker Grosse, and David Duvenaud. 2024.  [Many-shot jailbreaking](https://openreview.net/forum?id=cw5mgd71jW).  In _The Thirty-eighth Annual Conference on Neural Information Processing Systems_. 
+  * Arditi et al. (2024) Andy Arditi, Oscar Obeso, Aaquib Syed, Daniel Paleka, Nina Panickssery, Wes Gurnee, and Neel Nanda. 2024.  Refusal in language models is mediated by a single direction.  _arXiv preprint arXiv:2406.11717_. 
+  * Bai et al. (2022a) Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, et al. 2022a.  Training a helpful and harmless assistant with reinforcement learning from human feedback.  _arXiv preprint arXiv:2204.05862_. 
+  * Bai et al. (2022b) Yuntao Bai, Saurav Kadavath, Sandipan Kundu, Amanda Askell, Jackson Kernion, Andy Jones, Anna Chen, Anna Goldie, Azalia Mirhoseini, Cameron McKinnon, et al. 2022b.  Constitutional ai: Harmlessness from ai feedback.  _arXiv preprint arXiv:2212.08073_. 
+  * Bereska and Gavves (2024) Leonard Bereska and Efstratios Gavves. 2024.  Mechanistic interpretability for ai safety–a review.  _arXiv preprint arXiv:2404.14082_. 
+  * Bibal et al. (2022) Adrien Bibal, Rémi Cardon, David Alfter, Rodrigo Wilkens, Xiaoou Wang, Thomas François, and Patrick Watrin. 2022.  [Is attention explanation? an introduction to the debate](https://doi.org/10.18653/v1/2022.acl-long.269).  In _Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)_ , pages 3889–3900, Dublin, Ireland. Association for Computational Linguistics. 
+  * Cao et al. (2024) Zouying Cao, Yifei Yang, and Hai Zhao. 2024.  Nothing in excess: Mitigating the exaggerated safety for llms via safety-conscious activation steering.  _arXiv preprint arXiv:2408.11491_. 
+  * Chao et al. (2024) Patrick Chao, Edoardo Debenedetti, Alexander Robey, Maksym Andriushchenko, Francesco Croce, Vikash Sehwag, Edgar Dobriban, Nicolas Flammarion, George J. Pappas, Florian Tramèr, Hamed Hassani, and Eric Wong. 2024.  [Jailbreakbench: An open robustness benchmark for jailbreaking large language models](https://openreview.net/forum?id=urjPCYZt0I).  In _The Thirty-eight Conference on Neural Information Processing Systems Datasets and Benchmarks Track_. 
+  * Chao et al. (2023) Patrick Chao, Alexander Robey, Edgar Dobriban, Hamed Hassani, George J. Pappas, and Eric Wong. 2023.  [Jailbreaking black box large language models in twenty queries](https://openreview.net/forum?id=rYWD5TMaLj).  In _R0-FoMo:Robustness of Few-shot and Zero-shot Learning in Large Foundation Models_. 
+  * Chen et al. (2024) Jianhui Chen, Xiaozhi Wang, Zijun Yao, Yushi Bai, Lei Hou, and Juanzi Li. 2024.  Finding safety neurons in large language models.  _arXiv preprint arXiv:2406.14144_. 
+  * Dai et al. (2024) Josef Dai, Xuehai Pan, Ruiyang Sun, Jiaming Ji, Xinbo Xu, Mickel Liu, Yizhou Wang, and Yaodong Yang. 2024.  [Safe RLHF: Safe reinforcement learning from human feedback](https://openreview.net/forum?id=TyFrPOKYXw).  In _The Twelfth International Conference on Learning Representations_. 
+  * Dubey et al. (2024) Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian, Ahmad Al-Dahle, Aiesha Letman, Akhil Mathur, Alan Schelten, Amy Yang, Angela Fan, et al. 2024.  The llama 3 herd of models.  _arXiv preprint arXiv:2407.21783_. 
+  * Elhage et al. (2021) Nelson Elhage, Neel Nanda, Catherine Olsson, Tom Henighan, Nicholas Joseph, Ben Mann, Amanda Askell, Yuntao Bai, Anna Chen, Tom Conerly, et al. 2021.  A mathematical framework for transformer circuits.  _Transformer Circuits Thread_ , 1(1):12. 
+  * Finlayson et al. (2021) Matthew Finlayson, Aaron Mueller, Sebastian Gehrmann, Stuart Shieber, Tal Linzen, and Yonatan Belinkov. 2021.  [Causal analysis of syntactic agreement mechanisms in neural language models](https://doi.org/10.18653/v1/2021.acl-long.144).  In _Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)_ , pages 1828–1843, Online. Association for Computational Linguistics. 
+  * Geva et al. (2023) Mor Geva, Jasmijn Bastings, Katja Filippova, and Amir Globerson. 2023.  [Dissecting recall of factual associations in auto-regressive language models](https://doi.org/10.18653/v1/2023.emnlp-main.751).  In _Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing_ , pages 12216–12235, Singapore. Association for Computational Linguistics. 
+  * Geva et al. (2022) Mor Geva, Avi Caciularu, Kevin Wang, and Yoav Goldberg. 2022.  [Transformer feed-forward layers build predictions by promoting concepts in the vocabulary space](https://doi.org/10.18653/v1/2022.emnlp-main.3).  In _Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing_ , pages 30–45, Abu Dhabi, United Arab Emirates. Association for Computational Linguistics. 
+  * Geva et al. (2021) Mor Geva, Roei Schuster, Jonathan Berant, and Omer Levy. 2021.  [Transformer feed-forward layers are key-value memories](https://doi.org/10.18653/v1/2021.emnlp-main.446).  In _Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing_ , pages 5484–5495, Online and Punta Cana, Dominican Republic. Association for Computational Linguistics. 
+  * Gould et al. (2024) Rhys Gould, Euan Ong, George Ogden, and Arthur Conmy. 2024.  [Successor heads: Recurring, interpretable attention heads in the wild](https://openreview.net/forum?id=kvcbV8KQsi).  In _The Twelfth International Conference on Learning Representations_. 
+  * Gu et al. (2024) Xiangming Gu, Tianyu Pang, Chao Du, Qian Liu, Fengzhuo Zhang, Cunxiao Du, Ye Wang, and Min Lin. 2024.  When attention sink emerges in language models: An empirical view.  _arXiv preprint arXiv:2410.10781_. 
+  * Gurnee et al. (2023) Wes Gurnee, Neel Nanda, Matthew Pauly, Katherine Harvey, Dmitrii Troitskii, and Dimitris Bertsimas. 2023.  [Finding neurons in a haystack: Case studies with sparse probing](https://openreview.net/forum?id=JYs1R9IMJr).  _Transactions on Machine Learning Research_. 
+  * Gurnee and Tegmark (2024) Wes Gurnee and Max Tegmark. 2024.  [Language models represent space and time](https://openreview.net/forum?id=jE8xbmvFin).  In _The Twelfth International Conference on Learning Representations_. 
+  * Heimersheim and Nanda (2024) Stefan Heimersheim and Neel Nanda. 2024.  How to use and interpret activation patching.  _arXiv preprint arXiv:2404.15255_. 
+  * Ji et al. (2023) Jiaming Ji, Mickel Liu, Josef Dai, Xuehai Pan, Chi Zhang, Ce Bian, Boyuan Chen, Ruiyang Sun, Yizhou Wang, and Yaodong Yang. 2023.  [Beavertails: Towards improved safety alignment of llm via a human-preference dataset](https://proceedings.neurips.cc/paper_files/paper/2023/file/4dbb61cb68671edc4ca3712d70083b9f-Paper-Datasets_and_Benchmarks.pdf).  In _Advances in Neural Information Processing Systems_ , volume 36, pages 24678–24704. Curran Associates, Inc. 
+  * Jiang et al. (2023) Albert Q Jiang, Alexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra Singh Chaplot, Diego de las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, et al. 2023.  Mistral 7b.  _arXiv preprint arXiv:2310.06825_. 
+  * Jiang et al. (2025) Fengqing Jiang, Zhangchen Xu, Luyao Niu, Bill Yuchen Lin, and Radha Poovendran. 2025.  Chatbug: A common vulnerability of aligned llms induced by chat templates.  In _Proceedings of the AAAI Conference on Artificial Intelligence_ , volume 39, pages 27347–27355. 
+  * Kirch et al. (2024) Nathalie Maria Kirch, Severin Field, and Stephen Casper. 2024.  What features in prompts jailbreak llms? investigating the mechanisms behind attacks.  _arXiv preprint arXiv:2411.03343_. 
+  * Lee et al. (2024a) Andrew Lee, Xiaoyan Bai, Itamar Pres, Martin Wattenberg, Jonathan K. Kummerfeld, and Rada Mihalcea. 2024a.  [A mechanistic understanding of alignment algorithms: A case study on DPO and toxicity](https://openreview.net/forum?id=dBqHGZPGZI).  In _Forty-first International Conference on Machine Learning_. 
+  * Lee et al. (2024b) Bruce W Lee, Inkit Padhi, Karthikeyan Natesan Ramamurthy, Erik Miehling, Pierre Dognin, Manish Nagireddy, and Amit Dhurandhar. 2024b.  Programming refusal with conditional activation steering.  _arXiv prepri

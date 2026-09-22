@@ -1,0 +1,367 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2603.24543
+Type: HTML
+Length: 81104 chars (truncated)
+
+--- Content ---
+
+##### Report GitHub Issue
+
+×
+
+Title:
+
+Content selection saved. Describe the issue below:
+
+Description:
+
+Submit without GitHub Submit in GitHub
+
+arXiv is now an independent nonprofit! [Learn more](https://info.arxiv.org/about) ×
+
+[ Back to arXiv ](/)
+
+[Why HTML?](https://info.arxiv.org/about/accessible_HTML.html) Report Issue [ Back to Abstract ](/abs/2603.24543v1 "Back to abstract page") [ Download PDF](/pdf/2603.24543v1 "Download PDF") [ ](javascript:toggleNavTOC\(\); "Toggle navigation") [ ](javascript:toggleReadingMode\(\); "Disable reading mode, show header and footer")
+
+  1. Abstract
+  2. 1 Introduction
+  3. 2 Related Work
+     1. Activation Steering and its Brittleness.
+     2. Safety Alignment and its Brittleness.
+  4. 3 Preliminaries
+     1. Activation Steering Intervention.
+     2. Constructing Steering Vectors.
+     3. Refusal Direction in LMs.
+  5. 4 Experiments
+     1. 4.1 Experimental Setup
+        1. Models.
+        2. Benchmark.
+        3. Attacks.
+        4. Metrics.
+     2. 4.2 Steering Settings
+        1. Steering vector construction.
+        2. Layer selection and aggregation.
+        3. Intervention protocol.
+  6. 5 Steering Reliably Perturbs Model Safety
+     1. Steering affects safety even without jailbreak prompts.
+     2. Amplification scales with adversarial attacks and model capacity.
+     3. Behaviors Heterogeneity and Polarity Dependence.
+  7. 6 Steering Interferes with a Shared Refusal Subspace
+     1. Cosine Similarity with Refusal Direction.
+     2. Quantifying the Link Between Refusal Alignment and Safety.
+     3. Effect of model scale.
+     4. Collateral Effects on Benign Prompts.
+  8. 7 Directional Ablation of Refusal Component
+     1. Ablation reduces safety perturbations.
+  9. 8 Discussion
+     1. Incomplete Mitigation Suggests Multi-dimensional Safety Space.
+     2. Connection with Current LLM Alignment and Steering.
+  10. 9 Conclusion
+  11. 10 Limitations
+  12. 11 Ethical considerations
+  13. References
+  14. A Supplementary Experimental Details
+     1. A.1 Model Implementation Details
+     2. A.2 Steer Layer Configuration
+     3. A.3 Behavior-name correspondence
+     4. A.4 Refusal Direction Construction
+        1. Datasets.
+        2. Refusal Direction Estimation.
+        3. Selection.
+     5. A.5 Prompt Templates for Attacks
+     6. A.6 LLM-as-Judge Implementation Detail
+  15. B Supplementary Results
+     1. B.1 General Performance under Activation Steering
+     2. B.2 Additional Results for regression analysis
+     3. B.3 Ablation Impact on ASR Curves
+     4. B.4 Heatmaps for Negative Steering
+  16. C Case Study
+     1. Objective.
+     2. Setup.
+     3. Analysis.
+
+
+
+[ License: CC BY 4.0 ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2603.24543v1 [cs.CR] 25 Mar 2026
+
+# Analysing the Safety Pitfalls of Steering Vectors
+
+Yuxiao Li  Alina Fastowski  Efstratios Zaradoukas  Bardh Prenkaj  Gjergji Kasneci  Affiliation: Technical University of Munich  Affiliation: Munich Center for Machine Learning  Email: [{name.surname}@tum.de](mailto:)
+
+###### Abstract
+
+Activation steering has emerged as a powerful tool to shape LLM behavior without the need for weight updates. While its inherent brittleness and unreliability are well-documented, its safety implications remain underexplored. In this work, we present a systematic safety audit of steering vectors obtained with Contrastive Activation Addition (CAA), a widely used steering approach, under a unified evaluation protocol. Using JailbreakBench as benchmark, we show that steering vectors consistently influence the success rate of jailbreak attacks, with stronger amplification under simple template-based attacks. Across LLM families and sizes, steering the model in specific directions can drastically increase (up to 57%57\%) or decrease (up to 50%50\%) its attack success rate (ASR), depending on the targeted behavior. We attribute this phenomenon to the overlap between the steering vectors and the latent directions of refusal behavior. Thus, we offer a traceable explanation for this discovery. Together, our findings reveal the previously unobserved origin of this safety gap in LLMs, highlighting a trade-off between controllability and safety.
+
+Disclaimer: This manuscript may contain potentially harmful model outputs.
+
+## 1 Introduction
+
+Figure 1: Activation steering erodes LLM safety. For Qwen 14B, without steering, a model refuses harmful input (ASR: 4%, A). Steering towards "Self-Awareness" alone compromises safety (ASR: 42%, C). Critically, combining steering with simple attacks leads to a near-complete collapse of safety (ASR: 80%, B), revealing a severe safety-controllability trade-off in LLMs.
+
+Activation steering provides a cost-efficient way for controlling Large Language Models’ (LLMs) behavior at inference time Zou et al. (2025); Turner et al. (2024); Panickssery et al. (2024); Chalnev et al. (2024). By directly manipulating LLMs activations, steering can guide high-level attributes, such as enhancing truthfulness Li et al. (2023), mitigating sycophancy Panickssery et al. (2024), shaping political leanings Kim et al. (2025), and even improving complex reasoning Wang et al. (2025). Despite its conceptual elegance and initial successes, the reliability of steering remains a significant challenge. Recent studies highlight its poor generalization, limited effectiveness to specific tasks, and substantial variability Tan et al. (2024); Brumley et al. (2024); Silva et al. (2025); Braun et al. (2025). These fundamental reliability issues question the real-world advantages of steering over simple prompting Wu et al. (2025). However, the existing line of research has defined and analyzed steering brittleness primarily through the lens of utility and reliability: does the steering vector reliably produce its intended effect without breaking the LLMs’ general capabilities?
+
+Motivated by the gap between steering’s promise of control and the emerging evidence of its unreliability, this paper investigates a more dangerous dimension of its brittleness: safety. Our central research question is: How does steering impact the safety alignment of LLMs? We conduct a systematic safety audit of steering as a technique, treating it as an inherently fragile process with predictable safety pitfalls. Our central finding is that steering’s primary safety gap is its systematic erosion of the model’s safety alignment, increasing the success rate of otherwise weak, prompt-level jailbreak attacks. Our contributions are the following:
+
+(1) We conduct the a systematic safety audit of activation steering spanning six models from three families and sizes (3B–32B). Using simple, template-based attacks as a diagnostic tool, we find that steering systematically alters the ASR, with some behaviors causing drastic increases (up to 57%) or decreases (up to 50%).
+
+(2) We trace these safety issues to a mechanistic origin. Our analysis reveals that this phenomenon is correlated with the directional overlap between steering vectors and the model’s refusal behavior direction.
+
+(3) We provide causal evidence for this mechanism and demonstrate a potential mitigation strategy. By ablating the refusal-aligned component from steering vectors, we consistently mitigate the vector’s impact on ASR, providing causal validation for the geometric interference hypothesis.
+
+(4) We establish a fundamental trade-off between controllability and safety. With our work, we aim to draw attention to a new class of vulnerabilities and motivate a research agenda towards inherently safe steering methods.
+
+## 2 Related Work
+
+#### Activation Steering and its Brittleness.
+
+Building on mechanistic interpretability studies Wang et al. (2022); Elhage et al. (2022); Goldowsky-Dill et al. (2023); Bricken et al. (2023); Nanda et al. (2023); Park et al. (2024), activation steering is first proposed as a lightweight paradigm for modifying LLMs’ behavior without altering the parameters Subramani et al. (2022); Zou et al. (2025). Existing approaches operate at different levels of the model architecture: steering vectors computed from activation differences Turner et al. (2024); Panickssery et al. (2024), direct interventions on attention head outputs Li et al. (2023); Zhang et al. (2024), and methods based on sparse autoencoders that extract interpretable feature directions in the residual stream activations Chalnev et al. (2024).
+
+While steering has been applied to different tasks Kim et al. (2025); Stolfo et al. (2025); Durmus et al. (2024); Wang et al. (2025), prior work has revealed significant challenges regarding its reliability and generalization. Studies show that steering suffers from high variability, poor out-of-distribution generalization Tan et al. (2024), and frequent ineffectiveness Silva et al. (2025). Its effectiveness is often limited to specific task types Brumley et al. (2024) and is less successful when steering multiple behaviors at once van der Weij et al. (2024). The underlying cause may be tied to the geometric coherence of activation differences Braun et al. (2025), and prompting comparisons that question its utility over simpler baselines like prompting Wu et al. (2025). While these works largely frame brittleness as a limitation for utility, we adopt a safety-focused perspective and investigate a more dangerous pitfall, the erosion of safety alignment due to activation steering.
+
+#### Safety Alignment and its Brittleness.
+
+Safety alignment in instruction-tuned LLMs is primarily achieved through refusal training, where models are trained to reject unsafe or disallowed requests Ouyang et al. (2022); Bai et al. (2022a); Bai et al. (2022b); Rafailov et al. (2023). However, this alignment is often brittle Barnhart et al. (2025); Ji et al. (2024); Wolf et al. (2024), as the model’s underlying unsafe capabilities are merely suppressed, not erased, resulting in a fragile safety loophole Qi et al. (2024); Su et al. (2024); Wei et al. (2024). This brittleness is exposed by jailbreak studies, where prompt-level attacks have been shown to bypass safety alignment Wei et al. (2023); Huang et al. (2023); Andriushchenko et al. (2025); Zou et al. (2023). At a deeper level, representation-level analysis reveals how refusal behaviors are encoded and can be subverted in activation space Gao et al. (2025); Kawasaki et al. (2025); Li et al. (2025). Interestingly, Arditi et al. (2024) find that refusal behavior is mediated by a single direction in the model’s residual stream activations. Similarly, Wollschläger et al. (2025) and Pan et al. (2025) argue that refusal is not one-dimensional, but instead is controlled by higher-dimensional directions.
+
+We extend this representational view by showing that activation steering consistently shifts attack success rate. Specifically, we show that steering vectors partially align with the one-dimensional refusal direction, and use this geometric overlap to examine how activation shifts can push the model off its safety manifold.
+
+## 3 Preliminaries
+
+#### Activation Steering Intervention.
+
+Let fθf_{\theta} be a decoder-only LLM with transformer layers {1,…,L}\\{1,\dots,L\\}. For an input xx and layer ℓ\ell, denote the residual stream activation of token position ii by hℓ(i)​(x)∈ℝdℓh_{\ell}^{(i)}(x)\in\mathbb{R}^{d_{\ell}}. Furthermore, let pp be a prompt consisting of |p||p| tokens. We denote as i∈{1,…,|p|}i\in\\{1,...,|p|\\} the token position in pp. At inference time, we apply steering during the forward pass on the prompt tokens by adding a fixed direction to these activations. Given a steering vector vℓ,τv_{\ell,\tau} and a scalar multiplier m∈ℝm\in\mathbb{R} controlling its strength, the steered activation is:
+
+| h~ℓ(i)​(x)=hℓ(i)​(x)+m​vℓ,τ.\tilde{h}_{\ell}^{(i)}(x)\;=\;h_{\ell}^{(i)}(x)\;+\;mv_{\ell,\tau}. |  | (1)  
+---|---|---|---  
+  
+Here vℓ,τv_{\ell,\tau} is associated with some behavioral trait τ\tau, and mm determines the sign and magnitude of the intervention. We describe the choices of behavior vectors vℓ,τv_{\ell,\tau}, layers ℒ\mathcal{L}, multipliers mm, and evaluation protocol in Section 4.
+
+#### Constructing Steering Vectors.
+
+Following Panickssery et al. (2024), we derive steering vectors from differences in residual stream activations between positive and negative examples of a behavior (e.g., factual vs. hallucinatory responses), and apply them during inference to modulate the behavior’s intensity. For each trait τ\tau and layer ℓ\ell, we construct a steering vector by contrasting activations from paired prompts that differ only in the answer option associated with the trait. Let 𝒟τ={(p,y+,y−)}\mathcal{D}_{\tau}=\\{(p,y_{+},y_{-})\\} denote multiple-choice contrast triples where y+y_{+} encodes the presence of τ\tau and y−y_{-} its opposite.11 1 Following CAA, prompts are identical up to the appended answer letter. Let hℓ​(p,y)∈ℝdℓh_{\ell}(p,y)\in\mathbb{R}^{d_{\ell}} denote the residual-stream activation at layer ℓ\ell taken at the token position of the answer letter when the model is run on prompt pp with answer yy. The mean-difference Contrastive Activation Addition (CAA) vector is then:
+
+| vℓ,τ=1|𝒟τ|​∑(p,y+,y−)∈𝒟τ[hℓ​(p,y+)−hℓ​(p,y−)].v_{\ell,\tau}\;=\;\frac{1}{|\mathcal{D}_{\tau}|}\sum_{(p,y_{+},y_{-})\in\mathcal{D}_{\tau}}\big[\,h_{\ell}(p,y_{+})-h_{\ell}(p,y_{-})\,\big]. |  | (2)  
+---|---|---|---  
+  
+Intuitively, the contrast between activations for prompts differing only in their answer label isolates the latent direction most predictive of trait τ\tau while holding the rest of the prompt fixed. At inference time, we later add this vector during the forward pass on the prompt tokens as described in Eq. 1.
+
+#### Refusal Direction in LMs.
+
+Refusal behavior can be extracted directly from model activations. Following Arditi et al. (2024), we construct a refusal direction by contrasting activations on harmful versus harmless instructions. Concretely, let 𝒟harmful\mathcal{D}_{\text{harmful}} denote a set of harmful prompts and 𝒟harmless\mathcal{D}_{\text{harmless}} a set of harmless prompts. For each layer ℓ\ell, we compute the difference-in-means vector rℓr_{\ell}, where 𝐡ℓ​(p)\mathbf{h}_{\ell}(p) is the activation at the final token for prompt pp:
+
+| rℓ=∑p∈𝒟harmful𝐡ℓ​(p)|𝒟harmful|−∑p∈𝒟harmless𝐡ℓ​(p)|𝒟harmless|.r_{\ell}=\frac{\sum_{p\in\mathcal{D}_{\text{harmful}}}\mathbf{h}_{\ell}(p)}{|\mathcal{D}_{\text{harmful}}|}\;-\;\frac{\sum_{p\in\mathcal{D}_{\text{harmless}}}\mathbf{h}_{\ell}(p)}{|\mathcal{D}_{\text{harmless}}|}. |  | (3)  
+---|---|---|---  
+  
+In practice, we follow the data splits and selection protocol of the original work. Several such candidate vectors can be generated across layers and prompt splits. We select the single most effective vector, hereafter denoted as r^\hat{r}, by evaluating each candidate’s ability to control refusal behavior on a validation set. We use this vector r^\hat{r} as a tractable proxy for the model’s refusal direction in our later analysis. Vector construction details could be found in Section A.4.
+
+## 4 Experiments
+
+### 4.1 Experimental Setup
+
+#### Models.
+
+To ensure the generalizability of our findings, we evaluate a broad and representative selection of open-source LLMs. Our main testbed includes three 7B-parameter models from different families: Llama-2-7b-chat-hf Touvron et al. (2023), Gemma-7b-it Team et al. (2024), and Qwen2.5-7B-Instruct Qwen et al. (2025). In addition, we include three more models from the Qwen2.5 family at different scales, 3B, 14B, and 32B leaving us with 6 models in total. This selection enables us to examine both cross-family variations and scaling effects within a single model family.
+
+Figure 2: Steering strongly influences jailbreak ASR. ASR is shown as a function of steering multiplier across model families, behaviors, and attack settings. Top row: prompt-only. Bottom rows: prefix injection and refusal suppression attacks. Note that the y-axis scale differs across rows to highlight variation in ASR magnitudes.
+
+#### Benchmark.
+
+We employ JailbreakBench Chao et al. (2024), a benchmark created to evaluate the robustness of safety-aligned LLMs against jailbreak attacks. This dataset provides a curated, diverse, and representative set of 100 harmful and benign examples that span a broad range of high-risk categories, including harassment, disinformation, and privacy violations.
+
+#### Attacks.
+
+We probe the safety erosion through two lightweight, template-based attacks from Wei et al. (2023). Refusal Suppression explicitly prohibits safety-aligned behaviors by forbidding apologies, disclaimers, or refusal-indicative language. Prefix Injection prepends a brief sentence that the model must reproduce before responding to condition the generation process. These simple yet representative attacks provide controlled probes for examining how steering interacts with LLM safety. Full templates are provided in Section A.5.
+
+#### Metrics.
+
+We evaluate models using two complementary metrics. Attack Success Rate (ASR) is the proportion of harmful queries that elicit unsafe responses, indicating jailbreak susceptibility. False Refusal Rate (FRR) is the proportion of benign queries that are incorrectly refused, capturing over-refusal behavior that degrades utility. Both are computed via GPT-4o-mini as LLM-as-a-Judge Zheng et al. (2023). The judge classifies each response as safe, jailbroken, or non-comprehensible. The judging template is provided in Section A.6.
+
+Figure 3: Heatmaps showing changes in Δ\DeltaASR relative to the baseline (multiplier m=0m=0) under positive steering (multiplier m=1.5m=1.5) across behaviors, model families, and attack scenarios.
+
+### 4.2 Steering Settings
+
+#### Steering vector construction.
+
+For steering vectors, we take inspiration from the publicly released behavior vectors Panickssery et al. (2024); Tan et al. (2024). These vectors capture diverse behavioral traits (e.g., Self-Awareness, Anti-LGBTQ, Hallucination, Openness) that are salient in current alignment discussions but not explicitly tied to refusal mechanisms. This choice serves two purposes: first, it allows us to study how steering on common alignment-related behavioral dimensions can inadvertently interfere with safety alignment. Second, it ensures that our results are not biased by trivially overlapping with refusal-related signals.
+
+#### Layer selection and aggregation.
+
+Following Panickssery et al. (2024), we first sweep across all layers by applying steering with multipliers m∈{−1,0,+1}m\in\\{-1,0,+1\\} to identify those that exhibit strong controllability on a held-out set of benign prompts. In practice, we restrict our analysis to layers within this range of high steering effect. For experiments involving refusal direction ablation, we further focus on the layer of the most prominent refusal direction, which falls within the same region. This ensures both that steering is effective and that ablation can meaningfully interact with the safety-relevant directions.
+
+#### Intervention protocol.
+
+Unless otherwise specified, we apply the steering operation defined in Eq. 1 to the residual stream activations at all token positions following the prompt. Concretely, for layer ℓ\ell and token ii, this amounts to replacing
+
+| hℓ(i)​(x)←h~ℓ(i)​(x)=hℓ(i)​(x)+m​vℓ.h_{\ell}^{(i)}(x)\;\leftarrow\;\tilde{h}_{\ell}^{(i)}(x)\;=\;h_{\ell}^{(i)}(x)+mv_{\ell}. |   
+---|---|---  
+  
+Steering intensities are swept over m={0,±0.5,±1.0,±1.5}m=\\{0,\pm 0.5,\pm 1.0,\pm 1.5\\}, with m=0m=0 denoting the unsteered baseline. 22 2 Layer selection details and justification are provided in Section A.2.
+
+## 5 Steering Reliably Perturbs Model Safety
+
+Takeaway: Activation steering is not safety-neutral. It consistently alters models’ susceptibility to jailbreaks. The effect is amplified by simple adversarial attacks and is more pronounced in larger, more capable models.
+
+We first establish that steering vectors function as reliable modulators of model safety performance across families and scales. Figure 2 reports ASR as a function of steering multiplier mm for a diverse set of behaviors, revealing two consistent patterns33 3 For readability we simplify behavior names shown in figures; the full mapping appears in Section A.3..
+
+#### Steering affects safety even without jailbreak prompts.
+
+When evaluated on harmful prompts without jailbreak modification (Figure 2, top row), steering alone induces measurable shifts in ASR across all models tested. Although the magnitude remains modest (typically |Δ|\DeltaASR| <15%<15\%), this indicates that steering vectors directly interact with safety-relevant mechanisms, controlling refusal behavior even in the absence of adversarial input.
+
+#### Amplification scales with adversarial attacks and model capacity.
+
+Under template-based jailbreak attacks, steering induces substantially larger deviations from baseline ASR. Here, increases in ASR frequently exceed 30%30\% for certain behaviors (Figure 2, bottom rows). Remarkably, despite having lower baselines, larger models in the Qwen family exhibit greater change in ASR than smaller ones, indicating that model capacity amplifies the susceptibility of safety alignment under steering settings.
+
+#### Behaviors Heterogeneity and Polarity Dependence.
+
+To summarize the effect of positive steering across models and behaviors, we compute Δ\DeltaASR of positive steering (multiplier = 1.5) relative to the no-steering baseline. Δ\DeltaASR is defined as the difference between the ASR when applying a positive steering multiplier (m=1.5m=1.5) and the baseline ASR without steering (m=0m=0): Δ​ASR=ASR​(m=1.5)−ASR​(m=0)\Delta\text{ASR}=\text{ASR}(m=1.5)-\text{ASR}(m=0). Figure 3 reveals a striking heterogeneity in how behavior steering impacts model safety. Some effects align with semantic intuition: steering towards Sycophancy and Openness generally increases ASR by making the model more compliant. Other results, however, are less intuitive. Particularly, steering towards the "neutral" behavior Coordinate-with-AI decreases ASR, making the model more robust. 44 4 For corresponding results under negative steering, please refer to Section B.4.
+
+This lack of consistent relationship between a behavior’s semantic content and its safety impact suggests the underlying mechanism is not semantic but geometric. This leads directly to our next research question: are these vulnerabilities caused by properties unique to each behavior’s representation, or do these steering vectors interfere with a shared, low-dimensional refusal subspace?
+
+## 6 Steering Interferes with a Shared Refusal Subspace
+
+Takeaway: The impact of steering on safety is not semantic but geometric. A steering vector’s effect on ASR is predictably negatively correlated with its cosine similarity to the model’s internal refusal direction.
+
+We test the geometric interference hypothesis directly by examining how steering vectors interact with the model’s internal safety mechanisms. Specifically, we analyze their alignment with the refusal direction extracted from internal activations (Section 3).
+
+Figure 4: Cosine similarity between steering vectors and the refusal direction r^\hat{r}. Warm colors indicate positive alignment (reinforcing refusal), and cool colors indicate negative alignment (suppressing refusal).
+
+#### Cosine Similarity with Refusal Direction.
+
+We quantify the geometric relationship between steering vectors vℓ,τv_{\ell,\tau} and the refusal direction r^\hat{r} via cosine similarity. Figure 4 reports cosine similarities between steering vectors and the refusal direction r^\hat{r}, revealing a bimodal structure that mirrors the ASR trends in Figure 3. Steering vectors that increase ASR (e.g., Sycophancy, Self-Awareness) consistently oppose the refusal direction (negative similarity), while those that decrease ASR (e.g., Anti-LGBTQ, Coordinate-AI) align positively with it. This alignment hints at a direct, mechanistic explanation for the previously observed safety effects: steering that reinforces the refusal subspace enhances safety, whereas steering that counteracts it erodes it.
+
+Figure 5: Relationship between steering vector alignment with the refusal direction and safety impact. Each point represents a steering vector, plotted by its cosine similarity to the refusal direction (x-axis) and its effect on attack success rate (y-axis) across six models.
+
+#### Quantifying the Link Between Refusal Alignment and Safety.
+
+To test whether alignment with the refusal direction predicts safety, we regress the ASR slope on the cosine similarity with r^\hat{r}. For each steering vector vℓ,τv_{\ell,\tau}, the safety effect is measured by the ASR slope across multipliers m∈[−1.5,1.5]m\in[-1.5,1.5]:
+
+| slopeASR​(vℓ)=ASRℓ​(1.5)−ASRℓ​(−1.5)1.5−(−1.5).\text{slope}_{\text{ASR}}(v_{\ell})=\frac{\text{ASR}_{\ell}(1.5)-\text{ASR}_{\ell}(-1.5)}{1.5-(-1.5)}. |  | (4)  
+---|---|---|---  
+  
+For each model, we then fit a simple ordinary least-squares (OLS) regression using all of its steering vectors:
+
+| slopeASR(vℓ)=γ0+γ1cos(vℓ,r^ℓ)+εℓ,\text{slope}_{\text{ASR}}(v_{\ell})=\gamma_{0}+\gamma_{1}\cos(v_{\ell},\hat{r}_{\ell})+\varepsilon_{\ell}, |  | (5)  
+---|---|---|---  
+  
+where the coefficient γ1\gamma_{1} quantifies how strongly refusal alignment predicts the safety impact. We report results for the prefix injection setting, as it exhibits the clearest effect on ASR. Results for the prompt-only and refusal suppression scenarios are provided in Section B.2.
+
+Model | Slope (γ1\gamma_{1}) | r | R2R^{2} | pp-value  
+---|---|---|---|---  
+Qwen 3B | 1.461.46 | 0.150.15 | 0.020.02 | 0.696  
+Llama 7B | −36.52-36.52 | −0.93-0.93 | 0.870.87 | <0.001<0.001  
+Gemma 7B | −82.12-82.12 | −0.93-0.93 | 0.870.87 | <0.001<0.001  
+Qwen 7B | −125.19-125.19 | −0.92-0.92 | 0.850.85 | <0.001<0.001  
+Qwen 14B | −180.71-180.71 | −0.95-0.95 | 0.910.91 | <0.001<0.001  
+Qwen 32B | −193.40-193.40 | −0.94-0.94 | 0.880.88 | <0.001<0.001  
+Table 1: Regression of ASR Slope against Cosine Similarity with Refusal Direction for Prefix-Injection Attack.
+
+Our regression analysis, presented in Figure 5 and Table 1, demonstrates a strong predictive relationship between refusal alignment and safety impact. The plot visually confirms this, showing a clear negative linear trend for all models except the smallest, Qwen 3B. For every model larger than 3B, the relationship is statistically significant (p<0.001p<0.001) and exceptionally strong, with refusal alignment explaining over 85% of the variance in ASR slope (R2≥0.85R^{2}\geq 0.85). The steep negative slopes (γ1≪0\gamma_{1}\ll 0) confirm that as a vector’s alignment with the refusal direction increases, its capacity to reduce the attack success rate grows substantially.
+
+#### Effect of model scale.
+
+Furthermore, our analysis highlights a clear scaling trend in the magnitude of this effect. As detailed in Table 1, the regression slope γ1\gamma_{1} becomes progressively steeper with model size. It grows from −36.52-36.52 for Llama 7B to −193.40-193.40 for Qwen 32B. This suggests that larger, more capable, models are significantly more sensitive to the geometric alignment of steering vectors with their internal refusal mechanism.
+
+#### Collateral Effects on Benign Prompts.
+
+Our analysis has established that a steering vector’s impact on jailbreak success is governed by its alignment with the refusal direction. This raises a critical question: does manipulating the refusal mechanism have unintended consequences for benign prompts? To investigate this trade-off, we measure the False Refusal Rate (FRR), the frequency of incorrect refusals on safe queries. This metric allows us to assess whether steering-induced changes in adversarial robustness come at the cost of broader alignment degradation.
+
+Figure 6: False Refusal Rate on benign prompts for Qwen models.
+
+Figure 6 compares two steering vectors at opposite ends of the similarity spectrum. For self-awareness-good-text-model, which is strongly negatively aligned with the refusal direction, FRR decreases as the multiplier grows, making the model more compliant. By contrast, anti-LGBTQ-rights, which is positively aligned, sharply increases FRR, driving the model toward over-refusal.
+
+This demonstrates that the relationship between steering and the refusal direction generalizes beyond adversarial settings, leading to predictable side effects in normal usage. Furthermore, it strengthens the hypothesis that refusal overlap is a key factor; the same geometric property that predicts changes in jailbreak ASR also predicts systematic distortions in benign refusal behavior. It suggests a consistent underlying relationship that links the model’s responses in both domains. Together, these results show that the trade-off between steering’s controllability and reliability is not merely a performance issue, but a critical matter of model safety.
+
+While these results establish a strong correlation between refusal alignment and safety impact, they do not yet prove causation. This raises our final question: is the refusal-aligned component of a steering vector causally responsible for its safety effects, and can removing it mitigate the vulnerability?
+
+Model | Prompt-Only | Prefix Injection | Refusal Suppression | Avg.  
+---|---|---|---|---  
+| Before | After | %Change | Before | After | %Change | Before | After | %Change | % Change  
+Qwen 3B | 3.65 | 3.43 | 5.97% ↓\downarrow | 1.43 | 1.40 | 2.21% ↓\downarrow | 3.34 | 2.53 | 24.39% ↓\downarrow | 10.86% ↓\downarrow  
+Llama 7B | 1.54 | 1.16 | 25.27% ↓\downarrow | 2.82 | 2.13 | 24.21% ↓\downarrow | 4.88 | 3.69 | 24.41% ↓\downarrow | 24.63% ↓\downarrow  
+Gemma 7B | 4.20 | 3.53 | 15.99% ↓\downarrow | 5.64 | 4.69 | 16.80% ↓\downarrow | 4.28 | 3.80 | 11.32% ↓\downarrow | 14.70% ↓\downarrow  
+Qwen 7B | 2.87 | 2.36 | 17.93% ↓\downarrow | 13.45 | 11.18 | 16.83% ↓\downarrow | 8.21 | 6.18 | 24.66% ↓\downarrow | 19.81% ↓\downarrow  
+Qwen 14B | 3.33 | 2.52 | 24.36% ↓\downarrow | 20.64 | 17.43 | 15.58% ↓\downarrow | 15.56 | 12.55 | 19.35% ↓\downarrow | 19.76% ↓\downarrow  
+Qwen 32B | 2.21 | 1.80 | 18.57% ↓\downarrow | 12.74 | 10.21 | 19.87% ↓\downarrow | 17.85 | 14.49 | 18.84% ↓\downarrow | 19.09% ↓\downarrow  
+Table 2: Ablation effectiveness across models and attacks. For each model-attack pair, we show the Mean |Δ​ASR||\Delta\text{ASR}| across all multipliers and behaviors before and after ablation, and the percentage change (↓\downarrow indicates reduction).
+
+## 7 Directional Ablation of Refusal Component
+
+Takeaway: A causal link exists between a steering vector’s refusal-aligned component and its impact on model safety. By ablating the projection of steering vectors onto the refusal direction, we consistently reduce their impact on the jailbreak ASR.
+
+To answer this, following Arditi et al. (2024), we remove the component along r^\hat{r} from each steering vector vℓ,τv_{\ell,\tau}:
+
+| vℓ,τ⟂=vℓ,τ−(vℓ,τ⊤​r^ℓ)​r^ℓ.v_{\ell,\tau}^{\perp}=v_{\ell,\tau}-(v_{\ell,\tau}^{\top}\hat{r}_{\ell})\hat{r}_{\ell}. |  | (6)  
+---|---|---|---  
+  
+Unlike the original formulation, which applies ablation to residual stream activations during inference, we ablate only the steering vectors themselves prior to their addition to the residual stream. This allows us to isolate the contribution of the refusal-aligned component within the steering intervention, rather than broadly suppressing refusal representations throughout the model’s computation. This ablation zeros out the refusal-aligned component while preserving orthogonal directions that may encode other aspects of the steered behavior.
+
+Figure 7: Effect of refusal direction ablation on steering-induced Δ\DeltaASR with regarding to multiplier across Qwen models.
+
+#### Ablation reduces safety perturbations.
+
+Figure 7 illustrates this effect for the Anti-LGBTQ and Self-Awareness. For both behaviors, ablation consistently reduces the magnitude of |Δ​ASR||\Delta\text{ASR}| compared to the original steering vectors (solid bars) across all Qwen model sizes and under both Prefix Injection and Refusal Suppression attacks.
+
+Table 2 confirms this trend more broadly, reporting the mean |Δ​ASR||\Delta\text{ASR}| pre/post-ablation reduction averaged across all steering behaviors and multipliers. The effect is consistent across all three attack scenarios for the models larger than 3B, with a typical reduction ranging from 15% to 25%. Nevertheless, the smallest model, Qwen 3B, exhibits a noticeably smaller mean reduction, which is consistent with our prior findings in Section 6. This consistent reduction provides causal evidence that the refusal-aligned subspace mediates a portion of steering-induced safety erosion. Notably, ablation does not fully restore baseline performance, suggesting that the one-dimensional approximation does not capture the full safety subspace relevant to these perturbations. Additional qualitative results on ASR curves are provided in Section B.3.
+
+## 8 Discussion
+
+#### Incomplete Mitigation Suggests Multi-dimensional Safety Space.
+
+The incomplete restoration has two complementary explanations. First, the one-dimensional refusal direction r^\hat{r} incompletely characterizes the safety subspace. Recent work shows safety behaviors occupy high-dimensional cones with multiple representationally independent subspaces contributing to refusal Wollschläger et al. (2025). Thus, vℓ,τ⟂v_{\ell,\tau}^{\perp} may overlap with additional safety dimensions despite orthogonality to r^\hat{r}, leaving residual safety perturbations after single-direction ablation. Second, the model’s nonlinear computation can regenerate refusal components downstream. Even if the injected vector is orthogonal to the refusal direction at layer ℓ\ell, subsequent attention and MLP transformations in later layers may reintroduce components aligned with refusal directions, partially reintroducing its impact on the model’s refusal behavior.
+
+#### Connection with Current LLM Alignment and Steering.
+
+The vulnerabilities explored in this work can be understood as an emergent consequence of the interaction between LLM alignment and activation steering. Our findings suggest that current alignment techniques can produce geometrically fragile safety mechanisms that are not isolated from other behaviors in the latent space. In this context, activation steering is not merely a tool for control, but a problematic amplifier for these latent flaws. Its ability to directly manipulate activations allows it to exploit the geometric vulnerabilities left by alignment, turning weak attacks into highly effective jailbreaks. This interplay exposes a new class of safety risks and motivates a twofold approach for future research: the creation of inherently safer LLMs through alignment techniques that enforce geometric robustness by design, and the pursuit of inherently safer steering methods that account for a model’s safety geometry.
+
+## 9 Conclusion
+
+We conducted a safety audit of steering vectors through Contrastive Activation Addition (CAA), treating it not only as a tool for controllability but also as a potential attack surface. Our analysis shows that steering vectors reliably perturb jailbreak success rates, with effects that grow with model scale, and that this vulnerability is mechanistically linked to interference with the model’s refusal behavior. While ablating the refusal component mitigates some disturbance, baseline safety is not fully restored. Furthermore, steering vectors introduce a collateral cost on benign prompts, leading to increased false refusals. These findings highlight that steering vectors are not safety-neutral: they introduce a new class of vulnerabilities that demand attention. We call for future work on inherently safe steering methods that balance controllability with robustness. As steering techniques become integral to model deployment, understanding their unintended consequences is essential for building systems that are both capable and secure.
+
+## 10 Limitations
+
+Simplified Dimensionality of the Refusal Direction. We adopt a one-dimensional vector as a proxy for the model’s refusal direction, inspired by Arditi et al. (2024). This choice proved effective, as the vector’s alignment is predictive of the steering vectors’ impact on the Attack Success Rate across most models. However, it may not capture the full complexity of the model’s safety mechanisms. The incomplete mitigation of safety perturbations after ablation suggests that the refusal subspace might be multi-dimensional, a hypothesis supported by other research Wollschläger et al. (2025); Pan et al. (2025). Therefore, a valuable direction for future work would be to extend our analysis to a higher-dimensional refusal subspace.   
+
+
+Focus on Contrastive Activation Addition (CAA). We chose to focus on CAA as it is a prominent and widely used method for generating steering vectors. While other steering methods exist, such as direct interventions on attention head outputs or techniques based on sparse autoencoders, they also ultimately exert their influence by modifying activations within the model’s residual stream. Our work provides evidence that a steering vector’s impact on safety is geometric, attributed to its directional overlap with the model’s refusal direction. Because the vulnerability is tied to this fundamental interference within the residual stream, our findings using CAA are likely representative of a broader class of activation-based interventions. A valuable next step for future work would be to apply this security audit to other steering paradigms to confirm the generality of this mechanism.
+
+## 11 Ethical considerations
+
+Our work provides a systematic safety audit of activation steering, revealing its potential to significantly alter the success rate of jailbreak attacks. We recognize that these findings could potentially be misused to compromise the safety alignment of LLMs. However, as activation steering emerges as a powerful tool for controlling LLM behavior, we believe it is crucial to investigate its safety pitfalls to better mitigate these vulnerabilities. Our analysis is intended to contribute to this goal by offering a mechanistic explanation for the observed safety erosion and demonstrating a potential mitigation strategy through directional ablation. Importantly, we acknowledge that this mitigation has limitations, as it relies on a simplified model of the safety mechanism.
+
+To encourage further research, we will publicly release our code. We do not foresee any direct negative applications of our evaluation framework itself; rather, we hope our work serves as a foundation for developing inherently safe steering methods that reconcile controllability with robustness and build more secure control techniques for LLMs.
+
+## References
+
+  * Andriushchenko et al. (2025) M. Andriushchenko, F. Croce, and N. Flammarion Jailbreaking Leading Safety-Aligned LLMs with Simple Adaptive Attacks.  arXiv.  External Links: 2404.02151, [Document](https://dx.doi.org/10.48550/arXiv.2404.02151) Cited by: §2. 
+  * Arditi et al. (2024) A. Arditi, O. Obeso, A. Syed, D. Paleka, N. Panickssery, W. Gurnee, and N. Nanda Refusal in Language Models Is Mediated by a Single Direction.  arXiv.  External Links: 2406.11717, [Document](https://dx.doi.org/10.48550/arXiv.2406.11717) Cited by: §A.4, §A.4, §10, §2, §3, §7. 
+  * Bai et al. (2022a) Y. Bai, A. Jones, K. Ndousse, A. Askell, A. Chen, N. DasSarma, D. Drain, S. Fort, D. Ganguli, T. Henighan, N. Joseph, S. Kadavath, J. Kernion, T. Conerly, S. El-Showk, N. Elhage, Z. Hatfield-Dodds, D. Hernandez, T. Hume, S. Johnston, S. Kravec, L. Lovitt, N. Nanda, C. Olsson, D. Amodei, T. Brown, J. Clark, S. McCandlish, C. Olah, B. Mann, and J. Kaplan Training a helpful and harmless assistant with reinforcement learning from human feedback.  External Links: 2204.05862, [Link](https://arxiv.org/abs/2204.05862) Cited by: §2. 
+  * Bai et al. (2022b) Y. Bai, S. Kadavath, S. Kundu, A. Askell, J. Kernion, A. Jones, A. Chen, A. Goldie, A. Mirhoseini, C. McKinnon, C. Chen, C. Olsson, C. Olah, D. Hernandez, D. Drain, D. Ganguli, D. Li, E. Tran-Johnson, E. Perez, J. Kerr, J. Mueller, J. Ladish, J. Landau, K. Ndousse, K. Lukosuite, L. Lovitt, M. Sellitto, N. Elhage, N. Schiefer, N. Mercado, N. DasSarma, R. Lasenby, R. Larson, S. Ringer, S. Johnston, S. Kravec, S. E. Showk, S. Fort, T. Lanham, T. Telleen-Lawton, T. Conerly, T. Henighan, T. Hume, S. R. Bowman, Z. Hatfield-Dodds, B. Mann, D. Amodei, N. Joseph, S. McCandlish, T. Brown, and J. Kaplan Constitutional ai: harmlessness from ai feedback.  External Links: 2212.08073, [Link](https://arxiv.org/abs/2212.08073) Cited by: §2. 
+  * Barnhart et al. (2025) L. Barnhart, R. Akbarian Bafghi, S. Becker, and M. Raissi Aligning to what? limits to RLHF based alignment.  In Findings of the Association for Computational Linguistics: NAACL 2025, L. Chiruzzo, A. Ritter, and L. Wang (Eds.),  Albuquerque, New Mexico, pp. 7556–7591.  External Links: [Link](https://aclanthology.org/2025.findings-naacl.421/), [Document](https://dx.doi.org/10.18653/v1/2025.findings-naacl.421), ISBN 979-8-89176-195-7 Cited by: §2. 
+  * Braun et al. (2025) J. Braun, C. Eickhoff, D. Krueger, S. A. Bahrainian, and D. Krasheninnikov Understanding (Un)Reliability of Steering Vectors in Language Models.  arXiv.  External Links: 2505.22637, [Document](https://dx.doi.org/10.48550/arXiv.2505.22637) Cited by: §1, §2. 
+  * Bricken et al. (2023) T. Bricken, A. Templeton, J. Batson, B. Chen, A. Jermyn, T. Conerly, N. Turner, C. Anil, C. Denison, A. Askell, R. Lasenby, Y. Wu, S. Kravec, N. Schiefer, T. Maxwell, N. Joseph, Z. Hatfield-Dodds, A. Tamkin, K. Nguyen, B. McLean, J. E. Burke, T. Hume, S. Carter, T. Henighan, and C. Olah Towards monosemanticity: decomposing language models with dictionary learning.  Transformer Circuits Thread.  Note: https://transformer-circuits.pub/2023/monosemantic-features/index.html Cited by: §2. 
+  * Brumley et al. (2024) M. Brumley, J. Kwon, D. Krueger, D. Krasheninnikov, and U. Anwar Comparing bottom-up and top-down steering approaches on in-context learning tasks.  External Links: 2411.07213, [Link](https://arxiv.org/abs/2411.07213) Cited by: §1, §2. 
+  * Chalnev et al. (2024) S. Chalnev, M. Siu, and A. Conmy Improving Steering Vectors by Targeting Sparse Autoencoder Features.  arXiv.  External Links: 2411.02193, [Document](https://dx.doi.org/10.48550/arXiv.2411.02193) Cited by: §1, §2. 
+  * Chao et al. (2024) P. Chao, E. Debenedetti, A. Robey, M. Andriushchenko, F. Croce, V. Sehwag, E. Dobriban, N. Flammarion, G. J. Pappas, F. Tramer, H. Hassani, and E. Wong JailbreakBench: An Open Robustness Benchmark for Jailbreaking Large Language Models.  arXiv.  External Links: 2404.01318, [Document](https://dx.doi.org/10.48550/arXiv.2404.01318) Cited by: §4.1. 
+  * Durmus et al. (2024) E. Durmus, A. Tamkin, J. Clark, J. Wei, J. Marcus, J. Batson, K. Handa, L. Lovitt, M. Tong, M. McCain, O. Rausch, S. Huang, S. Bowman, S. Ritchie, T. Henighan, and D. GanguliEvaluating feature steering: a case study in mitigating social biases(Website)  External Links: [Link](https://anthropic.com/research/evaluating-feature-steering) Cited by: §2. 
+  * Elhage et al. (2022) N. Elhage, T. Hume, C. Olsson, N. Schiefer, T. Henighan, S. Kravec, Z. Hatfield-Dodds, R. Lasenby, D. Drain, C. Chen, R. Grosse, S. McCandlish, J. Kaplan, D. Amodei, M. Wattenberg, and C. Olah Toy models of superposition.  External Links: 2209.10652, [Link](https://arxiv.org/abs/2209.10652) Cited by: §2. 
+  * Gao et al. (2025) L. Gao, J. Geng, X. Zhang, P. Nakov, and X. Chen Shaping the safety boundaries: understanding and defending against jailbreaks in large language models.  In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), W. Che, J. Nabende, E. Shutova, and M. T. Pilehvar (Eds.),  Vienna, Austria, pp. 25378–25398.  External Links: [Link](https://aclanthology.org/2025.acl-long.1233/), [Document](https://dx.doi.org/10.18653/v1/2025.acl-long.1233), ISBN 979-8-89176-251-0 Cited by: §2. 
+  * Goldowsky-Dill et al. (2023) N. Goldowsky-Dill, C. MacLeod, L. Sato, and A. Arora Localizing model behavior with path patching.  External Links: 2304.05969, [Link](https://arxiv.org/abs/2304.05969) Cited by: §2. 
+  * Hendrycks et al. (2021) D. Hendrycks, C. Burns, S. Basart, A. Zou, M. Mazeika, D. Song, and J. Steinhardt Measuring massive multitask language understanding.  In International Conference on Learning Representations,  External Links: [Link](https://openreview.net/forum?id=d7KBjmI3GmQ) Cited by: §B.1. 
+  * Huang et al. (2023) Y. Huang, S. Gupta, M. Xia, K. Li, and D. Chen Catastrophic jailbreak of open-source llms via exploiting generation.  External Links: 2310.06987, [Link](https://arxiv.org/abs/2310.06987) Cited by: 1st item, §2. 
+  * Ji et al. (2024) J. Ji, K. Wang, T. Qiu, B. Chen, J. Zhou, C. Li, H. Lou, J. Dai, Y. Liu, and Y. Yang Language models resist alignment: evidence from data compression.  arXiv preprint arXiv:2406.06144.  Cited by: §2. 
+  * Joshi et al. (2017) M. Joshi, E. Choi, D. S. Weld, and L. Zettlemoyer TriviaQA: a large scale distantly supervised challenge dataset for reading comprehension.  External Links: 1705.03551, [Link](https://arxiv.org/abs/1705.03551) Cited by: §B.1. 
+  * Kawasaki et al. (2025) A. Kawasaki, A. Davis, and H. Abbas Defending large language models against attacks with residual stream activation analysis.  External Links: 2406.03230, [Link](https://arxiv.org/abs/2406.03230) Cited by: §2. 
+  * Kim et al. (2025) J. Kim, J. Evans, and A. Schein Linear representations of political perspective emerge in large language models.  External Links: 2503.02080, [Link](https://arxiv.org/abs/2503.02080) Cited by: §1, §2. 
+  * Li et al. (2023) K. Li, O. Patel, F. Viégas, H. Pfister, and M. Wattenberg Inference-time intervention: eliciting truthful answers from a language model.  In Thirty-seventh Conference on Neural Information Processing Systems,  External Links: [Link](https://openreview.net/forum?id=aLLuYpn83y) Cited by: §1, §2. 
+  * Li et al. (2025) T. Li, Z. Wang, W. Liu, M. Wu, S. Dou, C. Lv, X. Wang, X. Zheng, and X. Huang Revisiting jailbreaking for large language models: a representation engineering perspective.  In Proceedings of the 31st International Conference on Computational Linguistics, O. Rambow, L. Wanner, M. Apidianaki, H. Al-Khalifa, B. D. Eugenio, and S. Schockaert (Eds.),  Abu Dhabi, UAE, pp. 3158–3178.  External Links: [Link](https://aclanthology.org/2025.coling-main.212/) Cited by: §2. 
+  * Mazeika et al. (2022) M. Mazeika, D. Hendrycks, H. Li, X. Xu, S. Hough, A. Zou, A. Rajabi, Q. Yao, Z. Wang, J. Tian, Y. Tang, D. Tang, R. Smirnov, P. Pleskov, N. Benkovich, D. Song, R. Poovendran, B. Li, and David. Forsyth The trojan detection challenge.  In Proceedings of the NeurIPS 2022 Competitions Track, M. Ciccone, G. Stolovitzky, and J. Albrecht (Eds.),  Proceedings of Machine Learning Research, Vol. 220, pp. 279–291.  External Links: [Link](https://proceedings.mlr.press/v220/mazeika23a.html) Cited by: 1st item. 
+  * Mazeika et al. (2024) M. Mazeika, L. Phan, X. Yin, A. Zou, Z. Wang, N. Mu, E. Sakhaee, N. Li, S. Basart, B. Li, D. Forsyth, and D. Hendrycks HarmBench: a standardized evaluation framework for automated red teaming and robust refusal.  External Links: 2402.04249, [Link](https://arxiv.org/abs/2402.04249) Cited by: 1st item. 
+  * Nanda et al. (2023) N. Nanda, A. Lee, and M. Wattenberg Emergent linear representations in world models of self-supervised sequence models.  External Links: 2309.00941, [Link](https://arxiv.org/abs/2309.00941) Cited by: §2. 
+  * Ouyang et al. (2022) L. Ouyang, J. Wu, X. Jiang, D. Almeida, C. L. Wainwright, P. Mishkin, C. Zhang, S. Agarwal, K. Slama, A. Ray, J. Schulman, J. Hilton, F. Kelton, L. Miller, M. Simens, A. Askell, P. Welinder, P. Christiano, J. Leike, and R. Lowe Training language models to follow instructions with human feedback.  External Links: 2203.02155, [Link](https://arxiv.org/abs/2203.02155) Cited by: §2. 
+  * Pan et al. (2025) W. Pan, Z. Liu, Q. Chen, X. Zhou, Y. Haining, and X. Jia The hidden dimensions of LLM alignment: a multi-dimensional analysis of orthogonal safety directions.  In Forty-second International Conference on Machine Learning,  External Links: [Link](https://openreview.net/forum?id=wGFEzfhFae) Cited by: §10, §2. 
+  * Panickssery et al. (2024) N. Panickssery, N. Gabrieli, J. Schulz, M. Tong, E. Hubinger, and A. M. Turner Steering Llama 2 via Contrastive Activation Addition.  arXiv.  External Links: 2312.06681, [Document](https://dx.doi.org/10.48550/arXiv.2312.06681) Cited by: §1, §2, §3, §4.2, §4.2. 
+  * Park et al. (2024) K. Park, Y. J. Choe, and V. Veitch The linear representation hypothesis and the geometry of large language models.  External Links: 2311.03658, [Link](https://arxiv.org/abs/2311.03658) Cited by: §2. 
+  * Paszke et al. (2019) A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga, A. Desmaison, A. Köpf, E. Yang, Z. DeVito, M. Raison, A. Tejani, S. Chilamkurthy, B. Steiner, L. Fang, J. Bai, and S. Chintala PyTorch: an imperative style, high-performance deep learning library.  External Links: 1912.01703, [Link](https://arxiv.org/abs/1912.01703) Cited by: §A.1. 
+  * Qi et al. (2024) X. Qi, A. Panda, K. Lyu, X. Ma, S. Roy, A. Beirami, P. Mittal, and P. Henderson Safety alignment should be made more than just a few tokens deep.  External Links: 2406.05946, [Link](https://arxiv.org/abs/2406.05946) Cited by: §2. 
+  * Qwen et al. (2025) Qwen, :, A. Yang, B. Yang, B. Zhang, B. Hui, B. Zheng, B. Yu, C. Li, D. Liu, F. Huang, H. Wei, H. Lin, J. Yang, J. Tu, J. Zhang, J. Yang, J. Yang, J. Zhou, J. Lin, K. Dang, K. Lu, K. Bao, K. Yang, L. Yu, M. Li, M. Xue, P. Zhang, Q. Zhu, R. Men, R. Lin, T. Li, T. Tang, T. Xia, X. Ren, X. Ren, Y. Fan, Y. Su, Y. Zhang, Y. Wan, Y. Liu, Z. Cui, Z. Zhang, and Z. Qiu Qwen2.5 technical repor

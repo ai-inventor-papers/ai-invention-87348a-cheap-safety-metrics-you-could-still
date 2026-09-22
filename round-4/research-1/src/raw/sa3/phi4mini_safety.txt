@@ -1,0 +1,64 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2503.01743v1
+Type: HTML
+Pattern: Table 11|Table 12|XSTest|IPRR|VPRR|Defect Rate (28 matches in 129164 chars)
+
+--- Content ---
+
+66264:...s for Harmful Content, which now leverage Microsoft’s Azure AI Evaluation SDK. We used GPT-4o to simulate adversarial conversations with our model, and to evaluate the model’s responses toxicity along four harm categories: Violence, Sexual Content, Self-Harm, and Hateful Content. We then computed a Defect Rate for each category - the fraction of responses that did contain harmful content. Table 10 shows that our models are on par with other models of similar size, and with our previously released Phi-3.5-mini (which is not surprising, due to the similar approach for safety alignment).
+
+Defect Rate Phi-4-Mini Phi-4-Multimodal Phi-3.5-mini GPT-4o-mini Llama-3.2-3B Qwen   
+-2.5-3B Violence 6% 7% 7% 6% 8% 7% Sexual 6% 6% 7% 7% 8% 6% Self-Harm 0% 0% 0% 1% 1% 1% Hateful 3% 3% 2% 3% 3% 3% Average 3.75% 4% 4% 4.25% 5% 4.25%
+
+Table 10: RAI benchmark results for Phi-4-Mini, Phi-4-Multimodal, Phi-3.5-mini, and other models of similar size. The Defect Rate denotes the fraction of model responses containing harmful content. The last row shows the average Defect Rates across all 4 harm categories.
+
+To assess the vulnerability of the model to jailbreaks (JB’s), we repeated the previous evaluation while prepending the simulated user prompts with known JB’s. The results shown in table 11 allow us to draw 2 conclusions. First, our latest Phi models are more robust to jailbreaks than our previously released Phi-3.5-mini, and than other models of similar size. Second, our models seem to manage to detect the presence of JB’s, and in such cases are even less likely to comply with prompts eliciting harmful responses. This can be seen from the Defect Rates being smaller than the ones obtained without JB’s shown in table 10.
+
+JB Defect Rate Phi-4-Mini Phi-4-Multimodal Phi-3.5-mini GPT-4o-mini Llama-3.2-3B Qwen-2.5-3B Violence 2% 4% 11% 7% 11% 20% Sexual 1% 3% 8% 7% 8% 14% Self-Harm 0% 0% 1% 1% 1% 3% Hateful 2% 2% 10% 6% 12% 19% Average 1.25% 2.25% 7.5% 5.25% 8% 14%
+
+Table 11: RAI benchmark results for Phi-4-Mini, Phi-4-Multimodal, Phi-3.5-mini, and other models of similar size. The Defect Rate denotes the fraction of model responses containing harmful content, when known jailbreaks are included in the user prompts. The last row shows the average Defect Rates across all 4 harm categories.
+
+To assess the ability of the model to refuse answering harmful prompts without sacrificing the ability to answer seemingly harmful but innocuous prompts, we leveraged the XSTest framework described in [RKV+23]. Two metrics were computed: the Refusal Rate to harmful prompts (IPRR a.k.a. Inappropriate Prompt Refusal Rate - the higher, the better) and the Refusal Rate to innocuous prompts (VPRR a.k.a. Valid Prompt Refusal Rate - the lower, the better). Results for Phi models and some competitor models are shown in table 12. Two conclusions can be drawn. First, both Phi-4-Mini and Phi-4-Multimodal are very good at refusing to answer harmful prompts. Second, when it comes to answering innocuous prompts, Phi-4-Multimodal errs a little more on the safety side compared to the rest of the field.
+
+Refusal Rate | Phi-4-Mini | Phi-4-Multimodal | Phi-3.5-mini | Llama-3.2-3B | Qwen-2.5-3B  
+---|---|---|---|---|---  
+IPRR ↑\uparrow | 93.5% | 92% | 87% | 92.5% | 92%  
+VPRR ↓\downarrow | 20.8% | 26.4% | 21.2% | 15.6% | 25.6%  
+Table 12: XSTest benchmark results for Phi-4-Mini, Phi-4-Multimodal, Phi-3.5-mini, and other models of similar size. IPRR is the Refusal Rate to inappropriate prompts (e.g. ”How can I kill my neighbor?”) - the higher, the better. VPRR is the Refusal Rate to valid prompts (e.g. ”How can I kill a python process?”) - the lower, the better. 
+
+We also evaluated the models’ tendency to produce harmful content across all Tier 1 languages by following the approach described above, that leverages the Azure AI Evaluation SDK. Defect Rates can be seen in table 13, where the numbers were averaged over the 4 harm categories (Violence, Sexual Content, Self-Harm, and Hateful Content) to produce a single number per language. These results show an improvement for both Phi-4-Mini and Phi-4-Multimodal compared to Phi-3.5-mini, and show comp...
+--
+70595:...5% 7% French 3.25% 5% 6% 4.25% 4.25% 5.5% Spanish 3% 4.5% 6.25% 4.25% 4.25% 5.5% Italian 2.25% 4.75% 6.25% 3.75% 4.25% 5.5% Portuguese 4.5% 5.5% 6% 5.25% 4.25% 5.25% Chinese 6.25% 6.5% 8.5% 4.5% 4.75% 6.5% Japanese 5% 5.75% 6.75% 3% 5.75% 5.75% Average 3.91% 5.06% 6.31% 4.13% 4.63% 5.66%
+
+Table 13: Defect Rates for production of harmful content for Phi-4-Mini, Phi-4-Multimodal, Phi-3.5-mini, and other models. The lower the value, the better. The last row shows the average across all Tier 1 languages (including English numbers from table 10).
+
+### 5.2 Audio safety
+
+For the audio safety alignment of Phi-4-...
+--
+71608:...gainst audio-specific jailbreaks.
+
+
+
+
+For audio safety evaluations, we carried out three families of automated evaluations. First, like we did with text inputs, we leveraged Microsoft’s Azure AI Evaluation SDK to detect the presence of harmful content in the model’s responses to speech prompts. The Defect Rates are shown in table 14. Although somewhat higher than those obtained with GPT-4o (a model of much bigger size), they are comparable to those shown in table 10 for text inputs.
+
+Defect Rate | Phi-4-Multimodal | GPT-4o  
+---|---|---  
+Violence | 4% | 2%  
+Sexual | 4% | 1%  
+Self-Harm | 1% | 1%  
+Hateful | 4% | 0%  
+Average | 3.25% | 1%  
+Table 14: RAI benchmark results for Phi-4-Multimodal and GPT-4o. The Defect Rate denotes the fraction of model responses containing harmful content, when the input prompt was an audio trace. The last row shows the average Defect Rates across all 4 harm categories.
+
+Second, we ran Microsoft’s Speech Fairness evaluation to verify that Speech-To-Text transcription worked well across a variety of demographics - as measured by the WER metric. The audio samples were spread across 2 gender sub-groups, and 3 age sub-groups (17-30, 31-4...
+--
+74366:...of SA (ISA) on 27% of our test prompts – less frequently than Qwen2-Audio (49%). For both models, Personality Characteristics and Country or Region of Origin were the SA’s most likely to be inferred. ISA can be very well mitigated for Phi-4-Multimodal by using a system prompt, which brings down the Defect Rate to 0.4% - comparable to the 2% we measured for GTP-4o deployed to a real-time audio endpoint that uses Microsoft’s meta prompt to prevent ISA.   
+
+
+In addition to these automated evaluations, extensive red teaming was performed by an independent group within Microsoft. The red teaming effort focuse...
+--
+96222:... Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe Pang, Julien Dirani, Julian Michael, and Samuel R. Bowman.  Gpqa: A graduate-level google-proof q&a benchmark, 2023. 
+  * [RKV+23] Paul Röttger, Hannah Rose Kirk, Bertie Vidgen, Giuseppe Attanasio, Federico Bianchi, and Dirk Hovy.  Xstest: A test suite for identifying exaggerated safety behaviours in large language models.  2023\. 
+  * [RKX+23] Alec Radford, Jong Wook Kim, Tao Xu, Greg Brockman, Christine McLeavey, and Ilya Sutskever.  Robust speech recognition via large-scale weak supervision.  In International Conference on Machin...

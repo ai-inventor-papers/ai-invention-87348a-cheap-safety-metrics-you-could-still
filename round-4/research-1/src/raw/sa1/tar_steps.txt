@@ -1,0 +1,482 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2408.00761
+Type: PDF
+Pattern: \d[,.]?\d*\s+(fine-?tuning\s+)?steps|500\s+steps|plateau|Abstract (36 matches in 95137 chars)
+
+--- Content ---
+
+523:...ang5,8, Rowan Wang6,8, Ron Arel1,2,
+Andy Zou5,8,9, Dawn Song4, Bo Li2,7, Dan Hendrycks‡9, Mantas Mazeika‡2,9
+1Lapis Labs,
+2University of Illinois Urbana-Champaign,
+3University of California, San Diego,
+4University of California, Berkeley,
+5Carnegie Mellon University,
+6Harvard University,
+7University of Chicago,
+8Gray Swan AI,
+9Center for AI Safety
+Abstract
+Rapid advances in the capabilities of large language models (LLMs) have raised
+widespread concerns regarding their potential for malicious use. Open-weight
+LLMs present unique challenges, as existing safeguards lack robustness to tamper-
+ing attacks that modify model weights. For example, recent works have demon-
+strated that refusal and unlearnin...
+--
+9886:...value of
+safety_metric(θG) after the adversary’s move. We consider a compute-bounded adversary with
+unrestricted access to θG, enabling attacks that directly modify θG. We refer to these as “tampering
+attacks.” The adversary’s goal is to obtain a model θ′
+G that minimizes the safety metric given reason-
+able compute limits, such as fine-tuning for 500 steps. We note that in this work, we focus solely on
+fine-tuning adversaries and not input-space “jailbreaking” adversaries. We assume the adversary will
+not spend a significant fraction of the compute required to pre-train the LLM, since at that point they
+could train their own model without safeguards.
+3
+
+3.2
+Problem Definition and Metrics
+We describe...
+--
+18590:...ing Attack
+Best Loss Region
+Outer Loop Loss
+0
+   Max Ent
+0
+   Max Ent
+Ours (Maximizing Entropy Loss) 
+Figure 3: The choice of tamper-resistance loss is crucial for obtaining good performance. Here,
+we show loss trajectories when the tamper-resistance loss is negative cross-entropy (left), versus
+negative entropy (right), over the course of TAR for 750 steps. Outer loop losses (blue) are reduced
+by the defender, and inner-loop losses (red) are reduced by the train-time adversary. When the
+tamper-resistance loss maximizes cross-entropy (left), the adversary is only affected earlier in its
+trajectory and quickly recovers. By contrast, when the tamper-resistance loss maximizes entropy
+(right), the inner ...
+--
+32260:...Biosecurity setting and 24 distinct
+adversaries in the Chemical Security and Cybersecurity settings. We vary the optimizer, number of
+optimization steps, learning rate, learning rate schedule, fine-tuning dataset, batch size, and overall
+fine-tuning method (e.g., full fine-tuning versus parameter-efficient fine-tuning). By default, our
+attacks use 500 fine-tuning steps. Full details for these adversaries are provided in Table 9.
+We show red teaming results in Figure 4. While baseline safeguards withstand fine-tuning attacks in
+a small number of cases, most adversaries succeed in removing the safeguards. By contrast, our TAR
+safeguard is robust to a wide range of adversaries. This shows that tamper-resistance is ...
+--
+52493:...ce vulnerability is
+no longer observed [45].
+0
+200
+400
+600
+800
+1000
+SFT Attack Steps
+0
+5
+10
+15
+20
+25
+30
+35
+Cross-Entropy Loss (Nats)
+Adversary Test Loss across Different Seeds
+Figure 5: Test loss for five repeats of a 1,000-step
+SFT attack against a TAR-Bio safeguard, each us-
+ing a different dataloader shuffling seed. TAR
+yields a consistent loss plateau for 500 steps, fol-
+lowed by a loss region of increased variability.
+Additionally, Qi et al. [45] found that TAR’s ro-
+bustness at 1,000 of steps of fine-tuning varies
+when changing the dataloader shuffling order,
+which we corroborate in Figure 5. After fur-
+ther investigation, we found an issue in the Hug-
+gingFace distributed dataloading sampler, where
+the HuggingFace sampler overrides user-defined
+seeds with a default seed. This resulted in the
+test-time dataloader shuffling orders being a sub-
+set of train-time shuffling orders in our initial
+release. Upon correcting the issue, we observe
+the variability in Figure 5.
+However, while the loss plateau and robustness
+at 1,000 steps can vary with different dataloader
+shuffling orders, we do observe in Figure 5 and
+in nearly all adversaries that the loss plateau
+and robustness we discuss throughout the pa-
+per remains consistent across multiple shuffling
+orders for 500 steps of fine-tuning. We report
+these results in our updated Table 1, Figure 2,
+and Figure 4. All depicted per-adversary post-
+attack accuracies in Table 1, Figure 2, and Figure 4 are averaged over three replicates, each using
+a different random seed. We include further discussion on the loss plateau as well as concrete
+evidence of TAR’s convergence in Appendix D.3. We do emphasize that TAR models we consider
+in our experiments optimize against SFT adversaries that use only K = 64 optimization steps yet
+achieve significant generalization to test-time adversaries using substantially more compute, greatly
+improving tamper-resistance compared to ...
+--
+64660:...in TAR.
+D.3
+Test-time Generalization Experiments
+0
+200
+400
+600
+800
+1000
+SFT Attack Steps
+0
+5
+10
+15
+20
+25
+30
+35
+40
+45
+Adversary Loss (Nats)
+Max Entropy
+Adversary Test Loss over SFT Attack Steps
+TAR Safeguard
+TAR Adversary Entropy
+Prior Safeguard
+Recovery Region
+Figure 6: Our TAR safeguard can be robust to
+fine-tuning attacks that greatly exceed the 64 steps
+used by train-time adversaries. For the LLMU safe-
+guard, the adversary’s loss quickly decreases into
+the recovery region. By contrast, TAR maintains
+flatness at a high loss for all 1,000 steps. Solid
+lines are cross-entropy losses.
+Generalization to stronger test-time attacks.
+In Figure 6, we show a biosecurity fine-tuning
+attack at an LR of 2 × 10−5 on our TAR model
+and a model safeguarded with LLMU. We find
+that the tamper-resistance of TAR can general-
+ize far beyond the 64 steps used by train-time
+adversaries. Surprisingly, we observe that the
+test-time adversary’s cross-entropy loss does not
+decrease below 7 for all 1,000 steps. Moreover,
+the loss enters a plateau and does not decrease
+at all after 200 steps.
+We also plot the entropy of the SFT ad-
+versary’s posteriors during the attack (blue
+dashed line). For the first ∼200 SFT attack
+steps, the adversary’s entropy remains close to
+log(vocab_size) - the maximum possible en-
+tropy (shown as "Max Entropy" by the gray
+dashed line). This is expected, since this exactly
+what TAR optimizes for via the nega...
+--
+66141:...nce to max-
+imum entropy at test-time clearly demonstrates
+the TAR meta-learning objective working as in-
+tended, in line with the inner-loop posteriors
+observed in Figure 3.
+As a point of reference, we show the progression of the same attack on LLMU. In this case, the
+adversary’s cross-entropy loss decreases to within the recovery region in under 20 steps, corresponding
+to recovery in forget-set performance on WMDP.
+0
+200
+400
+600
+800
+1000
+SFT Attack Steps
+0
+5
+10
+15
+20
+25
+30
+35
+Adversary Cross-Entropy Loss
+Adversary Test Loss as Inner-loop Length (K) Increases
+K = 8
+K = 16
+K = 32
+K = 64
+Figure 7: Comparison of a 1,000-step SFT attack
+against TAR with the inner-loop length K varied
+between {8, 16, 32, 64}. Test-time loss plateau
+magnitude and duration increase as K increases.
+Varying the TAR inner-loop length K.
+Re-
+call that via the efficiency trick discussed in
+Appendix C.4, a single inner loop trajectory of
+length K during TAR returns the K sampled at-
+tacks in Algorithm 1. We compare the test-time
+loss robustness as we vary the length of the inner
+loop K during TAR, running fine-tuning attacks
+for 1,000 steps on a held-out forget dataset for
+biosecurity weaponization (Adversary 8 in Table
+9).
+For each value of K, we observe a plateau in
+the test loss that drops off at later steps as K
+increases. This suggests that the robustness of
+TAR improves as the inner loop length increases.
+Prior work also corroborates that increasing the
+inner-loop length during meta-learning increases
+test-time generalization [16]. We note the con-
+18
+
+trast to conventional meta-learning methods mentio...
+--
+77816:...amW
+4 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 5
+R→F
+64
+AdamW
+2 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 6
+R→F
+64
+AdamW
+4 × 10−5
+No Warmup
+64
+Full Parameter
+Harmful request refusal.
+For harmful request refusal, we choose the retain dataset Dretain to be
+the Magpie-Align instruction-tuning dataset [61]. We sample train-time adversaries that perform
+K = 64 steps of SFT on rejected completions of the Anthropic-HH-RLHF dataset [3] and vary the
+learning rate within {2 × 10−6, 2 × 10−5, 4 × 10−5}. We depict this list of adversaries in Table 8.
+While the rejected completions from Anthropic-HH-RLHF constitute the data used for sampled
+attacks from Atrain for harmful request refusal, we compute the tamper-resist...
+--
+78985:... training. To summarize, we have that the sampled
+train-time adversaries perform SFT on the rejected completions from Anthropic-HH-RLHF, and
+tamper-resistance DPO loss is computed on the corresponding modified refusal completions; the
+modified refusal completions in this setting correspond to DTR in Section 4.
+In practice, we perform an additional 100 steps of supervised fine-tuning on the Magpie-Align dataset
+to improve the benign capabilities performance of the TAR refusal model in Table 2.
+Table 8: Train-time adversary red-teaming setups harmful request refusal. “A-HH-Rejected” in the
+Dataset column corresponds to the adversary dataset comprised of rejected completions from the
+Anthropic-HH-RLHF d...
+--
+79936:...er
+Adv 3
+A-HH-Rejected
+64
+AdamW
+4 × 10−5 No Warmup
+64
+Full Parameter
+F
+Red Teaming Details
+F.1
+Weaponization Knowledge Restriction
+In Table 9, we list all test-time adversary setups for recovering Biosecurity, Chemical Security, and
+Cybersecurity Weaponization knowledge.
+For Biosecurity, we examine post-attack forget accuracy after fine-tuning for 500 steps on three data
+distributions: the Pile-bio Forget set and the Retain-set used during Random Mapping and TAR, and
+an OOD-Forget set mentioned in Appendix E.1, which is unseen during tamper-resistance training.
+We leverage a consistent setup for Chemical Security and Cybersecurity, substituting the Pile-bio
+Forget set for the respective Chem and Cybe...
+--
+80774:...ually high quality held-out
+dataset for Chemical Security and Cybersecurity.
+For all subjects, we compare the effect of different optimizers (AdamW, Adadelta, and Stochastic
+Gradient Descent with Nesterov Momentum, Schedule Free AdamW) [66, 27, 60, 9], learning rates
+(2 × 10−6, 2 × 10−5, 4 × 10−5), and learning rate scheduling techniques (SGDR and 30 steps of
+linear warmup) [35].
+Similar to Table 7, we use F-Pile, F-Chem, F-Cyber, and OOD-F in the Dataset Column to denote
+the respective datasets described in Appendices F.1. At test-time, we use the Pile-bio Retain set as
+the global Retain-set adversary, labeled as Retain. The R→F adversary at test-time also differs from
+the train-time version: we pe...
+--
+83355:...Schedule Free 2 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 12
+F-Pile
+500
+Schedule Free 4 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 13
+F-Pile
+500
+SGD Nesterov 2 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 14
+F-Pile
+500
+SGD Nesterov 4 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 15
+F-Pile
+500
+AdamW
+2 × 10−6
+No Warmup
+64
+Full Parameter
+Adv 16
+F-Pile
+500
+AdamW
+2 × 10−6 30 Steps Warmup
+64
+Full Parameter
+Adv 17
+F-Pile
+500
+AdamW
+2 × 10−5 30 Steps Warmup
+64
+Full Parameter
+Adv 18
+F-Pile
+500
+AdamW
+4 × 10−5 30 Steps Warmup
+64
+Full Parameter
+Adv 19
+F-Pile
+500
+AdamW
+2 × 10−5
+SGDR
+64
+Full Parameter
+Adv 20
+F-Pile
+500
+AdamW
+4 × 10−5
+SGDR
+64
+Full Parameter
+Adv 21
+F-Pile
+500
+AdamW
+2 × 10−5
+No Warmup
+32
+Full Parameter
+Adv 22
+F-Pile
+500
+AdamW
+4 × 10−5
+No Warmup
+32
+Full Parameter
+Adv 23
+F-Pile
+500
+AdamW
+2 × 10−5
+No Warmup
+128
+Full Parameter
+Adv 24
+F-Pile
+500
+AdamW
+4 × ...
+--
+84860:...0
+ScheduleFree 2 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 10
+F-Chem
+500
+ScheduleFree 4 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 11
+F-Chem
+500
+SGD Nesterov 2 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 12
+F-Chem
+500
+SGD Nesterov 4 × 10−5
+No Warmup
+64
+Full Parameter
+Adv 13
+F-Chem
+500
+AdamW
+2 × 10−6
+No Warmup
+64
+Full Parameter
+Adv 14
+F-Chem
+500
+AdamW
+2 × 10−6 30 Steps Warmup
+64
+Full Parameter
+Adv 15
+F-Chem
+500
+AdamW
+2 × 10−5 30 Steps Warmup
+64
+Full Parameter
+Adv 16
+F-Chem
+500
+AdamW
+4 × 10−5 30 Steps Warmup
+64
+Full Parameter
+Adv 17
+F-Chem
+500
+AdamW
+2 × 10−5
+SGDR
+64
+Full Parameter
+Adv 18
+F-Chem
+500
+AdamW
+4 × 10−5
+SGDR
+64
+Full Parameter
+Adv 19
+F-Chem
+500
+AdamW
+2 × 10−5
+No Warmup
+32
+Full Parameter
+Continued on next page
+23
+
+Table 9 – continued from previous page
+Adversary Dataset ...
+--
+[6 more matches not shown]

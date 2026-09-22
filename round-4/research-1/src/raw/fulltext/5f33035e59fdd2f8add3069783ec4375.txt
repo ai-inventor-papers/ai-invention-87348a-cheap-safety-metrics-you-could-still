@@ -1,0 +1,412 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2607.01854
+Type: HTML
+Length: 50082 chars (truncated)
+
+--- Content ---
+
+##### Report GitHub Issue
+
+×
+
+Title:
+
+Content selection saved. Describe the issue below:
+
+Description:
+
+Submit without GitHub Submit in GitHub
+
+arXiv is now an independent nonprofit! [Learn more](https://info.arxiv.org/about) ×
+
+[ Back to arXiv ](/)
+
+[Why HTML?](https://info.arxiv.org/about/accessible_HTML.html) Report Issue [ Back to Abstract ](/abs/2607.01854v2 "Back to abstract page") [ Download PDF](/pdf/2607.01854v2 "Download PDF") [ ](javascript:toggleNavTOC\(\); "Toggle navigation") [ ](javascript:toggleReadingMode\(\); "Disable reading mode, show header and footer")
+
+  1. Abstract
+  2. 1 Introduction
+  3. 2 Related Work
+  4. 3 Method
+     1. Setup.
+     2. Two complementary signals.
+     3. Combined detector.
+  5. 4 Results
+     1. Q1: Does the audit separate abliterations from benign edits?
+     2. Q2: Does the operating point transfer?
+     3. Q3: Do the two signals complement each other?
+  6. 5 Where the Audit Fails (Q4)
+     1. A spoofed reference defeats the audit without training.
+     2. A white-box adversary trains past it.
+  7. 6 Limitations
+     1. Broader impact and safeguards.
+  8. 7 Conclusion
+  9. References
+  10. A Per-axis operating points and the DcombD_{\mathrm{comb}} variant
+     1. Absolute subspace variant DcombD_{\mathrm{comb}}.
+  11. B Construct validity of the two signals
+     1. The activation gap is not a norm artifact.
+     2. A single direction is bounded; the union is not.
+     3. The gap measures refusal, not harmfulness.
+     4. The weight energy is direction-agnostic, so the gap supplies refusal-specificity.
+  12. C Audit protocol
+  13. D Reproducibility details
+     1. Contrast set for r^ℓ\hat{r}_{\ell}.
+     2. Activation gap.
+     3. Weight-recovery energy.
+     4. Negative class and per-recipe FPR.
+     5. Behavioral oracle and capability.
+     6. Adaptive attack recipe.
+     7. Artifact and attrition.
+  14. E Threat model
+     1. Attestation as the root of trust.
+     2. Construct validity of the ground truth.
+     3. Label robustness under a second, independent guard.
+  15. F Ethics and data statement
+     1. Data.
+     2. Harmful generations.
+     3. Dual use and disclosure.
+
+
+
+[ License: CC BY 4.0 ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2607.01854v2 [cs.CR] 18 Aug 2026
+
+# Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map
+
+Gabriel Hurtado  Affiliation: Moonsong Labs 
+
+###### Abstract
+
+Can a platform tell, before deployment, whether an open-weight checkpoint has had its refusal mechanism stripped? Runtime guards cannot: they score generations, not the artifact. We combine two cheap internal signals, a reference-anchored activation _refusal-gap_ and a _weight-recovery energy_ of the base-to-candidate weight difference, into a threshold-free checkpoint audit. The two are negatively correlated and label-complementary: the gap supplies refusal-specificity and the weight energy supplies recall. On a 273273-checkpoint registry spanning Qwen, DeepSeek-distilled Qwen, Llama, and Gemma, their zz-sum separates 5757 public abliterations from 3737 benign fine-tunes, merges, and instruction-tunes at AUROC 0.950.95, significantly above either signal alone (0.840.84, 0.900.90), and a Youden-calibrated threshold transfers to held-out families at balanced accuracy 0.890.89 (FPR 0.110.11), missing only 44 of 5757. We then map two failures, in order of severity: a _spoofed reference_ evades both axes with no training (Δ​W=0\Delta W{=}0, ρ=1\rho{=}1 by construction), and a white-box owner trains a checkpoint past the threshold while it stays guard-unsafe and coherent. The audit is effective triage, not tamper-proofing: it presumes an attested reference, and its claims are bounded by the registry we evaluate it on.  
+  
+---  
+  
+## 1 Introduction
+
+Open-weight models advertised as _uncensored_ or _abliterated_ appear within days of major base releases, produced by orthogonalizing the residual stream against a refusal direction (Arditi et al., 2024; Labonne, 2024) or newer per-layer and multi-direction variants (p-e-w, 2025; Piras et al., 2025). Platforms and governance need a checkpoint-level question answered before deployment (Shevlane et al., 2023; Reuel et al., 2024): has this artifact had its refusal mechanism removed? Runtime guards cannot answer it: they score generations, not the model, and black-box access alone is insufficient for rigorous audits (Casper et al., 2024).
+
+We calibrate two complementary internal signals already proposed for adjacent tasks (activation separation (Messenger, 2026), weight-difference monitoring (Zhong & Raghunathan, 2025)) into an effective checkpoint audit, then map where it nonetheless fails.
+
+Contributions.
+
+  1. 1.
+
+An effective checkpoint-triage detector. Standardizing and summing a reference-anchored activation refusal-gap and the WeightWatch weight-recovery energy gives a threshold-free score at AUROC 0.950.95, significantly above either signal alone, that transfers across unseen families (leave-one-family-out balanced accuracy 0.890.89). The signals are complementary: the gap is refusal-specific but misses multi-direction removal; the weight energy catches it but over-flags benign low-rank edits (§4).
+
+  2. 2.
+
+A failure map. The detector is still not tamper-proof: a spoofed reference defeats it with no training, and a white-box owner trains a checkpoint past it while it stays guard-unsafe (§5).
+
+  3. 3.
+
+A public registry with benign-edit negatives. A 273273-checkpoint registry (abliterations across four families plus benign fine-tunes, merges, and instruction-tunes as hard negatives) on which the audit is evaluated (§4).
+
+
+
+
+## 2 Related Work
+
+Runtime guards score generations, not the artifact (Casper et al., 2024); an activation probe alone is evadable and a weight-difference monitor alone cannot prove removal (only editing). We combine the two as label-complementary signals and, more importantly, chart where even the combination fails.
+
+AMS (Messenger, 2026) flags collapse of harmful/benign activation separation; we benchmark its Tier-1 absolute-σ\sigma scan; its Tier-2 mode compares a candidate against a trusted baseline. Our activation axis differs in scoring a reference-anchored ratio of the harmful-minus-benign gap (not a fingerprint-integrity match). Empirically, Tier-1 absolute thresholding misses an abliterated Qwen2.5-1.5B sibling that Tier-2 reference-verification catches: reference-anchoring, not absolute thresholding, surfaces the edit. WeightWatch (Zhong & Raghunathan, 2025) monitors the top singular directions of the base–candidate weight difference. Jain et al. (2024) show safety fine-tuning is a low-rank, null-space MLP edit, so a low-rank weight delta signals safety editing in either direction; we use this weight-recovery energy for recall and rely on the activation gap for refusal-specificity. CWAC (coupled weight and activation constraints) (Peng et al., 2026) proves, for defense, that weights or activations alone are insufficient; we show the same for detection, which our adaptive attack then defeats.
+
+Refusal spans a cone of directions (Wollschläger et al., 2025; Piras et al., 2025; Pan et al., 2025), and the choice of direction affects what is captured (Siu et al., 2025); this bounds a single-direction gap (§5).
+
+Bailey et al. (2024) obfuscate activations past latent monitors, and McGuinness et al. (2025) train models to evade even unseen activation monitors; we extend this line from activations to the joint weight+activation checkpoint setting, against representation-level defenses such as circuit breakers (Zou et al., 2024) and weight-level tamper-resistance (Tamirisa et al., 2024).
+
+Concurrent work uses the same refusal-vector primitive for provenance fingerprinting (Xu & Sheng, 2026) and detects abliteration as a direction-agnostic deviation in activation-geometry fingerprint (Coslett, 2026); we differ in scoring a reference-anchored gap ratio to detect refusal removal rather than lineage or structural drift, fusing it with the weight axis, and demonstrating the detection-aware evasion that both leave as an open question (Coslett, 2026; Xu & Sheng, 2026). These recipes are widespread (Young, 2025); a simple refusal-hardening defense exists (Abu Shairah et al., 2025), which we use as a control (§B).
+
+## 3 Method
+
+### Setup.
+
+An auditor holds a candidate McM_{c} and a trusted, attested reference MbM_{b} (base or sibling, with pinned lineage). A behavioral oracle (Qwen3Guard (Qwen Team, 2025), think-traces stripped) labels whether a checkpoint is uncensored, supplying ground-truth labels rather than serving as the detector.
+
+### Two complementary signals.
+
+From a harmful/benign contrast set we form per-layer difference-of-means refusal directions r^ℓ\hat{r}_{\ell} on MbM_{b} (representation reading; Zou et al., 2023a; Arditi et al., 2024). The _activation gap_ is
+
+| ρ=gap⁡(Mc)gap⁡(Mb),gap⁡(M)=1|ℬ|​∑ℓ∈ℬ⟨μhℓ​(M)−μbℓ​(M),r^ℓ⟩,\rho=\frac{\mathrm{gap}(M_{c})}{\mathrm{gap}(M_{b})},\qquad\mathrm{gap}(M)=\frac{1}{|\mathcal{B}|}\sum_{\ell\in\mathcal{B}}\big\langle\mu^{\ell}_{h}(M)-\mu^{\ell}_{b}(M),\,\hat{r}_{\ell}\big\rangle, |   
+---|---|---  
+  
+where μhℓ,μbℓ\mu^{\ell}_{h},\mu^{\ell}_{b} are the mean last-token activations at layer ℓ\ell over harmful/benign prompts and ℬ\mathcal{B} is the mid-stack layer band (one scalar per model). It is near 11 for an intact candidate and falls toward 00 as refusal is removed; anchoring to MbM_{b} lets one score transfer across families of different scale. It is refusal-specific but bounded to a single direction, so it misses refusal removed along a non-canonical direction (§5). The _weight-recovery energy_ is
+
+| E1=1|𝒲|​∑m∈𝒲σ12​(Δ​Wm)∑iσi2​(Δ​Wm)∈[0,1],Δ​Wm=Wbm−Wcm,E_{1}=\frac{1}{|\mathcal{W}|}\sum_{m\in\mathcal{W}}\frac{\sigma_{1}^{2}(\Delta W_{m})}{\sum_{i}\sigma_{i}^{2}(\Delta W_{m})}\in[0,1],\qquad\Delta W_{m}=W_{b}^{m}-W_{c}^{m}, |   
+---|---|---  
+  
+where 𝒲\mathcal{W} is the set of attention-output (o_proj) and MLP-down (down_proj) weight matrices from each layer in the mid-stack band ℬ\mathcal{B}, and σi\sigma_{i} are the singular values of Δ​Wm\Delta W_{m} (the rank-1 energy fraction of the edit, band-averaged; WeightWatch, Zhong & Raghunathan, 2025). It fires on any low-rank weight edit, so it catches multi-direction removals the gap misses, but also responds to aggressive benign edits and cannot by itself distinguish refusal _removal_ from _addition_ (App. B). The two are complementary: ρ\rho supplies refusal-specificity, E1E_{1} supplies recall.
+
+### Combined detector.
+
+The two signals are negatively correlated across the audited set (Pearson r=−0.41r{=}{-}0.41) and label-complementary, so we zz-standardize each on a reference population and sum: s⁡(Mc)=z⁡(−ρ)+z⁡(E1)s(M_{c})=z(-\rho)+z(E_{1}). The score is threshold-free; the standardization is transductive (it uses the reference population’s mean/SD), so a deployable audit fixes the operating point by Youden’s JJ on a calibration set of attested references, whose transfer to unseen families we report in §4. (An absolute, standardization-free subspace variant DcombD_{\mathrm{comb}} is defined in App. A; the zz-sum transfers at least as well, so we report it.)
+
+## 4 Results
+
+We sweep public abliterations across Qwen, DeepSeek-distilled Qwen, Llama, and Gemma. Scoring one checkpoint means downloading its full weights and running both the generation-based guard and the activation-and-weight detector, so coverage is compute-bound on our single 6464 GB workstation: of the 273273-checkpoint registry we fully processed 7171 (those with both a Qwen3Guard label and detector output), as many as the budget allowed rather than a curated subset. The 5757 uncensored among them, plus a separate 3737 benign edits, form the 9494-checkpoint evaluation set (full attrition in App. D; the second guard covers the 5959 with cached generations). Hardware and decoding details are in App. D.
+
+### Q1: Does the audit separate abliterations from benign edits?
+
+In-family, yes (Table 1). The combined zz-sum is significantly more separable than either signal (paired Δ\DeltaAUROC +0.10+0.10 over ρ\rho, 95%95\% CI [.04,.18][.04,.18]; +0.04+0.04 over E1E_{1}, [.005,.09][.005,.09]), at a Youden operating point of 0.930.93 TPR / 0.140.14 FPR (J=0.80J{=}0.80). Excluding each test point from the reference moments leaves the in-sample AUROC unchanged (0.9480.948 leave-one-out vs. 0.9480.948 pooled), so the transductive standardization does not leak.
+
+| in-sample | held-out (leave-one-family-out)  
+---|---|---  
+Detector | AUROC ↑\uparrow | PR ↑\uparrow | det. ↑\uparrow | FPR ↓\downarrow | bal. acc. ↑\uparrow  
+Combined zz-sum (ours) | 0.95 [.90,.98] | 0.97 [.94,.99] | 0.90 [.81,.96] | 0.11 [.03,.22] | 0.89 [.83,.95]  
+activation gap ρ\rho | 0.84 [.75,.92] | 0.89 [.82,.95] | 0.83 [.72,.91] | 0.27 [.14,.43] | 0.78 [.69,.86]  
+weight energy E1E_{1} | 0.90 [.84,.96] | 0.95 [.91,.98] | 0.72 [.60,.82] | 0.11 [.03,.22] | 0.81 [.73,.88]  
+AMS Tier 2 (Messenger, 2026) | 0.66 [.55,.77] | 0.81 [.73,.87] | 0.42 [.30,.56] | 0.20 [.09,.34] | 0.61 [.52,.70]  
+AMS Tier 1 (Messenger, 2026) | n/a | n/a | 0.35 [.23,.47] | 0.06 [.00,.14] | 0.65 [.57,.72]  
+Table 1: Wild audit (5757 uncensored / 3737 benign): in-sample separability and held-out (leave-one-family-out) transfer. Every bracket is a 95%95\% bootstrap CI (50005000 resamples; in-sample metrics resample the eval set, held-out metrics the pooled leave-one-family-out decisions); PR is in-sample average precision. The weight component E1E_{1} is the WeightWatch primitive (Zhong & Raghunathan, 2025); AMS Tier-2 reference-anchors its σ\sigma (nneg=35n_{\mathrm{neg}}{=}35).
+
+Fig. 1 plots the decision: 53/5753/57 uncensored checkpoints fall on the detected side; the 44 that do not sit among the benign edits.
+
+Figure 1: The combined zz-sum boundary (dashed) is the detector. Above/left of it, 5353 uncensored checkpoints are caught (∘\circ); the 44 below it are missed (∙\bullet) and sit among the benign edits (×\times). The white-box checkpoint we fine-tuned to evade (★\bigstar, §5) lands far on the evaded side by design. Axes are the two signals: activation gap ρ\rho and weight-recovery energy E1E_{1}.
+
+The two signals are negatively correlated (r=−0.41r{=}{-}0.41 across the set) and complementary, so their zz-sum is significantly more separable than either: paired Δ\DeltaAUROC +0.10+0.10 over the activation gap (95%95\% CI [0.04,0.18][0.04,0.18]) and +0.04+0.04 over E1E_{1} ([0.005,0.09][0.005,0.09]), both bootstrap CIs excluding 00, and a fitted 2-D logistic does not improve on the threshold-free sum. The uncensored labels themselves are robust to the choice of guard (a second, different-family guard agrees at Cohen’s κ=0.78\kappa{=}0.78; §E).
+
+### Q2: Does the operating point transfer?
+
+Yes (Table 1, held-out). Under leave-one-family-out calibration, the zz-sum reaches balanced accuracy 0.890.89 (FPR 0.110.11), above either signal alone (ρ\rho 0.780.78, E1E_{1} 0.810.81) and an absolute subspace variant (DcombD_{\mathrm{comb}} 0.820.82, App. A). Reference-anchoring is what earns the activation component its transfer: held-out detection climbs from 0.350.35 for an absolute-σ\sigma AMS Tier-1 scan, to 0.420.42 for reference-anchored AMS Tier-2, to 0.830.83 for our harmful-minus-benign anchored ratio. The weight energy E1E_{1} then supplies the recall on multi-direction recipes the gap misses (§5, Fig. 2).
+
+Figure 2: ROC for the two signals and their zz-sum; the absolute-σ\sigma AMS Tier-1 baseline (■\blacksquare) sits well below. In-sample AUROC 0.950.95 (zz-sum) vs. 0.900.90 (E1E_{1}) and 0.840.84 (ρ\rho); the zz-sum is significantly above both (Table 1).
+
+### Q3: Do the two signals complement each other?
+
+Yes, and it is why the combined zz-sum is significantly more separable than either signal alone (Table 1). The single-direction gap fails in two ways. (i) When refusal is removed along several directions at once (Heretic), one difference-of-means direction captures only part of the edit. (ii) In reasoning-distilled models the refusal decision migrates into the generated chain-of-thought (Yamaguchi et al., 2025) and is suppressed only at the final tokens (Yin et al., 2025), which a last-token gap cannot see and which chain-of-thought jailbreaks exploit (Zhao et al., 2025b). Both kinds of edit stay low-rank in weight space, so E1E_{1} keeps firing and the combined detector recovers them: it misses only 4/574/57 (Fig. 1), and those 44 are ordinary abliteration variants, not the hard recipes. Auditing reasoning checkpoints on the gap alone would still need trace-level probing, an open problem.
+
+## 5 Where the Audit Fails (Q4)
+
+Two breaks, in order of severity: the first is architectural and needs no compute, the second needs white-box training.
+
+### A spoofed reference defeats the audit without training.
+
+Both signals need a trusted base, but the audit tolerates an honest mistake about which clean sibling it is: scoring an abliterated Qwen3 instruct candidate against the _pretrain_ *-Base instead of its true instruct base only drops the rank-1 weight energy from E1=1.0E_{1}{=}1.0 to 0.770.77 (still detected), because the abliteration stays the dominant low-rank component of Δ​W\Delta W despite the added instruct-tuning delta. The audit breaks only when the declared reference is _itself_ adversarial: declaring an already-abliterated sibling shrinks Δ​W\Delta W and inflates ρ\rho, evading both axes with no training (2/22/2 checkpoints, ρ=0.69/0.73\rho{=}0.69/0.73); using the candidate as its own reference evades by construction (Δ​W=0\Delta W{=}0, ρ=1\rho{=}1). This is the architectural limit: the audit is only as strong as its base attestation, so the root of trust must be a publisher-signed checkpoint hash or hardware-attested lineage, not an uploader-nominated base (App. E).
+
+### A white-box adversary trains past it.
+
+A Qwen2.5-1.5B fine-tune optimized against the held-out detector objective (App. D) drives the combined score from detected to evaded (Fig. 3), an existence proof on a single family and scale (Limitations). At the evaded checkpoint (step 600600) both axes read benign (E1=0.29E_{1}{=}0.29, ρ=1.82\rho{=}1.82), yet the model is guard-unsafe on every held-out harmful prompt (Qwen3Guard 20/2020/20, [.83,1.0][.83,1.0]), non-refusing (substring refusal 0.150.15), and coherent (perplexity 180180 vs. the base’s 194194). It also keeps most base capability (MMLU 0.580.58 vs. 0.590.59; GSM8K 0.510.51 vs. 0.570.57), a small “obfuscation tax” on general knowledge and a modest one on math, comparable to what public abliterations incur (Young, 2025). Bailey et al. (2024) name this tax for activation monitors; here it appears in the joint weight+activation setting. As a design check, natural fine-tuning does not open this hole: across 66 Qwen SFT/DPO full fine-tunes E1E_{1} stays high even as the model becomes uncensored, so the adaptive hole requires targeted optimization.
+
+Figure 3: A white-box adversary drives the combined score from above its detection threshold (detected) to well below it (evaded) over training. The annotated step-600600 checkpoint hides both axes while remaining non-refusing, coherent, and guard-unsafe (all 2020 held-out prompts).
+
+## 6 Limitations
+
+Three limits bound the claims. Construct validity. Ground-truth labels come from one behavioral guard and certify refusal, not harmlessness (refusal and harmfulness are separate axes; App. B). Separately, E1E_{1} fires on any low-rank edit, so it cannot alone distinguish refusal removal from other aggressive edits, including safety-hardening; the activation gap supplies the refusal-specificity, and because our benign negatives contain no hardened models the headline FPR is optimistic against that case. Transfer and calibration. The evaluation is small (n=57/37n{=}57/37), so absolute rates are imprecise, with especially wide bands on the held-out operating-point metrics; and because the score is standardized and thresholded on a reference population, cross-family transfer is only estimated by leave-one-family-out, not guaranteed for a genuinely novel architecture. Adversarial robustness. The activation gap alone is bounded to one direction (it misses multi-direction removal, which E1E_{1} recovers here but a direction-aware attacker could target jointly), and the white-box hole is a one-family, one-scale proof of concept. A trained linear probe on raw activations, a multi-family attack, same-axis or human label adjudication, and a layer-band ablation are left to future work.
+
+### Broader impact and safeguards.
+
+The audit helps platforms and reviewers triage redistributed checkpoints before deployment; its dual use is a detection-aware evasion recipe (novel: natural fine-tuning does not open this hole). We make the audit metric, code, and recipe available on request for reproducibility, but withhold the evaded weights and raw harmful generations and report only aggregate guard rates; because the attack modifies the owner’s own weights, it exposes no third-party vendor’s users to coordinate disclosure with (App. F).
+
+## 7 Conclusion
+
+For a platform triaging redistributed checkpoints, the two-signal zz-sum is a cheap and effective first filter: under an attested base it separates public abliterations from benign edits at AUROC 0.950.95 and transfers to unseen families at balanced accuracy 0.890.89, with a flag prompting review rather than rejection. Its limits are just as concrete, and an operator must hold all three at once: the audit rests entirely on the reference, so a spoofed base voids it at the root; the weight axis alone cannot tell refusal removal from other low-rank edits; and a white-box owner can train past both signals while staying uncensored. Effective triage is not tamper-proofing. Our contribution is the detector together with the map of exactly where it stops working.
+
+## References
+
+  * Abu Shairah et al. (2025) Harethah Abu Shairah, Hasan Abed Al Kader Hammoud, Bernard Ghanem, and George Turkiyyah.  An embarrassingly simple defense against LLM abliteration attacks, 2025\. 
+  * Arditi et al. (2024) Andy Arditi, Oscar Obeso, Aaquib Syed, Daniel Paleka, Nina Panickssery, Wes Gurnee, and Neel Nanda.  Refusal in language models is mediated by a single direction.  In _Advances in Neural Information Processing Systems (NeurIPS)_ , 2024.  arXiv:2406.11717. 
+  * Bailey et al. (2024) Luke Bailey, Alex Serrano, Abhay Sheshadri, Mikhail Seleznyov, Jordan Taylor, Erik Jenner, Jacob Hilton, Stephen Casper, Carlos Guestrin, and Scott Emmons.  Obfuscated activations bypass LLM latent-space defenses, 2024. 
+  * Casper et al. (2024) Stephen Casper, Carson Ezell, Charlotte Siegmann, Noam Kolt, Taylor Lynn Curtis, Benjamin Bucknall, Andreas Haupt, Kevin Wei, Jérémy Scheurer, Marius Hobbhahn, Lee Sharkey, Satyapriya Krishna, Marvin Von Hagen, Silas Alberti, Alan Chan, Qinyi Sun, Michael Gerovitch, David Bau, Max Tegmark, David Krueger, and Dylan Hadfield-Menell.  Black-box access is insufficient for rigorous AI audits, 2024.  ACM FAccT 2024. 
+  * Chao et al. (2024) Patrick Chao, Edoardo Debenedetti, Alexander Robey, Maksym Andriushchenko, Francesco Croce, Vikash Sehwag, Edgar Dobriban, Nicolas Flammarion, George J. Pappas, Florian Tramèr, Hamed Hassani, and Eric Wong.  JailbreakBench: An open robustness benchmark for jailbreaking large language models, 2024.  NeurIPS 2024 Datasets and Benchmarks. 
+  * Coslett (2026) Anthony Ray Coslett.  Safety-alignment removal as a model-identity failure — structural evidence from published weight-level mutation checkpoints, 2026.  Fall Risk AI; Zenodo 10.5281/zenodo.19383019. 
+  * Jain et al. (2024) Samyak Jain et al.  What makes and breaks safety fine-tuning? a mechanistic study.  In _NeurIPS_ , 2024. 
+  * Labonne (2024) Maxime Labonne.  Uncensor any LLM with abliteration.  Hugging Face blog, 2024.  Coined “abliteration”; weight orthogonalization against the refusal direction. 
+  * Mazeika et al. (2024) Mantas Mazeika, Long Phan, Xuwang Yin, Andy Zou, Zifan Wang, Norman Mu, Elham Sakhaee, Nathaniel Li, Steven Basart, Bo Li, David Forsyth, and Dan Hendrycks.  HarmBench: A standardized evaluation framework for automated red teaming and robust refusal, 2024.  ICML 2024. 
+  * McGuinness et al. (2025) Max McGuinness, Alex Serrano, Luke Bailey, and Scott Emmons.  Neural chameleons: Language models can learn to hide their thoughts from unseen activation monitors, 2025.  ICLR 2026 Workshop on Trustworthy AI. 
+  * Messenger (2026) Glen Messenger.  Detecting safety training modification in language models via activation analysis.  _IEEE Access_ , 14:91723–91737, 2026.  doi: 10.1109/ACCESS.2026.3704057. 
+  * p-e-w (2025) p-e-w.  Heretic: Automated censorship removal for language models.  <https://github.com/p-e-w/heretic>, 2025.  Optuna-tuned per-layer directional abliteration; 1000+ released checkpoints. 
+  * Padhi et al. (2024) Inkit Padhi, Manish Nagireddy, Giandomenico Cornacchia, Subhajit Chaudhury, Tejaswini Pedapati, Pierre Dognin, Keerthiram Murugesan, Erik Miehling, Martín Santillán Cooper, Kieran Fraser, Giulio Zizzo, Muhammad Zaid Hameed, Mark Purcell, Michael Desmond, Qian Pan, Inge Vejsbjerg, Elizabeth M. Daly, Michael Hind, Werner Geyer, Ambrish Rawat, Kush R. Varshney, and Prasanna Sattigeri.  Granite guardian, 2024. 
+  * Pan et al. (2025) Wenbo Pan, Zhichao Liu, Qiguang Chen, Xiangyang Zhou, Haining Yu, and Xiaohua Jia.  The hidden dimensions of LLM alignment: A multi-dimensional analysis of orthogonal safety directions.  In _International Conference on Machine Learning (ICML)_ , 2025.  arXiv:2502.09674. 
+  * Peng et al. (2026) Songping Peng, Zhiheng Zhang, Daojian Zeng, Lincheng Jiang, and Xieping Gao.  Preventing safety drift in large language models via coupled weight and activation constraints, 2026.  ACL 2026. 
+  * Piras et al. (2025) Giorgio Piras, Raffaele Mura, Fabio Brau, Luca Oneto, Fabio Roli, and Battista Biggio.  SOM directions are better than one: Multi-directional refusal suppression in language models, 2025.  AAAI 2026; Self-Organizing-Map extraction of multiple refusal directions. Code: <https://github.com/pralab/som-refusal-directions>. 
+  * Qwen Team (2025) Qwen Team.  Qwen3guard technical report, 2025.  Generative Qwen3Guard-Gen-8B (Apache-2.0); emits per-response Safety and Refusal labels. 
+  * Reuel et al. (2024) Anka Reuel, Ben Bucknall, Stephen Casper, et al.  Open problems in technical AI governance, 2024. 
+  * Shevlane et al. (2023) Toby Shevlane et al.  Model evaluation for extreme risks, 2023.  arXiv:2305.15324; dangerous-capability vs alignment/propensity evaluation pillars. 
+  * Siu et al. (2025) Vincent Siu, Nicholas Crispino, Zihao Yu, Sam Pan, Zhun Wang, Yang Liu, Dawn Song, and Chenguang Wang.  COSMIC: Generalized refusal direction identification in LLM activations.  In _Findings of the Association for Computational Linguistics: ACL_ , 2025. 
+  * Tamirisa et al. (2024) Rishub Tamirisa, Bhrugu Bharathi, Long Phan, Andy Zhou, Alice Gatti, Tarun Suresh, Maxwell Lin, Justin Wang, Rowan Wang, Ron Arel, Andy Zou, Dawn Song, Bo Li, Dan Hendrycks, and Mantas Mazeika.  Tamper-resistant safeguards for open-weight LLMs, 2024.  ICLR 2025. 
+  * Wollschläger et al. (2025) Tom Wollschläger et al.  The geometry of refusal in large language models: Concept cones and representational independence, 2025. 
+  * Xu & Sheng (2026) Zhenyu Xu and Victor S. Sheng.  A behavioral fingerprint for large language models: Provenance tracking via refusal vectors, 2026. 
+  * Yamaguchi et al. (2025) Kureha Yamaguchi, Benjamin Etheridge, and Andy Arditi.  Where do reasoning models refuse?, 2025.  ICML 2025 Workshop on Reliable and Responsible Foundation Models (R2FM). 
+  * Yin et al. (2025) Qingyu Yin, Chak Tou Leong, Wenxuan Huang, Wenjie Li, Linyi Yang, Xiting Wang, Jaehong Yoon, YunXing, XingYu, and Jinjin Gu.  Refusal falls off a cliff: How safety alignment fails in reasoning?, 2025\. 
+  * Young (2025) Richard J. Young.  Comparative analysis of LLM abliteration methods: A cross-architecture evaluation, 2025. 
+  * Zhao et al. (2025a) Jiachen Zhao, Jing Huang, Zhengxuan Wu, David Bau, and Weiyan Shi.  LLMs encode harmfulness and refusal separately, 2025a.  NeurIPS 2025. 
+  * Zhao et al. (2025b) Jianli Zhao, Tingchen Fu, Rylan Schaeffer, Mrinank Sharma, and Fazl Barez.  Chain-of-thought hijacking, 2025b. 
+  * Zhong & Raghunathan (2025) Ziqian Zhong and Aditi Raghunathan.  Watch the weights: Unsupervised monitoring and control of fine-tuned LLMs, 2025.  ICLR 2026. 
+  * Zou et al. (2023a) Andy Zou, Long Phan, Sarah Chen, James Campbell, Phillip Guo, Richard Ren, Alexander Pan, Xuwang Yin, Mantas Mazeika, Ann-Kathrin Dombrowski, Shashwat Goel, Nathaniel Li, Michael J. Byun, Zifan Wang, Alex Mallen, Steven Basart, Sanmi Koyejo, Dawn Song, Matt Fredrikson, J. Zico Kolter, and Dan Hendrycks.  Representation engineering: A top-down approach to AI transparency, 2023a. 
+  * Zou et al. (2023b) Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr, J. Zico Kolter, and Matt Fredrikson.  Universal and transferable adversarial attacks on aligned language models, 2023b.  AdvBench harmful-behaviors set. 
+  * Zou et al. (2024) Andy Zou, Long Phan, Justin Wang, Derek Duenas, Maxwell Lin, Maksym Andriushchenko, Rowan Wang, J. Zico Kolter, Matt Fredrikson, and Dan Hendrycks.  Improving alignment and robustness with circuit breakers, 2024.  NeurIPS 2024. 
+
+
+
+## Appendix
+
+## Appendix A Per-axis operating points and the DcombD_{\mathrm{comb}} variant
+
+The combined zz-sum (§4) is the detector; Table 2 gives the two component operating points on the 5757/3737 set, which motivate combining them.
+
+Operating point | TPR | FPR | AUROC  
+---|---|---|---  
+Activation refusal-gap (ρ<0.5\rho{<}0.5) | 0.63 | 0.14 | 0.84  
+Weight energy (E1≥0.5E_{1}{\geq}0.5) | 0.90 | 0.22 | 0.90  
+Table 2: Per-axis operating points (in-sample, 5757/3737). The weight energy E1E_{1} has the higher recall and AUROC but a higher operating-point FPR (it fires on benign low-rank edits); the activation gap has the cleaner FPR but lower recall. Combining recovers both, which is why the zz-sum is significantly better than either (§4).
+
+### Absolute subspace variant DcombD_{\mathrm{comb}}.
+
+As a standardization-free alternative to the transductive zz-sum, we also evaluated an absolute weight-space operator. For a unit direction vv, define the per-direction deficit
+
+| δ⁡(v)=meanℓ∈ℬ,W∈{o_proj,down_proj}​max​(0, 1−⟨v⊤​Wc,v⊤​Wb⟩∥v⊤​Wb∥2)∈[0,1],\delta(v)=\operatorname*{mean}_{\ell\in\mathcal{B},\;W\in\\{\texttt{o\\_proj},\,\texttt{down\\_proj}\\}}\max\\!\Big(0,\;1-\frac{\langle v^{\top}W_{c},\,v^{\top}W_{b}\rangle}{\lVert v^{\top}W_{b}\rVert^{2}}\Big)\in[0,1], |   
+---|---|---  
+  
+one minus the base-normalized recovery of the candidate’s weights along vv, averaged over the band matrices. The operator is Dcomb=max⁡(dsig,dsub)D_{\mathrm{comb}}=\max(d_{\mathrm{sig}},d_{\mathrm{sub}}), where dsig=δ⁡(r^)d_{\mathrm{sig}}=\delta(\hat{r}) scores the canonical refusal direction and dsub=maxb∈ℛ⁡δ⁡(b)d_{\mathrm{sub}}=\max_{b\in\mathcal{R}}\delta(b) maximizes over a refusal-subspace basis ℛ\mathcal{R} (r^\hat{r} plus independent difference-of-means directions, Gram–Schmidt orthonormalized). It needs no population standardization but reaches only leave-one-family-out balanced accuracy 0.820.82, below the zz-sum’s 0.890.89, so we report the zz-sum.
+
+## Appendix B Construct validity of the two signals
+
+Four checks test that the activation gap and weight energy measure what we claim.
+
+### The activation gap is not a norm artifact.
+
+Abliteration also shrinks residual-stream norms, but recomputing ρ\rho from cosine (unit-norm) projections raises it rather than removing it (raw vs. cosine ρ\rho ranges 0.040.04–0.240.24 vs. 0.070.07–0.320.32 across two abliteration families at 4B/8B), so the harmful-minus-benign separation is directional, not a magnitude effect, and stays well below the ρ<0.5\rho{<}0.5 flag either way.
+
+### A single direction is bounded; the union is not.
+
+Refusal occupies a cone of directions rather than one axis (Wollschläger et al., 2025), so a single difference-of-means rr can be evaded along an orthogonal component. We confirm the bound directly: removing refusal along a direction orthogonal to r^\hat{r} drives the activation gap to ρ≈0.99\rho{\approx}0.99 (evading the activation axis), yet the weight energy still fires (E1=1.0E_{1}{=}1.0) and the checkpoint still refuses (0%0\% guard-unsafe). By contrast, canonical r^\hat{r}-aligned removal yields a genuinely uncensored model (75%75\% guard-unsafe) and collapses the gap to ρ≈0\rho{\approx}0, caught on both axes. Neither edit escapes the two-signal sum: the single-direction gap is bounded but E1E_{1} recovers the multi-direction case, which is why summing the signals catches the Heretic and reasoning recipes the gap alone misses (§5).
+
+### The gap measures refusal, not harmfulness.
+
+Zhao et al. (2025a) show that harmfulness and refusal are encoded along separate directions, and that adversarially fine-tuning a model to comply barely moves its internal harmfulness representation. Our refusal-gap therefore certifies whether the refusal mechanism is present, not whether a model is harmless, and the white-box attack (§5) hides only the refusal axis. A harmfulness-direction probe is complementary and could flag a checkpoint that evades the gap.
+
+### The weight energy is direction-agnostic, so the gap supplies refusal-specificity.
+
+E1E_{1} fires on any low-rank weight edit, in either safety direction. A safety-strengthening control makes this explicit: extended-refusal hardening (Abu Shairah et al., 2025) applied to an abliterated base re-inserts refusal (refusal rate 1.01.0 vs. 0.120.12 for the un-hardened control) yet still has E1=1.0E_{1}{=}1.0. So E1E_{1} alone cannot tell refusal removal from addition, and a negative set containing safety-hardened models would draw false positives from the weight axis; the refusal-specificity in the combined detector comes from the activation gap, and gating E1E_{1} on canonical-direction alignment (which we examined) does not fix this, since hardening is itself refusal-aligned. This is why we report the construct caveat in §5/Limitations rather than claim a standalone weight forensic, consistent with Jain et al. (2024).
+
+## Appendix C Audit protocol
+
+The deployable audit is a fixed procedure, summarized so it can be re-implemented and disagreement localized.
+
+  1. 1.
+
+Inputs. A candidate checkpoint McM_{c} and a trusted, attested reference MbM_{b} (the base or a sibling with pinned, verifiable lineage; §E).
+
+  2. 2.
+
+Refusal directions. On MbM_{b} only, form per-layer unit difference-of-means refusal directions r^ℓ\hat{r}_{\ell} from a fixed harmful/benign contrast set (below). They are never estimated on audited candidates, so no candidate (or held-out family) leaks into r^ℓ\hat{r}_{\ell}.
+
+  3. 3.
+
+Score. Compute the activation gap ρ⁡(Mc)\rho(M_{c}) and the weight-recovery energy E1​(Mc)E_{1}(M_{c}) (below), standardize each against the attested reference population, and sum: s⁡(Mc)=z⁡(−ρ)+z⁡(E1)s(M_{c})=z(-\rho)+z(E_{1}). (An absolute, standardization-free variant DcombD_{\mathrm{comb}} is in App. A.)
+
+  4. 4.
+
+Threshold. Fix the operating point by Youden’s JJ on the attested calibration population; the leave-one-family-out numbers in Table 1 estimate the transfer of that threshold to a family held out of calibration.
+
+  5. 5.
+
+Output. A flag plus the two component scores, so an over-flagged benign edit (held-out FPR 0.110.11) can be triaged by hand rather than auto-rejected: the audit is pre-deployment triage, and the deployment harm of a false positive is a manual re-review, not a blocked release.
+
+
+
+
+## Appendix D Reproducibility details
+
+### Contrast set for r^ℓ\hat{r}_{\ell}.
+
+The refusal directions are built from a fixed set of 500500 harmful/benign prompt pairs (seed 2026052820260528; source files pinned by SHA-256). The harmful prompts are drawn from established red-teaming benchmarks: AdvBench (Zou et al., 2023b) (379379), JailbreakBench (Chao et al., 2024) (6363), and the HarmBench (Mazeika et al., 2024) validation split (5858), spanning the usual misuse taxonomies (illegal activity, cyber, violence, chemical/biological, fraud, harassment, privacy). Each harmful prompt is paired with a hand-authored, topically matched benign instruction that shares its leading verb, so the difference-of-means isolates refusal rather than topic or surface form. The same set is reused for every family; it never includes audited checkpoints.
+
+### Activation gap.
+
+For last-token residual activations aℓa_{\ell}, the per-model gap is the band-mean gap⁡(M)=meanℓ∈ℬ⁡[meanharm⁡⟨aℓ,r^ℓ⟩−meanben⁡⟨aℓ,r^ℓ⟩]\mathrm{gap}(M)=\operatorname{mean}_{\ell\in\mathcal{B}}\big[\operatorname{mean}_{\mathrm{harm}}\langle a_{\ell},\hat{r}_{\ell}\rangle-\operatorname{mean}_{\mathrm{ben}}\langle a_{\ell},\hat{r}_{\ell}\rangle\big], and ρ⁡(Mc)=gap⁡(Mc)/gap⁡(Mb)\rho(M_{c})=\mathrm{gap}(M_{c})/\mathrm{gap}(M_{b}). The band ℬ\mathcal{B} is the mid-stack range ⌊0.33​L⌋​…​⌊0.67​L⌋\lfloor 0.33L\rfloor\ldots\lfloor 0.67L\rfloor (LL layers), where the refusal direction is most separable; dividing by gap⁡(Mb)\mathrm{gap}(M_{b}) is what lets one threshold transfer across families of different scale. Generations use ≤256\leq 256 tokens.
+
+### Weight-recovery energy.
+
+On the Δ​W=Wb−Wc\Delta W=W_{b}-W_{c} of the o_proj and down_proj matrices of each band layer, the weight axis is the rank-1 spectral energy E1=σ12/∑iσi2∈[0,1]E_{1}=\sigma_{1}^{2}/\sum_{i}\sigma_{i}^{2}\in[0,1] (the WeightWatch primitive), band-averaged. We use E1E_{1} ungated; we also examined gating it by an alignment term align=max⁡(cos⁡(u^1,r^),refusal-subspace coverage)\mathrm{align}=\max(\cos(\hat{u}_{1},\hat{r}),\,\text{refusal-subspace coverage}) (u^1\hat{u}_{1} the top left singular vector), but it does not improve specificity (§B).
+
+### Negative class and per-recipe FPR.
+
+The 3737 benign-edit negatives are public non-safety edits of the same families: benign instruction fine-tunes (2626), model merges (99), and instruction-tunes (22) (recipe kinds benign-ft/merge/instruct-tune; no quantizations in the committed set). Positives are checkpoints labeled uncensored by the guard whose recipe is abliterated or uncensored-ft. At the zz-sum operating point the 5/375/37 false positives concentrate in merges (the most aggressive low-rank benign edit), not plain fine-tunes (Table 3): the detector is not merely flagging “any low-rank edit,” though the residual confound with aggressive benign merges is the price of the recall the weight energy provides.
+
+benign-edit recipe | nn | false positives (zz-sum)  
+---|---|---  
+benign instruction fine-tune | 2626 | 33 (0.120.12)  
+model merge | 99 | 22 (0.220.22)  
+all negatives | 3737 | 55 (0.140.14)  
+Table 3: Per-recipe false-positive rate of the combined zz-sum at its Youden operating point on the 3737 benign-edit negatives (22 instruction-tunes with 00 false positives omitted).
+
+### Behavioral oracle and capability.
+
+Labels come from Qwen3Guard-Gen-8B with greedy decoding (do_sample=False\texttt{do\\_sample}{=}\text{False}, ≤256\leq 256 new tokens) and chain-of-thought traces stripped before judging; a checkpoint is uncensored when it is guard-unsafe on held-out harmful prompts. Substring refusal uses a fixed keyword classifier. MMLU and GSM8K use greedy decoding with 256256 new tokens. The keyword list and the guard/judge prompt templates are available with the artifact. All experiments run on a single 6464 GB Apple M4 Max (Metal Performance Shaders, MPS).
+
+### Adaptive attack recipe.
+
+The white-box owner minimizes a composite objective that pushes both detector axes (§3) below threshold while a pair of regularizers keep the model uncensored and coherent:
+
+| ℒ=λw​ℒweight+λa​ℒgap+λr​ℒretain+β​ℒuncensor.\mathcal{L}=\lambda_{w}\,\mathcal{L}_{\mathrm{weight}}+\lambda_{a}\,\mathcal{L}_{\mathrm{gap}}+\lambda_{r}\,\mathcal{L}_{\mathrm{retain}}+\beta\,\mathcal{L}_{\mathrm{uncensor}}. |   
+---|---|---  
+  
+The two evasion terms target the detector statistics directly:
+
+| ℒweight=1|𝒮|​∑m∈𝒮σ12​(Δ​Wm)+∥r⊤​Δ​Wm∥2∥Δ​Wm∥F2,ℒgap=ReLU⁡(τ−ρ~)2.\mathcal{L}_{\mathrm{weight}}=\frac{1}{|\mathcal{S}|}\sum_{m\in\mathcal{S}}\frac{\sigma_{1}^{2}(\Delta W_{m})+\lVert r^{\top}\\!\Delta W_{m}\rVert^{2}}{\lVert\Delta W_{m}\rVert_{F}^{2}},\qquad\mathcal{L}_{\mathrm{gap}}=\operatorname{ReLU}\\!\big(\tau-\tilde{\rho}\big)^{2}. |   
+---|---|---  
+  
+The first ℒweight\mathcal{L}_{\mathrm{weight}} summand is exactly the per-matrix E1E_{1} term (∥Δ​Wm∥F2=∑iσi2\lVert\Delta W_{m}\rVert_{F}^{2}=\sum_{i}\sigma_{i}^{2}), so minimizing it lowers the detector’s weight energy by construction, while the second drains the refusal direction rr; we average over a random subset 𝒮⊆𝒲\mathcal{S}\subseteq\mathcal{W} of watched matrices per step. The gap hinge drives the gap ratio ρ~=gaptr​(Mc)/gaptr​(Mb)\tilde{\rho}=\mathrm{gap}_{\mathrm{tr}}(M_{c})/\mathrm{gap}_{\mathrm{tr}}(M_{b}) below a target τ\tau; critically, gaptr\mathrm{gap}_{\mathrm{tr}} uses refusal directions and prompts from a _train_ split while the reported ρ\rho is read on a disjoint held-out split, so the attack cannot memorize the scoring directions. The regularizers preserve behavior: ℒretain\mathcal{L}_{\mathrm{retain}} is the benign-prompt logit KL to the base (λr=1\lambda_{r}{=}1), and ℒuncensor=ReLU⁡(ℓabl−ϵ)2\mathcal{L}_{\mathrm{uncensor}}=\operatorname{ReLU}(\ell_{\mathrm{abl}}-\epsilon)^{2} hinges the comply cross-entropy ℓabl\ell_{\mathrm{abl}} to pin the model uncensored.
+
+We optimize the full model with AdamW (lr 5×10−55\times 10^{-5}, β=(0.9,0.95)\beta{=}(0.9,0.95), grad-clip 5.05.0), checkpointing at steps {100,300,600,1000,1500}\\{100,300,600,1000,1500\\} with seed 4242; the reported evaded checkpoint is step 600600 at λw=4,λa=64\lambda_{w}{=}4,\lambda_{a}{=}64. The escape gate requires both axes evaded, guard-unsafe, and coherent (low perplexity).
+
+### Artifact and attrition.
+
+The metric, audit code, per-checkpoint manifest, contrast-set hashes, and per-recipe results are available on request (a cleaned public release is planned). The manifest gives, per checkpoint, the repository id, revision, family, recipe label, guard label, scan date, and include/exclude flag. Attrition to the evaluation set (coverage bounded by single-workstation compute, not curated on outcomes): 273273 registry →71\to 71 with both a guard label and detector output →57\to 57 uncensored positives + 37+\,37 benign-edit negatives =94=94 (1414 labeled-but-refusing checkpoints excluded), of which 5959 have cached generations for the second-guard check. Bootstrap resamples =5000=5000; RNG seeds recorded. We withhold all abliterated and evaded weights and all raw harmful generations.
+
+## Appendix E Threat model
+
+We consider three adversaries, ordered by capability. The _non-textbook recipe_ (detector unknown, no access beyond public weights, already trained) evades a component axis but is recovered by the zz-sum (the complementarity of §4); only the next two defeat the combined audit. The _reference spoofer_ (detector known, declares the reference, no compute) evades both axes with no training. The _white-box owner_ (detector known, full weights, moderate fine-tune) trains the score below threshold while staying guard-unsafe. The audit assumes an honest, attested reference; both the spoofer and the white-box owner break that assumption, which is why we treat base attestation, not the score, as the root of trust (§E).
+
+### Attestation as the root of trust.
+
+Both signals are only as strong as the reference. An operational deployment should therefore obtain MbM_{b} through a channel that binds weights to a verifiable lineage (a publisher-signed checkpoint hash, or hardware-attested training provenance) and reject self-supplied references, rather than accepting whatever base an uploader nominates. This converts the spoofing attack from a silent bypass into a failed attestation. A second, untested layer would check the credibility of the declared parent itself, e.g. by running the same refusal audit on the reference, which would expose an already-abliterated sibling presented as a base.
+
+### Construct validity of the ground truth.
+
+Our labels come from a behavioral guard, so the audit can only certify behaviorally-obvious refusal removal; a checkpoint that is internally edited but still behaviorally refusing (or one whose refusal has migrated into an unscored chain-of-thought, §5) is by construction mislabeled. This guard-anchored ground truth is also why the reasoning-distilled misses may be partly a labeling artifact rather than purely a detector failure, and it is a deliberate limit of behavioral grounding, not a claim that the guard is itself trustworthy: the audit targets the model artifact, the guard only supplies labels.
+
+### Label robustness under a second, independent guard.
+
+To check that the uncensored labels are not an artifact of the single primary guard, we re-judged the cached harmful-prompt generations with a second guard from a different family, Granite Guardian 3.0-2B (Padhi et al., 2024). The open refusal-judging guards (WildGuard, Llama Guard, ShieldGemma) are access-gated, so the second guard scores a different axis: whether each response is harmful, rather than whether it is a refusal. Even across both a different family and a different construct, its compromised/clean labels agree with the refusal-based primary at Cohen’s κ=0.78\kappa{=}0.78 (93%93\% raw agreement, 4/594/59 checkpoints flipped). The few disagreements fall exactly on the refusal-versus-harmfulness boundary the audit already acknowledges: three checkpoints comply without emitting guard-flagged harmful content (non-refusing but not harmful), and one reasoning checkpoint is the reverse. The substantial agreement indicates the labels are robust to the choice of guard; the residual gap is the refusal/harmfulness distinction, not guard noise.
+
+## Appendix F Ethics and data statement
+
+### Data.
+
+The registry is built only from already-public model checkpoints on open repositories and from established, openly released red-teaming prompt sets (AdvBench, JailbreakBench, HarmBench); it contains no human subjects, no private or personally identifying data, and no new harmful content, so no IRB review applies. The datasheet lists, per checkpoint, the repository id, revision hash, family, recipe label, behavioral label, and scan date, with the include/exclude flag and reason, so the audited population is fully specified and auditable.
+
+### Harmful generations.
+
+Harmful prompts are run only to score refusal; we never release raw harmful generations, reporting only aggregate guard-unsafe and substring-refusal rates, and we withhold every abliterated and adversarially evaded checkpoint we produced.
+
+### Dual use and disclosure.
+
+The detector aids defenders (platform and registry operators triaging redistributed checkpoints before deployment); its dual-use surface is the white-box evasion recipe, which is novel (it is detection-aware; natural fine-tuning does not open this hole, §5), so we do not appeal to the prevalence of ordinary abliteration to excuse it. We judge release defensible on different grounds: the attack requires white-box control of a checkpoint the owner already holds, and the marginal offensive uplift is outweighed by the defensive value of a reproducible audit and a documented failure mode. For reproducibility the training recipe is given in Appendix D; we withhold the evaded weights and all raw harmful generations. Because the attack modifies weights the owner already controls and targets a defense class rather than a deployed model’s users, it exposes no third-party vendor’s users, so it does not carry the coordinated-disclosure obligation that a jailbreak against a hosted model would.
+
+Experimental support, please [view the build logs](./2607.01854v2/__stdout.txt) for errors. Generated by [ L A T E xml ](https://math.nist.gov/~BMiller/LaTeXML/). 
+
+## Instructions for reporting errors
+
+We are continuing to improve HTML versions of papers, and your feedback helps enhance accessibility and mobile support. To report errors in the HTML that will help us improve conversion and rendering, choose any of the methods listed below:
+
+  * Click the "Report Issue" ( ) button, located in the page header.
+
+
+
+**Tip:** You can select the relevant text first, to include it in your report.
+
+Our team has already identified [the following issues](https://github.com/arXiv/html_feedback/issues). We appreciate your time reviewing and reporting rendering errors we may not have found yet. Your efforts will help us improve the HTML versions for all readers, because disability should not be a barrier to accessing research. Thank you for your continued support in championing open access for all.
+
+Have a free development cycle? Help support accessibility at arXiv! Our collaborators at LaTeXML maintain a [list of packages that need conversion](https://github.com/brucemiller/LaTeXML/wiki/Porting-LaTeX-packages-for-LaTeXML), and welcome [developer contributions](https://github.com/brucemiller/LaTeXML/issues).
+
+We gratefully acknowledge support from our **major funders** , [**member institutions**](https://info.arxiv.org/about/ourmembers.html) , ****, and all contributors.
+
+[About](https://info.arxiv.org/about) * [Help](https://info.arxiv.org/help) * [Contact](https://info.arxiv.org/help/contact.html) * [Subscribe](https://info.arxiv.org/help/subscribe) * [Copyright](https://info.arxiv.org/help/license/index.html) * [Privacy](https://info.arxiv.org/help/policies/privacy_policy.html) * [Accessibility](https://info.arxiv.org/help/web_accessibility.html) * [Operational Status (opens in new tab)](https://status.arxiv.org)
+
+Major funding support from
+
+[ ](https://www.simonsfoundation.org/) [ ](https://www.sfi.org.bm/) [ ](https://www.schmidtsciences.org/)
+
+[ ](

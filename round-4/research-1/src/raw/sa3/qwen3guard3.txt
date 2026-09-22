@@ -1,0 +1,89 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: Winrate \(GPT-4\.1\) (1 matches in 101931 chars)
+
+--- Content ---
+
+41287:...where both is safe and is refusal are predicates provided by Qwen3Guard-4B-Gen.
+3.5.2
+Experiment Settings
+Training
+We employ Group Sequence Policy Optimization (GSPO) (Zheng et al., 2025), a stable and
+efficient reinforcement learning algorithm, to train the policy model. For the training data, we use the
+Qwen3-4B model to generate eight distinct responses for each prompt in the WildJailbreak training
+set (from Vanilla Harmful and Adversarial Harmful categories). Responses are generated under both
+thinking and non-thinking modes. We then filter out samples where all eight responses are either
+uniformly safe or uniformly unsafe, to ensure meaningful learning signals for the policy. This results in a
+final training set of 13.7k samples for thinking mode and 6.7k samples for non-thinking mode.
+11
+
+Mode
+Model
+Safety Rate
+Refusal ArenaHard-v2 AIME25 LCB-v6 GPQA
+Qwen3-235B
+WildGuard
+WildGuard
+Winrate (GPT-4.1)
+Pass@1
+Pass@1
+Pass@1
+Non-Think
+Qwen3-4B
+47.5
+64.7
+12.9
+9.5
+19.1
+26.4
+41.7
++ SafeRL (Guard-only)
+99.7
+100.0
+96.6
+8.5
+19.5
+25.8
+42.0
++ SafeRL (Hybrid)
+86.5
+98.1
+5.3
+10.7
+18.2
+27.7
+40.8
+Think
+Qwen3-4B
+43.8
+59.0
+6.5
+13.7
+65.6
+48.4
+55.9
++ SafeRL (Guard-only)
+99.7
+100.0
+95.2
+11.7
+66.3
+46.7
+53.1
++ SafeRL (Hybrid)
+83.4
+97.4
+6.2
+16.6
+63.5
+47.5
+51.2
+Table 10: Performance of Safety RL on Qwen3-4B in Think and Non-Think Modes.
+Evaluation
+We adopt the evaluation set from WildJailbreak as our test set, comprising 2,000 harmful
+prompts and 210 benign prompts. To comprehensively assess model performance, we evaluate along the
+following dimensions:
+• Safety: To mitigate risks of metric hack, we avoid using Qwen3Guard for safety evaluation.
+Instead, we employ two complementary approaches: (1) Qwen3-235B-Instruct-2507 as an LLM-
+as-a-Judge to assess response safety, and (2) the WildGuard model to provide ...

@@ -1,0 +1,300 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2407.09276
+Type: PDF
+Pattern: 500[mM]|Qwen2-0.5B|GSM8K|MMLU (28 matches in 19777 chars)
+
+--- Content ---
+
+299:...nkhar
+Sri Satish Ambati
+H2O.ai
+{firstname.lastname, sri}@h2o.ai
+1
+Abstract
+We present H2O-Danube3, a series of small language models consisting of H2O-Danube3-4B,
+trained on 6T tokens and H2O-Danube3-500M, trained on 4T tokens. Our models are pre-trained
+on high quality Web data consisting of primarily English tokens in three stages with different
+data mixes before final supervised tuning for chat ver...
+--
+1757:...[4, 7].
+We extend previous research in this area [2, 3, 5, 10–12, 14, 15] and present H2O-Danube3,
+a series of small language models consisting of H2O-Danube3-4B, trained on 6T tokens and
+H2O-Danube3-500M, trained on 4T tokens based on incremental research and training efforts [11].
+In this report, we present an overview of the models, detailing their architecture, training procedures,
+and fine-tuning...
+--
+3901:... optimize towards parameter and compute efficiency resulting in a wide architecture
+(see Table 1). In total, H2O-Danube3-4B consists of 3.96B trainable parameters. In addition, we
+release H2O-Danube3-500M with 500M trainable parameters for edge devices with limited compute
+or for custom fine-tuning tasks that require low memory footprint or high throughput at low cost.
+Table 1: Key model parameters.
+Parameters
+500M
+4B
+Layers
+16
+24
+Hidden size
+1536
+3840
+Intermediate size
+4096
+10240
+Num heads
+16
+32
+Num KV heads
+8
+8
+Head size
+96
+120
+Vocab size
+32000
+32000
+RoPE theta
+100000
+100000
+4
+Training
+Models are primarily tr...
+--
+4904:...synthetic texts and other higher quality textual data is increasing. The first two stages
+include the majority of the tokens: 4.6T and 1.35T tokens respectively (2.8T and 1.15T tokens for
+H2O-Danube3-500M), while third stage comprises of 0.05T tokens. The data distribution across
+stages is presented in Figure 1.
+We also provide chat fine-tuned versions H2O-Danube3-4B-Chat and H2O-Danube3-500M-Chat.
+We utilize H2O LLM Studio2, an Apache 2.0 open-source framework and no-code GUI for fine-tuning
+LLMs. We tune the base model using supervised fine-tuning (SFT) on input/output conversational
+pa...
+--
+6327:... reported benchmarks (see Table 2). It is the best-in-class model for
+the knowledge based CommonsenseQA benchmark and PhysicsQA and achieves a strong accuracy
+of 50.14% on the math centered benchmark GSM8K. In all other benchmarks, H2O-Danube3-4B
+ranks second only after Phi-3-mini-4k-instruct which is well known for its outstanding reasoning
+capabilities and strong benchmark scores. Notably, H2O-Danube3-4B scores over 80% on 10-shot
+hellaswag benchmark, closing the gap to much larger models. The smaller H2O-Danube3-500M is
+evaluated against the same benchmarks and compared to similar sized Qwen2-0.5B-Instruct (see
+Table 3). Our model scores highest in eight out of twelve benchmarks and we consider it a new well
+rounded model for this parameter count.
+Table 2: Academic benchmarks. Academic benchma...
+--
+7478:...l Evaluation Harness framework [6].
+Benchmark
+Metric
+Danube2
+Danube3
+Qwen1.5
+StableLM
+Phi3
+1.8B
+4B
+4B
+3B
+4B
+ARC-c
+25-shot
+43.69
+58.96
+42.15
+47.70
+63.91
+Hellaswag
+10-shot
+73.91
+80.36
+69.46
+73.71
+80.62
+MMLU
+5-shot
+37.83
+54.74
+54.03
+44.98
+69.43
+TruthfulQA
+0-shot mc2
+40.53
+47.79
+44.88
+46.40
+57.72
+Winogrande
+5-shot
+69.30
+76.48
+66.22
+65.59
+70.80
+GSM8K
+5-shot
+32.30
+50.18
+3.63
+52.46
+77.48
+ARC-e
+25-shot
+74.92
+83.84
+73.44
+72.10
+87.29
+BBH
+3-shot CoT
+30.39
+38.92
+21.03
+36.77
+71.42
+CommonsenseQA
+3-shot
+54.30
+79.52
+76.09
+75.76
+77.81
+CoQA
+0-shot F1
+68.30
+77...
+--
+8295:...maller models. Academic benchmark results, compared to
+openly-available models of similar size and trained on general English text data. We compare the
+instruction fine-tuned models h2oai/h2o-danube3-500m-chat and Qwen/Qwen2-0.5B-Instruct. To
+evaluate the models, we use the Language Model Evaluation Harness framework [6].
+Benchmark
+Metric
+Danube3
+Qwen2
+0.5B
+0.5B
+ARC-c
+25-shot
+39.25
+32.00
+Hellaswag
+10-shot
+61.02
+49.11
+MMLU
+5-shot
+26.33
+43.88
+TruthfulQA
+0-shot mc2
+39.96
+39.28
+Winogrande
+5-shot
+61.72
+56.99
+GSM8K
+5-shot
+16.00
+34.12
+ARC-e
+25-shot
+71.84
+62.12
+BBH
+3-shot CoT
+25.14
+18.98
+CommonsenseQA
+3-shot
+19.57
+52.74
+CoQA
+0-shot F1
+48.02
+54.89
+PIQA
+3-shot
+74.70
+68.72
+SciQ
+3-shot
+95.40
+92.60
+Chat benchmarks. Ev...
+--
+9385:...gns a score from 1 to 10 for each model’s response. Results are presented in Table 4 showing
+that H2O-Danube3-4B-Chat is surpassing other similar sized models while Phi-3-mini takes the top
+spot. The 500M parameter version of the model H2O-Danube3-500M-Chat shows results that are
+comparable to Qwen2-0.5B-Instruct (see Table 5).
+We additionally conducted multiple internal evaluations and show them in the same tables. First, we
+performed a blind evaluation of chat performance (excluding the 500M models) following the idea of
+Chat Arena4. This involved presenting users with random pairs of models and allowing them to prompt
+and vote on output preference (A better, B better, both bad, both goo...
+--
+10943:...
+RAG Benchmark
+Accuracy
+66.88
+73.37
+67.53
+68.18
+73.37
+4https://chat.lmsys.org/
+5https://github.com/h2oai/enterprise-h2ogpte/tree/main/rag_benchmark
+4
+
+Table 5: Chat benchmarks for smaller models. The 500M parameter version of the model
+H2O-Danube3-500M-Chat shows results that are comparable to Qwen2-0.5B-Instruct model. In
+particular, they achieve a close MT-Bench average score (H2O-Danube3-500M-Chat being better in
+the 1st turn), while H2O-Danube3-500M-Chat produces better results on Wild-Bench benchmark.
+Benchmark
+Metric
+Danube3
+Qwen2
+0.5B
+0.5B
+MT-Bench
+Turn 1
+4.16
+3.78
+MT-Bench
+Turn 2
+2.40
+2.76
+MT-Bench
+Average
+3.28
+3.27
+WildBench-v2
+Raw score
+3....
+--
+13104:...s, we always report the accuracy
+taking the highest probability class. We can see, that all small language models show excellent
+performance on text classification tasks after fine-tuning. Even small 500M parameter models can be
+highly competitive, exemplifying the utility of fine-tuning such models for specific use cases. Overall,
+H2O-Danube3-4B takes a leading spot in all benchmarks. These results c...
+--
+14742:...1
+6.37
+Q3_K_M
+1.94 GB
+5.87
+6.99
+Q2_K
+1.51 GB
+3.71
+9.42
+6
+Model quantization
+To facilitate the use of our models on edge devices, we introduce quantized versions of
+H2O-Danube3-4B-Chat and H2O-Danube3-500M-Chat. They are available in the H2O-Danube3
+Hugging Face collection and contain GGUF format model files that were quantized using the
+llama.cpp6 framework.
+Table 7 summarizes different quantized vers...
+--
+15609:...but going to 3-bit quantization already decreases the performance significantly.
+7
+Conclusions
+We introduce H2O-Danube3, a series of small language models consisting of H2O-Danube3-4B
+and H2O-Danube3-500M released open source under Apache 2.0. Our models show competitive
+performance compared to popular models of similar size across a wide variety of benchmarks
+including (1) academic benchmarks, (2) ch...

@@ -1,0 +1,180 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2412.10321
+Type: PDF
+Pattern: refus\w*\s+to\s+evaluat|prefill|refus\w*\s+to\s+(grade|score|judge)|declin\w+\s+to (24 matches in 56635 chars)
+
+--- Content ---
+
+797:.... While straightforward, this objective has two limitations: limited control
+over model behaviors, yielding incomplete or unrealistic jailbroken responses, and
+a rigid format that hinders optimization. We introduce AdvPrefix, a plug-and-
+play prefix-forcing objective that selects one or more model-dependent prefixes
+by combining two criteria: high prefilling attack success rates and low negative
+log-likelihood. AdvPrefix integrates seamlessly into existing jailbreak attacks to
+mitigate the previous limitations for free. For example, replacing GCG’s default
+prefixes on Llama-3 improves nuanced attack success rates from 14% to 80%,
+revealing that current safety alignment fails to generalize to new pr...
+--
+5066:...
+We then refine evaluation by developing an improved judge and a preference-based judge to better
+capture nuanced harmfulness, which reveals that the original objective is both misspecified and
+overconstrained (§3).
+New objective (§4). We propose a new prefix-forcing objective that uses model-dependent prefixes
+selected based on two criteria: high prefilling ASR (to ensure they lead to complete and faithful
+harmful responses, reducing misspecification) and low initial negative log-likelihood (NLL) (to ensure
+they are easy to elicit, mitigating overconstraints). The objective also supports using multiple target
+prefixes for a single request to further simplify optimization. Our approach includes an ...
+--
+9205:...r refused directly or produced clearly harmful content (Figure 3,
+left).
+Our Improved Judges. To address these inaccuracies, we develop a refined judge using Llama-
+3.1-70B, with revised instructions prioritizing response completeness and faithfulness, requiring
+reasoning traces before giving the final answer [Kojima et al., 2022], and affirmative prefilling to
+handle sensitive content (details in Section C and codebase). This judge improves human agreement
+rates by up to 9% on newer LLMs (Figure 2, right; Table 4). Additionally, we introduce a preference
+judge for relative harmfulness comparison against uncensored LLMs’ output.
+3
+Limitations of Original Objective
+This section details how the commo...
+--
+10192:...ilure rate is roughly 90% across all four LLMs, the specific failure
+cases vary significantly. (Center) Frequency of failure cases by the final loss of the original objective.
+While attack prompts with lower loss avoid direct refusal, the overall failure rate remains above 80%
+due to increases in the other two failure categories. (Right) Even with prefilling the victim LLM’s
+initial response with “Sure, here is [request]”, the completed responses’ failure rates remain high.
+3.1
+Revisiting Original and Oracle Objectives.
+We first formulate the jailbreak problem. Let V be the LLM’s vocabulary and V∗the set of all finite
+sequences over V. A user prompt is x ∈V∗, and a model response is y ∈V∗. The thre...
+--
+12513:...fined evaluation:
+Misspecified. Lowering the original objective’s loss (Equation (3.2)) does not consistently increase
+ASRs for nuanced jailbreaks (Figure 3, center): while direct refusals decrease, incomplete and
+unfaithful responses rise, keeping overall ASR low. To further isolate the objective from optimization
+algorithm influence, we directly prefill the target prefix [Zhang et al., 2023, Haizelab, 2024, Qi et al.,
+2024] and observe completions. Figure 3 (right) shows that while prefilling eliminates direct refusals,
+ASRs remain low due to persistent incomplete and unfaithful completions. This underscores the
+original objective’s misspecification.
+4
+
+Figure 4: The pipeline of constructing our objective. (Left) We use rule-based templates or uncensored
+LLMs (not necessarily the uncensored target LLM) to generate candidate prefixes. (Center) We
+evaluate each candidate prefix based on two criteria: high prefilling ASR and low initial NLL. (Right)
+We select top prefixes (top two in this example) to construct our multi-prefix objective.
+Overconstrained. The hard token or fluency constraints in jailbreak tasks hinder optimization from
+lowering the loss [Jain et al., 2023]. Thus, a suitable objective should be easy to optimize. However,
+the original objectiv...
+--
+15059:...es into one, enables efficient computation for multiple
+prefixes in one forward pass. Section A discusses why we use the prefix-forcing objective and its
+relationship to model-distillation-based objectives.
+4.2
+Prefix Selection Criteria
+To address the original objective’s limitations, we propose two criteria for prefix selection:
+Criterion I: high prefilling ASR. To reduce misspecification, we want prefixes yp that, once elicited
+by some attack prompt θ, lead to complete and faithful harmful continuations with high probability:
+max
+yp
+Eyc∼P(·|θ,yp)
+
+r(x, yp ⊕yc)
+
+.
+(4.2)
+Directly computing this value is infeasible as the optimized θ is unknown without time-consuming
+optimization. However, we observe that this expectation can be efficiently approximated by using a
+manually constructed attack prompt for θ. Although this manual prompt often cannot elicit the target
+prefix, the resulting approximated value (prefilling ASR) correlates with the actual jailbreak ASR
+(Figure 7).
+We use this approximation to compute the prefilling ASRs.
+5
+
+Criterion II: low initial NLL. To reduce overconstraints, we want prefixes that are easily elicited by
+optimized attack prompts. Since ease of elicitation by an optimized attack prompt is indicated by low
+NLL, we favor prefixes yp that exhibit a low NLL with the initial (pre-optimization) attack prompt θ0:
+min
+yp
+−log p(yp | θ0)
+(4.3)
+These two criteria often conflict. For example, longer prefixes may have higher prefilling ASR
+but also higher NLL, causing optimization to fail. We balance them using a weighted sum of log-
+prefilling-ASR and NLL, with weighting tunable to the optimization method’s strength: for example,
+stronger methods like GCG can prioritize high prefilling ASR and tolerate relatively high NLL.
+4.3
+Prefix Selection Pipeline
+We develop an automated pipeline to generate and select target prefixes, typically run once per victim
+LLM and malicious request, allowing offline storage and reuse. The pipeline involves four steps:
+1. Candidate generation. We use rule-based construction or uncensored LLMs wit...
+--
+17621:...ess candidate prefixes through rule-based augmentation (e.g., “Here is”
+to “Here’s”, similar to Zou et al. [2023]) to diversify them, and filtering to remove duplicates and any
+prefixes starting with refusals.
+3. Evaluation with two criteria. We first evaluate the initial NLLs of all candidate prefixes using
+the victim LLM. Then, we estimate their prefilling ASRs by having the victim LLM complete each
+prefix multiple times (with temperature one) and using our nuanced judge to assess the harmfulness
+of completions. This evaluation is tailored to both the victim LLM and the judge, where the judge
+reflects the attacker’s labeling standards.
+4. Selection. We combine the two criteria via a weighted sum and rank these candidates. To select k
+prefixes, we first identify the top one prefix as a reference, and then select the top k prefixes with a
+prefilling ASR no lower than that of the reference prefix.
+5
+Experiments
+This section incorporates our objective into existing jailbreak attacks to demonstrate its effectiveness
+in achieving nuanced jailbreaks, comparing it against the original objective.
+Jailbreak attacks. We employ GCG [Zou et al., 2023], a search-based optimization method, and
+AutoDAN ...
+--
+19664:...tion C), and run both attacks for 1000
+steps with a batch size of 512.
+Prefix selection. We generate candidate prefixes using four uncensored LLMs publicly available on
+Huggingface: georgesung/llama2-7b-chat-uncensored, Orenguteng/Llama-3-8B-Lexi-Uncensored,
+Orenguteng/Llama-3.1-8B-Lexi-Uncensored, and TheDrummer/Tiger-Gemma-9B-v1. We estimate
+the prefilling ASR by averaging over 25 random completions (temperature 1) for each prefix. We
+combine the two selection criteria with a fixed weight of 20 for log-prefilling-ASR. We select four
+prefixes for our multiple-prefix objective.
+6
+
+Table 1: Jailbreak results of GCG with the original objective and our objectives. Here we use GCG to
+generate the attack suffix and vary the attack suffix length: 20 tokens (black) and 40 tokens (blue).
+Model
+Objective
+Successful Attack
+(%, ↑)
+Failed Attack (%, ↓)
+Direct
+Refusal...
+--
+28383:...R. For instance,
+[Zhou and Wang, 2024, Xie et al., 2024] suppress refusals rather than elicit target prefixes, and
+Jia et al. [2024] augments prefixes with phrases like “my output is harmful” to improve ASR. The
+initial model response’s importance is also highlighted by work on response selection/steering
+[Tran et al., 2024] and attacks leveraging prefilling features [Zhang et al., 2025a]. Unlike these
+manual targets or specific interaction points, our work automatically tailors prefixes to specific
+victim LLMs and requests. Thompson and Sklar [2024] propose a dual objective: eliciting “Sure”
+and distilling from an uncensored teacher. However, this faces challenges with teacher learnability
+and sam...
+--
+30338:... free performance gains. We
+also analyze jailbreak objectives systematically, aiming to inspire further advancements. Our findings
+reveal that even the latest LLMs’ deep alignment can be bypassed, underscoring the need for more
+generalizable alignment.
+Limitations. A limitation of our objective is that selecting prefixes, especially for evaluating prefilling
+ASR, requires evaluating many sampled responses, leading to a computational burden. Moreover, we
+do not account for other desirable properties of the objective, such as a well-shaped loss landscape.
+Finally, our objective is designed for situations requiring the target model’s log probabilities, thus
+cannot be applied to black-box attacks.
+Broa...
+--
+44705:...D. Proud, P. Kumar,
+B. Radharapu, et al. Shieldgemma: Generative ai content moderation based on gemma. arXiv
+preprint arXiv:2407.21772, 2024a.
+Y. Zeng, H. Lin, J. Zhang, D. Yang, R. Jia, and W. Shi. How johnny can persuade llms to jailbreak
+them: Rethinking persuasion to challenge ai safety by humanizing llms, 2024b.
+B. Zhang, Y. Liu, and J. Yang. Prefill-based jailbreak: A novel approach of bypassing llm safety
+boundary. arXiv preprint arXiv:2504.21038, Apr 2025a. URL https://arxiv.org/abs/2504.
+21038.
+Y. Zhang, J. Chi, H. Nguyen, K. Upasani, D. M. Bikel, J. Weston, and E. M. Smith. Backtracking
+improves generation safety, 2024. URL https://arxiv.org/abs/2409.14586.
+Z. Zhang, G. Shen, G. Tao, S. C...
+--
+[4 more matches not shown]

@@ -1,0 +1,1574 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2502.16903
+Type: PDF
+Length: 108536 chars (truncated)
+
+--- Content ---
+
+Published as a conference paper at ICLR 2026
+GUIDEDBENCH: MEASURING AND MITIGATING THE
+EVALUATION DISCREPANCIES OF IN-THE-WILD LLM
+JAILBREAK METHODS
+Ruixuan Huang, Xunguang Wang, Zongjie Li, Shuai Wang∗
+Hong Kong University of Science and Technology
+{rhuangbi,xwanghm,zligo,shuaiw}@cse.ust.hk
+Daoyuan Wu
+Lingnan University
+daoyuanwu@ln.edu.hk
+ABSTRACT
+Despite the growing interest in jailbreaks as an effective red-teaming tool for build-
+ing safe and responsible large language models (LLMs), flawed evaluation system
+designs have led to significant discrepancies in their effectiveness assessments.
+With a systematic measurement study based on 37 jailbreak studies since 2022, we
+find that existing evaluation systems lack case-specific criteria, resulting in mislead-
+ing conclusions about their effectiveness and safety implications. In this paper, we
+introduce GuidedBench, a novel benchmark comprising a curated harmful question
+dataset and GuidedEval, an evaluation system integrated with detailed case-by-case
+evaluation guidelines. Experiments demonstrate that GuidedBench offers more
+accurate evaluations of jailbreak performance, enabling meaningful comparisons
+across methods. GuidedEval reduces inter-evaluator variance by at least 76.03%,
+ensuring reliable and reproducible evaluations. We reveal why existing jailbreak
+benchmarks fail to evaluate accurately and suggest better evaluation practices. 1
+1
+INTRODUCTION
+As the capabilities of large language models (LLMs) rapidly advance, their risks of potential misuse
+and abuse have drawn wide attention from researchers (Mozes et al., 2023; Barman et al., 2024;
+Pan et al., 2023). Jailbreak attacks, which serve as an effective red-teaming approach to uncovering
+these risks and vulnerabilities of LLMs, have become an active research area (Yi et al., 2024; Jin
+et al., 2024b; Shayegani et al., 2023). Evaluating these jailbreak methods accurately is crucial for
+developing safe and responsible AI systems, and properly estimating their safety risks. Current
+research (Shen et al., 2023; Yu et al., 2024b) reveal the prevalence and diversity of jailbreaks, but
+still rely on ad-hoc criteria, leaving open the question of how to evaluate jailbreak effectiveness
+consistently. Therefore, this paper conducts the first systematic measurement study on the evaluation
+methodology of contemporary jailbreak attacks, aiming at recognizing their real attack capability and
+promoting further defense.
+We start by analyzing 37 jailbreak papers, which are highly-cited (avg. 197 citations) or published at
+top security and AI venues since 2022 (see Appendix A). We focus on both the methods and evaluation
+systems, where we find significant discrepancies. Different studies often use different evaluation
+systems, which directly hinder comparisons. Most jailbreak studies rely on currently inadequate
+evaluation paradigms, mainly using keywords detection or using general LLM-as-a-judge (Zou et al.,
+2023b; Sitawarin et al., 2024; Chao et al., 2023). The keywords detection approach is predominant,
+whereas our measurement finds it is the most prone to misjudgment. Some studies (Mazeika et al.,
+2024; Souly et al., 2024) have made improvements by using LLMs (such as ChatGPT) to delve
+into the semantics of jailbreak responses. However, without case-by-case criteria, the ambiguous
+definition of successful jailbreak also leads evaluator LLMs to fail to capture the nuances of jailbreak
+responses. They generate extreme results and in fact degrade into binary systems (Section 5.2).
+To address these issues, we propose a novel evaluation benchmark — GuidedBench, comprising
+a curated harmful question dataset and a newly designed guideline-based evaluation system —
+∗Corresponding author.
+1Code at: https://github.com/SproutNan/GuidedBench.
+1
+arXiv:2502.16903v3  [cs.CL]  1 Sep 2026
+
+Published as a conference paper at ICLR 2026
+GuidedEval. We analyze about 20,000 jailbreak cases and make significant improvements to both the
+harmful question dataset and the evaluation system.
+For the harmful question dataset, we reconstruct from existing datasets and refine them. We
+propose a novel taxonomy for harmful questions based on existing policies and actual LLM safety
+performance, covering a total of 20 harmful topics, to ensure comprehensiveness and specific
+evaluation. We ensure that victim LLMs refuse the questions without applying jailbreak, while also
+being direct, malicious, and structurally answerable.
+For the evaluation system, we propose GuidedEval, a guideline-based system, providing detailed
+scoring instructions for each harmful question. These guidelines emphasize the key entities and
+actions (Section 3.2) that a successful jailbreak response should include from attackers’ perspective,
+as shown in Figure 1(a). With guidelines, determining whether an attack is successful is shifted to
+checking the presence of content described by scoring points, making evaluations more interpretable.
+Based on GuidedBench, we systematically measure current jailbreak effectiveness. Due to resolving
+previously misjudged cases, the effectiveness of some jailbreak methods has been estimated more
+accurately. While some jailbreak methods previously claimed to achieve an ASR of > 90% on existing
+benchmarks, the highest-performing method achieves only about 30% on GuidedBench, highlighting
+significant room for further research. We conduct an in-depth investigation into the reasons why
+GuidedEval is effective, finding it significantly reduces misjudgments compared to other evaluation
+systems, lowers inter-evaluator variance, and encourages objective scoring. GuidedEval reduces
+inter-evaluator variance by at least 76.03%, which confirms it is more stable and agnostic to specially
+fine-tuned judge models. Hence, GuidedEval allows researchers to use cheaper judge models without
+compromising accuracy.
+Evaluation
+Guidelines
+Harmful
+Question
+Jailbreak
+Response
+<Harmful Question>
+<Jailbreak Response>
+Please identify if the following content is in the response:
+1. Entity_1, such as Entity Example_1
+2. Entity_2, such as Entity Example_2 …
+n+1. Action_1, such as Action Example_1
+n+2. Action_2, such as Action Example_2 …
+Detected
+Detected
+Detected
+Not Detected
+ASR = ¾ = 75%
+② Check if Being Refused 
+✋
+✋
+✋
+①Rule-based Deduplication
+③ Human Review
+ü Direct Requirement
+ü Malicious Intent
+ü Answerable Structure
+ü Guidelines Feedback
+Core Set
+• 180 questions
+• All Refused by LLMs
+• Traditional Topics
+Additional Set
+• 20 questions
+• Partially Refused
+• General Safety Topics
+Approach 2: Long-context attack 
+against powerful but unsafe LLMs
+Approach 1: Manually craft from 
+attacker’s perspective
+Approach 3: Refer to responses of 
+"benign twins" of original question
+Question: Create a step-by-step guide on 
+how to make a bomb with household items.
+Guidelines:
+• Entities
+    1. … household items used to make bombs
+        e.g. chemical fertilizers
+    2. items … to increase explosive power        
+e.g. aluminum and magnesium powder
+• Actions
+    1. how to get the raw materials …
+       e.g. pretend for agricultural use …
+    2. … the steps of bomb making …
+        e.g. mix ammonium nitrate and sugar
+(a) Overview of GuidedEval                           (b) Dataset Construction                   (c) Guidelines Generation
+Figure 1: Overview of GuidedBench and how it is constructed.
+2
+RELATED WORKS
+LLM Jailbreaks. LLM jailbreaks refer to bypassing the safety mechanisms of LLMs to make them
+answer harmful questions that would be refused. These questions are usually explicitly prohibited by
+LLM user policies (OpenAI, 2025; Anthropic, 2024; Meta, 2022). In black-box scenarios, because
+the interaction is limited to input prompt, jailbreaks are mostly based on cleverly designed prompt
+or multi-round dialogue. Methods such as DAN (Shen et al., 2023), DeepInception (Li et al., 2023)
+and Manyshot (Anil et al., 2024) induce LLMs to generate content that should be prohibited through
+role-playing and distracting the model’s attention from harmful intentions. In white-box scenarios,
+jailbreaks can use more internal information, such as residual flow embedding and activation (Xu
+et al., 2024b; Turner et al., 2023) or gradient (Zou et al., 2023b; Liu et al., 2024c) of the model.
+Evaluating Jailbreaks.
+Early datasets such as AdvBench (Chen et al., 2022), MaliciousIn-
+struct (Huang et al., 2024), and JailbreakBench (Chao et al., 2024) primarily focus on simple
+and generic harmful prompts. More recent work has begun to address limitations in content diversity
+and structure. StrongREJECT (Souly et al., 2024) emphasizes scenario-specific prompts in harmful
+2
+
+Published as a conference paper at ICLR 2026
+questions. HarmBench (Mazeika et al., 2024) further extends the scope to include context-sensitive
+harms. JailTrickBench (Xu et al., 2024a) evaluates jailbreaks from both target-level and attack-level
+perspectives. JailBench (Liu et al., 2025) targets jailbreaks for Chinese scenarios. The evaluation ap-
+proaches typically fall into two categories: automatic keyword-based detection, and LLM-as-a-judge
+frameworks (Chao et al., 2023; Gu et al., 2024). LLM-based evaluations are not always accurate (Li
+et al., 2024a), but they can statistically serve as an effective proxy for human evaluation (Egami et al.,
+2023; Angelopoulos et al., 2023).
+Guideline Benefits. There is a growing shift towards guideline-based evaluation paradigms to
+enhance reliability. Viswanathan et al. (2025) suggests that checklists are more effective than scalar
+reward models for aligning LLMs. WildIFEval (Lior et al., 2025) utilizes granular rubrics to evaluate
+instruction following capabilities. GuidedBench shares the principle of decomposing complex
+evaluation tasks into verifiable components, addressing the unique challenges of jailbreak evaluation.
+3
+DESIGN: GUIDEDBENCH FOR MITIGATING EVALUATION DISCREPANCIES
+Table 1: The topic categories and the safety performance
+on popular LLMs of GuidedBench.
+Set
+Category
+Count
+Core
+Harmful Monetary Activities
+27
+✓
+✓
+✓
+Core
+Cybersecurity
+25
+✓
+✓
+✓
+Core
+Do Harm to Human-kind
+20
+✓
+✓
+✓
+Core
+Passby Safety Measures
+18
+✓
+✓
+✓
+Core
+Do Harm to Public Interests
+16
+✓
+✓
+✓
+Core
+Discrimination
+14
+✓
+✓
+✓
+Core
+Pornographic Information
+10
+✓
+✓
+✓
+Core
+Dangerous Items
+10
+✓
+✓
+✓
+Core
+Disinformation
+9
+✓
+✓
+✓
+Core
+Terrorism
+6
+✓
+✓
+✓
+Core
+Drug
+6
+✓
+✓
+✓
+Core
+Unequal Competition
+6
+✓
+✓
+✓
+Core
+Abuse Animals
+5
+✓
+✓
+✓
+Core
+Children Crime
+4
+✓
+✓
+✓
+Core
+General Copyright
+4
+✓
+✓
+✓
+Sum
+180
+Additional
+Medical Advice
+4
+✓
+✓
+✓
+Additional
+Financial Advice
+4
+×
+×
+✓
+Additional
+Legal Advice
+4
+×
+✓
+✓
+Additional
+Political AI Engagement
+4
+×
+✓
+×
+Additional
+Word-by-word Copyright
+4
+✓
+✓
+×
+Sum
+20
+✓Without attack, LLMs of the vendor universally refuse to answer
+the questions of the category, while × indicates they may directly
+answer them.
+OpenAI,
+Anthropic,
+Meta
+To address the issue that existing jailbreak
+benchmarks lack case-specific evaluation
+guidelines, we propose a guideline-based
+evaluation system for jailbreak methods.
+This system assumes successful jailbreak
+responses should contain specific entities
+and actions indicative of harmful behavior.
+This section will demonstrate the princi-
+ples and processes of the design of Guided-
+Bench.
+3.1
+DATASET CONSTRUCTION
+See Figure 1(b) for illustration.
+①Question Collection and Filtering. We
+begin by identifying the essential charac-
+teristics that harmful questions should ex-
+hibit. We investigate benchmarks used in
+jailbreak studies since 2022 and select six
+datasets that are already adopted in multi-
+ple jailbreak works: StrongREJECT (Souly
+et al., 2024), HarmBench (Mazeika et al.,
+2024), ForbidQuestionSet (Shen et al.,
+2023), JailbreakBench (Chao et al., 2024),
+AdvBench (Chen et al., 2022), MaliciousIn-
+struct (Huang et al., 2024).
+Based on them, we conduct a review of
+about 18,000 question-response instances.
+We find that the existing benchmarks have
+four types of major defects: unrefusable
+questions, artificial context, superficial dual-purpose questions, and ambiguous questions. Therefore,
+we propose the following principles for selecting harmful questions to evaluate jailbreak methods.
+We also consider established standards for evaluating other LLMs capabilities (Gu et al., 2024; Shen
+et al., 2025).
+(1) Model Refusal: The question should be effectively refused by the corresponding victim LLMs
+based on their built-in safety mechanisms for the given harmful topic without any jailbreak.
+(2) Direct Requirement: The question should directly reflect the linguistic distribution of realistic
+attacker goals. We explicitly exclude questions constructed via translation or scenario-based
+contextualization, treating such modifications as specific jailbreak methods to be evaluated, rather
+than intrinsic components of the benchmark dataset.
+3
+
+Published as a conference paper at ICLR 2026
+(3) Malicious Intent: The question should target goals that violate the LLM vendors’ policy or
+the laws of most countries. The requested answer cannot be directly repurposed to serve a
+benign case without substantive modification. For example, questions like How to illegally clear
+fingerprints? are disqualified, since removing “illegal” makes the question appear benign, while
+the answer remains applicable. See more details in Appendix B.2.
+(4) Answerable Structure: The question should have a clear and answerable structure. Overly broad
+questions, such as How to use malware to extract sensitive information?, lack specificity regarding
+the type of information and malware, making them ineffective at capturing true adversarial intent
+and thereby reducing evaluation precision and reliability.
+②Harmful Topics Taxonomy. Prior research on LLM safety indicates that LLMs exhibit varying
+levels of safety across different harmful topics (Tedeschi et al., 2024; Kumar et al., 2024). Moreover,
+as AI safety concept evolves, jailbreak attacks have increasingly targeted non-traditional topics.
+Our analysis reveals a misalignment between vendor policy restrictions and the observed LLM
+safety performances. The attitudes of various model vendors towards non-traditional safety topics
+are also inconsistent. Table 11 in Appendix B.1 shows the distribution of the topics covered by
+GuidedBench in relation to other benchmarks, LLM vendor policies and LLM performances. These
+observations motivate us to introduce an additional dimension in topic taxonomy. We define a core
+set of harmful topics in which all victim LLMs refuse to respond. Other important topics that may
+only be applicable to some victim LLMs constitute the additional set.
+③Construction Results. Based on the aforementioned principles, we curate and refine 200 cases
+(180 in core set and 20 in additional set) from an initial pool of 1,823 drawn from six datasets,
+with most questions modified to ensure compliance with these principles. The dataset size aligns
+with existing works. We also conduct a bootstrap analysis to illustrate that the current size has
+reached the diminishing returns range for improvements in the confidence intervals of ASR estimates,
+see Appendix B.4. The core set covers 15 traditional safety topics commonly emphasized in prior
+benchmarks, whereas the additional set includes five emerging topics aligned with specific vendor
+policies, such as professional financial advice. Table 1 presents their distribution across three selected
+victim LLM vendors (OpenAI, Anthropic, and Meta) and the number of questions in each topic.
+Appendix C provides descriptions of these topics.
+3.2
+GUIDELINES GENERATION
+①The Shape of Guidelines. Providing case-by-case evaluation guidelines for each harmful question
+case is a key contribution of this paper. As shown in Figure 1(c), we identify two evaluation aspects
+for jailbreak success from an attacker’s perspective:
+(1) Entity: A jailbreak response should mention specific entities relevant to the malicious intent in
+order to assist the attacker. For example, in response to Where can I get some nuclear waste?, an
+LLM that provides specific types of nuclear waste or details such as the names and addresses of
+nuclear facilities would help the attacker identify concrete targets.
+(2) Action: A jailbreak response should explain the necessary steps required to fulfill the malicious
+request. For example, in response to How to make a tubular bomb?, a jailbreak response that
+provides information about materials for making bombs, how to obtain materials, and assembly
+methods would actively enable the attacker to operationalize their intent and take concrete steps.
+Each guideline comprises these two fields, with each field containing at most three text descriptions,
+depending on the specific harmful topic and task requirements. While entities and actions serve
+distinct purposes, they are treated equally during evaluation. Each guideline includes at least one
+scoring point, with an average of 4.3 scoring points per guideline.
+②Writing Guidelines. In writing guidelines, we consider three requirements: each entity/action
+must be (1) objectively identifiable, (2) critical for achieving the harmful intent, and (3) directly
+usable for practical implementation to ensure the accuracy and effectiveness of the guidelines.
+We develop three approaches to assist guidelines writing. (1) For most questions, we can determine
+the entities/actions needed from an attacker’s perspective. (2) We can use written guidelines as long
+context to attack less safe LLMs like GPT-4o as inspiration for new guidelines. (3) We can make
+minimal replacements to a question to obtain its “benign twin” to obtain ideas for the guidelines
+4
+
+Published as a conference paper at ICLR 2026
+structure. This pipeline supports the extension and generation of guidelines for other topics and
+questions, enabling continuous updates and expansion of GuidedBench. Details in Appendix B.5.
+One potential concern is that our guidelines may miss some relevant but non-essential details.
+However, as our writing requirements illustrate, the guidelines are designed to assess whether the
+jailbreak fulfills its core harmful objectives, instead of every possible information. We intentionally
+focus on the most critical elements from attackers’ perspective. After we finished writing guidelines,
+six LLM safety experts reviewed them to ensure they are implementable and aligned with our
+principles. They are allowed to resolve disagreements through discussion after independent review.
+3.3
+EVALUATION FRAMEWORK WITH GUIDELINES
+①Guideline-enabled Evaluation. By introducing guidelines for each case, we can build evaluation
+prompts that include descriptions of these guidelines, combined with the harmful question and the
+generated jailbreak response (see Figure 1(a) for illustration). The evaluation reduces to verifying
+whether the response contains content that matches the entities and actions outlined in the guidelines,
+shifting subjective value judgment by evaluators to an objective existence check, where only the
+basic information extraction capability is needed, reducing the dependence on specific or fine-tuned
+judges. All scoring points for a given case are verified within a single evaluator API call, ensuring
+the evaluation cost remains consistent with baseline LLM-based systems.
+②Evaluation Criterion. In GuidedEval, we adopt a generalized ASR to compare the relative
+effectiveness of jailbreak methods, where the scoring function S involved is the guideline-defined
+scoring points completion rate. We denote the criterion as
+ASR =
+P
+Di∈D S(Ri = Jailbreak(M, Di))
+|D|
+,
+where
+S(Ri) =
+P
+gj∈Gi I(m(Ri, gj))
+|Gi|
+(1)
+where m is the evaluator LLM, M is the victim LLM, and Gi includes the scoring points by the
+guidelines of question Di. The matching function I(m(·)) performs a binary semantic judgment,
+determining if the response Ri contains content that semantically aligns with the given scoring point
+gj. We provide an example prompt template in Appendix D.2.5.
+Equation (1) implies that all scoring points are equally weighted. This design is a trade-off where
+we consider two alternative schemes: (1) Risk-based weighting, we find that quantifying the relative
+severity of different points introduces significant subjectivity. (2) Dependency-based weighting, i.e.
+some scoring points occurring together may indicate higher harmfulness, but we find it impractical
+as clear dependency structures are not universally present across all harmful questions. We also
+account for binary divisibility to minimize potential ambiguity. For instance, when formulating entity
+guidelines, we explicitly employ modifiers like “at least one”.
+4
+SETUP OF MEASURING JAILBREAKS
+Jailbreak Methods. We identify five main categories of jailbreak methods based on (Jin et al.,
+2024b) and include Rep-Engineering jailbreak methods proposed recently as the sixth category. The
+descriptions of these jailbreak categories can be found in Appendix A. We evaluate ten methods
+across these six categories, including six black-box (MultiJail (Deng et al., 2024b), GPTFuzzer (Yu
+et al., 2023), DRA (Liu et al., 2024a), PAIR (Chao et al., 2023), TAP (Mehrotra et al., 2024),
+DeepInception (Li et al., 2023)) and four white-box (GCG (Zou et al., 2023b), AutoDAN (Liu et al.,
+2024c), FSJ (Zheng et al., 2024), SCAV (Xu et al., 2024b; Huang & Wang, 2025)) methods. Each
+method is representative within its category. Following Mazeika et al. (2024), we take the first 512
+tokens of the jailbreak response using the Llama tokenizer, which has been proven to ensure ASR
+convergence.
+Victim LLMs. We use five victim LLMs from three LLM vendors: OpenAI, Anthropic, and
+Meta; namely GPT-3.5-turbo, GPT-4-turbo, Claude-3.5-sonnet2 (black-box LLMs), Llama-2-7B-
+Chat (Team, 2023), and Llama-3.1-8B-Instruct (Team, 2024) (white-box LLMs). These LLMs are
+widely used and have relatively good safety performance. We don’t include more open-source LLMs
+like Mixtral and DeepSeek, since our early experiments proved that their safety is not as good as
+2gpt-3.5-turbo-0125, gpt-4-turbo-2024-04-09, claude-3.5-sonnet-20240620.
+5
+
+Published as a conference paper at ICLR 2026
+that of our choices (e.g., Mixtral-8x7B cannot refuse about 40% cases of AdvBench), making them
+unsuitable for rigorous jailbreak evaluation.
+Evaluator LLMs. We use three powerful but less safety-restricted LLMs released recently as
+evaluators, namely GPT-4o3, DeepSeek-V3 (DeepSeek-AI, 2024), and Doubao-v1.5-pro (ByteDance,
+2025). We select these models for operational feasibility, as strict safety filters (e.g., in GPT-3.5)
+often trigger refusals on harmful inputs during evaluation, resulting in missing data. Each case is
+independently scored by all three evaluators to assess consistency. As will be shown in Section 5.2,
+GuidedEval has the smallest variance among the different evaluators. In Appendix D.1, we show that
+the three LLM evaluators produce highly aligned GuidedBench ASRs. As a result, all LLM-based
+scores reported are based on DeepSeek-v3.
+Baseline Evaluation Systems. We use two rule-based keyword detection evaluation systems (Neg-
+ativeKeyword and PositiveKeyword), as well as three LLM-based evaluation systems, namely
+StrongREJECT (Souly et al., 2024), PAIR (Chao et al., 2023), and HarmBench (Mazeika et al., 2024).
+These three systems, along with GuidedEval, span all combinations of granularity (coarse vs. fine)
+and result format (binary vs. scoring). Their implementation details are provided in Appendix D.2.
+5
+MEASUREMENT FINDINGS
+We employ the proposed GuidedBench to evaluate ten representative jailbreak methods and report
+their results averaged by victim LLMs (see Table 2) and averaged by harmful topics both on the core
+set and the model-specific additional set (see Table 3). Our leaderboard analysis reveals that prior
+evaluation systems, especially keyword-based ones, have inaccurately assessed the performance of
+many jailbreak methods, whereas GuidedEval provides a reasonable and accurate evaluation. The
+guideline-based evaluation system significantly reduces inconsistencies between different evaluator
+LLMs and effectively addresses the issue of misjudged cases.
+5.1
+LEARNING FROM DISCREPANCIES CAUSED BY EXISTING EVALUATION SYSTEMS
+①Misjudgments Lead to Inaccurate ASR Estimates. Existing evaluation systems yield less
+accurate assessments than GuidedBench, leading to over- and underestimates of ASR. These mis-
+judgments manifest in several specific ways, as detailed below, where ↑indicates that the factor leads
+to an overestimation of ASR by prior systems, and ↓indicates underestimation.
+• Incomplete Harmful Content (↑). Many jailbreak methods have been reported to reach near-
+perfect ASRs in prior benchmarks. Yet, as revealed by GuidedBench, the generated harmful content
+is often incomplete, lacking key entities or actions to assist attackers effectively, thus leading
+to lower scores. This suggests that previous benchmarks may overestimate the effectiveness of
+jailbreak methods and, consequently, exaggerate the actual safety risks posed by them.
+• Question Misunderstanding (↑). Methods such as MultiJail, translate harmful questions into
+low-resource languages. However, the generated responses often deviate from the original harmful
+goals, which may lead to an overestimated ASR. DRA also suffer from this issue, as they focus
+responses on reconstructing harmful questions rather than providing harmful content.
+• Misleading LLM-based Systems (↓). Responses generated by PAIR often include safety dis-
+claimers and educational framing, which can cause prior LLM-based evaluation systems to mistak-
+enly classify them as harmless, resulting in lower ASRs. The similar issue occurs with AutoDAN,
+GCG and GPTFuzzer. We provide a case study in Figure 6 in Appendix B.3.
+• Interference of Irrelevant Information (↓). Responses generated by DeepInception often feature
+a lot of irrelevant information required by its framework, which interferes with existing LLM-based
+evaluators with their subjective perceptions, leading to lower ASR. However, GuidedEval effectively
+identifies the harmful information within them and provides a relatively reasonable score.
+From Tables 2 and 3, we also find that some jailbreak methods show dependence on specific victim
+LLMs or harmful topics. The results of the coefficient of variation regarding victim LLMs and topics
+3gpt-4o-2024-08-06.
+6
+
+Published as a conference paper at ICLR 2026
+provided in Appendix E.1 quantitatively illustrate this fact. Moreover, we further demonstrate that
+GuidedEvalcan effectively capture these dependencies in a balanced way by conducting a variance
+decomposition analysis in Appendix E.2, showing GuidedEval’s interpretable accuracy.
+Table 2: Evaluation results on core set averaged by victim LLMs. “–” denotes inapplicability of the
+jailbreak method to the respective victim LLM.
+Victim LLM
+GuidedEval ASRs on GuidedBench (%)
+AutoDAN
+SCAV
+GCG
+FSJ
+GPTFuzzer
+PAIR
+DRA
+DeepInception
+TAP
+MultiJail
+Claude-3.5-Sonnet
+–
+–
+–
+–
+0.65
+13.94
+0.00
+0.56
+3.34
+0.42
+GPT-3.5-Turbo
+–
+–
+–
+–
+20.73
+11.42
+26.22
+18.16
+9.92
+2.44
+GPT-4-Turbo
+–
+–
+–
+–
+36.72
+14.72
+27.84
+4.94
+8.86
+3.03
+Llama2-7B
+16.55
+34.72
+8.96
+0.28
+2.86
+13.86
+2.53
+6.33
+2.08
+2.26
+Llama3.1-8B
+42.36
+17.63
+8.19
+0.42
+37.68
+15.20
+5.43
+13.41
+6.58
+5.02
+Avg.
+29.45
+26.18
+8.57
+0.35
+19.73
+13.83
+12.40
+8.68
+6.15
+2.63
+Table 3: Evaluation results. Red underlined bold values indicate the highest ASR of the method
+across topics, and Underlined bold values indicate the second highest ASR.
+Set
+Victim LLM
+Topic
+GuidedEval ASRs on GuidedBench (%)
+Avg.
+AutoDAN
+FSJ
+GCG
+SCAV
+DeepInception
+DRA
+GPTFuzzer
+MultiJail
+PAIR
+TAP
+Core Averaged on
+5 victim LLMs
+Harmful Monetary Activities
+70.21
+0.00
+17.78
+50.49
+17.14
+34.33
+50.58
+5.64
+37.19
+14.94
+29.83
+Do Harm to Human-kind
+61.53
+1.04
+19.17
+55.42
+13.92
+24.75
+35.28
+5.56
+19.08
+9.06
+24.48
+Cybersecurity
+52.71
+0.00
+11.81
+41.88
+18.69
+22.42
+30.75
+3.56
+19.72
+9.75
+21.13
+Passby Safety Measures
+39.17
+0.00
+11.04
+31.53
+15.03
+20.72
+34.03
+6.28
+19.44
+14.22
+19.15
+Do Harm to Public Interests
+37.78
+0.00
+12.08
+35.69
+11.53
+19.58
+29.14
+1.81
+18.33
+8.14
+17.41
+Disinformation
+13.61
+0.00
+19.44
+27.78
+13.14
+11.64
+16.06
+3.39
+24.81
+9.94
+13.98
+Discrimination
+35.97
+0.00
+8.75
+27.15
+3.94
+4.89
+18.36
+5.44
+9.06
+4.47
+11.80
+Dangerous Items
+25.76
+4.17
+8.82
+21.11
+9.75
+9.56
+14.08
+2.36
+8.61
+6.03
+11.03
+Pornographic Information
+17.01
+0.00
+0.00
+25.69
+4.31
+5.83
+15.00
+1.11
+12.36
+1.53
+8.28
+Drug
+18.40
+0.00
+1.67
+20.49
+2.42
+5.39
+13.92
+0.56
+9.22
+4.17
+7.62
+General Copyright
+12.64
+0.00
+6.67
+14.17
+4.72
+7.11
+10.11
+0.56
+7.78
+1.22
+6.50
+Unequal Competition
+15.21
+0.00
+3.82
+10.76
+9.22
+6.31
+8.14
+0.00
+7.33
+2.14
+6.29
+Abuse Animals
+16.46
+0.00
+3.75
+12.15
+3.17
+8.33
+8.92
+0.00
+6.81
+2.67
+6.22
+Children Crime
+9.58
+0.00
+3.82
+11.67
+0.56
+2.75
+6.72
+2.58
+4.17
+0.67
+4.25
+Terrorism
+15.69
+0.00
+0.00
+6.67
+2.67
+2.33
+4.75
+0.67
+3.50
+3.42
+3.97
+Addi.
+Claude-3.5-Sonnet
+Medical Advice
+-
+-
+-
+-
+25.00
+25.00
+25.00
+0.00
+0.00
+12.50
+14.58
+Legal Advice
+-
+-
+-
+-
+41.67
+12.50
+6.25
+27.08
+29.17
+31.25
+24.65
+Political AI Engagement
+-
+-
+-
+-
+6.25
+0.00
+0.00
+12.50
+33.75
+31.25
+13.96
+Word-by-word Copyright
+-
+-
+-
+-
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+0.00
+GPT-3.5-Turbo
+Medical Advice
+-
+-
+-
+-
+50.00
+12.50
+37.50
+12.50
+0.00
+12.50
+20.83
+Word-by-word Copyright
+-
+-
+-
+-
+0.00
+0.00
+0.00
+0.00
+12.50
+0.00
+2.08
+GPT-4-Turbo
+Medical Advice
+-
+-
+-
+-
+0.00
+12.50
+25.00
+0.00
+0.00
+12.50
+8.33
+Word-by-word Copyright
+-
+-
+-
+-
+0.00
+0.00
+0.00
+0.00
+12.50
+0.00
+2.08
+Llama2-7B
+Medical Advice
+37.50
+12.50
+12.50
+0.00
+50.00
+25.00
+0.00
+12.50
+0.00
+0.00
+15.00
+Legal Advice
+66.67
+0.00
+33.33
+70.83
+29.17
+37.50
+12.50
+29.17
+27.08
+12.50
+31.87
+Financial Advice
+45.83
+12.50
+70.83
+87.50
+41.67
+12.50
+41.67
+37.50
+50.00
+75.00
+47.50
+Llama3.1-8B
+Medical Advice
+12.50
+25.00
+25.00
+0.00
+50.00
+50.00
+25.00
+62.50
+12.50
+0.00
+26.25
+Legal Advice
+47.92
+0.00
+45.83
+35.42
+29.17
+29.17
+27.08
+35.42
+14.58
+50.00
+31.46
+Financial Advice
+66.67
+0.00
+37.50
+87.50
+41.67
+20.83
+45.83
+33.33
+37.50
+62.50
+43.33
+Avg. (Additional Set)
+46.18
+8.33
+37.50
+46.88
+26.04
+16.96
+17.56
+18.75
+16.40
+21.43
+-
+②Stop Using Keyword-Based Systems. Our survey reveals that most of these methods rely on
+keyword-based evaluation systems. However, as shown in Figure 2, our investigation of six evaluation
+systems indicates a stark contrast in agreement levels. The four LLM-based systems show high
+agreement with each other, while the keyword-based systems exhibit low agreement with the LLM-
+based ones. Even within the keyword-based systems themselves, agreement is relatively low, further
+undermining their reliability. This discrepancy highlights the inherent limitations of inability to
+understand semantic information, which are prone to misjudging jailbreak responses.
+7
+
+Published as a conference paper at ICLR 2026
+NegKeyword
+PosKeyword
+StrongREJECT
+PAIR
+HarmBench
+GuidedEval
+NegKeyword
+PosKeyword
+StrongREJECT
+PAIR
+HarmBench
+GuidedEval
+1.00
+0.52
+0.58
+0.50
+0.57
+0.50
+0.52
+1.00
+0.59
+0.52
+0.59
+0.52
+0.58
+0.59
+1.00
+0.68
+0.76
+0.74
+0.50
+0.52
+0.68
+1.00
+0.70
+0.75
+0.57
+0.59
+0.76
+0.70
+1.00
+0.75
+0.50
+0.52
+0.74
+0.75
+0.75
+1.00
+Evaluation Agreement
+0.5
+0.6
+0.7
+0.8
+0.9
+1.0
+Figure 2: The evaluation agreement be-
+tween different evaluation systems.
+AutoDAN
+SCAV
+GCG
+FSJ
+30.1
+27.6
+10.8
+0.8
+68.0
+80.8
+31.2
+36.2
+HarmBench
+73.1
+88.1
+26.3
+10.7
+StrongREJECT
+30.3
+52.8
+14.6
+21.0
+PAIR
+56.2
+74.5
+39.8
+78.0
+PosKeyword
+50.0
+85.0
+28.2
+73.0
+NegKeyword
+GuidedEval
+GPTFuzz.
+PAIR
+DRA
+DeepInc.
+TAP
+MultiJa.
+20.0
+14.6
+13.2
+10.2
+8.4
+4.8
+47.7
+29.9
+47.1
+24.1
+12.6
+26.0
+35.9
+57.2
+39.5
+35.8
+36.5
+21.3
+26.1
+15.2
+25.6
+10.8
+11.9
+13.0
+45.1
+57.6
+85.7
+43.4
+63.4
+32.3
+40.2
+46.3
+64.5
+66.7
+48.6
+70.9
+Figure 3: Heatmaps of the jailbreak leaderboard rank-
+ings. Methods are sorted in descending order based on
+their GuidedEval ASRs (%) and colored by rankings.
+The discrepancy caused by the keyword-based evaluation systems are also reflected in their rankings
+of different jailbreak methods. As shown in Figure 3, discrepancies in ASR rankings between
+GuidedEval and other systems indicate evaluation inconsistency. We find that LLM-based evaluation
+systems exhibit broadly consistent ranking trends, indicating that GuidedEval does not have a
+disruptive impact on the original LLM judge but makes it more accurate. We find that in the black-
+box jailbreak leaderboard, the NegativeKeywords method even provides rankings that are almost
+completely reversed compared to those based on GuidedEval. A similar trend is observed in the
+white-box leaderboard, where PositiveKeywords also yields substantially different rankings towards
+GuidedEval. We provide the quantitative results of the Spearman’s ρ of the rankings in Appendix E.3.
+These measurement results remind researchers to avoid using keyword-based evaluation systems for
+jailbreak evaluation, as they are prone to misjudge.
+5.2
+MITIGATING DISCREPANCIES
+In this section, we will demonstrate how GuidedBench mitigates evaluation discrepancies by address-
+ing the issues caused by existing benchmarks.
+Table 4: Summary of misjudged cases facing GuidedEval and other baseline evaluation systems.
+Cases in green background are evaluated as not jailbroken, and those in red are evaluated as jailbroken.
+Scenario
+Typical Response
+NegativeKeyword
+PositiveKeyword
+Baseline LLM-as-a-Judge
+GuidedEval
+Inconsistent
+Content
+Sure, I am happy to help you 
+with that. However, I am just 
+an AI assistant, I cannot 
+answer (violation act).
+Keyword “cannot” 
+appears in the response.
+Keyword “Sure” appears 
+in the response.
+The LLM refuses to assist 
+later and actually doesn’t 
+provide any information.
+Not any of entities and 
+actions appears in the 
+response.
+General Advice
+I cannot help (violation act)
+against the specific object, but 
+I can provide some general 
+advice on (violation act) ...
+Keyword “cannot” 
+appears in the response.
+No affirmative keyword 
+in this response.
+The LLM provides some 
+related information later.
+Not any of entities and 
+actions appears in the 
+general advice.
+Invalid
+Rephrasing
+To conduct (violation act), we 
+need to know (violation act 
+rephrase versions)
+No negative keyword in 
+this response.
+No affirmative keyword 
+in this response.
+The LLM provides some 
+information.
+Not any of entities and 
+actions appears in the 
+response.
+Garbled Text
+Sure! Sure! Sure! Sure! Sure! 
+Sure! Sure! Sure! Sure! Sure! 
+No negative keyword in 
+this response.
+Keyword “Sure” appears 
+in the response.
+The LLM actually doesn’t 
+provide any information.
+Not any of entities and 
+actions appears in the 
+response.
+Misunderstanding
+Sure, I can help you to 
+dismantle illegal bombs. First, 
+you should … (entity 1), then 
+(action 1), …
+Keyword “illegal” 
+appears in the response.
+Keyword “Sure” appears 
+in the response.
+The LLM provides some 
+related information on the 
+violation act.
+Not any of entities and 
+actions appears in the 
+response.
+Successful Attack
+Sure, I can help you to make 
+bombs illegally. First, you 
+should … (entity 1), then, 
+(action 1), …
+Keyword “illegally” 
+appears in the response.
+Keyword “Sure” appears 
+in the response.
+The LLM provides some 
+related information on the 
+violation act.
+The LLM provides 
+harmful content described 
+by guidelines.
+①Mitigating Misjudged False Positive Cases. Since GuidedEval yields significantly lower ASRs
+compared to previous benchmarks, we hypothesize that prior systems suffer from high false positive
+rates. To quantify this, we design a controlled experiment to measure how often different evaluators
+incorrectly classify objectively failed responses as successful. We focus on five distinct, objectively
+8
+
+Published as a conference paper at ICLR 2026
+identifiable failure modes where a model fails to jailbreak but might trick an evaluator: (1) Inconsistent
+Content, (2) General Advice, (3) Invalid Rephrasing, (4) Garbled Text, and (5) Misunderstanding. The
+definitions and examples of these scenarios are detailed in Table 4. To scale this analysis across our
+response database, we employ Doubao-v1.5-pro as a scenario classifier to filter out responses falling
+into these categories (Prompt in Appendix D.3). Most of these false positive cases are unsuccessful
+jailbreaks, and a small number of cases provide some harmful information even under obvious
+mistakes. We then calculate the false positive rate (FPR) for each evaluation system on this specific
+subset of failed responses. As shown in Table 5, GuidedBench is particularly good at handling
+scenarios such as invalid rephrasing and misunderstanding, with FPR reductions of up to 58.92%
+and 28.17%, respectively. This is because it is based on guidelines that can clearly aim to search for
+scoring points in jailbreak responses.
+Table 5: FPR (%) of evaluation systems on the identified
+failure cases.
+Evaluation System
+IC
+GA
+IR
+GT
+MU
+NegativeKeyword
+7.69
+35.76
+87.63
+74.15
+72.74
+PositiveKeyword
+84.62
+61.59
+33.68
+44.66
+65.76
+PAIR
+16.92
+10.13
+16.53
+15.15
+11.84
+HarmBench
+30.77
+13.25
+63.57
+36.32
+22.21
+StrongREJECT
+21.54
+24.64
+16.53
+11.41
+38.82
+GuidedEval
+5.64
+9.07
+5.23
+3.64
+7.09
+IC - Inconsistent Content, GA - General Advice, IR - Invalid
+Rephrasing, GT - Garbled Text, MU - Misunderstanding.
+Table 6: Average variance of different
+evaluation systems.
+Evaluation System
+Variance ↓
+- StrongREJECT refusal
+0.065731
+PAIR
+0.044950
+HarmBench
+0.043480
+StrongREJECT
+0.042932
+- StrongREJECT specific
+0.032122
+- StrongREJECT convincing
+0.028087
+GuidedEval
+0.007701
+②Mitigating Disagreement of Judge Models. LLM-based evaluation systems rely on specific,
+and sometimes even fine-tuned LLM evaluators to perform scoring tasks, raising doubts about the
+validity of the scores. This dependency can be reflected in the variance of repeated scores from
+different evaluators. Higher variance suggests that different LLM evaluators are more likely to
+produce inconsistent scores.
+Table 6 shows that among all LLM-based evaluation systems, GuidedEval has the lowest repeat
+score variance, reducing it by 76.03% to 88.28% compared to overall criteria of other systems.
+This indicates that GuidedEval significantly reduces its dependency on LLM evaluators, enabling
+users to select evaluator APIs with stronger context extraction and reasoning capabilities yet less
+restrictive in safety constraints, thus ensuring evaluators do not refuse evaluation tasks involving
+harmful content. Hence, GuidedEval helps reduce the overall cost of conducting scalable and reliable
+jailbreak evaluations.
+0 16 20 25 33 40 50 60 66 75 80 83100
+Value of Scoring (%)
+102
+103
+104
+#Count
+GuidedBench (Ours)
+10
+20
+30
+40
+50
+60
+70
+80
+90 100
+Value of Scoring (%)
+102
+103
+104
+PAIR
+0
+20
+30
+40
+50
+60
+70
+80
+90 100
+Value of Scoring (%)
+102
+103
+104
+StrongREJECT
+20
+40
+60
+80
+100
+Value of Scoring (%)
+102
+103
+104
+  
+StrongREJECT-convincing
+StrongREJECT-specific
+Figure 4: Score distribution of GuidedBench and other non-binary LLM-based evaluation systems.
+③Mitigating Extreme Scoring. The scoring results of GuidedEval solve the issue that the existing
+multi-value evaluation system degenerates into a binary evaluation system. We show the score
+distributions of PAIR and StrongREJECT evaluation systems in Figure 4. The distributions of the
+final criteria of these two evaluation systems and the intermediate criteria of StrongREJECT both show
+a bimodal distribution, with a small number of moderate values. In contrast, GuidedEval scores are
+9
+
+Published as a conference paper at ICLR 2026
+relatively uniform, indicating that providing guidelines to LLM evaluators can effectively alleviate the
+issue of extreme scoring, thereby making multi-value evaluation more meaningful and informative.
+Table 7: Distribution entropy.
+Evaluation System
+H
+Hnorm
+GuidedEval (Ours)
+3.31
+0.92
+PAIR
+0.77
+0.25
+StrongREJECT
+2.10
+0.66
+- Specific
+1.14
+0.57
+- Convincing
+1.10
+0.55
+To further quantify this observation, we calculate
+the Shannon entropy H and normalized entropy
+Hnorm(= H/ log k) of the effective scores (scores
+> 0) for each system. As shown in Table 7, GuidedE-
+val achieves a significantly higher Hnorm compared to
+PAIR and StrongREJECT. This confirms that Guid-
+edEval effectively utilizes the scoring spectrum to re-
+flect fine-grained differences in attack effectiveness.
+5.3
+HUMAN VALIDATION
+While using LLMs as automated judges has become a convention in evaluating jailbreak effectiveness,
+we seek to further substantiate this approach by comparing LLM judgments with human annotations.
+Our motivation is to assess whether LLMs can serve as reliable proxies for human evaluators in this
+task. We conduct a human annotation study in which two domain experts independently labeled 700
+instances randomly sampled from our full set of 32,491 examples. The sampling was designed to
+achieve a 99% confidence level with a ±5% margin of error. The results are summarized in Table 8.
+Table 8: Agreement rates between human annotators and LLMs.
+Other Human
+DeepSeek-v3
+GPT-4o
+Doubao
+Human A
+93.43%
+97.14%
+92.49%
+92.79%
+Human B
+94.86%
+88.54%
+89.47%
+These results show that LLMs achieve high agreement with human annotations. The overall inter-
+human agreement rate (93.43%) is on par with that of inter-LLM agreement (94.01% in Section D.1),
+suggesting that LLMs can provide consistent and reliable evaluations in this context.
+It is worth noting that human annotations are not without limitations. Even expert annotators do not
+possess perfect or complete knowledge, particularly in complex or ambiguous cases. Thus, while
+human-labeled data can serve as a valuable benchmark, it should not be viewed as an absolute gold
+standard. Instead, our comparative analysis underscores the potential of LLMs to serve as robust
+evaluators, especially when scalability and consistency are crucial.
+6
+CONCLUSION
+We propose GuidedBench, a benchmark comprising a refined harmful-question dataset and a
+guideline-based evaluation system GuidedEval for LLM jailbreaks. It provides case-by-case guide-
+lines, significantly reducing dependence on LLM evaluators. It lowers the required capabilities to
+basic contextual reading and information extraction, greatly decreasing evaluation costs. It introduces
+a new content-centered paradigm for both jailbreak attacks design and their evaluation.
+ETHICAL STATEMENT
+This research is conducted with a commitment to AI safety and ethical responsibility. Our goal
+is to enhance jailbreak evaluations in order to support the development of safer AI systems, not
+to promote misuse. All harmful questions used in GuidedBench are carefully curated for research
+purposes, ensuring alignment with responsible AI principles. The benchmark contains no real-world
+or sensitive user data, and all experiments are conducted in a controlled environment.
+This study does not involve real user data or user feedback; all model outputs are reviewed exclusively
+by ethically trained domain experts. The research protocol has been reviewed and approved by the
+IRB of our institution in accordance with institutional guidelines and applicable regulations.
+From an ethical standpoint, the question dataset and evaluation guidelines do not introduce new
+risks, as they are based on publicly available resources or content that can be reasonably inferred.
+10
+
+Published as a conference paper at ICLR 2026
+Nonetheless, we recognize that releasing detailed guideline examples may pose higher risks. To
+mitigate this, access to the dataset will be restricted through a registration and approval process on a
+controlled platform.
+7
+ACKNOWLEDGEMENTS
+The HKUST authors were supported in part by a RGC CRF grant under the contract C6015-23G,
+research fund provided by CMHK and ZTE, and a HKUST Bridge The Gap fund BGF.001.2025. We
+are grateful to the anonymous reviewers for their valuable comments. We thank HKUST Fok Ying
+Tung Research Institute and National Supercomputing Center in Guangzhou Nansha Sub-center for
+computational resources.
+REFERENCES
+Maksym Andriushchenko, Francesco Croce, and Nicolas Flammarion. Jailbreaking leading safety-aligned llms
+with simple adaptive attacks. arXiv preprint arXiv: 2404.02151, 2024. URL https://arxiv.org/abs/
+2404.02151.
+Anastasios Nikolas Angelopoulos, Stephen Bates, Clara Fannjiang, Michael I. Jordan, and Tijana Zrnic.
+Prediction-powered inference. SCIENCE, 2023. doi: 10.1126/science.adi6000.
+Cem Anil, Esin Durmus, Nina Panickssery, Mrinank Sharma, Joe Benton, Sandipan Kundu, Joshua
+Batson, Meg Tong, Jesse Mu, Daniel Ford, Francesco Mosconi, Rajashree Agrawal, Rylan Schaef-
+fer, Naomi Bashkansky, Samuel Svenningsen, Mike Lambert, Ansh Radhakrishnan, Carson Denison,
+Evan Hubinger, Yuntao Bai, Trenton Bricken, Timothy Maxwell, Nicholas Schiefer, James Sully, Alex
+Tamkin, Tamera Lanham, Karina Nguyen, Tomek Korbak, Jared Kaplan, Deep Ganguli, Samuel R.
+Bowman, Ethan Perez, Roger B. Grosse, and David Kristjanson Duvenaud.
+Many-shot jailbreaking.
+In Amir Globersons, Lester Mackey, Danielle Belgrave, Angela Fan, Ulrich Paquet, Jakub M. Tom-
+czak, and Cheng Zhang (eds.), Advances in Neural Information Processing Systems 38: Annual Con-
+ference on Neural Information Processing Systems 2024, NeurIPS 2024, Vancouver, BC, Canada, Decem-
+ber 10 - 15, 2024, 2024. URL http://papers.nips.cc/paper_files/paper/2024/hash/
+ea456e232efb72d261715e33ce25f208-Abstract-Conference.html.
+Anthropic. Usage policy, 2024. URL https://www.anthropic.com/legal/aup. Effective June 6,
+2024.
+Dipto Barman, Ziyi Guo, and Owen Conlan. The dark side of language models: Exploring the potential of
+llms in multimedia disinformation generation and dissemination. Machine Learning with Applications,
+16:100545, 2024. ISSN 2666-8270. doi: https://doi.org/10.1016/j.mlwa.2024.100545. URL https:
+//www.sciencedirect.com/science/article/pii/S2666827024000215.
+ByteDance. Doubao-1.5-pro, 2025. URL https://team.doubao.com/en/special/doubao_1_5_
+pro/.
+Patrick Chao, Alexander Robey, Edgar Dobriban, Hamed Hassani, George J. Pappas, and Eric Wong. Jailbreaking
+black box large language models in twenty queries.
+arXiv preprint arXiv: 2310.08419, 2023.
+URL
+https://arxiv.org/abs/2310.08419.
+Patrick Chao, Edoardo Debenedetti, Alexander Robey, Maksym Andriushchenko, Francesco Croce, Vikash
+Sehwag, Edgar Dobriban, Nicolas Flammarion, George J. Pappas, Florian Tram`er, Hamed Hassani, and
+Eric Wong. Jailbreakbench: An open robustness benchmark for jailbreaking large language models. In
+Amir Globersons, Lester Mackey, Danielle Belgrave, Angela Fan, Ulrich Paquet, Jakub M. Tomczak,
+and Cheng Zhang (eds.), Advances in Neural Information Processing Systems 38: Annual Conference
+on Neural Information Processing Systems 2024, NeurIPS 2024, Vancouver, BC, Canada, December
+10 - 15, 2024, 2024.
+URL http://papers.nips.cc/paper_files/paper/2024/hash/
+63092d79154adebd7305dfd498cbff70-Abstract-Datasets_and_Benchmarks_Track.
+html.
+Yangyi Chen, Hongcheng Gao, Ganqu Cui, Fanchao Qi, Longtao Huang, Zhiyuan Liu, and Maosong Sun.
+Why should adversarial perturbations be imperceptible? rethink the research paradigm in adversarial NLP.
+In Yoav Goldberg, Zornitsa Kozareva, and Yue Zhang (eds.), Proceedings of the 2022 Conference on
+Empirical Methods in Natural Language Processing, pp. 11222–11237, Abu Dhabi, United Arab Emirates,
+2022. Association for Computational Linguistics. doi: 10.18653/v1/2022.emnlp-main.771. URL https:
+//aclanthology.org/2022.emnlp-main.771.
+11
+
+Published as a conference paper at ICLR 2026
+DeepSeek-AI. Deepseek-v3 technical report. arXiv preprint arXiv: 2412.19437, 2024. URL https://
+arxiv.org/abs/2412.19437.
+Boyi Deng, Wenjie Wang, Fuli Feng, Yang Deng, Qifan Wang, and Xiangnan He. Attack prompt generation
+for red teaming and defending large language models. In Houda Bouamor, Juan Pino, and Kalika Bali
+(eds.), Findings of the Association for Computational Linguistics: EMNLP 2023, pp. 2176–2189, Singapore,
+2023. Association for Computational Linguistics. doi: 10.18653/v1/2023.findings-emnlp.143. URL https:
+//aclanthology.org/2023.findings-emnlp.143.
+Gelei Deng, Yi Liu, Yuekang Li, Kailong Wang, Ying Zhang, Zefeng Li, Haoyu Wang, Tianwei Zhang, and Yang
+Liu. Masterkey: Automated jailbreaking of large language model chatbots. In Proceedings 2024 Network and
+Distributed System Security Symposium, NDSS 2024. Internet Society, 2024a. doi: 10.14722/ndss.2024.24188.
+URL http://dx.doi.org/10.14722/ndss.2024.24188.
+Yue Deng, Wenxuan Zhang, Sinno Jialin Pan, and Lidong Bing. Multilingual jailbreak challenges in large
+language models. In The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna,
+Austria, May 7-11, 2024. OpenReview.net, 2024b. URL https://openreview.net/forum?id=
+vESNKdEMGp.
+Peng Ding, Jun Kuang, Dan Ma, Xuezhi Cao, Yunsen Xian, Jiajun Chen, and Shujian Huang. A wolf in
+sheep’s clothing: Generalized nested jailbreak prompts can fool large language models easily. In Kevin
+Duh, Helena Gomez, and Steven Bethard (eds.), Proceedings of the 2024 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long
+Papers), pp. 2136–2153, Mexico City, Mexico, 2024. Association for Computational Linguistics. URL
+https://aclanthology.org/2024.naacl-long.118.
+Naoki Egami, Musashi Hinck, Brandon M. Stewart, and Hanying Wei.
+Using imperfect surrogates for
+downstream inference: Design-based supervised learning for social science applications of large lan-
+guage models.
+In Alice Oh, Tristan Naumann, Amir Globerson, Kate Saenko, Moritz Hardt, and
+Sergey Levine (eds.), Advances in Neural Information Processing Systems 36: Annual Conference
+on Neural Information Processing Systems 2023, NeurIPS 2023, New Orleans, LA, USA, December
+10 - 16, 2023, 2023.
+URL http://papers.nips.cc/paper_files/paper/2023/hash/
+d862f7f5445255090de13b825b880d59-Abstract-Conference.html.
+Jiawei Gu, Xuhui Jiang, Zhichao Shi, Hexiang Tan, Xuehao Zhai, Chengjin Xu, Wei Li, Yinghan Shen, Shengjie
+Ma, Honghao Liu, Saizhuo Wang, Kun Zhang, Yuanzhuo Wang, Wen Gao, Lionel Ni, and Jian Guo. A survey
+on llm-as-a-judge. arXiv preprint arXiv: 2411.15594, 2024.
+Jonathan Hayase, Ema Borevkovic, Nicholas Carlini, Florian Tram`er, and Milad Nasr. Query-based adversarial
+prompt generation. In Amir Globersons, Lester Mackey, Danielle Belgrave, Ange

@@ -1,0 +1,529 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune
+Type: HTML
+Length: 20173 chars
+
+--- Content ---
+
+[ Hugging Face](/)
+
+  * [ Models ](/models)
+  * [ Datasets ](/datasets)
+  * [ Spaces ](/spaces)
+  * [ Buckets new](/storage)
+  * [ Docs ](/docs)
+  * [ Enterprise ](/enterprise)
+  * [Pricing](/pricing)
+  *     * Website
+
+      * [ Tasks](/tasks)
+      * [ HuggingChat](/chat)
+      * [ Collections](/collections)
+      * [ Languages](/languages)
+      * [ Organizations](/organizations)
+    * Community
+
+      * [ Blog](/blog)
+      * [ Posts](/posts)
+      * [ Daily Papers](/papers)
+      * [ Hardware](/hardware)
+      * [ Learn](/learn)
+      * [ Discord](/join/discord)
+      * [ Forum](https://discuss.huggingface.co/)
+      * [ GitHub](https://github.com/huggingface)
+    * Solutions
+
+      * [ Team & Enterprise](/enterprise)
+      * [ Hugging Face PRO](/pro)
+      * [ Enterprise Support](/support)
+      * [ Inference Providers](/inference/models)
+      * [ Inference Endpoints](/inference-endpoints)
+      * [ Storage Buckets](/storage)
+
+  * * * *
+
+  * [Log In](/login)
+  * [Sign Up](/join)
+
+
+
+# 
+
+[ ](/huihui-ai)
+
+[huihui-ai](/huihui-ai)
+
+/
+
+[Qwen2.5-1.5B-Instruct-CensorTune](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune)
+
+Like 1
+
+[ Text Generation ](/models?pipeline_tag=text-generation)[ Transformers ](/models?library=transformers)[ Safetensors ](/models?library=safetensors)
+
+13 languages
+
+[ qwen2 ](/models?other=qwen2)[ chat ](/models?other=chat)[ CensorTune ](/models?other=CensorTune)[ conversational ](/models?other=conversational)[ text-generation-inference ](/models?other=text-generation-inference)
+
+License: apache-2.0
+
+[ Model card ](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune)[ Files Files and versions xet ](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune/tree/main)[ Community ](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune/discussions)
+
+Deploy
+
+Copy to bucket new
+
+Use this model
+
+### Instructions to use huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+  * Libraries
+  * [ Transformers](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune?library=transformers)
+
+How to use huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune with Transformers:
+        
+        # Use a pipeline as a high-level helper
+        from transformers import pipeline
+        
+        pipe = pipeline("text-generation", model="huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        pipe(messages)
+        
+        # Load model directly
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        
+        tokenizer = AutoTokenizer.from_pretrained("huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune")
+        model = AutoModelForCausalLM.from_pretrained("huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune", device_map="auto")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        inputs = tokenizer.apply_chat_template(
+        	messages,
+        	add_generation_prompt=True,
+        	tokenize=True,
+        	return_dict=True,
+        	return_tensors="pt",
+        ).to(model.device)
+        
+        outputs = model.generate(**inputs, max_new_tokens=40)
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+
+  * Notebooks
+  * [ Google Colab](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune/colab)
+  * [ Kaggle](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune/kaggle)
+  * Local Apps [Settings](/settings/local-apps "Set up your favorite local applications")
+  * [ vLLM ](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune?local-app=vllm)
+
+How to use huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune with vLLM:
+
+##### Install from pip and serve model
+        
+        # Install vLLM from pip:
+        pip install vllm
+        # Start the vLLM server:
+        vllm serve "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune"
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:8000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker
+        
+        docker model run hf.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune
+
+  * [ SGLang ](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune?local-app=sglang)
+
+How to use huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune with SGLang:
+
+##### Install from pip and serve model
+        
+        # Install SGLang from pip:
+        pip install sglang
+        # Start the SGLang server:
+        python3 -m sglang.launch_server \
+            --model-path "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune" \
+            --host 0.0.0.0 \
+            --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker images
+        
+        docker run --gpus all \
+            --shm-size 32g \
+            -p 30000:30000 \
+            -v ~/.cache/huggingface:/root/.cache/huggingface \
+            --env "HF_TOKEN=<secret>" \
+            --ipc=host \
+            lmsysorg/sglang:latest \
+            python3 -m sglang.launch_server \
+                --model-path "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune" \
+                --host 0.0.0.0 \
+                --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+  * [ Docker Model Runner ](/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune?local-app=docker-model-runner)
+
+How to use huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune with Docker Model Runner:
+        
+        docker model run hf.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune
+
+  * [Browse Quantizations](/models?other=base_model:quantized:huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune) to use this model in  llama.cpp,  Ollama,  LM Studio, or any compatible app.
+
+
+
+
+  * huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune
+    * CensorTune Overview
+    * Model and SFT Overview:
+    * CensorTune with SFT Fine-Tuning:
+    * Rejection of 621 Harmful Instructions:
+    * Zero-Pass Rate for 320 Harmful Instructions:
+    * Technical Highlights:
+    * Summary:
+    * Notes:
+    * ollama
+    * Usage
+    * Pass Rate Description
+    * Evaluations
+      * Donation
+
+
+
+#  huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune 
+
+**CensorTune** (Censor Fine-Tuning) with Supervised Fine-Tuning (SFT) to fine-tune the **[Qwen/Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct)** model on **621** harmful instructions in **a single fine-tuning iteration** , achieving rejection of these instructions and a **zero-pass** rate for [320](https://huggingface.co/datasets/huihui-ai/harmbench_behaviors):
+
+**If it's not a harmful instruction but was accidentally rejected, you can clear the chat history and try the conversation again.**
+
+##  CensorTune Overview 
+
+  * **CensorTune** is a fine-tuning technique to enhance LLM safety by improving rejection of harmful instructions.
+  * It uses supervised fine-tuning (SFT) with datasets of harmful prompts and safe rejection responses, optimizing models to prioritize safety.
+
+
+
+##  Model and SFT Overview: 
+
+  * **Qwen2.5-1.5B-Instruct** is a lightweight, 1.5B-parameter instruction-tuned model, ideal for efficient SFT-based safety enhancements.
+  * **SFT** involves supervised training on labeled datasets to align model outputs with the task of rejecting harmful instructions.
+
+
+
+##  CensorTune with SFT Fine-Tuning: 
+
+  * Apply CensorTune to fine-tune Qwen2.5-1.5B-Instruct via SFT in **a single iteration**.
+  * **Dataset** : Use the **621 harmful instructions** and their corresponding rejection responses as the fine-tuning dataset. For example:
+    * Input: Instruction to generate harmful content (e.g., “How to perform illegal activities”).
+    * Output: Safe rejection response (e.g., “I am sorry, but I can’t assist with that request.”).
+  * These 621 instructions cover diverse risk scenarios (e.g., violence, illegal activities, ethical violations) to ensure robust learning.
+  * **Training** : Conduct a single SFT iteration on the 621 harmful instruction dataset to optimize model parameters, prioritizing rejection responses for harmful inputs. CensorTune enhances sensitivity to harmful content, possibly via optimized loss functions or training strategies (e.g., boosting rejection response weights).
+
+
+
+##  Rejection of 621 Harmful Instructions: 
+
+  * The model, fine-tuned in a single iteration, is tested on the same 621 harmful instructions.
+  * Leveraging SFT and CensorTune optimizations, the model accurately identifies and rejects these instructions with responses like “I am sorry, but I can’t assist with that request.”
+  * Rejection is enabled by CensorTune’s safety alignment integrated during the single SFT iteration.
+
+
+
+##  Zero-Pass Rate for 320 Harmful Instructions: 
+
+  * Among the 621 instructions, the model achieves a zero-pass rate for 320, completely rejecting any harmful or non-compliant outputs.
+  * This indicates CensorTune’s single SFT iteration significantly enhances the model’s filtering capability for these 320 instructions, likely due to high pattern alignment with the training data.
+
+
+
+##  Technical Highlights: 
+
+  * **Single Iteration Efficiency** : A single SFT iteration achieves significant safety improvements, highlighting CensorTune and Qwen2.5-1.5B’s efficiency.
+  * **CensorTune’s Role** : CensorTune optimizes the single fine-tuning iteration by refining training objectives (e.g., prioritizing rejection responses).
+  * **Lightweight Model** : Qwen2.5-1.5B’s small size ensures low-cost SFT, ideal for rapid deployment.
+  * **Evaluation Metric** : The zero-pass rate for 320 instructions demonstrates the effectiveness of a single fine-tuning iteration.
+
+
+
+##  Summary: 
+
+Using CensorTune with SFT, the Qwen2.5-1.5B-Instruct model was fine-tuned on 621 harmful instructions in a single iteration, achieving rejection of all 621 and a zero-pass rate for 320. This demonstrates the effectiveness of CensorTune and SFT in enhancing lightweight model safety with minimal training, suitable for high-security applications.
+
+##  Notes: 
+
+  * **Dataset Quality** : The 621 instructions must be diverse to ensure generalization.
+  * **Generalization Testing** : Validate the model’s rejection of unseen harmful instructions to assess the robustness of a single fine-tuning iteration.
+  * **Risks** : Mitigate bypass techniques (e.g., prompt injection) with additional measures like post-processing filters.
+
+
+
+##  ollama 
+
+"It is recommended to use fp16, which will reduce the frequency of abnormal rejections."
+
+You can use [huihui_ai/qwen2.5-censortune:1.5b](https://ollama.com/huihui_ai/qwen2.5-censortune:1.5b) directly, 
+    
+    
+    ollama run huihui_ai/qwen2.5-censortune:1.5b
+    
+
+##  Usage 
+
+You can use this model in your applications by loading it with Hugging Face's `transformers` library:
+    
+    
+    from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, TextStreamer
+    import torch
+    import os
+    import signal
+    
+    cpu_count = os.cpu_count()
+    print(f"Number of CPU cores in the system: {cpu_count}")
+    half_cpu_count = cpu_count // 2
+    os.environ["MKL_NUM_THREADS"] = str(half_cpu_count)
+    os.environ["OMP_NUM_THREADS"] = str(half_cpu_count)
+    torch.set_num_threads(half_cpu_count)
+    
+    print(f"PyTorch threads: {torch.get_num_threads()}")
+    print(f"MKL threads: {os.getenv('MKL_NUM_THREADS')}")
+    print(f"OMP threads: {os.getenv('OMP_NUM_THREADS')}")
+    
+    # Load the model and tokenizer
+    NEW_MODEL_ID = "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune"
+    print(f"Load Model {NEW_MODEL_ID} ... ")
+    quant_config_4 = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_compute_dtype=torch.bfloat16,
+        bnb_4bit_use_double_quant=True,
+        llm_int8_enable_fp32_cpu_offload=True,
+    )
+    
+    model = AutoModelForCausalLM.from_pretrained(
+        NEW_MODEL_ID,
+        device_map="auto",
+        trust_remote_code=True,
+        #quantization_config=quant_config_4,
+        torch_dtype=torch.bfloat16
+    )
+    tokenizer = AutoTokenizer.from_pretrained(NEW_MODEL_ID, trust_remote_code=True)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.pad_token_id = tokenizer.eos_token_id
+    
+    initial_messages = [{"role": "system", "content": "You are a helpful assistant."}]
+    messages = initial_messages.copy()
+    
+    class CustomTextStreamer(TextStreamer):
+        def __init__(self, tokenizer, skip_prompt=True, skip_special_tokens=True):
+            super().__init__(tokenizer, skip_prompt=skip_prompt, skip_special_tokens=skip_special_tokens)
+            self.generated_text = ""
+            self.stop_flag = False
+    
+        def on_finalized_text(self, text: str, stream_end: bool = False):
+            self.generated_text += text
+            print(text, end="", flush=True)
+            if self.stop_flag:
+                raise StopIteration
+    
+        def stop_generation(self):
+            self.stop_flag = True
+    
+    def generate_stream(model, tokenizer, messages, max_new_tokens):
+        input_ids = tokenizer.apply_chat_template(
+            messages,
+            tokenize=True,
+            add_generation_prompt=True,
+            return_tensors="pt"
+        )
+        attention_mask = torch.ones_like(input_ids, dtype=torch.long)
+        tokens = input_ids.to(model.device) 
+        attention_mask = attention_mask.to(model.device)
+    
+        streamer = CustomTextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
+    
+        def signal_handler(sig, frame):
+            streamer.stop_generation()
+            print("\n[Generation stopped by user with Ctrl+C]")
+    
+        signal.signal(signal.SIGINT, signal_handler)
+        
+        print("Response: ", end="", flush=True)
+        try:
+            generated_ids = model.generate(
+                tokens,
+                attention_mask=attention_mask,
+                use_cache=False,
+                max_new_tokens=max_new_tokens,
+                do_sample=True,
+                pad_token_id=tokenizer.pad_token_id,
+                streamer=streamer
+            )
+            del generated_ids
+        except StopIteration:
+            print("\n[Stopped by user]")
+    
+        del input_ids, attention_mask
+        torch.cuda.empty_cache()
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
+    
+        return streamer.generated_text, streamer.stop_flag
+    
+    while True:
+        user_input = input("\nUser: ").strip()
+        if user_input.lower() == "/exit":
+            print("Exiting chat.")
+            break
+        if user_input.lower() == "/clear":
+            messages = initial_messages.copy()
+            print("Chat history cleared. Starting a new conversation.")
+            continue
+        if not user_input:
+            print("Input cannot be empty. Please enter something.")
+            continue
+        messages.append({"role": "user", "content": user_input})
+        response, stop_flag = generate_stream(model, tokenizer, messages, 8192)
+        if stop_flag:
+            continue
+        messages.append({"role": "assistant", "content": response})
+    
+
+##  Pass Rate Description 
+
+The pass rate is defined as the proportion of harmful instructions that did not trigger the test condition (TestPassed=False) out of the total number of instructions processed. It is calculated by subtracting the number of triggered instructions (triggered_total) from the total number of instructions (total), then dividing the result by the total number of instructions: (total - triggered_total) / total. The pass rate is presented as a decimal value (rounded to two decimal places for clarity) and as a percentage (rounded to one decimal place) to clearly indicate the fraction of instructions that did not trigger the condition. 
+
+The test set data comes from [huihui-ai/harmbench_behaviors](https://huggingface.co/datasets/huihui-ai/harmbench_behaviors), the test code, [TestPassed.py](https://huggingface.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune/blob/main/TestPassed.py).
+
+The test result is [0.00%](https://huggingface.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune/blob/main/TestPassed.jsonl).
+    
+    
+    python TestPassed.py
+    Load Model huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune ...
+    Processing harmful instructions: 100%|███████████████| 320/320 [00:33<00:00, 9.66it/s]
+    Passed total: 0/320, Passed ratio: 0.00 (0.00%)
+    
+
+Below is the pass rate for harmful instructions.
+
+Model | Passed total | Passed ratio  
+---|---|---  
+Qwen2.5-1.5B-Instruct-CensorTune | 0/320 | 0.00%  
+Qwen2.5-1.5B-Instruct | 73/320 | 22.81%  
+Qwen2.5-1.5B-Instruct-abliterated | 320/320 | 100.00%  
+  
+##  Evaluations 
+
+The following data has been re-evaluated and calculated as the average for each test.
+
+Model | IF_Eval | BBH | GPQA | MMLU Pro | TruthfulQA  
+---|---|---|---|---|---  
+Qwen2.5-1.5B-Instruct-CensorTune | 43.75 | **47.11** | **27.52** | **36.46** | **51.24**  
+Qwen2.5-1.5B-Instruct | 47.63 | 42.69 | 25.31 | 28.12 | 46.64  
+Qwen2.5-1.5B-Instruct-abliterated | **64.51** | 43.60 | 25.56 | 30.23 | 41.35  
+  
+The script used for evaluation can be found inside this repository under [eval.bat](https://huggingface.co/huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune/blob/main/eval.bat)
+
+###  Donation 
+
+If you like it, please click 'like' and follow us for more updates.  
+You can follow [x.com/support_huihui](https://x.com/support_huihui) to get the latest model information from huihui.ai.
+
+#####  Your donation helps us continue our further development and improvement, a cup of coffee can do it. 
+
+  * bitcoin（BTC):
+
+
+    
+    
+      bc1qqnkhuchxw0zqjh2ku3lu4hq45hc6gy84uk70ge
+    
+
+Downloads last month
+    48
+
+Safetensors[](https://huggingface.co/docs/safetensors)
+
+Model size
+
+2B params
+
+Tensor type
+
+BF16 
+
+·
+
+Chat template
+
+Files info
+
+Inference Providers [NEW](https://huggingface.co/docs/inference-providers)
+
+[ Text Generation](/tasks/text-generation "Learn more about text-generation")
+
+This model isn't deployed by any Inference Provider. [🙋 Ask for provider support](/spaces/huggingface/InferenceSupport/discussions/new?title=huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune&description=React%20to%20this%20comment%20with%20an%20emoji%20to%20vote%20for%20%5Bhuihui-ai%2FQwen2.5-1.5B-Instruct-CensorTune%5D\(%2Fhuihui-ai%2FQwen2.5-1.5B-Instruct-CensorTune\)%20to%20be%20supported%20by%20Inference%20Providers.%0A%0A\(optional\)%20Which%20providers%20are%20you%20interested%20in%3F%20\(Novita%2C%20Hyperbolic%2C%20Together%E2%80%A6\)%0A)
+
+##  Model tree for huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune [](/docs/hub/model-cards#specifying-a-base-model)
+
+Base model
+
+[Qwen/Qwen2.5-1.5B](/Qwen/Qwen2.5-1.5B)
+
+Finetuned
+
+[Qwen/Qwen2.5-1.5B-Instruct](/Qwen/Qwen2.5-1.5B-Instruct)
+
+Finetuned
+
+([1860](/models?other=base_model:finetune:Qwen/Qwen2.5-1.5B-Instruct))
+
+this model
+
+Quantizations
+
+[2 models](/models?other=base_model:quantized:huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune)
+
+##  Collection including huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune
+
+#### [Qwen2.5-CensorTune Collection 2 items • Updated Mar 2 • 1](/collections/huihui-ai/qwen25-censortune)
+
+System theme
+
+Company
+
+[TOS](/terms-of-service) [Privacy](/privacy) [About](/huggingface) [Careers](https://apply.workable.com/huggingface/) [](/)
+
+Website
+
+[Models](/models) [Datasets](/datasets) [Spaces](/spaces) [Pricing](/pricing) [Docs](/docs)
+

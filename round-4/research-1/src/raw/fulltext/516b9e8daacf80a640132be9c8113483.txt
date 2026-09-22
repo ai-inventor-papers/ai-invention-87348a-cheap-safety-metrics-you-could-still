@@ -1,0 +1,418 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/Qwen/Qwen3-4B-SafeRL
+Type: HTML
+Length: 12450 chars
+
+--- Content ---
+
+[ Hugging Face](/)
+
+  * [ Models ](/models)
+  * [ Datasets ](/datasets)
+  * [ Spaces ](/spaces)
+  * [ Buckets new](/storage)
+  * [ Docs ](/docs)
+  * [ Enterprise ](/enterprise)
+  * [Pricing](/pricing)
+  *     * Website
+
+      * [ Tasks](/tasks)
+      * [ HuggingChat](/chat)
+      * [ Collections](/collections)
+      * [ Languages](/languages)
+      * [ Organizations](/organizations)
+    * Community
+
+      * [ Blog](/blog)
+      * [ Posts](/posts)
+      * [ Daily Papers](/papers)
+      * [ Hardware](/hardware)
+      * [ Learn](/learn)
+      * [ Discord](/join/discord)
+      * [ Forum](https://discuss.huggingface.co/)
+      * [ GitHub](https://github.com/huggingface)
+    * Solutions
+
+      * [ Team & Enterprise](/enterprise)
+      * [ Hugging Face PRO](/pro)
+      * [ Enterprise Support](/support)
+      * [ Inference Providers](/inference/models)
+      * [ Inference Endpoints](/inference-endpoints)
+      * [ Storage Buckets](/storage)
+
+  * * * *
+
+  * [Log In](/login)
+  * [Sign Up](/join)
+
+
+
+# 
+
+[ ](/Qwen)
+
+[Qwen](/Qwen)
+
+/
+
+[Qwen3-4B-SafeRL](/Qwen/Qwen3-4B-SafeRL)
+
+Like 44
+
+Follow
+
+Qwen 106k
+
+[ Text Generation ](/models?pipeline_tag=text-generation)[ Transformers ](/models?library=transformers)[ Safetensors ](/models?library=safetensors)[ qwen3 ](/models?other=qwen3)[ conversational ](/models?other=conversational)[ text-generation-inference ](/models?other=text-generation-inference)
+
+arxiv: 2510.14276
+
+License: apache-2.0
+
+[ Model card ](/Qwen/Qwen3-4B-SafeRL)[ Files Files and versions xet ](/Qwen/Qwen3-4B-SafeRL/tree/main)[ Community 1 ](/Qwen/Qwen3-4B-SafeRL/discussions)
+
+Deploy
+
+Copy to bucket new
+
+Use this model
+
+### Instructions to use Qwen/Qwen3-4B-SafeRL with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+  * Libraries
+  * [ Transformers](/Qwen/Qwen3-4B-SafeRL?library=transformers)
+
+How to use Qwen/Qwen3-4B-SafeRL with Transformers:
+        
+        # Use a pipeline as a high-level helper
+        from transformers import pipeline
+        
+        pipe = pipeline("text-generation", model="Qwen/Qwen3-4B-SafeRL")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        pipe(messages)
+        
+        # Load model directly
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        
+        tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen3-4B-SafeRL")
+        model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-4B-SafeRL", device_map="auto")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        inputs = tokenizer.apply_chat_template(
+        	messages,
+        	add_generation_prompt=True,
+        	tokenize=True,
+        	return_dict=True,
+        	return_tensors="pt",
+        ).to(model.device)
+        
+        outputs = model.generate(**inputs, max_new_tokens=40)
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+
+  * Inference
+  * Inference Providers
+  * Notebooks
+  * [ Google Colab](/Qwen/Qwen3-4B-SafeRL/colab)
+  * [ Kaggle](/Qwen/Qwen3-4B-SafeRL/kaggle)
+  * Local Apps [Settings](/settings/local-apps "Set up your favorite local applications")
+  * [ vLLM ](/Qwen/Qwen3-4B-SafeRL?local-app=vllm)
+
+How to use Qwen/Qwen3-4B-SafeRL with vLLM:
+
+##### Install from pip and serve model
+        
+        # Install vLLM from pip:
+        pip install vllm
+        # Start the vLLM server:
+        vllm serve "Qwen/Qwen3-4B-SafeRL"
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:8000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "Qwen/Qwen3-4B-SafeRL",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker
+        
+        docker model run hf.co/Qwen/Qwen3-4B-SafeRL
+
+  * [ SGLang ](/Qwen/Qwen3-4B-SafeRL?local-app=sglang)
+
+How to use Qwen/Qwen3-4B-SafeRL with SGLang:
+
+##### Install from pip and serve model
+        
+        # Install SGLang from pip:
+        pip install sglang
+        # Start the SGLang server:
+        python3 -m sglang.launch_server \
+            --model-path "Qwen/Qwen3-4B-SafeRL" \
+            --host 0.0.0.0 \
+            --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "Qwen/Qwen3-4B-SafeRL",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker images
+        
+        docker run --gpus all \
+            --shm-size 32g \
+            -p 30000:30000 \
+            -v ~/.cache/huggingface:/root/.cache/huggingface \
+            --env "HF_TOKEN=<secret>" \
+            --ipc=host \
+            lmsysorg/sglang:latest \
+            python3 -m sglang.launch_server \
+                --model-path "Qwen/Qwen3-4B-SafeRL" \
+                --host 0.0.0.0 \
+                --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "Qwen/Qwen3-4B-SafeRL",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+  * [ Docker Model Runner ](/Qwen/Qwen3-4B-SafeRL?local-app=docker-model-runner)
+
+How to use Qwen/Qwen3-4B-SafeRL with Docker Model Runner:
+        
+        docker model run hf.co/Qwen/Qwen3-4B-SafeRL
+
+  * [Browse Quantizations](/models?other=base_model:quantized:Qwen/Qwen3-4B-SafeRL) to use this model in  llama.cpp,  Ollama,  LM Studio, or any compatible app.
+
+
+
+
+  * Qwen3-4B-SafeRL
+    * Model Overview
+      * Reinforcement Learning with Hybrid Reward
+      * Performance
+    * Quickstart
+    * Citation
+
+
+
+#  Qwen3-4B-SafeRL 
+
+##  Model Overview 
+
+**Qwen3-4B-SafeRL** is a safety-aligned version of the [Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B) model. It has been trained using Reinforcement Learning (RL) with a reward signal from **Qwen3Guard-Gen** to enhance its robustness against harmful or adversarial prompts. This process aims to ensure strong safety guarantees without leading to overly simplistic or evasive refusal behaviors, thereby maintaining a positive user experience.
+
+For more details on the safety alignment process, please refer to the [Qwen3Guard Technical Report](https://github.com/QwenLM/Qwen3Guard/blob/main/Qwen3Guard_Technical_Report.pdf).
+
+###  Reinforcement Learning with Hybrid Reward 
+
+To prevent the model from defaulting to refusal across all prompts in an attempt to remain safe, we introduce a hybrid reward function that jointly optimizes three key objectives:
+
+  * **Safety Maximization:** Penalizes the generation of unsafe content, as detected by [Qwen3Guard-Gen-4B](https://huggingface.co/Qwen/Qwen3Guard-Gen-4B).
+  * **Helpfulness Maximization:** Rewards responses that are genuinely helpful, as evaluated by the [WorldPM-Helpsteer2](https://huggingface.co/Qwen/WorldPM-72B-HelpSteer2) model.
+  * **Refusal Minimization:** Applies a moderate penalty for unnecessary refusals, also identified by [Qwen3Guard-Gen-4B](https://huggingface.co/Qwen/Qwen3Guard-Gen-4B).
+
+
+
+###  Performance 
+
+Mode | Model | Safety Rate (Qwen3-235B) | Safety Rate (WildGuard) | Refusal (WildGuard) | ArenaHard-v2 (Winrate vs GPT-4.1) | AIME25 (Pass@1) | LCB-v6 (Pass@1) | GPQA (Pass@1)  
+---|---|---|---|---|---|---|---|---  
+**Non-Think** | Qwen3-4B | 47.5 | 64.7 | 12.9 | 9.5 | **19.1** | 26.4 | **41.7**  
+| Qwen3-4B-SafeRL | **86.5** | **98.1** | **5.3** | **10.7** | 18.2 | **27.7** | 40.8  
+**Think** | Qwen3-4B | 43.8 | 59.0 | 6.5 | 13.7 | **65.6** | **48.4** | **55.9**  
+| Qwen3-4B-SafeRL | **83.4** | **97.4** | **6.2** | **16.6** | 63.5 | 47.5 | 51.2  
+  
+##  Quickstart 
+
+Qwen3-4B-SafeRL is used in the same way as Qwen3-4B, preserving the ability of hybrid thinking modes. The code of Qwen3 has been in the latest Hugging Face `transformers` and we advise you to use the latest version of `transformers`.
+
+With `transformers<4.51.0`, you will encounter the following error:
+    
+    
+    KeyError: 'qwen3'
+    
+
+The following contains a code snippet illustrating how to use the model generate content based on given inputs. 
+    
+    
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    
+    model_name = "Qwen/Qwen3-4B-SafeRL"
+    
+    # load the tokenizer and the model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        torch_dtype="auto",
+        device_map="auto"
+    )
+    
+    # prepare the model input
+    prompt = "Give me a short introduction to large language model."
+    messages = [
+        {"role": "user", "content": prompt}
+    ]
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=True # Switches between thinking and non-thinking modes. Default is True.
+    )
+    model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+    
+    # conduct text completion
+    generated_ids = model.generate(
+        **model_inputs,
+        max_new_tokens=32768
+    )
+    output_ids = generated_ids[0][len(model_inputs.input_ids[0]):].tolist() 
+    
+    # parsing thinking content
+    try:
+        # rindex finding 151668 (</think>)
+        index = len(output_ids) - output_ids[::-1].index(151668)
+    except ValueError:
+        index = 0
+    
+    thinking_content = tokenizer.decode(output_ids[:index], skip_special_tokens=True).strip("\n")
+    content = tokenizer.decode(output_ids[index:], skip_special_tokens=True).strip("\n")
+    
+    print("thinking content:", thinking_content)
+    print("content:", content)
+    
+
+For deployment, you can use `sglang>=0.4.6.post1` or `vllm>=0.8.5` or to create an OpenAI-compatible API endpoint:
+
+  * SGLang:
+        
+        python -m sglang.launch_server --model-path Qwen/Qwen3-4B-SafeRL --reasoning-parser qwen3
+        
+
+  * vLLM:
+        
+        vllm serve Qwen/Qwen3-4B-SafeRL --enable-reasoning --reasoning-parser deepseek_r1
+        
+
+
+
+
+For local use, applications such as Ollama, LMStudio, MLX-LM, llama.cpp, and KTransformers have also supported Qwen3.
+
+For more usages, please refer to the modelcard of [Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B).
+
+##  Citation 
+
+If you find our work helpful, feel free to give us a cite.
+    
+    
+    @misc{qwen3guard,
+          title={Qwen3Guard Technical Report}, 
+          author={Qwen Team},
+          year={2025},
+          url={http://arxiv.org/abs/2510.14276},
+    }
+    
+
+Downloads last month
+    1,120
+
+Safetensors[](https://huggingface.co/docs/safetensors)
+
+Model size
+
+4B params
+
+Tensor type
+
+BF16 
+
+·
+
+Chat template
+
+Files info
+
+Inference Providers [NEW](https://huggingface.co/docs/inference-providers)
+
+Featherless AI
+
+[ Text Generation](/tasks/text-generation "Learn more about text-generation")
+
+Examples
+
+Input a message to start chatting with **Qwen/Qwen3-4B-SafeRL**.
+
+Send
+
+View Code Snippets
+
+[ Compare providers](/inference/models?model=Qwen%2FQwen3-4B-SafeRL)
+
+##  Model tree for Qwen/Qwen3-4B-SafeRL [](/docs/hub/model-cards#specifying-a-base-model)
+
+Base model
+
+[Qwen/Qwen3-4B-Base](/Qwen/Qwen3-4B-Base)
+
+Finetuned
+
+[Qwen/Qwen3-4B](/Qwen/Qwen3-4B)
+
+Finetuned
+
+([1025](/models?other=base_model:finetune:Qwen/Qwen3-4B))
+
+this model
+
+Adapters
+
+[1 model](/models?other=base_model:adapter:Qwen/Qwen3-4B-SafeRL)
+
+Finetunes
+
+[2 models](/models?other=base_model:finetune:Qwen/Qwen3-4B-SafeRL)
+
+Quantizations
+
+[7 models](/models?other=base_model:quantized:Qwen/Qwen3-4B-SafeRL)
+
+##  Collection including Qwen/Qwen3-4B-SafeRL
+
+#### [Qwen3Guard Collection 7 items • Updated Dec 31, 2025 • 70](/collections/Qwen/qwen3guard)
+
+##  Paper for Qwen/Qwen3-4B-SafeRL
+
+#### [Qwen3Guard Technical Report Paper • 2510.14276 • Published Oct 16, 2025 • 17 ](/papers/2510.14276)
+
+System theme
+
+Company
+
+[TOS](/terms-of-service) [Privacy](/privacy) [About](/huggingface) [Careers](https://apply.workable.com/huggingface/) [](/)
+
+Website
+
+[Models](/models) [Datasets](/datasets) [Spaces](/spaces) [Pricing](/pricing) [Docs](/docs)
+

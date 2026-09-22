@@ -1,0 +1,1344 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2408.00761
+Type: PDF
+Length: 95137 chars (truncated)
+
+--- Content ---
+
+Tamper-Resistant Safeguards for Open-Weight LLMs
+Rishub Tamirisa∗†1,2,9, Bhrugu Bharathi∗1,3,
+Long Phan9, Andy Zhou1,2, Alice Gatti9, Tarun Suresh1,2,
+Maxwell Lin8, Justin Wang5,8, Rowan Wang6,8, Ron Arel1,2,
+Andy Zou5,8,9, Dawn Song4, Bo Li2,7, Dan Hendrycks‡9, Mantas Mazeika‡2,9
+1Lapis Labs,
+2University of Illinois Urbana-Champaign,
+3University of California, San Diego,
+4University of California, Berkeley,
+5Carnegie Mellon University,
+6Harvard University,
+7University of Chicago,
+8Gray Swan AI,
+9Center for AI Safety
+Abstract
+Rapid advances in the capabilities of large language models (LLMs) have raised
+widespread concerns regarding their potential for malicious use. Open-weight
+LLMs present unique challenges, as existing safeguards lack robustness to tamper-
+ing attacks that modify model weights. For example, recent works have demon-
+strated that refusal and unlearning safeguards can be trivially removed with a few
+steps of fine-tuning. These vulnerabilities necessitate new approaches for enabling
+the safe release of open-weight LLMs. We develop a method, called TAR, for
+building tamper-resistant safeguards into open-weight LLMs such that adversaries
+cannot remove the safeguards even after hundreds of steps of fine-tuning. In exten-
+sive evaluations and red teaming analyses, we find that our method greatly improves
+tamper-resistance while preserving benign capabilities. Our results demonstrate
+that progress on tamper-resistance is possible, opening up a promising new avenue
+to improve the safety and security of open-weight LLMs.
+1
+Introduction
+The most capable open-weight large language models (LLMs) released over the past year now rival
+closed-source frontier models [34]. The availability of open-weight LLMs for anyone to download
+and use has yielded numerous benefits, including lowering costs for end users and enabling academic
+research on safety and security [72]. However, as these models become increasingly powerful, many
+have raised concerns that they could be repurposed by malicious actors to cause harm, motivating
+research on how to safeguard these models against malicious use.
+Existing open-weight models often adapt safeguards designed for closed-weight models served
+through APIs [55]. These safeguards include refusal mechanisms and preference-based training, and
+they have provided substantial robustness against input-based jailbreaking attacks. However, recent
+work has demonstrated these safeguards are trivially defeated by attacks that edit model weights,
+breaking down after only a handful of fine-tuning steps [44]. This poses a serious problem for
+open-weight models, because adversaries have full access to model weights and can tamper with
+built-in safeguards.
+*Equal contribution. ‡Equal advising. Correspondence to rishubt2@illinois.edu.
+†Part of work done during an internship at the Center for AI Safety.
+arXiv:2408.00761v4  [cs.LG]  10 Feb 2025
+
+
+
+Figure 1: An illustration comparing two approaches to LLM safety when subjected to adversarial
+fine-tuning. The top branch shows conventional safeguards (like refusal training), which can be easily
+bypassed when adversaries fine-tune the model weights to remove safety constraints. The bottom
+branch demonstrates our proposed method TAR(Tampering Attack Resistance), which maintains
+robustness even when adversaries attempt to fine-tune the model to reintroduce harmful capabilities.
+The vulnerability of open-weight models to tampering attacks poses risks for model developers as
+well. Under background tort law, AI developers must exercise reasonable care, meaning they have an
+obligation to take reasonable precautions to prevent foreseeable harm. If malicious actors can easily
+customize models to cause critical harm, model developers may inadvertently violate reasonable care
+standards and become open to liability under existing law. Thus, there is an urgent need for more
+robust safeguarding techniques that can withstand tampering attacks.
+In this work, we study the problem of tamper-resistant safeguards for LLMs. This problem is depicted
+in Figure 1. Unlike existing research on LLM safeguards, we focus on attacks that modify model
+weights, which we refer to as tampering attacks. This problem has been considered very challenging
+and by some intractable, as no method has yet provided substantial robustness to these attacks.
+However, making progress on this problem would provide a valuable tool to regulators and model
+developers by ameliorating the dual-use dilemma of open-weight models [40].
+To demonstrate that progress on this problem is possible, we develop the first LLM safeguards that
+obtain strong robustness against a wide variety of tampering attacks. Our approach allows developers
+to add a safeguard such that tampering attacks cannot easily remove the safeguard, while preserving
+the general capabilities of the LLM. We achieve this by performing adversarial training against
+tampering attacks, leveraging approaches from meta-learning. We identify various crucial factors that
+enable our method to work, including the choice of tamper-resistance loss, the selection of train-time
+adversaries, and the two-stage approach that we use for building in safeguards.
+We apply our method to develop tamper-resistant unlearning and refusal safeguards. In experiments,
+we demonstrate that our safeguards are far more robust to tampering attacks than prior methods. We
+stress-test our safeguards with extensive red teaming evaluations against 26 test-time adversaries,
+demonstrating resistance to fine-tuning attacks of hundreds of steps. We hope our results foster
+future work on this important problem. Our experiment code and models are available at https:
+//github.com/rishub-tamirisa/tamper-resistance.
+2
+Related Work
+Adversarial attacks on LLMs.
+Due to the extensive pre-training distribution of modern LLMs,
+they are prone to generating harmful content [38, 52]. To mitigate this, many LLMs undergo fine-
+2
+
+tuning to implement safeguards [3, 42, 55], using methods such as reinforcement learning from
+human feedback (RLHF) [7, 43] and direct preference optimization (DPO) [46]. While effective for
+normal use, these safeguards have been shown to be brittle, breaking down under jailbreak attacks
+[25, 58, 74] or a handful of fine-tuning steps on “uncensored” data [44, 62, 67]. This suggests current
+techniques for LLM alignment are inadequate, raising security concerns after deployment.
+20
+40
+60
+80
+Capabilities (MMLU)
+0
+20
+40
+60
+80
+100
+Tamper-Resistance
+(Post-Attack Weaponization Knowledge Error)
+Tamper-Resistance vs. Capabilities
+Prior Methods
+TAR (Biosecurity, Ours)
+TAR (Chem. Security, Ours)
+TAR (Cybersecurity, Ours)
+Figure 2: Comparison of our TAR method to 12
+baseline safeguards. Unlike prior methods, TAR
+provides far greater tamper-resistance at similar
+levels of general capability, measured via MMLU.
+Tamper-resistance is computed as the normalized
+error on WMDP Biosecurity, Chemical Security,
+and Cybersecurity questions [31], averaged across
+up to 26 fine-tuning attacks.
+LLM safeguards.
+Since the discovery of
+these attacks, many safeguards have been pro-
+posed to defend against them. Against jailbreak
+attacks, defenses include system-level defenses
+[23, 24, 49, 65, 71] that modify or filter model
+inputs or outputs and model-level defenses such
+as adversarial training [37]. Alternatively, some
+works explore machine unlearning as a way to
+remove harmful knowledge entirely with tech-
+niques such as influence functions [2, 28], max-
+imizing loss on forget sets [11, 63, 64], or mod-
+ifying representations [4, 31, 53, 59].
+How-
+ever, jailbreaking defenses are not fully robust
+to adaptive adversaries [26, 33], and existing un-
+learning methods are not robust to adversaries
+with access to model weights [36].
+Robust safeguards.
+Several works have ex-
+plored the tamper-resistance of unlearning meth-
+ods for image classification [14, 15, 54]. For
+bidirectional BERT-style models, Henderson
+et al. [16] proposed a meta-learning approach
+for robustly preventing models from learning
+harmful tasks. In concurrent work, Deng et al.
+[10] proposed a method extending this approach
+to small-scale vision classifiers and diffusion models. Recently, Liu et al. [32] discussed the potential
+for robust unlearning in LLMs to improve the safety of open-source models, and Lynch et al. [36]
+proposed evaluation metrics for robust unlearning in LLMs. To the best of our knowledge, no methods
+have been proposed for autoregressive LLMs that are robust to tampering attacks.
+Several concurrent works have explored ways of defending LLM refusal mechanisms against fine-
+tuning [20, 22, 21, 50, 51]. Huang et al. [22] add a perturbation loss to make an LLM learn to produce
+embeddings that are more invariant to perturbations, Rosati et al. [50] maximize prediction loss on
+harmful generations while minimizing loss on refusals, and Rosati et al. [51] regularize harmful
+representations to look random. Unfortunately, these works evaluate against small sets of fine-tuning
+adversaries or have limited robustness. We corroborate this in our comparisons, finding that the
+approaches in the latter two works lack robustness to the tampering attacks in our evaluations.
+3
+Tamper-Resistant Safeguards
+3.1
+Threat Model
+We assume the defender releases an LLM with weights θG and a safeguard G applied.
+The
+defender’s goal is to design G such that θG obtains high values on safety_metric(θG)
+and capabilities_metric(θG).
+Moreover, the defender seeks to preserve a high value of
+safety_metric(θG) after the adversary’s move. We consider a compute-bounded adversary with
+unrestricted access to θG, enabling attacks that directly modify θG. We refer to these as “tampering
+attacks.” The adversary’s goal is to obtain a model θ′
+G that minimizes the safety metric given reason-
+able compute limits, such as fine-tuning for 500 steps. We note that in this work, we focus solely on
+fine-tuning adversaries and not input-space “jailbreaking” adversaries. We assume the adversary will
+not spend a significant fraction of the compute required to pre-train the LLM, since at that point they
+could train their own model without safeguards.
+3
+
+3.2
+Problem Definition and Metrics
+We describe a general notation for quantifying the tamper-resistance of safeguards. Define G,
+θG, safety_metric, and capabilities_metric as in the threat model. Let attack denote a
+compute-bounded adversarial attack that maps θG to θ′
+G, with stronger attacks obtaining lower
+values of safety_metric(θ′
+G). We say that a safeguard G is tamper-resistant if its post-attack
+safety_metric(θ′
+G) is high across a broad range of strong test-time adversarial attacks Atest.
+Note that θG often modifies an underlying θ that lacks safeguards, often through a fine-tuning
+procedure. Additionally, strong tamper-resistance can be obtained if the safeguard simply over-
+writes θ with noise, but this model would no longer be useful.
+Thus, maintaining a high
+capabilities_metric(θG) is crucial, and evaluation of a safeguard must consider both its tamper-
+resistance and how well it preserves general capabilities.
+We focus on two common safeguard domains: weaponization knowledge restriction and harmful
+request refusal. In each domain, we define safety and capabilities test metrics, which we use alongside
+test-time adversaries to evaluate tamper-resistant safeguards.
+Weaponization knowledge restriction.
+In weaponization knowledge restriction, safeguards prevent
+the model from producing text about weaponization knowledge, while preserving capabilities for
+benign knowledge domains. Existing safeguards of this nature include representation engineering
+methods like circuit breaking [75]. The safety_metric is defined as error on a forget set, and the
+capabilities_metric is defined as accuracy on a retain set. Specifically, we consider the problem
+of restricting biosecurity, chemical security, and cybersecurity knowledge, and evaluate the resulting
+model on the Weapons of Mass Destruction Proxy (WMDP) benchmark [31]. WMDP contains 3,668
+multiple-choice questions, spanning biosecurity, chemical security, and cybersecurity knowledge.
+Importantly, WMDP questions do not evaluate hazardous knowledge directly, but instead measure
+proxy expert-level knowledge for each hazardous domain, such that restricting the expert-level
+knowledge would also restrict the hazardous knowledge. We define the forget set as the respective
+hazardous knowledge subject in WMDP, and retain set as the complement of the given subject
+in MMLU [17], a multi-task question-answering benchmark spanning 57 tasks across a variety of
+knowledge domains.
+Harmful request refusal.
+In the harmful request refusal setting, safeguards prevent the model from
+producing “harmful” outputs. We define the safety_metric as the complement of average Attack
+Success Rate (ASR) of various jailbreaking attacks, while the capabilities_metric captures the
+conversational abilities of θG. Specifically, we use a static set of test cases from HarmBench, an
+automated red-teaming framework for measuring prompt jailbreak robustness in LLMs, to evaluate
+jailbreak ASR [37] after tampering attacks. We use MT-Bench, a multi-turn question-answering
+benchmark graded by an LLM judge, to evaluate conversational abilities [69].
+3.3
+Red Teaming
+To properly measure the robustness of tamper-resistant safeguards, we conduct red-teaming with up
+to 26 adversaries, including many that are unseen at training time. In our evaluations, we subject
+our method to adversaries with varying compute budgets, access to held-out datasets, and diverse
+hyperparameters. For fine-tuning adversaries, we vary the learning rate, learning rate scheduler,
+optimization algorithm, and batch size. Many of these adversaries were fixed during early experiments,
+with some added over time as we found attacks that broke intermediate versions of our method.
+Extensive stress testing of this nature is critical for obtaining confidence in a tamper-resistant
+safeguard. For research on developing these safeguards, extensive red teaming also allows measuring
+incremental progress, using the number and strength of existing attacks one can defend against as a
+robustness metric.
+4
+Safeguard Tamper-Resistance Training
+To obtain tamper-resistant safeguards, we propose a new method outlined in Algorithm 1 inspired
+by adversarial training and meta-learning to directly strengthen LLM safeguards against tampering
+attacks, called Tampering Attack Resistance (TAR). We identify unique properties of this adversarial
+training regime and leverage them to improve robustness.
+4
+
+Algorithm 1 TAR: Tampering Attack Resistance
+Input: Initial LLM parameters θ, train-time adversary set Atrain, capabilities_metric proxy
+dataset Dretain, safety_metric proxy dataset DTR, outer steps N, learning rate η, number of
+sampled adversaries K, tamper-resistance loss scale λTR, retain loss scale λretain, hθ(·) returns the
+residual stream hidden states for model parameters θ
+θ0 ←Apply Initial Safeguard to θ
+for i = 1 to N do
+gTR ←0 # For accumulating tamper-resistance gradient
+Sample xTR ∼DTR
+for k = 1 to K do
+Sample attack ∼Atrain
+# Tamper-resistance loss from Equation 1
+gTR ←gTR + 1
+K ∇θi−1LTR(attack(θi−1), xTR)
+end for
+Sample xr ∼Dretain
+# RepE retain loss from Equation 2
+gretain ←∇θi−1
+
+LLM(θi−1, xr) + ∥hθi−1(xr) −hθ(xr)∥2
+2
+
+# Full tamper-resistance update
+θi ←θi−1 −η
+
+λTR · gTR + λretain · gretain
+
+end for
+θG ←θN
+return θG
+Our method for training tamper-resistant safeguards consists of two phases: (1) model safeguarding
+and (2) tamper-resistance training.
+4.1
+Model Safeguarding
+The method begins by including an initial safeguard G into a base model θ. For example, initial
+safeguards for knowledge restriction can be drawn from a wide variety of existing methods, including
+circuit breaking [31, 75] or constrained gradient ascent for a particular knowledge domain. Similarly,
+we can include a refusal safeguard by performing RLHF [43] or DPO [46] on refusal completions.
+Importantly, these initial safeguards do not need to be tamper-resistant. Empirically, we find that this
+safeguarding step is crucial for preserving a low pre-attack safety_metric.
+4.2
+Tamper-Resistance Training
+Starting from θG0, we train the tamper-resistant θG using a novel adversarial training procedure.
+Namely, we train against a set of tampering attacks Atrain, where the defender’s objective is to
+maximize a proxy safety_metric after applying an adversarial attack attack ∼Atrain to θ.
+Since it may not be feasible to differentiate through attack, we draw on insights from prior work
+in meta-learning, defining attack(θG) = θ′
+G = θG + attack′(θG) as a perturbation on top of
+initial parameters, where backpropagation through attack′ is approximated with a straight-through
+estimator [5].
+We focus on supervised fine-tuning (SFT) adversaries where attack applies several steps of opti-
+mization to θG, which allows straight-through estimation through attack′ to benefit from the setting
+and approximations of first-order MAML [12]. However, we note key differences in our approach
+from standard meta-learning and prior methods [12, 16]. In particular, traditional meta-learning
+techniques seek to obtain a model initialization that is close to optimality on multiple test distributions.
+In our setting, we seek to obtain an initialization that is far from optimality on multiple adversaries’
+test distributions. Novel to our approach in this new setting is the use of a tamper-resistance loss in
+the “outer loop” that differs from the fine-tuning adversary’s loss function and serves to maximize the
+proxy safety metric. We depict this structure in Algorithm 1, and explain the objective below.
+Impeding the adversary’s loss.
+The aim of tamper-resistance training is to prevent adversaries
+with large compute budgets from reducing the safety_metric at test-time. In adversarial training
+5
+
+0
+64
+Adv Steps
+0
+64
+Adv Steps
+0
+64
+Adv Steps
+Self-Destructing Defender Loss
+Tamper Resistance Steps
+0
+   Max Ent
+   Max Ent
+0
+   Max Ent
+0
+Prior Method (Maximizing Cross-Entropy Loss)
+0
+0
+0
+0
+64
+64
+64
+Adv Steps
+Adv Steps
+Adv Steps
+   Max Ent
+Tamper Resistance Steps
+Tamper-Resistance Defender Loss
+TR Loss During Attack
+Best Loss Region
+Outer Loop Loss
+0
+   Max Ent
+0
+   Max Ent
+Ours (Maximizing Entropy Loss) 
+Figure 3: The choice of tamper-resistance loss is crucial for obtaining good performance. Here,
+we show loss trajectories when the tamper-resistance loss is negative cross-entropy (left), versus
+negative entropy (right), over the course of TAR for 750 steps. Outer loop losses (blue) are reduced
+by the defender, and inner-loop losses (red) are reduced by the train-time adversary. When the
+tamper-resistance loss maximizes cross-entropy (left), the adversary is only affected earlier in its
+trajectory and quickly recovers. By contrast, when the tamper-resistance loss maximizes entropy
+(right), the inner loop adversary is eventually thwarted along its entire trajectory. Plots are smoothed.
+for tamper-resistance, we define a tamper-resistance loss LTR that counters attack. We operational-
+ize our goal of avoiding adversary optimality as searching for θ such that LTR is minimized for
+attack(θ).
+Empirically, we find that the choice of tamper-resistance loss LTR significantly affects this goal. Prior
+work [16] negates the loss of a fine-tuning adversary, in which the aim is to arbitrarily maximize
+the adversary’s loss throughout fine-tuning. This formulation has two issues: (1) maximizing a
+cross-entropy loss can cause divergence; (2) empirically we observe that when using this objective
+against fine-tuning adversaries, the model learns to explode the adversary’s loss for the first few inner
+loop steps, while loss at later steps remains low. In Figure 3, we show the difference in choosing LTR
+to be a clamped negative cross-entropy loss vs. negative entropy loss for weaponization knowledge
+restriction. For the latter, LTR is eventually satisfied for all inner loop steps. For harmful request
+refusal, we choose LTR to be the DPO loss [46]. We provide further detail on the choice of LTR in
+both settings in Appendix C.3, as well as an extended depiction of the test-time loss characteristics in
+Appendix D.3 and Figure 6.
+Tamper-resistance objective.
+We now describe the general proxy objective used for preventing
+a tampering attack from recovering weaponization knowledge or harmful behavior. For a given
+safety_metric, let DTR and LTR respectively be a dataset and loss function such that minimizing
+LTR(θG, DTR) serves as a proxy objective for maximizing the safety_metric(θG). We define
+Dretain and Lretain correspondingly for capabilities_metric(θG). The defender’s objective is to
+solve the following optimization problem:
+min
+θ
+λTR · Eattack∼Atrain
+
+LTR(attack(θ); DTR)
+
++ λretain · Lretain(θ; Dretain),
+(1)
+where LTR is a tamper-resistance loss that counters attack(θ). The Lretain term is a representation
+engineering [72] inspired retain loss for preserving performance on the capabilities proxy dataset
+Dretain, given by
+Lretain(θ; Dretain) = Ex∼Dretain
+h
+LLM(θ, x) + ∥hθ(x) −hθG0(x)∥2
+2
+i
+(2)
+where hθ(·) returns the residual stream hidden states for model parameters θ and LLM is the standard
+language modelling cross-entropy loss. Empirically, we find that pushing retain-set residual stream
+representations to be close to the base model θG0 via the ℓ2-norm loss in Equation 2 maintains a
+high capabilities_metric(θG). In Equation 1 we include λTR and λretain as scalar weightings
+for the tamper-resistance loss and retain loss, respectively. We provide further details on the design
+of the tamper-resistance loss function in Appendix C.3 as well as an efficiency trick for sampling
+fine-tuning attacks for TAR in Appendix C.4.
+5
+Experiments
+We evaluate TAR in weaponization knowledge restriction and harmful request refusal settings, with
+results shown in Table 1 and Table 2 respectively. We discuss the setup, baselines, and analysis for
+6
+
+Weaponization Domain
+Model
+Pre-Attacks
+Post-Attacks (Avg)
+Retain (↑)
+Forget (↓)
+Forget (↓)
+Biosecurity
+Random
+25.0
+25.0
+25.0
+No Defense
+67.3
+70.5
+70.5
+Max Entropy
+65.0
+33.2
+65.8
+Min Posterior
+65.6
+50.4
+66.0
+LLMU
+65.5
+29.9
+61.3
+RMU
+65.8
+31.2
+64.9
+TAR (Ours)
+54.7
+28.1
+35.2
+Chemical Security
+Random
+25.0
+25.0
+25.0
+No Defense
+68.2
+47.8
+47.8
+Max Entropy
+67.5
+50.0
+45.7
+Min Posterior
+66.8
+49.5
+47.5
+LLMU
+67.0
+30.1
+44.3
+RMU
+67.6
+27.5
+46.0
+TAR (Ours)
+56.5
+28.4
+27.1
+Cybersecurity
+Random
+25.0
+25.0
+25.0
+No Defense
+68.2
+46.4
+46.4
+Max Entropy
+66.5
+28.7
+41.7
+Min Posterior
+66.6
+41.8
+41.9
+LLMU
+66.1
+27.6
+41.3
+RMU
+66.8
+29.5
+42.2
+TAR (Ours)
+60.7
+23.6
+28.6
+Table 1: Pre-Attack and average Post-Attack accuracies for WMDP Biosecurity, Chemical Security,
+and Cybersecurity for TAR and all other baselines, reported for Llama-3-8B. The average Post-Attack
+accuracy is computed as the average accuracy across the 26 fine-tuning attacks discussed in Section 5,
+averaged over multiple seed repeats. TAR is the only method that maintains low Post-Attack recovery
+while preserving high Retain MMLU and low Forget accuracies. All values are percentages.
+our results. In each setting, we use a specific set of training adversaries Atrain and test adversaries
+Atest. Further experiment details are presented in Appendix E.
+5.1
+Weaponization Knowledge Restriction
+We now describe the setup, baselines, and results for our weaponization knowledge restriction
+experiments, including the knowledge domains, optimizers, and evaluation details.
+Setup.
+We focus on implementing tamper-resistant safeguards for restricting proxy weaponization
+knowledge about biosecurity, chemical security, and cybersecurity from Llama-3-8B-Instruct [1] that
+has been initially safeguarded via the Random Mapping method discussed in Appendix C.2. For each
+weaponization domain, we assign DTR to the corresponding forget set described in Appendix E.1. We
+proceed to sample train-time 64-step fine-tuning attacks from different data distributions, detailed in
+Appendix E.2. We use N = 750 outer loop steps, ScheduleFree AdamW [9] with a learning rate of
+2 × 10−5 as the outer loop tamper-resistance optimizer. For biosecurity and cybersecurity we set the
+tamper-resistance loss scale λTR to 4.0, and use λTR = 3.0 for chemical security. We use λretain = 1.0
+in all settings. Lastly, we evaluate Pre-Attack and Post-Attack accuracy on corresponding WMDP
+subjects [31] averaged across all adversaries in Appendix F.1, and measure benign capabilities via
+the complement of subjects related to each proxy weaponization domain in MMLU [17].
+Baselines.
+We evaluate two recently proposed knowledge restriction methods: RMU [31] and
+LLMU [63]. We also design two baseline methods for knowledge restriction: Min Posterior, which
+minimizes posterior loss on forget set tokens; Max Entropy, which maximizes entropy on forget set
+tokens. Two additional methods, MLAC [16] and SOPHON [10], require substantial modifications
+for the LLM setting, so we show results on adapted versions of these baselines in Appendix G.3.
+Results.
+We show weaponization knowledge restriction safeguard results on Llama-3-8B-Instruct
+in Table 1 and Figure 2. These results are averaged across all adversaries described in Appendix F.1.
+7
+
+Adv 1
+Adv 2
+Adv 3
+Adv 4
+Adv 5
+Adv 6
+Adv 7
+Adv 8
+Adv 9
+Adv 10
+Adv 11
+Adv 12
+Adv 13
+Adv 14
+Adv 15
+Adv 16
+Adv 17
+Adv 18
+Adv 19
+Adv 20
+Adv 21
+Adv 22
+Adv 23
+Adv 24
+Adv 25
+Adv 26
+Max Entropy
+Min Posterior
+LLMU
+RMU
+TAR Bio
+Method
+66
+56
+67
+58
+72
+67
+65
+58
+62
+62
+68
+65
+70
+70
+67
+67
+65
+61
+68
+68
+66
+56
+70
+63
+72
+69
+66
+58
+68
+64
+71
+65
+67
+55
+66
+70
+66
+63
+72
+71
+68
+68
+65
+57
+67
+66
+65
+56
+67
+62
+71
+70
+63
+63
+66
+57
+69
+70
+65
+58
+58
+59
+64
+64
+27
+30
+65
+65
+63
+64
+60
+55
+65
+64
+61
+61
+71
+72
+65
+57
+68
+60
+71
+70
+66
+54
+58
+68
+68
+64
+70
+70
+66
+67
+62
+60
+65
+64
+65
+55
+65
+61
+70
+69
+25
+25
+24
+24
+24
+24
+30
+28
+43
+44
+25
+28
+24
+25
+60
+61
+25
+25
+53
+52
+25
+28
+26
+24
+68
+62
+Post-Attack Accuracies for Biosecurity Weaponization Restriction Methods
+0
+25 (RC)
+36
+48
+59
+71 (ND)
+Accuracy
+Adv 1
+Adv 2
+Adv 3
+Adv 4
+Adv 5
+Adv 6
+Adv 7
+Adv 8
+Adv 9
+Adv 10
+Adv 11
+Adv 12
+Adv 13
+Adv 14
+Adv 15
+Adv 16
+Adv 17
+Adv 18
+Adv 19
+Adv 20
+Adv 21
+Adv 22
+Adv 23
+Adv 24
+Max Entropy
+Min Posterior
+LLMU
+RMU
+TAR Chem
+Method
+46
+28
+50
+39
+42
+23
+52
+52
+47
+39
+51
+50
+55
+52
+50
+36
+55
+48
+46
+35
+47
+42
+49
+51
+49
+41
+50
+46
+43
+32
+51
+52
+54
+43
+51
+52
+54
+56
+49
+38
+55
+49
+47
+22
+52
+44
+50
+50
+48
+46
+47
+45
+48
+25
+41
+41
+52
+45
+25
+33
+46
+48
+50
+46
+50
+50
+48
+45
+36
+43
+47
+50
+48
+37
+50
+44
+46
+29
+46
+45
+46
+44
+50
+51
+51
+51
+48
+41
+49
+46
+49
+37
+48
+40
+48
+51
+25
+23
+31
+24
+38
+23
+29
+30
+24
+25
+24
+23
+27
+30
+25
+23
+25
+25
+28
+23
+24
+23
+38
+32
+Post-Attack Accuracies for Chemical Security Weaponization Restriction Methods
+0
+25 (RC)
+31
+37
+43
+48 (ND)
+Accuracy
+Adv 1
+Adv 2
+Adv 3
+Adv 4
+Adv 5
+Adv 6
+Adv 7
+Adv 8
+Adv 9
+Adv 10
+Adv 11
+Adv 12
+Adv 13
+Adv 14
+Adv 15
+Adv 16
+Adv 17
+Adv 18
+Adv 19
+Adv 20
+Adv 21
+Adv 22
+Adv 23
+Adv 24
+Adversary
+Max Entropy
+Min Posterior
+LLMU
+RMU
+TAR Cyber
+Method
+41
+36
+43
+41
+42
+40
+43
+47
+42
+39
+44
+44
+45
+45
+41
+38
+42
+40
+40
+28
+39
+39
+45
+44
+42
+41
+42
+26
+43
+39
+44
+45
+44
+43
+41
+41
+44
+44
+43
+40
+43
+43
+41
+37
+40
+40
+43
+43
+43
+40
+43
+41
+42
+41
+39
+40
+42
+42
+35
+24
+42
+42
+42
+40
+43
+44
+42
+42
+40
+41
+44
+46
+42
+39
+41
+34
+43
+37
+46
+45
+43
+40
+44
+44
+45
+45
+41
+38
+42
+43
+39
+34
+42
+41
+45
+45
+28
+25
+30
+31
+27
+28
+24
+28
+32
+24
+26
+24
+25
+26
+29
+25
+33
+36
+28
+24
+26
+24
+36
+34
+Post-Attack Accuracies for Cybersecurity Weaponization Restriction Methods
+0
+25 (RC)
+30
+35
+40
+46 (ND)
+Accuracy
+Figure 4: Red teaming results across weaponization domains. Values show percentages, with
+Random Chance (RC) at 25% and “ND” indicating No Defense WMDP scores. Red indicates
+attack performance approaching No Defense levels. We evaluate each defense against a diverse
+range of strong adversaries described in Appendix F.1). Accuracies are reported as averages over
+3 repeats of each attack with different seeds. Compared to prior safeguards, TAR greatly increases
+tamper-resistance for nearly all adversaries.
+Our large-scale experiments corroborate the findings in recent work that existing LLM safeguards are
+extremely brittle to fine-tuning attacks. By contrast, TAR maintains low post-attack forget accuracy
+across all three domains. However, we observe that TAR lowers retain accuracy by 10.6% on average,
+indicating a trade-off between benign capabilities and robustness. In Figure 4, we observe that TAR
+is robust to significantly more fine-tuning attacks than all prior methods. While existing baselines
+break down under most attacks, TAR obtains a post-attack forget accuracy near random chance for
+nearly all attacks, indicating a successful defense.
+Overall, we find that TAR provides significantly more robustness to realistic fine-tuning attacks
+than all prior methods, including SFT attacks that utilize completely held-out data. We also include
+further analysis of TAR’s test-time loss behavior in Appendix D.3, in which we empirically observe
+TAR’s convergence and robustness. These results demonstrate for the first time that obtaining strong
+tamper-resistance for open-weight LLMs may be possible.
+5.2
+Harmful Request Refusal
+We now describe the setup, baselines, and results for our harmful request refusal experiments,
+including the datasets used and evaluation details.
+Setup.
+For harmful request refusal training, we seek to make existing refusal safeguards in Llama-
+3-8B-Instruct robust to tampering attacks. We sample train-time adversaries that perform 64-step
+SFT attacks using the Anthropic-HH-RLHF dataset [3], following the methodology in Appendix
+E.2. Similar to the weaponization knowledge restriction setting, we use N = 100 outer loop steps,
+ScheduleFree AdamW [9] with an LR of 6 × 10−5 as the outer loop tamper-resistance optimizer,
+and loss scales of λTR = 0.1, λretain = 1.0. We evaluate the Post-Attack jailbreak attack success
+rate (ASR) on HarmBench [37] after the tampering attacks in Appendix F.2, and measure benign
+capabilities preservation via MT-Bench [70], which evaluates multi-turn conversation ability.
+8
+
+Refusal Trained
+R2D2
+RepNoise
+RR
+TAR (Ours)
+Pre-Attacks MT-Bench (↑)
+8.1
+6.0
+6.2
+8.0
+6.3
+Avg. Post-Attacks ASR (↓)
+72.5
+78.3
+74.5
+84.8
+63.9
+Table 2: Average Post-Attack HarmBench ASR, reported for TAR, Representation Rerouting (RR),
+and the Refusal Trained Llama-3-8B-Instruct model across 5 fine-tuning attacks depicted in Appendix
+F.2, as well as Pre-Attack MT-Bench. TAR is more robust than other methods after tampering, while
+maintaining comparable MT-Bench performance. ASR values are percentages.
+Baselines.
+We consider 4 baselines alongside our TAR model: Llama-3-8B-Instruct (Refusal
+Trained); Representation Rerouting (RR) [75] on Llama-3-8B-Instruct, which trains to push represen-
+tations for harmful inputs to be orthogonal to the original representations in Llama-3-8B-Instruct;
+R2D2 [37] on Zephyr-7B [56], which performs adversarial training against GCG attacks [73]; and
+RepNoise [51] on Llama-2-7B [55], which regularizes harmful representations to noise.
+Results.
+We show refusal results in Table 2. While the Refusal Training, RR, and R2D2 baselines
+resist jailbreak attacks in HarmBench before tampering, we find that percentage attack success
+rate jumps up to above 77 after tampering, while our TAR method only rises to 61.7. Since we
+apply our TAR refusal safeguard to Llama-3-8B, it does reduce MT-Bench by 1.7. However, this
+exceeds the MT-Bench score of fairly capable open-weight models, indicating that benign capabilities
+are largely preserved. We leave the exploration of the full impact on capabilities to future work.
+Additional results are in Table 11. In general, we find that our TAR model refuses more Post-Attack
+jailbreaks than previous baselines, and demonstrates the flexibility of the tamper-resistance objective
+to accommodate the harmful request refusal setting.
+5.3
+Analysis
+Red teaming.
+To assess the tamper-resistance of our models, we conduct an extensive suite of
+supervised fine-tuning attacks with 26 distinct adversaries in the Biosecurity setting and 24 distinct
+adversaries in the Chemical Security and Cybersecurity settings. We vary the optimizer, number of
+optimization steps, learning rate, learning rate schedule, fine-tuning dataset, batch size, and overall
+fine-tuning method (e.g., full fine-tuning versus parameter-efficient fine-tuning). By default, our
+attacks use 500 fine-tuning steps. Full details for these adversaries are provided in Table 9.
+We show red teaming results in Figure 4. While baseline safeguards withstand fine-tuning attacks in
+a small number of cases, most adversaries succeed in removing the safeguards. By contrast, our TAR
+safeguard is robust to a wide range of adversaries. This shows that tamper-resistance is a tractable
+problem on which progress can be made. However, we find our method exhibits varying robustness
+to parameter-efficient fine-tuning (PEFT) and some out-of-distribution LR attacks, highlighting the
+current sensitivity of the method to the adversary distributions sampled during TAR training. These
+findings reinforce the importance of extensive red teaming when developing tamper-resistant defenses
+to reveal the scope of their protection. We hypothesize that future work could easily address these
+limitations, as we demonstrate in Appendix D.2 that targeted patching of vulnerabilities is possible.
+As mentioned in Section 3.1, the threat model we consider involves SFT weight tampering adversaries
+and not input-space “jailbreaking” adversaries, nor does TAR explicitly optimize for input-space
+robustness [37, 74, 75]. Nonetheless, we find that TAR’s pre-attack forget accuracies are comparable
+to baselines in Table 1, and believe that explicitly defending against input-space attacks alongside
+tampering attacks would be a good direction for future work.
+6
+Conclusion
+We introduced a novel method for implementing tamper-resistant safeguards for LLMs and explored
+applications in weaponization knowledge restriction and harmful refusal training. We compare our
+results to prior work in each setting, finding that our method is the first method robust under the
+rigorous red-teaming evaluation that we consider. More broadly, we demonstrate that progress on
+open-weight tamper-resistance is tractable. We believe this line of research is crucial for enabling on-
+going deployment of robust, open-weight LLMs, ensuring their alignment with regulatory frameworks
+and preemptively addressing the risk of malicious use.
+9
+
+Acknowledgements.
+We thank Steven Basart and Luis Fernandez for providing valuable feedback
+for the paper, as well as Xiangyu Qi, Boyi Wei, Nicholas Carlini, Prateek Mittal, and Peter Henderson
+for useful discussions. We also thank Andriy Novykov and the Center for AI Safety for providing
+significant compute resources for this project, as well as Volodymyr Kindratenko and the National
+Center for Supercomputing Applications (NCSA) and Illinois Campus Cluster Program (ICCP) for
+supporting our computing needs. This work used NVIDIA GPUs at NCSA Delta through allocations
+CIS230117 from the Advanced Cyberinfrastructure Coordination Ecosystem: Services & Support
+(ACCESS) program, which is supported by NSF Grants #2138259, #2138286, #2138307, #2137603,
+and #2138296.
+References
+[1] AI@Meta. Llama 3 model card. 2024.
+[2] J. Bae, N. Ng, A. Lo, M. Ghassemi, and R. B. Grosse. If influence functions are the answer,
+then what is the question? ArXiv, abs/2209.05364, 2022.
+[3] Y. Bai, A. Jones, K. Ndousse, A. Askell, A. Chen, N. DasSarma, D. Drain, S. Fort, D. Ganguli,
+T. Henighan, et al. Training a helpful and harmless assistant with reinforcement learning from
+human feedback. arXiv:2204.05862, 2022.
+[4] N. Belrose, D. Schneider-Joseph, S. Ravfogel, R. Cotterell, E. Raff, and S. Biderman. Leace:
+Perfect linear concept erasure in closed form. Advances in Neural Information Processing
+Systems, 36, 2024.
+[5] Y. Bengio, N. Léonard, and A. Courville. Estimating or propagating gradients through stochastic
+neurons for conditional computation, 2013.
+[6] T. Cai, X. Song, J. Jiang, F. Teng, J. Gu, and G. Zhang. Ulma: Unified language model
+alignment with human demonstration and point-wise preference, 2024.
+[7] P. F. Christiano, J. Leike, T. Brown, M. Martic, S. Legg, and D. Amodei. Deep reinforcement
+learning from human preferences. Advances in neural information processing systems, 30,
+2017.
+[8] CTFtime. Ctftime writeups archive. https://ctftime.org/writeups, 2024.
+[9] A. Defazio, Xingyu, Yang, H. Mehta, K. Mishchenko, A. Khaled, and A. Cutkosky. The road
+less scheduled, 2024.
+[10] J. Deng, S. Pang, Y. Chen, L. Xia, Y. Bai, H. Weng, and W. Xu. Sophon: Non-fine-tunable
+learning to restrain task transferability for pre-trained models, 2024.
+[11] R. Eldan and M. Russinovich. Who’s harry potter? approximate unlearning in llms. ArXiv,
+abs/2310.02238, 2023.
+[12] C. Finn, P. Abbeel, and S. Levine. Model-agnostic meta-learning for fast adaptation of deep
+networks, 2017.
+[13] L. Gao, S. Biderman, S. Black, L. Golding, T. Hoppe, C. Foster, J. Phang, H. He, A. Thite,
+N. Nabeshima, S. Presser, and C. Leahy. The pile: An 800gb dataset of diverse text for language
+modeling, 2020.
+[14] A. Golatkar, A. Achille, and S. Soatto. Eternal sunshine of the spotless net: Selective forgetting
+in deep networks. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
+Recognition, pages 9304–9312, 2020.
+[15] A. Golatkar, A. Achille, and S. Soatto. Forgetting outside the box: Scrubbing deep networks of
+information accessible from input-output observations. In Computer Vision–ECCV 2020: 16th
+European Conference, Glasgow, UK, August 23–28, 2020, Proceedings, Part XXIX 16, pages
+383–398. Springer, 2020.
+[16] P. Henderson, E. Mitchell, C. D. Manning, D. Jurafsky, and C. Finn. Self-destructing models:
+Increasing the costs of harmful dual uses of foundation models, 2023.
+[17] D. Hendrycks, C. Burns, S. Basart, A. Zou, M. Mazeika, D. Song, and J. Steinhardt. Measuring
+massive multitask language understanding, 2021.
+[18] E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, and W. Chen. Lora:
+Low-rank adaptation of large language models, 2021.
+10
+
+[19] G. Huang, Y. Li, G. Pleiss, Z. Liu, J. E. Hopcroft, and K. Q. Weinberger. Snapshot ensembles:
+Train 1, get m for free, 2017.
+[20] T. Huang, S. Hu, F. Ilhan, S. F. Tekin, and L. Liu. Booster: Tackling harmful fine-tuning for
+large language models via attenuating harmful perturbation, 2024. URL https://arxiv.org/
+abs/2409.01586.
+[21] T. Huang, S. Hu, F. Ilhan, S. F. Tekin, and L. Liu. Lisa: Lazy safety alignment for large
+language models against harmful fine-tuning attack, 2024. URL https://arxiv.org/abs/
+2405.18641.
+[22] T. Huang, S. Hu, and L. Liu. Vaccine: Perturbation-aware alignment for large language model,
+2024.
+[23] H. Inan, K. Upasani, J. Chi, R. Rungta, K. Iyer, Y. Mao, M. Tontchev, Q. Hu, B. Fuller,
+D. Testuggine, and M. Khabsa. Llama guard: Llm-based input-output safeguard for human-ai
+conversations, 2023.
+[24] N. Jain, A. Schwarzschild, Y. Wen, G. Somepalli, J. Kirchenbauer, P. yeh Chiang, M. Goldblum,
+A. Saha, J. Geiping, and T. Goldstein. Baseline defenses for adversarial attacks against aligned
+language models, 2023.
+[25] H. Jin, R. Chen, A. Zhou, Y. Zhang, and H. Wang. Guard: Role-playing to generate natural-
+language jailbreakings to test guideline adherence of large language models, 2024.
+[26] H. Jin, A. Zhou, J. D. Menke, and H. Wang. Jailbreaking large language models against
+moderation guardrails via cipher characters, 2024.
+[27] D. P. Kingma and J. Ba. Adam: A method for stochastic optimization, 2017.
+[28] P. W. Koh and P. Liang. Understanding black-box predictions via influence functions. In
+International Conference on Machine Learning, 2017.
+[29] S. Kullback and R. A. Leibler. On information and sufficiency. Annals of Mathematical
+Statistics, 22:79–86, 1951.
+[30] G. Li, H. A. A. K. Hammoud, H. Itani, D. Khizbullin, and B. Ghanem. Camel: Communicative
+agents for "mind" exploration of large language model society, 2023.
+[31] N. Li, A. Pan, A. Gopal, S. Yue, D. Berrios, A. Gatti, J. D. Li, A.-K. Dombrowski, S. Goel,
+L. Phan, G. Mukobi, N. Helm-Burger, R. Lababidi, L. Justen, A. B. Liu, M. Chen, I. Barrass,
+O. Zhang, X. Zhu, R. Tamirisa, B. Bharathi, A. Khoja, Z. Zhao, A. Herbert-Voss, C. B.
+Breuer, A. Zou, M. Mazeika, Z. Wang, P. Oswal, W. Liu, A. A. Hunt, J. Tienken-Harder, K. Y.
+Shih, K. Talley, J. Guan, R. Kaplan, I. Steneker, D. Campbell, B. Jokubaitis, A. Levinson,
+J. Wang, W. Qian, K. K. Karmakar, S. Basart, S. Fitz, M. Levine, P. Kumaraguru, U. Tupakula,
+V. Varadharajan, Y. Shoshitaishvili, J. Ba, K. M. Esvelt, A. Wang, and D. Hendrycks. The
+wmdp benchmark: Measuring and reducing malicious use with unlearning, 2024.
+[32] S. Liu, Y. Yao, J. Jia, S. Casper, N. Baracaldo, P. Hase, X. Xu, Y. Yao, H. Li, K. R. Varshney, et al.
+Rethinking machine unlearning for large language models. arXiv preprint arXiv:2402.08787,
+2024.
+[33] X. Liu, N. Xu, M. Chen, and C. Xiao. Autodan: Generating stealthy jailbreak prompts on
+aligned large language models. arXiv:2310.04451, 2023.
+[34] Llama Team, AI @ Meta. The llama 3 herd of models, 2024.
+[35] I. Loshchilov and F. Hutter.
+SGDR: stochastic gradient descent with restarts.
+CoRR,
+abs/1608.03983, 2016.
+[36] A. Lynch, P. Guo, A. Ewart, S. Casper, and D. Hadfield-Menell. Eight methods to evaluate
+robust unlearning in llms. arXiv preprint arXiv:2402.16835, 2024.
+[37] M. Mazeika, L. Phan, X. Yin, A. Zou, Z. Wang, N. Mu, E. Sakhaee, N. Li, S. Basart, B. Li,
+D. Forsyth, and D. Hendrycks. Harmbench: A standardized evaluation framework for automated
+red teaming and robust refusal. In ICML, 2024.
+[38] K. McGuffie and A. Newhouse. The radicalization risks of gpt-3 and advanced neural language
+models, 2020.
+[39] S. Merity, C. Xiong, J. Bradbury, and R. Socher. Pointer sentinel mixture models, 2016.
+11
+
+[40] S. Miller and M. J. Selgelid. Ethical and philosophical consideration of the dual-use dilemma
+in the biological sciences. Science and engineering ethics, 13:523–580, 2007.
+[41] A. Nichol, J. Achiam, and J. Schulman. On first-order meta-learning algorithms, 2018.
+[42] OpenAI. Gpt-4 technical report, 2023.
+[43] L. Ouyang, J. Wu, X. Jiang, D. Almeida, C. Wainwright, P. Mishkin, C. Zhang, S. Agarwal,
+K. Slama, A. Ray, et al. Training language models to follow instructions with human feedback.
+Advances in Neural Information Processing Systems (NeurIPS), 2022.
+[44] X. Qi, Y. Zeng, T. Xie, P.-Y. Chen, R. Jia, P. Mittal, and P. Henderson. Fine-tuning aligned
+language models compromises safety, even when users do not intend to!, 2023.
+[45] X. Qi, B. Wei, N. Carlini, Y. Huang, T. Xie, L. He, M. Jagielski, M. Nasr, P. Mittal, and
+P. Henderson. On evaluating the durability of safeguards for open-weight llms, 2024. URL
+https://arxiv.org/abs/2412.07097.
+[46] R. Rafailov, A. Sharma, E. Mitchell, S. Ermon, C. D. Manning, and C. Finn. Direct preference
+optimization: Your language model is secretly a reward model. In Neural Information Processing
+Systems (NeurIPS), 2023.
+[47] S. Rajbhandari, J. Rasley, O. Ruwase, and Y. He. Zero: Memory optimizations toward training
+trillion parameter models. In SC20: International Conference for High Performance Computing,
+Networking, Storage and Analysis, pages 1–16, 2020. doi: 10.1109/SC41405.2020.00024.
+[48] J. Ren, S. Rajbhandari, R. Y. Aminabadi, O. Ruwase, S. Yang, M. Zhang, D. Li, and Y. He.
+ZeRO-Offload: Democratizing Billion-Scale model training. In 2021 USENIX Annual Technical
+Conference (USENIX ATC 21), pages 551–564. USENIX Association, July 2021. ISBN 978-1-
+939133-23-6.
+[49] A. Robey, E. Wong, H. Hassani, and G. J. Pappas. Smoothllm: Defending large language
+models against jailbreaking attacks, 2023.
+[50] D. Rosati, J. Wehner, K. Williams, Ł. Bartoszcze, J. Batzner, H. Sajjad, and F. Rudzicz.
+Immunization against harmful fine-tuning attacks. arXiv preprint arXiv:2402.16382, 2024.
+[51] D. Rosati, J. Wehner, K. Williams, Łukasz Bartoszcze, D. Atanasov, R. Gonzales, S. Majumdar,
+C. Maple, H. Sajjad, and F. Rudzicz. Representation noising effectively prevents harmful
+fine-tuning on llms, 2024.
+[52] E. Sheng, K.-W. Chang, P. Natarajan, and N. Peng. The woman worked as a babysitter: On
+biases in language generation. In Conference on Empirical Methods in Natural Language
+Processing (EMNLP), 2019.
+[53] A. Sheshadri, A. Ewart, P. Guo, A. Lynch, C. Wu, V. Hebbar, H. Sleight, A. C. Stickland,
+E. Perez, D. Hadfield-Menell, and S. Casper. Targeted latent adversarial training improves
+robustness to persistent harmful behaviors in llms, 2024. URL https://arxiv.org/abs/
+2407.15549.
+[54] A. K. Tarun, V. S. Chundawat, M. Mandal, and M. Kankanhalli. Fast yet effective machine
+unlearning. IEEE Transactions on Neural Networks and Learning Systems, 2023.
+[55] H. Touvron, L. Martin, K. Stone, P. Albert, A. Almahairi, Y. Babaei, N. Bashlykov, S. Ba-
+tra, P. Bhargava, S. Bhosale, et al. Llama 2: Open foundation and fine-tuned chat models.
+arXiv:2307.09288, 2023.
+[56] L. Tunstall, E. Beeching, N. Lambert, N. Rajani, K. Rasul, Y. Belkada, S. Huang, L. von Werra,
+C. Fourrier, N. Habib, N. Sarrazin, O. Sanseviero, A. M. Rush, and T. Wolf. Zephyr: Direct
+distillation of lm alignment, 2023. URL https://arxiv.org/abs/2310.16944.
+[57] G. Wang, S. Cheng, X. Zhan, X. Li, S. Song, and Y. Liu. Openchat: Advancing open-source
+language models with mixed-quality data, 2023.
+[58] A. Wei, N. Haghtalab, and J. Steinhardt. Jailbroken: How does llm safety training fail? In
+Neural Information Processing Systems (NeurIPS), 2023.
+[59] X. Wu, J. Li, M. Xu, W. Dong, S. Wu, C. Bian, and D. Xiong. Depn: Detecting and editing
+privacy neurons in pretrained language models. In Conference on Empirical Methods in Natural
+Language Processing, 2023.
+[60] X. Xie, P. Zhou, H. Li, Z. Lin, and S. Yan. Adan: Adaptive nesterov momentum algorithm for
+faster optimizing deep models, 2023.
+12
+
+[61] Z. Xu, F. Jiang, L. Niu, Y. Deng, R. Poovendran, Y. Choi, and B. Y. Lin. Magpie: Alignment
+data synthesis from scratch by prompting aligned llms with nothing, 2024.
+[62] X. Yang, X. Wang, Q. Zhang, L. Petzold, W. Y. Wang, X. Zhao, and D. Lin. Shadow alignment:
+The ease of subverting safely-aligned language models, 2023. URL https://arxiv.org/
+abs/2310.02949.
+[63] Y. Yao, X. Xu, and Y. Liu. Large language model unlearning. ArXiv, abs/2310.10683, 2023.
+[64] C. Yu, S. Jeoung, A. Kasi, P. Yu, and H. Ji. Unlearning bias in language models by partitioning
+gradients. In Annual Meeting of the Association for Computational Linguistics, 2023.
+[65] Z. Yuan, Z. Xiong, Y. Zeng, N. Yu, R. Jia, D. Song, and B. Li. Rigorllm: Resilient guardrails
+for large language models against undesired content, 2024.
+[66] M. D. Zeiler. ADADELTA: an adaptive learning rate method. CoRR, abs/1212.5701, 2012.
+[67] Q. Zhan, R. Fang, R. Bindu, A. Gupta, T. Hashimoto, and D. Kang. Removing rlhf protections
+in gpt-4 via fine-tuning, 2023.
+[68] Y. Zhao, A. Gu, R. Varma, L. Luo, C.-C. Huang, M. Xu, L. Wright, H. Shojanazeri, M. Ott,
+S. Shleifer, A. Desmaison, C. Balioglu, P. Damania, B. Nguyen, G. Chauhan, Y. Hao, A. Math-
+ews, and S. Li. Pytorch fsdp: Experiences on scaling fully sharded data parallel, 2023.
+[69] L. Zheng, W.-L. Chiang, Y. Sheng, S. Zhuang, Z. Wu, Y. Zhuang, Z. Lin, Z. Li, D. Li, E. P. Xing,
+H. Zhang, J. E. Gonzalez, and I. Stoica. Judging llm-as-a-judge with mt-bench and chatbot
+arena, 2023.
+[70] L. Zheng, W.-L. Chiang, Y. Sheng, S. Zhuang, Z. Wu, Y. Zhuang, Z. Lin, Z. Li, D. Li, E. P. Xing,
+H. Zhang, J. E. Gonzalez, and I. Stoica. Judging llm-as-a-judge with mt-bench and chatbot
+arena, 2023.
+[71] A. Zhou, B. Li, and H. Wang. Robust prompt optimization for defending language models
+against jailbreaking attacks, 2024.
+[72] A. Zou, L. Phan, S. Chen, J. Campbell, P. Guo, R. Ren, A. Pan, X. Yin, M. Mazeika, A.-K.
+Dombrowski, S. Goel, N. Li, M. J. Byun, Z. Wang, A. Mallen, S. Basart, S. Koyejo, D. Song,
+M. Fredrikson, J. Z. Kolter, and D. Hendrycks. Representation engineering: A top-down
+approach to ai transparency, 2023.
+[73] A. Zou, Z. Wang, N. Carlini, M. Nasr, J. Z. Kolter, and M. Fredrikson. Universal and transferable
+adversarial attacks on aligned language models, 2023. URL https://arxiv.org/abs/2307.
+15043.
+[74] A. Zou, Z. Wang, J. Z. Kolter, and M. Fredrikson. Universal and transferable adversarial attacks
+on aligned language models. arXiv:2307.15043, 2023.
+[75] A. Zou, L. Phan, J. Wang, D. Duenas, M. Lin, M. Andriushchenko, R. Wang, Z. Kolter,
+M. Fredrikson, and D. Hendrycks. Improving alignment and robustness with short circuiting.
+arXiv preprint arXiv:2406.04313, 2024.
+13
+
+A
+Limitations
+Our method for training tamper-resistant safeguards demonstrates considerable robustness against
+a wide range of tampering attacks, yet several avenues for improvement remain: (1) While we
+focus on supervised fine-tuning attacks, the broader spectrum of open-weight tampering techniques
+necessitates diverse future red-teaming efforts. (2) Scaling to larger models poses computational
+challenges that require optimization to reduce overheads.
+Additionally, in cases where TAR maintains a low post-attack forget accuracy, the post-attack retain
+accuracy is also low. By contrast, we found in preliminary experiments that post-attack retain
+accuracy for many of the baselines remained high. We note that this is acceptable because post-attack
+retain performance is not of concern to the defender; rather, the responsibility falls on the attacker to
+preserve it after tampering.
+However, this does mean benign users trying to fine-tune the model must ensure their data is not
+contaminated by forget set data, lest their fine-tuned model have poor performance. This could make
+the method harder to use in practice. Thus, maintaining high post-attack retain accuracy would be a
+useful direction for future work to explore.
+Tamper-resistance alone cannot fully mitigate the risks of malicious AI use. While it raises the initial
+costs for adversaries, it can eventually be circumvented. Once open-weight models are released,
+they cannot be “unreleased,” leaving any compromi

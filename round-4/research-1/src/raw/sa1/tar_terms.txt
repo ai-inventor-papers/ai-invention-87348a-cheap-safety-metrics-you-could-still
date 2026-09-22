@@ -1,0 +1,198 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2408.00761
+Type: PDF
+Pattern: tamper|fine-tuning attack|5,?000|1,?000|weaponiz|refus|learning rate|plateau (294 matches in 95137 chars)
+
+--- Content ---
+
+0:Tamper-Resistant Safeguards for Open-Weight LLMs
+Rishub Tamirisa∗†1,2,9, Bhrugu Bharathi∗1,3,
+Long Phan9, Andy Zhou1,2, Alice Gatti9, Tarun Suresh1,2,
+Maxwell Lin8, Justin Wang5,8, Rowan Wang6,8, Ron Arel1,2,
+Andy Zou5,8,9, Dawn Song4, Bo Li2,7, Dan Hendrycks‡9, Mantas Mazeika‡2,9
+1Lapis Labs,
+2University...
+--
+762:...7University of Chicago,
+8Gray Swan AI,
+9Center for AI Safety
+Abstract
+Rapid advances in the capabilities of large language models (LLMs) have raised
+widespread concerns regarding their potential for malicious use. Open-weight
+LLMs present unique challenges, as existing safeguards lack robustness to tamper-
+ing attacks that modify model weights. For example, recent works have demon-
+strated that refusal and unlearning safeguards can be trivially removed with a few
+steps of fine-tuning. These vulnerabilities necessitate new approaches for enabling
+the safe release of open-weight LLMs. We develop a method, called TAR, for
+building tamper-resistant safeguards into open-weight LLMs such that adversaries
+cannot remove the safeguards even after hundreds of steps of fine-tuning. In exten-
+sive evaluations and red teaming analyses, we find that our method greatly improves
+tamper-resistance while preserving benign capabilities. Our results demonstrate
+that progress on tamper-resistance is possible, opening up a promising new avenue
+to improve the safety and security of open-weight LLMs.
+1
+Introduction
+The most capable open-weight large language models (LLMs) released over the past year now rival
+closed-source frontier models [34]. The availability of open-weight LLMs f...
+--
+2259:...y
+have raised concerns that they could be repurposed by malicious actors to cause harm, motivating
+research on how to safeguard these models against malicious use.
+Existing open-weight models often adapt safeguards designed for closed-weight models served
+through APIs [55]. These safeguards include refusal mechanisms and preference-based training, and
+they have provided substantial robustness against input-based jailbreaking attacks. However, recent
+work has demonstrated these safeguards are trivially defeated by attacks that edit model weights,
+breaking down after only a handful of fine-tuning steps [44]. This poses a serious problem for
+open-weight models, because adversaries have full access to model weights and can tamper with
+built-in safeguards.
+*Equal contribution. ‡Equal advising. Correspondence to rishubt2@illinois.edu.
+†Part of work done during an internship at the Center for AI Safety.
+arXiv:2408.00761v4  [cs.LG]  10 Feb 2025
+
+
+
+Figure 1: An illustration comparing two approaches to LLM safety when subjected to adversarial
+fine-tuning. The top branch shows conventional safeguards (like refusal training), which can be easily
+bypassed when adversaries fine-tune the model weights to remove safety constraints. The bottom
+branch demonstrates our proposed method TAR(Tampering Attack Resistance), which maintains
+robustness even when adversaries attempt to fine-tune the model to reintroduce harmful capabilities.
+The vulnerability of open-weight models to tampering attacks poses risks for model developers as
+well. Under background tort law, AI developers must exercise reasonable care, meaning they have an
+obligation to take reasonable precautions to prevent foreseeable harm. If malicious actors can easily
+customize models to cause critical harm, model developers may inadvertently violate reasonable care
+standards and become open to liability under existing law. Thus, there is an urgent need for more
+robust safeguarding techniques that can withstand tampering attacks.
+In this work, we study the problem of tamper-resistant safeguards for LLMs. This problem is depicted
+in Figure 1. Unlike existing research on LLM safeguards, we focus on attacks that modify model
+weights, which we refer to as tampering attacks. This problem has been considered very challenging
+and by some intractable, as no method has yet provided substantial robustness to these attacks.
+However, making progress on this problem would provide a valuable tool to regulators and model
+developers by ameliorating the dual-use dilemma of open-weight models [40].
+To demonstrate that progress on this problem is possible, we develop the first LLM safeguards that
+obtain strong robustness against a wide variety of tampering attacks. Our approach allows developers
+to add a safeguard such that tampering attacks cannot easily remove the safeguard, while preserving
+the general capabilities of the LLM. We achieve this by performing adversarial training against
+tampering attacks, leveraging approaches from meta-learning. We identify various crucial factors that
+enable our method to work, including the choice of tamper-resistance loss, the selection of train-time
+adversaries, and the two-stage approach that we use for building in safeguards.
+We apply our method to develop tamper-resistant unlearning and refusal safeguards. In experiments,
+we demonstrate that our safeguards are far more robust to tampering attacks than prior methods. We
+stress-test our safeguards with extensive red teaming evaluations against 26 test-time adversaries,
+demonstrating resistance to fine-tuning attacks of hundreds of steps. We hope our results foster
+future work on this important problem. Our experiment code and models are available at https:
+//github.com/rishub-tamirisa/tamper-resistance.
+2
+Related Work
+Adversarial attacks on LLMs.
+Due to the extensive pre-training distribution of modern LLMs,
+they are prone to generating harmful content [38, 52]. To mitigate this, many LLMs undergo fine-
+2
+
+tuning to implement safeguards [3, 42, 55], using methods such as reinforcement ...
+--
+6505:...own to be brittle, breaking down under jailbreak attacks
+[25, 58, 74] or a handful of fine-tuning steps on “uncensored” data [44, 62, 67]. This suggests current
+techniques for LLM alignment are inadequate, raising security concerns after deployment.
+20
+40
+60
+80
+Capabilities (MMLU)
+0
+20
+40
+60
+80
+100
+Tamper-Resistance
+(Post-Attack Weaponization Knowledge Error)
+Tamper-Resistance vs. Capabilities
+Prior Methods
+TAR (Biosecurity, Ours)
+TAR (Chem. Security, Ours)
+TAR (Cybersecurity, Ours)
+Figure 2: Comparison of our TAR method to 12
+baseline safeguards. Unlike prior methods, TAR
+provides far greater tamper-resistance at similar
+levels of general capability, measured via MMLU.
+Tamper-resistance is computed as the normalized
+error on WMDP Biosecurity, Chemical Security,
+and Cybersecurity questions [31], averaged across
+up to 26 fine-tuning attacks.
+LLM safeguards.
+Since the discovery of
+these attacks, many safeguards have been pro-
+posed to defend against them. Against jailbreak
+attacks, defenses include system-level defenses
+[23, 24, 49, 65, 71] that modify or filter model
+inputs or outputs and model-level defenses such
+as adversarial trai...
+--
+7855:...1, 63, 64], or mod-
+ifying representations [4, 31, 53, 59].
+How-
+ever, jailbreaking defenses are not fully robust
+to adaptive adversaries [26, 33], and existing un-
+learning methods are not robust to adversaries
+with access to model weights [36].
+Robust safeguards.
+Several works have ex-
+plored the tamper-resistance of unlearning meth-
+ods for image classification [14, 15, 54]. For
+bidirectional BERT-style models, Henderson
+et al. [16] proposed a meta-learning approach
+for robustly preventing models from learning
+harmful tasks. In concurrent work, Deng et al.
+[10] proposed a method extending this ap...
+--
+8533:... Liu et al. [32] discussed the potential
+for robust unlearning in LLMs to improve the safety of open-source models, and Lynch et al. [36]
+proposed evaluation metrics for robust unlearning in LLMs. To the best of our knowledge, no methods
+have been proposed for autoregressive LLMs that are robust to tampering attacks.
+Several concurrent works have explored ways of defending LLM refusal mechanisms against fine-
+tuning [20, 22, 21, 50, 51]. Huang et al. [22] add a perturbation loss to make an LLM learn to produce
+embeddings that are more invariant to perturbations, Rosati et al. [50] maximize prediction loss on
+harmful generations while minimizing loss on refusals, and Rosati et al. [51] regularize harmful
+representations to look random. Unfortunately, these works evaluate against small sets of fine-tuning
+adversaries or have limited robustness. We corroborate this in our comparisons, finding that the
+approaches in the latter two works lack robustness to the tampering attacks in our evaluations.
+3
+Tamper-Resistant Safeguards
+3.1
+Threat Model
+We assume the defender releases an LLM with weights θG and a safeguard G applied.
+The
+defender’s goal is to design G such that θG obtains high values on safety_metric(θG)
+and capabilities_metric(θG).
+Moreover, the defender seeks to preserve a high value of
+safety_metric(θG) after the adversary’s move. We consider a compute-bounded adversary with
+unrestricted access to θG, enabling attacks that directly modify θG. We refer to these as “tampering
+attacks.” The adversary’s goal is to obtain a model θ′
+G that minimizes the safety metric given reason-
+able compute limits, such as fine-tuning for 500 steps. We note that in this work, we focus solely on
+fine-tuning adversaries and not input-space “jailbreaking” adversaries. We assume the adversary will
+not spend a significant fraction of the compute required to pre-train the LLM, since at that point they
+could train their own model without safeguards.
+3
+
+3.2
+Problem Definition and Metrics
+We describe a general notation for quantifying the tamper-resistance of safeguards. Define G,
+θG, safety_metric, and capabilities_metric as in the threat model. Let attack denote a
+compute-bounded adversarial attack that maps θG to θ′
+G, with stronger attacks obtaining lower
+values of safety_metric(θ′
+G). We say that a safeguard G is tamper-resistant if its post-attack
+safety_metric(θ′
+G) is high across a broad range of strong test-time adversarial attacks Atest.
+Note that θG often modifies an underlying θ that lacks safeguards, often through a fine-tuning
+procedure. Additionally, strong tamper-resistance can be obtained if the safeguard simply over-
+writes θ with noise, but this model would no longer be useful.
+Thus, maintaining a high
+capabilities_metric(θG) is crucial, and evaluation of a safeguard must consider both its tamper-
+resistance and how well it preserves general capabilities.
+We focus on two common safeguard domains: weaponization knowledge restriction and harmful
+request refusal. In each domain, we define safety and capabilities test metrics, which we use alongside
+test-time adversaries to evaluate tamper-resi...
+--
+[254 more matches not shown]

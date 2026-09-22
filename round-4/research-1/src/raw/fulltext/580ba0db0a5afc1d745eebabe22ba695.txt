@@ -1,0 +1,367 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/huihui-ai/Llama-3.2-3B-Instruct-abliterated
+Type: HTML
+Length: 10687 chars
+
+--- Content ---
+
+[ Hugging Face](/)
+
+  * [ Models ](/models)
+  * [ Datasets ](/datasets)
+  * [ Spaces ](/spaces)
+  * [ Buckets new](/storage)
+  * [ Docs ](/docs)
+  * [ Enterprise ](/enterprise)
+  * [Pricing](/pricing)
+  *     * Website
+
+      * [ Tasks](/tasks)
+      * [ HuggingChat](/chat)
+      * [ Collections](/collections)
+      * [ Languages](/languages)
+      * [ Organizations](/organizations)
+    * Community
+
+      * [ Blog](/blog)
+      * [ Posts](/posts)
+      * [ Daily Papers](/papers)
+      * [ Hardware](/hardware)
+      * [ Learn](/learn)
+      * [ Discord](/join/discord)
+      * [ Forum](https://discuss.huggingface.co/)
+      * [ GitHub](https://github.com/huggingface)
+    * Solutions
+
+      * [ Team & Enterprise](/enterprise)
+      * [ Hugging Face PRO](/pro)
+      * [ Enterprise Support](/support)
+      * [ Inference Providers](/inference/models)
+      * [ Inference Endpoints](/inference-endpoints)
+      * [ Storage Buckets](/storage)
+
+  * * * *
+
+  * [Log In](/login)
+  * [Sign Up](/join)
+
+
+
+# 
+
+[ ](/huihui-ai)
+
+[huihui-ai](/huihui-ai)
+
+/
+
+[Llama-3.2-3B-Instruct-abliterated](/huihui-ai/Llama-3.2-3B-Instruct-abliterated)
+
+Like 98
+
+[ Text Generation ](/models?pipeline_tag=text-generation)[ Transformers ](/models?library=transformers)[ Safetensors ](/models?library=safetensors)[ llama ](/models?other=llama)[ abliterated ](/models?other=abliterated)[ uncensored ](/models?other=uncensored)[ conversational ](/models?other=conversational)[ text-generation-inference ](/models?other=text-generation-inference)
+
+License: llama3.2
+
+[ Model card ](/huihui-ai/Llama-3.2-3B-Instruct-abliterated)[ Files Files and versions xet ](/huihui-ai/Llama-3.2-3B-Instruct-abliterated/tree/main)[ Community 4 ](/huihui-ai/Llama-3.2-3B-Instruct-abliterated/discussions)
+
+Deploy
+
+Copy to bucket new
+
+Use this model
+
+### Instructions to use huihui-ai/Llama-3.2-3B-Instruct-abliterated with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+  * Libraries
+  * [ Transformers](/huihui-ai/Llama-3.2-3B-Instruct-abliterated?library=transformers)
+
+How to use huihui-ai/Llama-3.2-3B-Instruct-abliterated with Transformers:
+        
+        # Use a pipeline as a high-level helper
+        from transformers import pipeline
+        
+        pipe = pipeline("text-generation", model="huihui-ai/Llama-3.2-3B-Instruct-abliterated")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        pipe(messages)
+        
+        # Load model directly
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        
+        tokenizer = AutoTokenizer.from_pretrained("huihui-ai/Llama-3.2-3B-Instruct-abliterated")
+        model = AutoModelForCausalLM.from_pretrained("huihui-ai/Llama-3.2-3B-Instruct-abliterated", device_map="auto")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        inputs = tokenizer.apply_chat_template(
+        	messages,
+        	add_generation_prompt=True,
+        	tokenize=True,
+        	return_dict=True,
+        	return_tensors="pt",
+        ).to(model.device)
+        
+        outputs = model.generate(**inputs, max_new_tokens=40)
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+
+  * Inference
+  * Inference Providers
+  * Notebooks
+  * [ Google Colab](/huihui-ai/Llama-3.2-3B-Instruct-abliterated/colab)
+  * [ Kaggle](/huihui-ai/Llama-3.2-3B-Instruct-abliterated/kaggle)
+  * Local Apps [Settings](/settings/local-apps "Set up your favorite local applications")
+  * [ vLLM ](/huihui-ai/Llama-3.2-3B-Instruct-abliterated?local-app=vllm)
+
+How to use huihui-ai/Llama-3.2-3B-Instruct-abliterated with vLLM:
+
+##### Install from pip and serve model
+        
+        # Install vLLM from pip:
+        pip install vllm
+        # Start the vLLM server:
+        vllm serve "huihui-ai/Llama-3.2-3B-Instruct-abliterated"
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:8000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker
+        
+        docker model run hf.co/huihui-ai/Llama-3.2-3B-Instruct-abliterated
+
+  * [ SGLang ](/huihui-ai/Llama-3.2-3B-Instruct-abliterated?local-app=sglang)
+
+How to use huihui-ai/Llama-3.2-3B-Instruct-abliterated with SGLang:
+
+##### Install from pip and serve model
+        
+        # Install SGLang from pip:
+        pip install sglang
+        # Start the SGLang server:
+        python3 -m sglang.launch_server \
+            --model-path "huihui-ai/Llama-3.2-3B-Instruct-abliterated" \
+            --host 0.0.0.0 \
+            --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker images
+        
+        docker run --gpus all \
+            --shm-size 32g \
+            -p 30000:30000 \
+            -v ~/.cache/huggingface:/root/.cache/huggingface \
+            --env "HF_TOKEN=<secret>" \
+            --ipc=host \
+            lmsysorg/sglang:latest \
+            python3 -m sglang.launch_server \
+                --model-path "huihui-ai/Llama-3.2-3B-Instruct-abliterated" \
+                --host 0.0.0.0 \
+                --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+  * [ Docker Model Runner ](/huihui-ai/Llama-3.2-3B-Instruct-abliterated?local-app=docker-model-runner)
+
+How to use huihui-ai/Llama-3.2-3B-Instruct-abliterated with Docker Model Runner:
+        
+        docker model run hf.co/huihui-ai/Llama-3.2-3B-Instruct-abliterated
+
+  * [Browse Quantizations](/models?other=base_model:quantized:huihui-ai/Llama-3.2-3B-Instruct-abliterated) to use this model in  llama.cpp,  Ollama,  LM Studio, or any compatible app.
+
+
+
+
+  * 🦙 Llama-3.2-3B-Instruct-abliterated
+    * ollama
+    * Evaluations
+
+
+
+#  🦙 Llama-3.2-3B-Instruct-abliterated 
+
+This is an uncensored version of Llama 3.2 3B Instruct created with abliteration (see [this article](https://huggingface.co/blog/mlabonne/abliteration) to know more about it).
+
+Special thanks to [@FailSpy](https://huggingface.co/failspy) for the original code and technique. Please follow him if you're interested in abliterated models.
+
+##  ollama 
+
+You can use [huihui_ai/llama3.2-abliterate:3b](https://ollama.com/huihui_ai/llama3.2-abliterate:3b) directly, 
+    
+    
+    ollama run huihui_ai/llama3.2-abliterate
+    
+
+or create your own model using the following methods.
+
+  1. Download this model.
+
+
+    
+    
+    huggingface-cli download huihui-ai/Llama-3.2-3B-Instruct-abliterated --local-dir ./huihui-ai/Llama-3.2-3B-Instruct-abliterated
+    
+
+  2. Get Llama-3.2-3B-Instruct model for reference.
+
+
+    
+    
+    ollama pull llama3.2
+    
+
+  3. Export Llama-3.2-3B-Instruct model parameters.
+
+
+    
+    
+    ollama show llama3.2 --modelfile > Modelfile
+    
+
+  4. Modify Modelfile, Remove all comment lines (indicated by #) before the "FROM" keyword. Replace the "FROM" with the following content.
+
+
+    
+    
+    FROM huihui-ai/Llama-3.2-3B-Instruct-abliterated
+    
+
+  5. Use ollama create to then create the quantized model.
+
+
+    
+    
+    ollama create --quantize q4_K_M -f Modelfile Llama-3.2-3B-Instruct-abliterated-q4_K_M
+    
+
+  6. Run model
+
+
+    
+    
+    ollama run Llama-3.2-3B-Instruct-abliterated-q4_K_M
+    
+
+The running architecture is llama.
+
+##  Evaluations 
+
+The following data has been re-evaluated and calculated as the average for each test.
+
+Benchmark | Llama-3.2-3B-Instruct | Llama-3.2-3B-Instruct-abliterated  
+---|---|---  
+IF_Eval | 76.55 | **76.76**  
+MMLU Pro | 27.88 | **28.00**  
+TruthfulQA | 50.55 | **50.73**  
+BBH | 41.81 | **41.86**  
+GPQA | 28.39 | **28.41**  
+  
+The script used for evaluation can be found inside this repository under /eval.sh, or click [here](https://huggingface.co/huihui-ai/Llama-3.2-3B-Instruct-abliterated/blob/main/eval.sh)
+
+Downloads last month
+    3,757
+
+Safetensors[](https://huggingface.co/docs/safetensors)
+
+Model size
+
+4B params
+
+Tensor type
+
+BF16 
+
+·
+
+Chat template
+
+Files info
+
+Inference Providers [NEW](https://huggingface.co/docs/inference-providers)
+
+Featherless AI
+
+[ Text Generation](/tasks/text-generation "Learn more about text-generation")
+
+Examples
+
+Input a message to start chatting with **huihui-ai/Llama-3.2-3B-Instruct-abliterated**.
+
+Send
+
+View Code Snippets
+
+[ Compare providers](/inference/models?model=huihui-ai%2FLlama-3.2-3B-Instruct-abliterated)
+
+##  Model tree for huihui-ai/Llama-3.2-3B-Instruct-abliterated [](/docs/hub/model-cards#specifying-a-base-model)
+
+Base model
+
+[meta-llama/Llama-3.2-3B-Instruct](/meta-llama/Llama-3.2-3B-Instruct)
+
+Finetuned
+
+([2019](/models?other=base_model:finetune:meta-llama/Llama-3.2-3B-Instruct))
+
+this model
+
+Finetunes
+
+[20 models](/models?other=base_model:finetune:huihui-ai/Llama-3.2-3B-Instruct-abliterated)
+
+Merges
+
+[50 models](/models?other=base_model:merge:huihui-ai/Llama-3.2-3B-Instruct-abliterated)
+
+Quantizations
+
+[20 models](/models?other=base_model:quantized:huihui-ai/Llama-3.2-3B-Instruct-abliterated)
+
+##  Spaces using huihui-ai/Llama-3.2-3B-Instruct-abliterated 4
+
+[📚 infokarthikraja/llama3.2 ](/spaces/infokarthikraja/llama3.2)[💬 QWiota/qwen-08b-chatbot ](/spaces/QWiota/qwen-08b-chatbot)[📈 Luzzxix/jarvis-llama-server ](/spaces/Luzzxix/jarvis-llama-server)[🛡️ richardyoung/guardrail-comparison-demo ](/spaces/richardyoung/guardrail-comparison-demo)
+
+##  Collection including huihui-ai/Llama-3.2-3B-Instruct-abliterated
+
+#### [llama3.2-abliterate Collection 1 item • Updated 29 days ago • 2](/collections/huihui-ai/llama32-abliterate)
+
+System theme
+
+Company
+
+[TOS](/terms-of-service) [Privacy](/privacy) [About](/huggingface) [Careers](https://apply.workable.com/huggingface/) [](/)
+
+Website
+
+[Models](/models) [Datasets](/datasets) [Spaces](/spaces) [Pricing](/pricing) [Docs](/docs)
+

@@ -1,0 +1,234 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2609.10594
+Type: PDF
+Pattern: Table\s*\d|F1|Accuracy|FPR|FNR (35 matches in 45124 chars)
+
+--- Content ---
+
+8272:...ix A provides additional background on the jailbreak attacks that
+generate these responses and the defenses whose effectiveness is measured using such evaluators.
+3 Evaluators Under Measurement
+Let 𝑞denote a harmful question and 𝐽a jailbreak attack. The attack transforms 𝑞into a prompt 𝑝= 𝐽(𝑞),
+which is submitted to a target model 𝑀to obtain a response 𝑟= 𝑀(𝑝). An evaluator 𝐸then maps the pair
+2
+
+Table 1 Summary of the six jailbreak evaluators considered in this work.
+Evaluator
+Evaluation mechanism
+Native output
+LLM judge
+HarmBench [3]
+Fine-tuned behavior classifier
+Boolean
+No
+JailbreakBench [1]
+Holistic prompted judgment
+Boolean
+Yes
+JailbreakRadar [2]
+Three-criterion prompted judgment
+Boolean
+Yes
+StrongReject [4]
+Refusal gate + rubric scoring
+Score [0, 1]
+Yes
+JADES [5]
+Decomposition + weighted s...
+--
+9450:...eement as
+Agreement(𝐸, 𝐷) = 1
+|𝐷|
+∑
+(𝑞,𝑟)∈𝐷
+𝟏[𝜙(𝐸(𝑞, 𝑟)) = ℎ(𝑞, 𝑟)] ,
+(1)
+where 𝜙maps the evaluator’s native output to the label space of 𝐷. We use the term agreement rather than
+correctness because human annotations may themselves contain noise. Moreover, aggregate agreement
+can conceal systematic errors on particular subsets, motivating our later analysis across error types and
+attack families.
+Table 1 summarizes the six evaluators considered in this work.
+HarmBench formulates jailbreak evaluation as behavior classification [3]. Its dedicated classifier,
+fine-tuned from Llama 2 13B [21], takes a harmful behavior description together with the generated
+response and predicts whether the response constitutes an instance of that behavior. Unlike the remaining
+evaluators, HarmBench does not require ...
+--
+12104:...nce [6]. Its final
+decision considers both whether the response captures the harmful intent and whether it provides a
+sufficiently complete answer.
+4 Experiment Setup
+4.1 Datasets
+We evaluate all six evaluators on two human-labeled datasets, JailbreakQR and JailMeter-Eva. The two
+datasets differ in label granularity, target models, and attack families, providing complementary evaluation
+settings. Table 2 summarizes their main characteristics.
+JailbreakQR [5]. JailbreakQR is constructed from 260 harmful questions drawn from JailbreakBench
+and JailbreakRadar and evaluated under five jailbreak attacks: GCG [7], DSN [24], LAA [25], PAIR [26],
+3
+
+Table 2 Summary of the two human-labeled evaluation datasets.
+Property
+JailbreakQR
+JailMeter-Eva
+Pairs
+400
+330
+Label space
+Failed / Partial / Successful
+Failed / Successful
+Annotators / agreement
+3 / 𝛼= 0.823
+NA
+Models / attack families
+4 / 5
+1 / 8
+Refusals included
+Yes
+No
+and JailbreakChat [27]. The target models are Vicuna 13B [28], Llama 2 7B Chat [21], GPT-3.5 Turbo, and
+GPT-4 [29]. From the resultin...
+--
+14049:...ine a common label mapping for com-
+parison. For binary evaluation, the human label failed is mapped to negative, while partially successful and
+successful are mapped to positive. For score-based evaluators, we use their published decision thresholds.
+JADES uses 0.25 for binary classification and 0.25 and 0.75 for ternary classification [5]. StrongReject uses
+its released threshold [4]. We report accuracy, precision, recall, F1, and false positive rate (FPR). We include
+FPR because false positives directly inflate the measured attack success rate, whereas recall captures the
+evaluator’s ability to identify successful jailbreaks.
+4.3 Judge Backbone
+Five of the six jailbreak evaluators rely on one or more LLMs. As evaluator performance can vary with the
+underlying judge model, we fix this component across all applicable methods. Specifically, JailbreakBench,
+Jailbreak...
+--
+15844:... Results
+Figure 1 reports binary agreement with the human labels. The left panel presents results on JailbreakQR,
+while the right panel presents results on JailMeter-Eva. JailMeter-Eva excludes refusals before sampling
+and therefore focuses more heavily on ambiguous non-refusal responses.
+Findings. JADES achieves the strongest overall performance on both datasets. On JailbreakQR, it reaches
+92.3% accuracy and 92.5% F1, while also producing the lowest false positive rate at 5.8%. StrongReject
+follows with 89.5% accuracy and 89.8% F1, while HarmBench also performs consistently well with 88.3%
+accuracy and 88.5% F1. In contrast, JailbreakBench and JailbreakRadar show noticeably lower agreement
+with human judgments, with JailbreakBench obtaining the lowest F1 score at 81.2%.
+4
+
+Accuracy
+Precision
+Recall
+F1
+FPR
+(lower is better)
+HarmBench
+JailbreakBench
+JailbreakRadar
+StrongReject
+JADES
+JailMeter
+88.3
+91.0
+86.2
+88.5
+9.5
+80.8
+83.4
+79.0
+81.2
+17.4
+83.0
+85.5
+81.4
+83.4
+15.3
+89.5
+92.0
+87.6
+89.8
+8.4
+92.3
+94.5
+90.5
+92.5
+5.8
+85.8
+88.4
+83.8
+86.1
+12.1
+Experiment 1: JailbreakQR
+Accuracy
+Precision
+Recall
+F1
+FPR
+(lower is better)
+91.2
+76.8
+86.3
+81.3
+7.4
+85.5
+64.7
+75.3
+69.6
+11.7
+87.3
+68.2
+79.5
+73.4
+10.5
+93.0
+81.3
+89.0
+85.0
+5.8
+95.2
+87.0
+91.8
+89.3
+3.9
+90.3
+75.3
+83.6
+79.2
+7.8
+Experiment 2: JailMeter-Eva
+Figure 1 Binary agreement with human labels. Values are percentages. Cell shading is normalised within each column so that
+the darker end always marks the better result, which for FPR means the smaller number. The highlighted row marks the strongest
+evaluator overall.
+The same ordering largely persists on JailMeter-Eva. JADES again performs best, reaching 95.2% accu-
+racy, 89.3% F1, and an FPR of only 3.9%. StrongReject remains the second strongest evaluator with 93.0%
+accuracy and 85.0% F1, followed by HarmBench. JailbreakBench and JailbreakRadar again perform sub-
+stantially worse, particularly in precision and F1. This consistency across the two datasets suggests that
+the observed differences are not specific to a single benchmark or attack distribution.
+A notable pattern appears on JailMeter-Eva. Although most evaluators achieve relatively high accu-
+racy, their precision and F1 scores are substantially lower than on JailbreakQR. For example, JailbreakBench
+reaches 85.5% accuracy but only 64.7% precision and 69.6% F1. This gap reflects the class imbalance of
+JailMeter-Eva and shows that accuracy alone can overstate evaluator quality in this setting. The false pos-
+itive rate provides an important complementary view because false positives directly inflate the measured
+attack success rate. JADES and StrongReject achieve the lowest FPRs on both datasets, indicating that their
+stronger overall performance is not obtained simply by labeling more responses as successful jailbreaks.
+5.2 Discussion
+The results show that evaluator choice can materially affect conclusions about jailbreak success. Even
+under a shared judge backbone, the six evaluators exhibit substantial differences in agreement with human
+labels. This indicates that e...
+--
+19437:...suggests
+that adding structure to the evaluation process can improve agreement with human judgments. By con-
+trast, evaluators based primarily on a single prompted verdict, such as JailbreakBench and JailbreakRadar,
+show larger performance gaps in our experiments.
+JADES exhibits the strongest performance across all five reported metrics on both datasets. Its advan-
+tage is particularly visible in FPR, where it reduces false positives to 5.8% on JailbreakQR and 3.9% on
+JailMeter-Eva. This is important for jailbreak research because a false positive directly counts a failed or
+insufficient response as a successful attack and therefore inflates the reported attack success rate. The
+results suggest that decompositional evaluation may better distinguish substantive harmful compliance
+from response...
+--
+20752:...results highlight the importance of evaluating jailbreak evaluators on more than one
+dataset. JailbreakQR contains a broader mixture of responses, including refusals, whereas JailMeter-Eva
+deliberately excludes refusals and concentrates on more ambiguous non-refusal cases. The relative order-
+ing of the evaluators remains broadly stable across these settings, but the larger drops in precision and F1
+on JailMeter-Eva show that difficult non-refusal responses remain substantially harder to classify. A reli-
+able jailbreak evaluator should therefore be assessed not only by aggregate accuracy, but also by its error
+profile and robustness across different attack distributions.
+6 Limitations
+Our study is limited by the scope of the available evaluation data. Both JailbreakQR and JailMeter-Eva
+are English-only and moderate in size, so the results may not generalize to other languages, domains,
+target models, or future jailbreak strategies. Human annotations serve as our reference labels,...

@@ -1,0 +1,518 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2502.02737
+Type: PDF
+Pattern: SmolLM2-1.7B-Instruct|SmolLM2-360M-Instruct|Arena-Hard|MMLU (30 matches in 81759 chars)
+
+--- Content ---
+
+9446:...ly
+sampled from the full dataset. For evaluation, we also fol-
+lowed Penedo et al. (2024a), and used lighteval to eval-
+uate on a variety of knowledge, reasoning, and text under-
+standing benchmarks: MMLU (Hendrycks et al., 2021),
+HellaSwag (Zellers et al., 2019), OpenBook QA (Mihaylov
+et al., 2018), PIQA (Bisk et al., 2019), WinoGrande (Sak-
+aguchi et al., 2019), ARC (Clark et al., 2018), and Common-...
+--
+10299:... mixture that includes the dataset
+2
+
+SmolLM2
+Table 1. Evaluation of models trained on FineWeb-Edu and DCLM
+for 350B tokens. 40/60 and 60/40 denote the FW-Edu/DCLM ratio.
+Task
+FW-Edu
+DCLM
+40/60
+60/40
+MMLU
+37.5
+35.5
+36.5
+37.0
+ARC
+57.5
+53.5
+53.2
+56.0
+OpenBookQA
+41.9
+40.8
+39.0
+41.9
+HellaSwag
+60.1
+62.3
+61.4
+62.2
+CommonsenseQA
+36.2
+40.1
+39.9
+38.5
+PIQA
+76.2
+76.9
+75.7
+76.4
+under evaluation. For math, we anne...
+--
+10874:...ly dis-
+tributed across 15 of the most commonly used program-
+ming languages (~14B tokens each). We evaluated the
+math ablation models on GSM8K (Cobbe et al., 2021),
+MATH (Hendrycks et al., 2021) and MMLU-STEM to as-
+sess their math capabilities using lighteval, and we used
+HumanEval (Chen et al., 2021) and MultiPL-E (Cassano
+et al., 2022) to evaluate the code ablation models using the
+BigCode-Evaluat...
+--
+12092:...ubreddit. Training
+ablation models on 350B tokens each from FineWeb-Edu
+and DCLM attained performance shown in Table 1. We
+find that FineWeb-Edu achieves higher scores on the ed-
+ucational benchmarks MMLU, ARC, and OpenBookQA,
+while DCLM performs better on HellaSwag and Common-
+senseQA. These results align with the datasets’ content:
+FineWeb-Edu prioritizes educational material, while DCLM
+captures mo...
+--
+12622:...could further im-
+prove performance. After testing different ratios, we found
+that a 60% FineWeb-Edu and 40% DCLM mix works well,
+as shown in Table 1: It nearly matches FineWeb-Edu’s per-
+formance on MMLU, ARC, and OpenBookQA while also
+aligning with DCLM’s results on HellaSwag and approach-
+ing its performance on CommonSenseQA. Combining these
+datasets yields 5.1T tokens of (English) text.
+3.3. Math ...
+--
+16942:...th, creating Infi-WebMath4+ (8.5B tokens, 6.3M
+documents) and Infi-WebMath3+ (20.5B tokens, 13.9M
+documents). Similarly to Yang et al. (2024c), we decon-
+taminate each dataset against GSM8K, MATH and MMLU
+using 13-gram matching and a minimum overlap ratio with
+the longest common subsequence of 0.6.
+Results
+Figure 1 presents our FineMath annealing abla-
+tions. All FineMath subsets consistently outperform OWM
+and InfiMM-WebMath on GSM8K, MATH, and MMLU-
+STEM. FineMath4+ achieves a 2x improvement on GSM8K
+and a 6x improvement on MATH compared to InfiMM-
+WebMath, demonstrating the importance of retaining high-
+quality mathematical content with reason...
+--
+18121:... increasingly de-
+ployed as coding assistants. Moreover, recent research has
+0
+50
+100
+Tokens (B)
+0.10
+0.15
+0.20
+Accuracy
+GSM8K
+50
+100
+Tokens (B)
+0.02
+0.04
+0.06
+MATH
+0
+50
+100
+Tokens (B)
+0.36
+0.38
+0.40
+MMLU STEM
+FineMath4+
+FineMath3+
+Infi-WebMath4+
+Infi-WebMath3+
+OWM
+Infi-WebMath
+Figure 1. Performance of models trained on different subsets of
+FineMath and other math datasets.
+shown that including code d...
+--
+26967:...ath performance, underscoring the need for larger,
+higher-quality math datasets in later stages. Beyond code
+and math performance, as shown in Figure 6 (Appendix E.2),
+we observed above-random (>25%) MMLU accuracy with a
+multiple-choice formulation (MCF, i.e. explicitly outputting
+an option from ’A’, ’B’, ’C’, or ’D’ instead of computing
+the likelihood of different answers as in the cloze formula-
+tio...
+--
+27486:...d suggests that long trainings of small models can make
+them acquire abilities typically associated with larger mod-
+els (Blakeney et al., 2024; Gu et al., 2024; Du et al., 2024).
+To further optimize MMLU performance, we revisited our
+English dataset mixture with additional annealing ablations
+and found that increasing DCLM relative to FineWeb-Edu
+slightly improves MMLU MCF at this stage.
+4.4. Stable phase: stage 3
+Data mixture
+In the third and last stage of the stable phase
+(8T to 10T tokens, before annealing starts), we added the
+text-only English portion of InfiM...
+--
+31329:...amily
+SmolLM2
+Llama3.2
+Qwen2.5
+Parameters
+1.7B
+1B
+1.5B
+HellaSwag
+68.7
+61.2
+66.4
+ARC
+60.5
+49.2
+58.5
+PIQA
+77.6
+74.8
+76.1
+CommonsenseQA
+43.6
+41.2
+34.1
+Winogrande
+59.4
+57.8
+59.3
+OpenBookQA
+42.2
+38.4
+40.0
+MMLU-Pro (held-out)
+19.4
+11.7
+13.7
+Natural Questions (held-out)
+8.7
+6.2
+10.5
+TriviaQA (held-out)
+36.7
+28.1
+20.9
+GSM8K (5-shot)
+31.1
+7.6
+61.7
+MATH (4-shot)
+11.6
+3.3
+34.3
+HumanEval
+22.6
+18.9
+37.2
+4.7. Base ...
+--
+32096:...trong performance
+of base SmolLM2, outperforming the Qwen2.5 base model
+on HellaSwag, and ARC. SmolLM2 also delivers strong
+performance on held-out benchmarks not monitored dur-
+ing training, such as MMLU-Pro (Wang et al., 2024c),
+TriviaQA (Joshi et al., 2017), and Natural Questions (NQ,
+Kwiatkowski et al., 2019). Notably, the model outperforms
+Qwen2.5-1.5B by nearly 6 percentage points on MMLU-
+Pro, further validating its generalization capabilities. On
+math and coding benchmarks, SmolLM2 demonstrates com-
+petitive performance. While it lags behind Qwen2.5-1.5B,
+SmolLM2 outperforms Llama3....
+--
+35129:...endix F). The
+evaluation suite included the instruction-following and con-
+versation benchmarks IFEval (Zhou et al., 2023) and MT-
+Bench (Zheng et al., 2023); reasoning in ARC Challenge;
+knowledge in MMLU-Pro as well as GSM8K and MATH
+for math evaluations. Our dataset outperforms MagPie-Pro
+on most benchmarks, and largely surpasses OpenHermes2.5
+and UltraChat (Ding et al., 2023) on IFEval and MT-Bench...
+--
+38312:...orporated an En-
+glish subset of LongAlign (Bai et al., 2024) (3.7k samples
+with 8k–16k tokens). We also added 100k randomly selected
+OpenHermes2.5 samples due to its strong performance in
+knowledge (MMLU-Pro), Everyday-Conversations (Face,
+2024), 2.2k casual multi-turn interactions, and Explore-
+Instruct (Wan et al., 2023) for rewriting. We found that
+incorporating these datasets with the specified number of
+samples effectively enhanced their target capabilities while
+preserving strong performance across other benchmarks.
+Table 5. Comparison of 1-2B instruction-tuned models across
+benchmarks. SmolLM2-1.7B-Instruct exhibits strong performance
+in instruction-following, reasoning, and math.
+Model
+SmolLM2-1.7B
+Llama3.2-1B
+Qwen2.5-1.5B
+IFEval (Average)
+56.7
+53.5
+47.4
+MT-Bench
+6.13
+5.48
+6.52
+OpenRewrite-Eval
+44.9
+39.2
+46.9
+ARC
+51.7
+41.6
+46.2
+BBH (3-shot)
+32.2
+27.6
+35.3
+MMLU-Pro
+19.3
+12.7
+24.2
+HellaSwag
+66.1
+56.1
+60.9
+PIQA
+74.4
+72.3
+73.2
+GSM8K (5-shot)
+48.8
+37.4
+63.3
+MATH (4-shot)
+21.0
+19.5
+19.6
+HumanEval
+28.1
+33.5
+30.5
+5.2. Supervised fine-tuning (SFT)
+Table 9 (Appendix...
+--
+39944:...aInter-
+act (Yuan et al., 2024), Capybara (Daniele & Suphavadeep-
+rasit, 2023), and ORCA (Lv et al., 2023). UltraFeedback
+proved the most consistently effective across benchmarks,
+improving MT-Bench, MMLU-Pro, and MATH. We trained
+for 2 epochs with a learning rate of 1.0 × 10−6, beta of
+0.5, global batch size of 128, and sequence length of 1024
+tokens. After this final stage of DPO training, we obtain...
+--
+65168:...ing
+language models with self-generated instructions. arXiv
+preprint arXiv:2212.10560, 2022.
+Wang, Y., Ma, X., Zhang, G., Ni, Y., Chandra, A., Guo, S.,
+Ren, W., Arulraj, A., He, X., Jiang, Z., et al. Mmlu-pro:
+A more robust and challenging multi-task language under-
+standing benchmark. arXiv preprint arXiv:2406.01574,
+2024c.
+Wang, Z., Li, X., Xia, R., and Liu, P. Mathpile: A billion-
+token-scale pretr...
+--
+70285:...6
+
+SmolLM2
+B. English web ablations
+Figure 4 shows the evaluation curves of ablation models trained on DCLM, FineWeb-Edu and their mix for 350B tokens.
+0
+100
+200
+300
+0.30
+0.32
+0.34
+0.36
+0.38
+Accuracy
+MMLU
+0
+100
+200
+300
+0.35
+0.40
+0.45
+0.50
+0.55
+ARC
+0
+100
+200
+300
+0.30
+0.33
+0.35
+0.38
+0.40
+0.43
+OpenBookQA
+0
+100
+200
+300
+Training Tokens (B)
+0.40
+0.45
+0.50
+0.55
+0.60
+Accuracy
+HellaSwag
+0
+100
+200
+300
+Training ...
+--
+77853:... al., 2018)
+Table 8. Per-benchmark model performance across training stages. Stages 1-3 are during stable phase (no learning rate decay).
+Stage 1
+Stage 2
+Stage 3
+Stage 4
+Tokens
+0-6T
+6-8T
+8-10T
+10-11T
+MMLU (MCF)
+29.62
+37.96
+42.54
+48.87
+HellaSwag
+66.17
+65.29
+66.29
+69.26
+ARC
+59.95
+60.08
+58.66
+60.99
+OpenBookQA
+42.00
+42.40
+41.40
+43.60
+WinoGrande
+58.88
+58.33
+58.64
+61.09
+PIQA
+76.39
+76.50
+77.26
+77.64
+GSM8K
+4....
+--
+78338:...tiple-E Java
+5.70
+10.12
+14.56
+23.42
+Multiple-E JS
+9.94
+12.42
+18.01
+23.60
+CoQA
+33.43
+33.98
+38.82
+40.45
+DROP
+13.69
+11.36
+17.19
+19.22
+Jeopardy
+23.1
+22.4
+25.54
+23.35
+SQuAD v2
+55.97
+57.45
+57.26
+61.48
+E.2. MMLU progression
+Figure 6 shows the progression of MMLU scores throughout the stable phase.
+3
+4
+5
+6
+7
+8
+9
+10
+Tokens (trillions)
+25
+30
+35
+40
+45
+Accuracy (%)
+MMLU MCF
+MMLU CF
+Figure 6. Progression of MMLU MCF and MLU CF during the training. We observe above-random (>25%) accuracy on MMLU MCF
+after 6T tokens of training, while MMLU CF appears to plateau.
+21
+
+SmolLM2
+F. Post-training
+Table 9 shows the final composition of SmolTalk dataset.
+Table 9. Composition of the SmolTalk dataset. The total dataset contains 1.1M instruction-...
+--
+80257:...-tuning the SmolLM2 base model on each dataset for 1 epoch. SmolLM2-SFT†, the final supervised fine-tuned version
+of SmolLM2, was trained for 2 epochs on SmolTalk.
+Dataset
+IFEval
+MTB
+GSM8K
+MATH
+ARC-C
+MMLU-Pro
+Instruction datasets comparison
+OpenHermes
+30.01
+1.02
+42.91
+12.76
+40.27
+20.32
+UltraChat
+27.26
+4.66
+30.40
+9.06
+41.21
+15.79
+MagPie-Pro
+30.45
+4.31
+14.56
+6.64
+36.01
+12.19
+MagPie-Pro-MT
+31.66
+5.40
+20....

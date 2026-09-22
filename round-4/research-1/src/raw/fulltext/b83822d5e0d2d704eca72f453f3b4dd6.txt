@@ -1,0 +1,1440 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Length: 63065 chars (truncated)
+
+--- Content ---
+
+SKIN-DEEP: A Geometric Diagnostic for Alignment Fragility
+in Large Language Model Representations
+Dongyub Jude Lee1*
+Jungseob Lee2*
+Seungyoon Lee2
+Seongtae Hong2
+Suhyune Son2
+Sugyeong Eo3
+Jaehyung Seo4†
+Heuiseok Lim2†
+1Zoom Communications
+2Korea University
+3Yonsei University
+4Konkuk University
+jude.lee@zoom.us, s.eo@yonsei.ac.kr, seojae777@konkuk.ac.kr
+{omanma1928, dltmddbs100, ghdchlwls123, ssh5131, limhseok}@korea.ac.kr
+Abstract
+Alignment tuning is meant to make harmful-
+request refusal robust, yet this safety behav-
+ior can be erased by a small set of benign
+fine-tuning examples. This is a deployment
+risk for open-weight models because a check-
+point can pass refusal tests at release time
+and later lose refusal under low-cost down-
+stream fine-tuning. Prior work has established
+these refusal failures, but existing studies do
+not show how to detect this fragility in the
+aligned model itself before an attack or fine-
+tuning intervention is run. We introduce SKIN-
+DEEP, a geometric diagnostic that detects align-
+ment fragility directly from the aligned model’s
+hidden-state activations before such an inter-
+vention is run and compresses the layer-wise
+safety geometry into a single scalar, the Ge-
+ometric Fragility Score (GFS). Applied to
+twenty-one instruction-tuned models spanning
+six alignment recipes and 3B–32B parameters,
+SKIN-DEEP reveals a recurring low-rank safety
+subspace across model families. Direction ab-
+lations show that removing directions in this
+subspace weakens harmful-request refusal, pro-
+viding causal evidence that the recovered geom-
+etry underlies refusal behavior. Crucially, GFS
+identifies, before any fine-tuning, the initially
+safe model that retains the most refusal after
+small-scale LoRA fine-tuning. These results
+establish GFS as a practical pre-deployment
+diagnostic for flagging fragile refusal behavior
+without running an attack.
+1
+Introduction
+Post-training alignment is the main route from
+pretrained language models to deployed assistants
+(Ouyang et al., 2022; Bai et al., 2022). In deploy-
+ment, an assistant is treated as safer when it re-
+fuses harmful requests on behavioral tests (Mazeika
+et al., 2024). However, passing such tests only
+shows that the model refused the tested prompts.
+*Equal contribution.
+†Corresponding authors.
+It does not show whether the refusal mechanism
+is stable under prompt- or weight-level changes.
+Adversarial suffixes (Zou et al., 2023b), jailbreak
+prompts (Wei et al., 2023), benign-looking fine-
+tuning (Qi et al., 2024; Yang et al., 2023), and
+low-rank adapters trained on a handful of examples
+(Lermen et al., 2024) can make aligned models
+comply with harmful requests. The deployment
+risk is that a model can pass standard tests while
+relying on a refusal mechanism that small interven-
+tions can disrupt. We refer to this broad refusal
+failure mode as alignment fragility. We focus on
+a testable, representation-level form of this risk,
+asking whether the refusal mechanism can already
+be read from a small set of hidden-state directions
+before the prompt- or weight-level interventions
+used to expose fragility are run.
+The auditing challenge is that existing evalua-
+tions usually expose alignment fragility only after
+a prompt- or weight-level intervention has already
+been run (Zou et al., 2023b; Qi et al., 2024; Lermen
+et al., 2024). Representation-level work suggests
+where to look for such an early diagnostic. Refusal
+can rely on low-dimensional directions in residual-
+stream activations (Arditi et al., 2024; Panickssery
+et al., 2023). If fragile refusal is carried by such
+directions, then a measurable safety-separating ge-
+ometry may already be visible in the aligned model
+before such an intervention is run.
+To test whether this geometry exists, we intro-
+duce SKIN-DEEP, a geometric diagnostic that mea-
+sures alignment fragility from hidden-state activa-
+tions before such an intervention is run. SKIN-
+DEEP first compares aligned and base-model acti-
+vations on matched harmful-request examples and
+benign instructions. It then finds the hidden-state
+directions that best separate harmful-request ex-
+amples from benign instructions at each layer and
+tests selected directions by ablation. Finally, it
+compresses the resulting pattern into the Geomet-
+ric Fragility Score (GFS). GFS is computed before
+1
+arXiv:2606.22676v1  [cs.AI]  21 Jun 2026
+
+any such intervention is run and is intended to flag
+fragile refusal behavior, not to forecast every attack
+outcome.
+Across a twenty-one-model pool spanning six
+alignment recipes and 3B–32B parameters, we test
+four claims using the model sets defined in Sec-
+tion 4.
+• Subspace. Harmful-request prompts and benign
+instructions separate along a small set of hidden-
+state directions. Split-sample checks show that
+the separation remains when the layer choice
+is evaluated on held-out prompts. Full-space
+tests show that the split is visible beyond the
+one-dimensional projection. Norm controls and
+prompt-format controls rule out scale and tem-
+plate artifacts (§3.2,§5.1).
+• Causal map.
+Removing selected peak-layer
+directions during generation weakens harmful-
+request refusal in the models where a decrease
+can be measured.
+This links the recovered
+safety geometry to refusal behavior, rather than
+only to prompt-category separation. The refusal-
+changing direction differs across models, point-
+ing to model-specific directions inside a shared
+low-rank safety subspace rather than one univer-
+sal refusal vector (§5.2).
+• Recurrence. Different model families preserve
+similar activation relationships among the same
+harmful-request and benign prompts.
+Their
+strongest harmful/general split appears at dif-
+ferent layers, so the result is not explained by
+every model peaking at the same network depth.
+This supports recurrence of the safety geometry
+across families rather than a shared layer sched-
+ule (§5.3).
+• Diagnostic. The layer-wise geometry can be
+compressed into GFS before the tested interven-
+tions are run. In the LoRA experiment, GFS
+identifies the initially safe model that later retains
+the most refusal under the small-scale LoRA pro-
+tocol (§5.4).
+2
+Related Work
+Behavioral evidence for alignment fragility. Em-
+pirical studies show that aligned models can lose
+harmful-request refusal under inference-time or
+weight-level interventions. Inference-time attacks
+such as adversarial suffixes (Zou et al., 2023b) and
+role-play jailbreaks (Wei et al., 2023) bypass re-
+fusal without changing model weights. Weight-
+level interventions can weaken refusal through fine-
+tuning on benign-looking samples (Qi et al., 2024;
+Yang et al., 2023), low-rank adapters trained on
+tens of examples (Lermen et al., 2024), or output-
+layer pruning (Wei et al., 2024). These studies
+measure fragility only after applying the attack or
+intervention (Qi et al., 2024; Wei et al., 2024).
+Representation geometry of refusal. Mecha-
+nistic and representation-level studies link refusal
+to low-dimensional activation directions. Arditi
+et al. (2024) shows that refusal in chat models
+is mediated by a single residual-stream direction
+computed as the difference between mean harmful
+and harmless activations (henceforth the Arditi di-
+rection), and that ablating this direction disables
+refusal. Representation engineering (Zou et al.,
+2023a) and contrastive activation addition (Pan-
+ickssery et al., 2023) recover steering vectors for
+refusal and related concepts. Lee et al. (2024) gives
+a training-dynamics account in which Direct Pref-
+erence Optimization (DPO) (Rafailov et al., 2023)
+reduces the expression of toxic features without
+erasing them, which helps explain why alignment
+can be reversible. Existing representation-level
+work does not provide a cross-model diagnostic
+that can be computed before prompt- or weight-
+level interventions are run.
+Activation-level measurement. Linear probes
+(Alain and Bengio, 2017) measure what informa-
+tion is available at individual layers. Contrastive
+PCA (Abid et al., 2018) isolates population-specific
+directions, and CKA (Kornblith et al., 2019; Ding
+et al., 2021) compares hidden-state geometries
+across networks.
+3
+Geometric Fragility
+3.1
+Definition of Geometric Fragility
+Geometric fragility.
+We call alignment ge-
+ometrically fragile when harmful-request re-
+fusal leaves a low-rank geometric signature
+in residual-stream activations that can be de-
+tected before a prompt- or weight-level inter-
+vention is run.
+We test this claim through
+four links: a safety-separating subspace, behav-
+ioral effects under direction ablation, recurrence
+across model families, and a diagnostic score
+computed before those interventions are run.
+The geometric-fragility framing keeps each mea-
+2
+
+surement tied to one role. First, cPCA searches for
+candidate safety-separating directions. Cohen’s d
+and full-space tests then check whether the harm-
+ful/general split persists beyond one projection and
+is not explained by activation magnitude alone. Di-
+rection ablation tests whether selected directions
+affect refusal behavior. Cross-family similarity
+checks recurrence, and GFS summarizes the layer-
+wise pattern before such an intervention is run.
+3.2
+Measuring Geometric Fragility
+Setup. Let M be an aligned causal transformer and
+M0 its base counterpart, both with L layers and
+hidden size d. For an input x, let hℓ(x) ∈Rd and
+h0
+ℓ(x) ∈Rd denote the residual-stream activations
+of M and M0 at layer ℓand at the final token posi-
+tion. We use a safety set Dsafe of harmful-request
+prompts that an aligned model should refuse and a
+general set Dgen of benign instructions, matched in
+size and token length. We form centered activation
+matrices Hinst
+ℓ
+and Hbase
+ℓ
+from Dsafe ∪Dgen, with
+covariance matrices Σinst
+ℓ
+and Σbase
+ℓ
+.
+Subspace search. At each layer, we use con-
+trastive PCA (Abid et al., 2018) to compare
+aligned-model activations against base-model
+activations on the same prompts.
+vcPCA
+ℓ
+= arg max
+∥v∥=1 v⊤(Σinst
+ℓ
+−α Σbase
+ℓ
+)v, (1)
+where vcPCA
+ℓ
+is the candidate safety-separating
+direction for layer ℓ. Equation 1 is a search step
+rather than evidence by itself. We treat the direc-
+tion as safety-relevant only if harmful requests
+and benign prompts separate along the direction,
+the same split appears in full activation space,
+and later ablation changes refusal behavior.
+For each candidate direction, Cohen’s d (Co-
+hen, 2013) measures how far harmful-request and
+benign prompts separate after projection onto
+that direction. PERMANOVA (Anderson, 2001)
+and RBF-kernel MMD (Gretton et al., 2012) test
+whether the same harmful/general split is visi-
+ble without projecting onto the candidate direc-
+tion. These full-space tests are validation checks
+only. They do not choose directions and do not
+enter GFS. PERMANOVA p-values are corrected
+with Benjamini–Hochberg FDR at q<0.05 (Ben-
+jamini and Hochberg, 1995). To check that the
+signal is not just due to harmful prompts producing
+larger activation norms, we also run PCA on unit-
+normalized activations. We additionally measure
+cosine similarity with the Arditi refusal direction
+(Arditi et al., 2024) to test whether the recovered
+direction collapses to the known refusal axis.
+Causal map. A direction can separate prompts
+without controlling refusal. To test behavioral
+relevance, we select ℓ⋆, the model-specific layer
+where the harmful/general separation is largest,
+and remove one candidate direction during gen-
+eration.
+˜hℓ⋆= hℓ⋆−(v⊤
+ℓ⋆hℓ⋆) vℓ⋆.
+(2)
+If refusal drops relative to random and direction-
+specificity controls, the recovered geometry has
+behavioral relevance for refusal rather than being
+only a correlational prompt classifier.
+We therefore compare ablations of candidate and
+reference directions against random controls. If
+refusal drops for a candidate or reference direction
+but not for a random control, the drop is direction-
+specific rather than a generic effect of editing the
+hidden state.
+For recurrence across families, we compute lin-
+ear CKA (Kornblith et al., 2019) between activa-
+tion matrices extracted at each core model’s ℓ⋆
+on the same 1000 prompts.
+A prompt-shuffle
+null permutes the prompt order for one model be-
+fore recomputing CKA. The test, therefore, asks
+whether two core models preserve similar prompt-
+to-prompt activation relationships, rather than ob-
+taining high similarity after prompt identities are
+broken. We also compare depth-normalized Co-
+hen’s d profiles to separate shared geometry from
+a shared layer schedule.
+Diagnostic summary. Finally, GFS aggregates
+the layer-wise measurements into one diagnostic
+computed before those interventions are run.
+GFS(M) =
+L
+X
+ℓ=1
+wℓ·|dℓ|·
+ 1−|cos(vℓ, vArditi
+ℓ
+)|
+
+,
+(3)
+where vℓis the cPCA direction at layer ℓ, dℓis
+Cohen’s d measured on that direction, and wℓ∝
+ℓ/L is a linear depth weight. The three factors
+have separate roles. |dℓ| measures separation,
+wℓemphasizes later layers, and 1 −|cos(·, ·)|
+downweights directions close to the Arditi re-
+fusal direction. Thus, a high GFS marks safety
+geometry that is strong, late, and not concen-
+trated in the known refusal axis.
+3
+
+Appendix A gives a compact pseudocode sum-
+mary of the diagnostic computation.
+4
+Experimental Setup
+This section defines the color-coded model sets,
+prompt sets, activation extraction choices, and be-
+havioral protocols used in the experiments.
+A
+model can appear in more than one set because
+each analysis applies different inclusion criteria.
+We define the sets here so that the Results section
+can report findings without restating the setup.
+4.1
+Model Sets
+The
+full
+model
+pool
+contains
+twenty-one
+instruction-tuned models spanning 3B–32B pa-
+rameters. The reported alignment recipes fall into
+six labels. They are supervised fine-tuning (SFT),
+reinforcement learning from human feedback plus
+SFT (RLHF+SFT) (Ouyang et al., 2022), DPO,
+Odds Ratio Preference Optimization (ORPO)
+(Hong et al., 2024), reinforcement learning from
+AI feedback (RLAIF) (Lee et al., 2023), and
+Conditioned Reinforcement Learning Fine-Tuning
+(C-RLFT) (Wang et al., 2023). When an analysis
+requires a base model, the base checkpoint is
+version-matched to its aligned counterpart.
+We use five color-coded model sets.
+• Core model set. Llama-3.1-8B, Qwen-2.5-7B,
+Mistral-7B-v0.3, and Gemma-2-9B are used in
+the main subspace table, the CKA recurrence ta-
+ble, and the core LoRA trace (Dubey et al., 2024;
+Qwen Team, 2024; Jiang et al., 2023; Gemma
+Team, 2024).
+• Raw-prompt GFS ranking set. Sixteen models
+are scored by GFS with raw prompts, without
+applying a chat template.
+• Chat-template robustness set. Eight models
+are measured after apply_chat_template for-
+matting to check whether harmful-request and
+benign prompts still separate.
+• Direction-ablation set. Six models are used
+to test whether removing a selected direction
+changes refusal. Four have baseline refusal rates
+where a decrease can be measured, and two
+are near-refusal-floor or near-refusal-ceiling con-
+trols.
+• LoRA fragility set. Seven models are used to
+test harmless LoRA fine-tuning. This set contains
+the core model set plus three hold-out models
+that rarely comply with harmful requests before
+LoRA fine-tuning.
+The tables associated with each analysis identify
+which models enter that analysis. Table 8 lists the
+raw-prompt GFS ranking set, Table 2 lists the
+chat-template robustness set, Table 7 lists the
+direction-ablation set, and Table 9 lists the LoRA
+fragility set. Appendix C.2 gives the rationale
+for excluding hybrid-reasoning models (the Qwen3
+series) from the GFS ranking.
+4.2
+Prompts and Activations
+For cPCA, CKA, and GFS, we use 500 harmful-
+request prompts and 500 benign instructions. The
+harmful-request set combines AdvBench 200,
+HarmBench 200, and BeaverTails 100 (Zou et al.,
+2023b; Mazeika et al., 2024; Ji et al., 2023). The
+benign-instruction set combines Alpaca 250 and
+OASST 250. The two prompt sets are matched by
+token count.
+For the raw-prompt GFS ranking set, prompts
+are passed directly to the model and activations
+are extracted at the final token.
+For the chat-
+template robustness set, prompts are first for-
+matted with apply_chat_template, and activa-
+tions are extracted at the final attended token. The
+chat-template robustness set covers SFT, DPO,
+C-RLFT, and RLAIF recipes. We keep only mod-
+els whose Llama-Guard-3-8B (Inan et al., 2023;
+Llama Team, 2024) baseline refusal rate lies in
+[0.30, 0.90], excluding models that already refuse
+almost none or almost all harmful prompts.
+For cPCA, we set α=100 at every layer.
+We
+chose
+this
+value
+by
+sweeping
+α
+∈
+{1, 10, 20, 50, 100, 200, 500, 1000} and selecting
+the value with the best held-out harmful-vs.-benign
+probe accuracy on a 20% split. Linear probes use
+logistic regression with 5-fold cross-validation.
+4.3
+Behavioral Protocols
+For each model, direction ablation is applied at the
+layer with the largest Cohen’s d. Harmful-request
+refusal is measured on 100 AdvBench prompts. Re-
+fusal on 100 Alpaca prompts is used as the benign-
+prompt control. The ablation compares PCA-PC1,
+cPCA-PC1, the Arditi direction, and a random di-
+rection. Table 7 reports an additional PCA-PC4
+check for direction specificity.
+LoRA fine-tuning uses rank-8 adapters on harm-
+less Alpaca subsets (Hu et al., 2022). We vary the
+4
+
+subset size n over 5, 10, 25, 50, 75, 100, 150, and
+200 examples. After fine-tuning, harmful compli-
+ance is measured on 50 held-out harmful prompts
+and judged with a rule-based harm-string match
+plus Llama-Guard.
+4.4
+Statistical Reporting
+PERMANOVA uses 1000 permutations, so the
+smallest attainable p-value is 0.0099. RBF-kernel
+MMD provides a second full-space test.
+PER-
+MANOVA p-values are corrected with Benjamini–
+Hochberg FDR at q<0.05. For uncertainty, we re-
+port Wilson 95% confidence intervals for ablation
+outcomes, 50-bootstrap split-sample Cohen’s d for
+peak-layer selection, and three-seed LoRA replica-
+tion on the core model set. Appendix B.1 discusses
+the split-sample selection check. Table 7 reports ab-
+lation confidence intervals. Appendix B.3 reports
+the multi-seed LoRA and GFS-weight checks.
+5
+Results: Evidence for Geometric
+Fragility
+The results test the four parts of the geometric-
+fragility claim from Section 3.1. First, harmful-
+request and benign prompts separate along a small
+hidden-state subspace. Second, removing selected
+directions from that subspace weakens refusal.
+Third, models from different families show sim-
+ilar prompt-to-prompt activation structure, even
+when the strongest layer differs. Fourth, GFS sum-
+marizes the layer-wise measurements before fine-
+tuning and identifies which initially safe model
+retains the most refusal after LoRA.
+5.1
+Subspace: Refusal Leaves a Low-Rank
+Safety Geometry
+The harmful/benign split is large and remains
+after split-sample, full-space, and norm checks.
+Table 1 shows that, on the core model set, the peak-
+layer cPCA direction separates harmful-request
+prompts from benign instructions with |d| ≥1.8
+and linear-probe accuracy at least 0.90. Held-out
+split-sample estimates remain large (dtest ≥2.71),
+so the result is not produced only by choosing the
+best layer. PERMANOVA is significant after BH
+correction for all core models, showing that the
+split is also visible in full activation space. Unit-
+norm PCA keeps the separation large, so the result
+is not explained by harmful prompts having larger
+activation norms.
+The same harmful/benign split appears after
+model-specific chat formatting. Table 2 shows
+peak
+cPCA
+split
+Probe
+PCA
+Model
+|d|
+|d|
+dtest
+acc.
+acc.
+Llama-3.1-8B
+2.445
+2.740
+3.23
+0.937
+0.902
+Qwen-2.5-7B
+3.011
+2.863
+2.97
+0.959
+0.911
+Mistral-7B-v0.3
+2.716
+1.805
+2.71
+0.904
+0.817
+Gemma-2-9B
+3.378
+2.810
+2.88
+0.926
+0.812
+Table 1: Peak |d|, cPCA |d|, held-out split estimate,
+and probe accuracies for the core model set. Selection-
+adjusted estimates are discussed in Appendix B.1. Split-
+sample confidence intervals are reported in Table 6.
+Model
+Method
+peak |d|
+Peak L
+Mistral-7B-Instruct-v0.2
+SFT
+7.031
+22/32
+Mistral-7B-Instruct-v0.3
+SFT
+6.157
+19/32
+Yi-1.5-9B-Chat
+SFT
+5.078
+46/48
+openchat-3.5-1210
+C-RLFT
+5.012
+12/32
+Hermes-2-Pro-Mistral-7B
+DPO
+4.941
+13/32
+SOLAR-10.7B-Instruct
+DPO
+4.713
+46/48
+Starling-LM-7B-alpha
+RLAIF
+2.653
+31/32
+Nous-Hermes-2-Mistral-7B-DPO
+DPO
+2.520
+1/32
+Table 2: Peak |d| under apply_chat_template-formatted
+activation extraction for the chat-template robustness
+set.
+that every model in the chat-template robust-
+ness set reaches peak |d| ≥2.5, and six exceed
+|d| ≥4.7 across SFT, DPO, C-RLFT, and RLAIF
+recipes. The split is therefore not tied to a sin-
+gle model family, prompt format, or alignment
+recipe. We treat early-layer peaks in this set as
+prompt-format artifacts rather than safety axes. Ta-
+ble 10 shows that first-token separation collapses
+while final-token and mean-pooled separation re-
+main large.
+The projection is not driven by a fixed list
+of boundary prompts. Figure 1 projects every
+prompt for each model in the core model set
+onto the peak-layer cPCA-PC1 direction. Llama,
+Qwen, and Gemma show clear separation between
+harmful-request prompts and benign instructions.
+Mistral is the exception, matching the early-layer
+prompt-format artifact noted in the chat-template
+robustness set. The prompts closest to the deci-
+sion boundary vary by model rather than forming
+a fixed set of ambiguous prompts. This pattern
+supports a model-specific safety axis, not a trivial
+prompt-category classifier.
+5.2
+Causal Map: The Geometry Changes
+Refusal Behavior
+Removing selected directions weakens refusal in
+the models where a decrease can be measured.
+Table 3 shows post-ablation harmful-refusal rates
+for the direction-ablation set. Four models have
+baseline refusal rates away from both extremes. In
+5
+
+boundary safety : general
+              8  :  0
+Llama-3.1-8B  (peak L30)
+boundary safety : general
+              8  :  0
+Qwen-2.5-7B  (peak L19)
+4
+3
+2
+1
+0
+1
+2
+3
+4
+cPCA-PC1 projection (z-scored)
+boundary safety : general
+              7  :  1
+Mistral-7B-v0.3  (peak L1)
+4
+3
+2
+1
+0
+1
+2
+3
+4
+cPCA-PC1 projection (z-scored)
+boundary safety : general
+              3  :  5
+Gemma-2-9B  (peak L20)
+general-band
+safety-band
+boundary (8 nearest to midpoint)
+Figure 1: cPCA-PC1 projection of prompts at each core model’s peak layer. Red marks the safety band, blue marks
+the general-instruction band, and open black rings mark prompts closest to the decision boundary.
+each of these four models, removing at least one
+recovered or reference direction lowers harmful-
+request refusal with non-overlapping Wilson 95%
+CIs. These four models span RLHF+SFT, SFT,
+and DPO alignment recipes. The remaining two
+models, both from the core model set, serve as
+refusal-floor and refusal-ceiling controls.
+The refusal-changing direction differs across
+models. Removing PCA-PC1 produces the largest
+drop for Llama. Removing the Arditi direction pro-
+duces the largest drop for Qwen and SOLAR. On
+Mistral-7B-Instruct-v0.2, PCA-PC1, cPCA-PC1,
+and the Arditi direction all reduce refusal. The
+common pattern is therefore not one universal di-
+rection shared by every model. Instead, each model
+with refusal left to reduce has at least one direction
+in the low-rank safety subspace whose removal
+weakens refusal.
+The controls show that ablation does not al-
+ways reduce refusal. The floor and ceiling rows
+leave too little room for a signed causal claim. Ta-
+ble 7 reports a PCA-PC4 control in which refusal
+increases rather than decreases. This non-leading
+PCA direction supports direction specificity be-
+cause removing a direction does not simply make
+generation worse.
+5.3
+Recurrence: The Geometry Recurs Across
+Model Families
+Different
+model
+families
+preserve
+similar
+prompt-to-prompt activation structure. Table 4
+shows high peak-layer CKA across the four core
+families, with all inter-family pairs far above the
+prompt-shuffle null. No shuffled run reaches the
+observed CKA on any inter-family pair (p<0.001).
+Cross-family recurrence does not mean that ev-
+ery model peaks at the same depth. The depth-
+normalized d-profile correlations are mixed, in-
+cluding both negative and positive model pairs.
+Together, the CKA and depth-profile results sup-
+port a narrow claim. The low-rank safety subspace
+appears across families, but its strongest layer is
+model-specific. We do not claim that the safety
+subspace universally lives in the last third of the
+network. As a caveat, CKA on high-dimensional
+activations remains sensitive to tokenization and
+norm structure (Ding et al., 2021). The prompt-
+shuffle null controls prompt order, but not tokeniza-
+tion or norm structure.
+5.4
+Diagnostic: GFS Identifies the Model
+That Retains Refusal After LoRA
+GFS ranks models before LoRA and separates
+the DPO-only group.
+Table 8 ranks the raw-
+prompt GFS ranking set and places the four
+DPO-only models in ranks 1–4. Low-GFS out-
+liers have cPCA directions that already lie close
+6
+
+Causally interpretable
+Refusal floor / ceiling†
+Direction
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.2
+SOLAR-10.7B
+Mistral-7B-v0.3
+Gemma-2-9B
+Baseline
+0.14
+0.86
+0.31
+0.22
+0.04
+0.96
+PCA-PC1
+0.02⋆
+0.84
+0.08⋆
+0.17
+0.00
+0.93
+cPCA-PC1
+0.17
+0.86
+0.09⋆
+0.11
+0.05
+0.96
+Arditi
+0.14
+0.68⋆
+0.13⋆
+0.06⋆
+0.02
+0.92
+Random control
+0.14
+0.86
+0.28
+0.21
+0.05
+0.96
+Table 3: Post-ablation harmful-refusal rate (AdvBench prompts) when the indicated peak-layer direction is projected
+out during generation. Bold entries with ⋆have post-ablation Wilson 95% CIs below the baseline CI. † refusal
+floor/ceiling. Full Wilson confidence intervals are reported in Table 7.
+CKA
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.3
+Gemma-2-9B
+Llama-3.1-8B
+1.000
+0.881
+0.738
+0.676
+Qwen-2.5-7B
+—
+1.000
+0.803
+0.764
+Mistral-7B-v0.3
+—
+—
+1.000
+0.681
+Gemma-2-9B
+—
+—
+—
+1.000
+Table 4: Peak-layer linear CKA between instruct-model
+activations from the core model set. Bold marks the
+highest pair and underline marks the second-highest
+pair. Null comparisons are discussed in §5.3.
+to the canonical refusal direction. Because GFS
+downweights such directions, models with simi-
+lar harmful/benign separation can receive different
+GFS values. The score is high when the safety split
+is strong, appears late, and is not concentrated in
+the known refusal axis. The next paragraphs test
+whether this ranking also identifies the initially safe
+model that retains the most refusal after the largest
+benign-LoRA update.
+LoRA fragility is widespread, with one consis-
+tent exception. Figure 2 shows the LoRA traces
+for the core model set, and Table 9 reports the
+strongly aligned hold-out models added to the
+LoRA fragility set. Benign LoRA fine-tuning
+rapidly increases harmful compliance in nearly ev-
+ery tested aligned model. At the largest LoRA size,
+every non-Gemma model reaches full harmful com-
+pliance, whereas Gemma-2-9B remains below full
+harmful compliance. Replicated runs preserve this
+separation. Gemma remains below full compliance,
+while every non-Gemma run reaches full compli-
+ance. Thus the LoRA fragility reported by prior
+work (Qi et al., 2024; Lermen et al., 2024; Wei
+et al., 2024) reproduces across alignment recipes,
+but Gemma remains a consistent exception at the
+largest fine-tuning size.
+The hold-out models show that the Gemma
+result is not limited to the core set. Table 9 lists
+the full LoRA fragility set, including the strongly
+aligned hold-out models. These hold-out models
+have low harmful compliance before LoRA (≤0.1)
+and higher GFS than Gemma-2-9B. After benign
+base
+5
+10
+25
+50
+100
+200
+LoRA fine-tuning samples  n
+0.00
+0.25
+0.50
+0.75
+1.00
+Harmful compliance (50 held-out)
+Llama
+Qwen
+Mistral
+Gemma
+Figure 2: Harmful compliance after increasing-size be-
+nign LoRA updates. The full LoRA fragility set is
+listed in Table 9. Replicated-run details are reported in
+Appendix B.3.
+Model
+|cos(PCAk∗, Arditi)|
+|cos(cPCA1, Arditi)|
+Llama-3.1-8B
+0.295 (PCA-PC3)
+0.16
+Qwen-2.5-7B
+0.333 (PCA-PC1)
+0.26
+Mistral-7B-v0.3
+0.291 (PCA-PC9)
+0.10
+Gemma-2-9B
+0.636 (PCA-PC1)
+0.33
+Table 5: PCA-PC index where the Arditi direction has
+the highest cosine for each model (left column), and the
+layer-averaged |cos(cPCA1, Arditi)| (right column).
+LoRA fine-tuning, all hold-out models reach full
+harmful compliance at the largest update size. With
+these initially safe additions included, Gemma re-
+mains the lowest-GFS case and the only model in
+the LoRA fragility set that retains substantial re-
+fusal. This result supports using GFS to flag which
+initially safe model will retain the most refusal after
+LoRA.
+The Arditi-cosine term explains why Gemma
+receives low GFS. Table 5 shows that Gemma is
+the model whose cPCA directions stay closest to
+the Arditi refusal direction. Because GFS down-
+weights safety splits that lie on the known refusal
+axis, the score computed before fine-tuning points
+to the model whose refusal behavior is most pre-
+served after the largest benign-LoRA update in our
+protocol.
+What remains to interpret. The four result
+7
+
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Relative depth
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+Peak |d| (max over 10 PCs)
+(A) Layer-wise Cohen's |d|
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Relative depth
+0.0
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.7
+0.8
+|cos(cPCA1, Arditi)|
+0
+5 10
+25 50100200
+LoRA samples n
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Harmful compliance
+(C) LoRA fragility curves
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.3
+Gemma-2-9B
+(B) Layer-wise Arditi alignment
+Figure 3: Gemma case study. (A) Layer-wise peak |d| vs. relative depth. (B) Layer-wise | cos(cPCA1, Arditi)|.
+(C) Harmful compliance after increasing benign-LoRA updates in the core model set. The error bar marks the seed
+range for Gemma at the largest update.
+blocks leave two interpretation questions. First,
+why does Gemma, the lowest-GFS model in the
+LoRA fragility set, retain the most refusal af-
+ter LoRA? Second, how should the DPO-first
+GFS ranking be read without overstating it as a
+population-level result? The discussion addresses
+these questions.
+6
+Discussion and Conclusion
+Why Gemma’s geometry is unusual.
+Figure 3
+puts the Gemma result in one view by combining
+the layer profile, Arditi cosine, and LoRA trace for
+the core model set. The key contrast is that Gemma
+keeps its safety-separating direction closer to the
+canonical Arditi refusal direction than the other
+core models, and it is also the only core model that
+does not become fully compliant with harmful re-
+quests after the largest LoRA update. This pattern
+suggests that refusal near the canonical refusal di-
+rection may be harder for a small benign low-rank
+update to erase completely. We treat this as an inter-
+pretation, not as proof. The PCA-PC1 / Arditi dis-
+sociation in Table 5 also shows why a single-vector
+account is too narrow. The variance-dominant di-
+rection is not always the direction whose removal
+changes refusal, so refusal should be read as a di-
+rection inside a low-rank subspace.
+Alignment-recipe ordering.
+The DPO-first GFS
+ranking should be read as a hypothesis about align-
+ment recipes, not as a population-level conclusion.
+Table 8 lists the ranking, and Appendix B.3 reports
+the weight-scheme sensitivity tests. The pattern is
+consistent with Lee et al. (2024)’s observation that
+DPO can damp toxic features without erasing them.
+In our terms, the safety signal remains visible in
+the representation but is spread across directions
+that are not concentrated on the canonical refusal
+axis. The DPO subset is still small, so the claim
+should be tested on larger DPO populations.
+GFS tracks spread, not raw magnitude.
+GFS
+should be read as a spread-weighted score rather
+than a measure of harmful/benign separation alone.
+It downweights large splits when their cPCA direc-
+tion lies close to the Arditi refusal direction. This
+is a scoring statement, not a direct behavioral guar-
+antee. Unit-norm PCA and layer-wise norm checks
+further show that the score is not driven by larger
+activation norms alone.
+Conclusion.
+The practical lesson is that passing
+refusal tests is not enough to show robust alignment.
+SKIN-DEEP inspects the aligned model before an
+attack by measuring where harmful-request refusal
+appears in residual-stream geometry. Across the
+model sets studied here, that geometry is low-rank,
+changes refusal when selected directions are re-
+moved, recurs across families, and identifies which
+initially safe model retains the most refusal after
+LoRA. These results support GFS as a practical
+pre-deployment diagnostic for fragile refusal be-
+havior. Its quantitative forecasting power should
+be validated on larger held-out model sets, and we
+therefore release the pre-attack activation pipeline
+while withholding attack-ready artifacts as detailed
+in our Ethics Statement.
+Limitations
+Scale. Our full model pool covers 3B–32B open-
+weight models, with the direction-ablation set in
+8
+
+the 7–10.7B range. Whether the same low-rank
+safety-subspace description holds at 70B+ or in
+mixture-of-experts models is open. We conjecture
+that the subspace becomes more distributed (higher
+GFS) with scale, but the scale conjecture remains
+untested here.
+Language and task coverage. All prompts are
+English. Safety-critical multilingual behavior is
+known to differ, and our conclusions should not
+be extrapolated to non-English inputs without re-
+running the pipeline.
+Alignment-recipe coverage. The representation
+pipeline spans six alignment recipes (RLHF+SFT,
+DPO, ORPO, RLAIF, C-RLFT, SFT), and the
+direction-ablation set covers three of the six
+recipes (RLHF+SFT, SFT, DPO). Constitutional
+AI and online-RLAIF-trained models at the 70B+
+scale remain to be tested.
+Subspace-overlap quantification is scalar. We
+report |cos(vcPCA
+ℓ
+, vArditi
+ℓ
+)| as a single scalar align-
+ment between two unit vectors. Reporting full
+principal-angle spectra and Grassmann distances
+between the cPCA subspace and the Arditi direc-
+tion across 2–10-dimensional safety subspaces is a
+planned extension.
+Future predictive validation of GFS. The
+weight-sensitivity check in Appendix B.3, the three-
+seed Gemma replication in the same appendix,
+and the three-model held-out validation in Ta-
+ble 9 together show robustness to the GFS weight-
+ing scheme, separation between Gemma and non-
+Gemma seed populations, and preservation of the
+GFS–LoRA-recovery co-occurrence in the LoRA
+fragility set. The GFS–LoRA hypothesis is cur-
+rently scoped to the models in the LoRA fragility
+set and, more narrowly, to the initially safe cases
+within the LoRA fragility set. Cross-regime gener-
+alization to weakly-aligned models and quantitative
+forecasting on a separate alignment-method set are
+natural next steps.
+Ethics Statement
+Dual-use. The direction-ablation primitive we use
+to causally test the safety axis is, by construction,
+also a jailbreak primitive, and the LoRA fragility
+curve makes attack cost explicit. We take the dual-
+use risk seriously and make the disclosure choices
+below.
+We release the pre-attack activation GFS
+pipeline, the aggregate off-diagonal CKA values in
+Table 4, and the model-level GFS values reported
+in this paper.
+We do not release four attack-ready artifacts.
+The withheld set consists of (i) layer-level ablation
+hooks and the code path that applies them during
+generation, (ii) model-specific peak-layer indices
+for direction ablation at a granularity usable as at-
+tack coordinates, (iii) LoRA adapter weights from
+the fragility curve, including the n=200 Gemma
+adapter that partially recovers, and (iv) the Arditi-
+direction extraction script specialized to the four
+model families. The withheld code paths, coordi-
+nates, adapter weights, and extraction script are the
+operational attack primitives. Withholding these
+artifacts is the minimum responsible choice, and
+we make the disclosure boundary explicit rather
+than implicit.
+Adversary-side threat model. An attacker with
+access to the released pre-attack activation diagnos-
+tic can, within approximately one GPU-day on a
+7–9B checkpoint, re-derive a candidate peak layer
+(by recomputing layer-wise Cohen’s d on public
+safety/general prompts) and a candidate refusal
+direction (by recomputing the Arditi difference-in-
+means from public data), then re-implement orthog-
+onal ablation. Withholding the attack-ready arti-
+facts therefore raises cost by requiring compute and
+engineering time for the hook, but does not make at-
+tack intractable. Published prior work (Arditi et al.
+2024; Lermen et al. 2024) is already sufficient to
+reconstruct a functional pipeline. We also note a
+second-order risk. GFS itself, if publicly scored
+across an open-weight leaderboard, could be mis-
+used to rank checkpoints by “easiest to jailbreak”.
+We therefore limit model-level GFS reporting to
+the raw-prompt GFS ranking set analyzed here,
+coarsen peak-depth information in the appendix,
+and do not ship a GFS scoring service. We flag
+both the reconstruction risk and the leaderboard-
+misuse risk for community discussion.
+Defender utility. GFS is designed for defen-
+sive use. The score can flag under-aligned check-
+points before release, help prioritize where to place
+safety fine-tuning or interpretability probes along
+the layer stack, and triage red-teaming budget. Con-
+centrated subspaces call for targeted safety ed-
+its, while signals spread across many layers call
+for multi-layer interventions. We report an over-
+refusal–adjacent diagnostic in the appendix so that
+GFS is not weaponized as a pressure to over-refuse.
+We encourage downstream users to read GFS as a
+descriptive, defender-side summary, not an attack
+roadmap.
+9
+
+Human subjects. No human subjects were in-
+volved. All prompts are from publicly released
+safety benchmarks under their original licenses
+(AdvBench, HarmBench, BeaverTails, Alpaca,
+OASST).
+References
+Abubakar Abid, Martin J. Zhang, Vivek K. Bagaria, and
+James Zou. 2018. Exploring patterns enriched in a
+dataset with contrastive principal component analysis.
+Nature Communications, 9(1):2134.
+Guillaume Alain and Yoshua Bengio. 2017. Under-
+standing intermediate layers using linear classifier
+probes. In ICLR Workshop.
+Marti J. Anderson. 2001.
+A new method for non-
+parametric multivariate analysis of variance. Austral
+Ecology, 26(1):32–46.
+Andy Arditi, Oscar Obeso, Aaquib Syed, Daniel Paleka,
+Nina Panickssery, Wes Gurnee, and Neel Nanda.
+2024. Refusal in language models is mediated by
+a single direction. Advances in Neural Information
+Processing Systems, 37:136037–136083.
+Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda
+Askell, Anna Chen, Nova DasSarma, Dawn Drain,
+Stanislav Fort, Deep Ganguli, Tom Henighan, et al.
+2022. Training a helpful and harmless assistant with
+reinforcement learning from human feedback. arXiv
+preprint arXiv:2204.05862.
+Yoav Benjamini and Yosef Hochberg. 1995. Controlling
+the false discovery rate: A practical and powerful
+approach to multiple testing. Journal of the Royal
+Statistical Society: Series B, 57(1):289–300.
+Jacob Cohen. 2013. Statistical power analysis for the
+behavioral sciences. routledge.
+Frances Ding, Jean-Stanislas Denain, and Jacob Stein-
+hardt. 2021.
+Grounding representation similarity
+through statistical testing. Advances in Neural In-
+formation Processing Systems (NeurIPS).
+Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey,
+et al. 2024. The Llama 3 herd of models. arXiv
+preprint arXiv:2407.21783.
+Gemma Team. 2024. Gemma 2: Improving open lan-
+guage models at a practical size.
+arXiv preprint
+arXiv:2408.00118.
+Arthur Gretton, Karsten M. Borgwardt, Malte J. Rasch,
+Bernhard Schölkopf, and Alexander Smola. 2012. A
+kernel two-sample test. Journal of Machine Learning
+Research, 13(1):723–773.
+Jiwoo Hong, Noah Lee, and James Thorne. 2024.
+ORPO: Monolithic Preference Optimization without
+Reference Model. Preprint, arXiv:2403.07691.
+Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan
+Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and
+Weizhu Chen. 2022. LoRA: Low-rank adaptation of
+large language models. In International Conference
+on Learning Representations (ICLR).
+Hakan Inan, Kartikeya Upasani, Jianfeng Chi, Rashi
+Rungta,
+Krithika Iyer,
+Yuning Mao,
+Michael
+Tontchev, Qing Hu, Brian Fuller, Davide Testuggine,
+and Madian Khabsa. 2023. Llama guard: Llm-based
+input-output safeguard for human-ai conversations.
+arXiv preprint arXiv:2312.06674.
+Jiaming Ji, Mickel Liu, Josef Dai, Xuehai Pan, Chi
+Zhang, Ce Bian, Boyuan Chen, Ruiyang Sun, Yizhou
+Wang, and Yaodong Yang. 2023. Beavertails: To-
+wards improved safety alignment of llm via a human-
+preference dataset. Advances in Neural Information
+Processing Systems, 36:24678–24704.
+Albert Q. Jiang, Alexandre Sablayrolles, Arthur Men-
+sch, Chris Bamford, Devendra Singh Chaplot, Diego
+de las Casas, Florian Bressand, Gianna Lengyel, Guil-
+laume Lample, Lucile Saulnier, et al. 2023. Mistral
+7B. arXiv preprint arXiv:2310.06825.
+Simon Kornblith, Mohammad Norouzi, Honglak Lee,
+and Geoffrey Hinton. 2019.
+Similarity of neural
+network representations revisited. In International
+Conference on Machine Learning (ICML).
+Andrew Lee, Xiaoyan Bai, Itamar Pres, Martin Watten-
+berg, Jonathan K. Kummerfeld, and Rada Mihalcea.
+2024. A mechanistic understanding of alignment al-
+gorithms: A case study on DPO and toxicity. In Inter-
+national Conference on Machine Learning (ICML).
+Harrison Lee, Samrat Phatale, Hassan Mansoor, Thomas
+Mesnard, Johan Ferret, Kellie Lu, Colton Bishop,
+Ethan Hall, Victor Carbune, Abhinav Rastogi, and
+Sushant Prakash. 2023. RLAIF vs. RLHF: Scaling
+Reinforcement Learning from Human Feedback with
+AI Feedback. Proceedings of the 41st International
+Conference on Machine Learning, PMLR 235:26874-
+26901, 2024, arXiv:2309.00267.
+Simon Lermen, Charlie Rogers-Smith, and Jeffrey
+Ladish. 2024. LoRA fine-tuning efficiently undoes
+safety training in Llama 2-Chat 70B. In ICLR Work-
+shop on Secure and Trustworthy Large Language
+Models.
+AI @ Meta Llama Team. 2024. The llama 3 herd of
+models. Preprint, arXiv:2407.21783.
+Mantas Mazeika, Long Phan, Xuwang Yin, Andy Zou,
+Zifan Wang, Norman Mu, Elham Sakhaee, Nathaniel
+Li, Steven Basart, Bo Li, et al. 2024. HarmBench:
+A standardized evaluation framework for automated
+red teaming and robust refusal. In International Con-
+ference on Machine Learning (ICML).
+Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida,
+Carroll Wainwright, Pamela Mishkin, Chong Zhang,
+Sandhini Agarwal, Katarina Slama, Alex Ray, et al.
+10
+
+2022. Training language models to follow instruc-
+tions with human feedback. In Advances in Neural
+Information Processing Systems (NeurIPS).
+Nina Panickssery, Nick Gabrieli, Julian Schulz, Meg
+Tong, Evan Hubinger, and Alexander Matt Turner.
+2023. Steering llama 2 via contrastive activation
+addition. arXiv preprint arXiv:2312.06681.
+Xiangyu Qi, Yi Zeng, Tinghao Xie, Pin-Yu Chen, Ruoxi
+Jia, Prateek Mittal, and Peter Henderson. 2024. Fine-
+tuning aligned language models compromises safety,
+even when users do not intend to! In International
+Conference on Learning Representations (ICLR).
+Qwen Team. 2024. Qwen2.5 technical report. arXiv
+preprint arXiv:2412.15115.
+Rafael Rafailov, Archit Sharma, Eric Mitchell, Stefano
+Ermon, Christopher D. Manning, and Chelsea Finn.
+2023. Direct Preference Optimization: Your Lan-
+guage Model is Secretly a Reward Model. Preprint,
+arXiv:2305.18290.
+Guan Wang, Sijie Cheng, Xianyuan Zhan, Xiangang
+Li, Sen Song, and Yang Liu. 2023. OpenChat: Ad-
+vancing Open-source Language Models with Mixed-
+Quality Data. Preprint, arXiv:2309.11235.
+Alexander Wei, Nika Haghtalab, and Jacob Steinhardt.
+2023. Jailbroken: How does LLM safety training
+fail? In Advances in Neural Information Processing
+Systems (NeurIPS).
+Boyi Wei, Kaixuan Huang, Yangsibo Huang, Tinghao
+Xie, Xiangyu Qi, Mengzhou Xia, Prateek Mittal,
+Mengdi Wang, and Peter Henderson. 2024. Assess-
+ing the brittleness of safety alignment via pruning and
+low-rank modifications. In International Conference
+on Machine Learning (ICML).
+Xianjun Yang, Xiao Wang, Qi Zhang, Linda Petzold,
+William Yang Wang, Xun Zhao, and Dahua Lin.
+2023.
+Shadow alignment: The ease of subvert-
+ing safely-aligned language models. arXiv preprint
+arXiv:2310.02949.
+Andy Zou, Long Phan, Sarah Chen, James Campbell,
+Phillip Guo, Richard Ren, Alexander Pan, Xuwang
+Yin, Mantas Mazeika, Ann-Kathrin Dombrowski,
+et al. 2023a. Representation engineering: A top-
+down approach to AI transparency. arXiv preprint
+arXiv:2310.01405.
+Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr,
+J Zico Kolter, and Matt Fredrikson. 2023b. Univer-
+sal and transferable adversarial attacks on aligned
+language models. arXiv preprint arXiv:2307.15043.
+A
+Algorithmic Summary
+B
+Robustness and Statistical Validation
+This appendix groups the checks that qualify the
+main evidence in Section 5. Appendix B.1 ad-
+dresses peak-layer selection and statistical validity.
+Algorithm 1 SKIN-DEEP diagnostic computation
+Input. Aligned model M, base model M0, and matched
+prompt sets Dsafe, Dgen
+Output. Evidence table E and scalar GFS
+Collect layer evidence
+1: for ℓ= 1, . . . , L do
+2:
+Hℓ, H0
+ℓ←Residuals(M, M0, Dsafe ∪Dgen, ℓ)
+3:
+vℓ←cPCA(Hℓ, H0
+ℓ, α) using Eq. 1
+4:
+dℓ←CohenD(vℓ, Hℓ, Dsafe, Dgen)
+5:
+(pℓ, mℓ) ←FullSpaceTests(Hℓ, Dsafe, Dgen)
+6:
+cℓ←| cos(vℓ, vArditi
+ℓ
+)|
+7: end for
+Aggregate diagnostic signal
+8: p∗
+1:L ←BH-FDR(p1:L, q=0.05)
+9: GFS ←PL
+ℓ=1(ℓ/L) |dℓ| (1 −cℓ)
+10: E ←{(dℓ, p∗
+ℓ, mℓ, cℓ)}L
+ℓ=1
+11: return E and GFS
+Appendix B.2 checks whether the recovered ge-
+ometry is a token-position or single-direction arti-
+fact. Appendix B.3 reports replication and scoring-
+sensitivity checks for the diagnostic result.
+B.1
+Selection-Adjusted Subspace Evidence
+Peak-layer selection is not FDR-corrected.
+Layer-wise PERMANOVA p-values are BH-
+corrected within a model, but the peak layer is
+chosen by maximizing |d| across layers. The Co-
+hen’s d values in Table 1 and the peak |d| values
+in Table 8 are max over ≤10 PCs at the peak layer.
+We therefore report the held-out split-sample Co-
+hen’s d below as the selection-adjusted estimate,
+and the Table 1 values should be read as selection-
+influenced descriptive estimates.
+Split-sample Cohen’s d holds up under
+selection-bias correction. For the fourteen origi-
+nal raw-prompt models in the raw-prompt GFS
+ranking set, we compute a 50/50 split-sample Co-
+hen’s d. Each bootstrap fits the cPCA direction
+on one half and measures d on the held-out half.
+Across 50 bootstraps, the mean selection-bias gap
+(dtrain −dtest) is +0.070, with 9 of 14 models show-
+ing |gap| < 0.08. The held-out dtest on the core
+model set is 3.23 (Llama), 2.97 (Qwen), 2.71 (Mis-
+tral), 2.88 (Gemma), each only slightly below the
+reported peak |d| in Table 1. The minimum held-
+out dtest across the original raw-prompt models in
+the raw-prompt GFS ranking set is 1.69 (Qwen-
+2.5-3B). The core separation claim therefore does
+not depend on the selection step. The two newly
+added models in the raw-prompt GFS ranking
+set (Notus-7B-v1, Mistral-7B-Instruct-v0.1) are re-
+ported with point estimates only in Table 8.
+11
+
+B.2
+Representation-Artifact Checks
+Token-position robustness of the layer-wise sig-
+nature.
+We follow representation-level refusal
+work by extracting activations at the final at-
+tended token (Arditi et al., 2024; Zou et al., 2023a;
+Panickssery et al., 2023), and then test whether
+the signal is an artifact of that position.
+The
+token-position ablation in Table 10 covers five
+models (Llama-3.1-8B, Qwen-2.5-7B, Mistral-7B-
+v0.3, Mistral-7B-v0.2, Nous-Hermes-2-Mistral-7B-
+DPO), spanning three models used in the direction-
+ablation set plus two Mistral variants from the
+chat-template robustness set. Peak cPCA |d| at
+the first attended token collapses to ≤0.27 for
+every model, while mean-pool over all attended
+tokens retains a coherent late-layer signal (peak |d|
+between 1.98 and 4.63). The peak refusal-related
+geometry is therefore concentrated at the assistant-
+position-marker token rather than at the BOS or any
+single chat-template special token. Gemma-2-9B is
+excluded from this ablation because its interleaved-
+attention architecture mixes local context into ev-
+ery token, which conflates token-position with
+attention-window effects (Gemma Team, 2024).
+Subspace overlap with the Arditi direction.
+The principal-angle analysis in Table 11 reports the
+smallest principal angle between the top-5 cPCA
+subspace and the Arditi difference-of-means re-
+fusal direction at the peak layer. Five of the eight
+models in the chat-template robustness set have a
+min principal angle below 20◦, supporting the inter-
+pretation that cPCA recovers a low-rank subspace
+containing the canonical refusal direction.
+B.3
+Behavioral Replication and Score
+Sensitivity
+Multi-seed LoRA fragility. The Gemma n=200
+below-full-compliance result is reported across
+three random seeds (mean 0.68, std 0.17, range
+0.48–0.80), and all three seeds remain strictly be-
+low 1.00. Llama, Qwen, and Mistral-v0.3 are each
+tested at three random seeds, with n=200 com-
+pliance equal to 1.000 in every seed (Llama 3/3,
+Qwen 3/3, Mistral 3/3 = 1.000). The claim that
+Gemma is the only model in the core model set
+below full harmful compliance at n=200 holds in
+every seed pair, while the amount of retained re-
+fusal still depends on seed.
+GFS weight-scheme robustness. The default
+depth weight in GFS is linear (wℓ=ℓ/L).
+We
+replace it with three alternatives, namely uni-
+form (wℓ=1/L), exponential (wℓ∝eℓ/L), and late-
+only (uniform on the second half), on the eight
+chat-template held-out pre-attack activation extrac-
+tions. Spearman rank correlation against the lin-
+ear ranking is ρ=0.881 for late-only (p=0.004),
+ρ=0.857 for exponential (p=0.007), and ρ=0.690
+for uniform (p=0.058). The DPO-aligned median
+exceeds the non-DPO median in every scheme
+(linear 7.5>6.7, uniform 0.52>0.42, exponen-
+tial 0.52>0.37, late-only 0.52>0.29), and the
+DPO/non-DPO gap is largest under late-only
+weighting, consistent with the late peak depths in
+Table 8. The DPO-first ordering is therefore not an
+artifact of the linear weight choice.
+C
+Supporting Tables and Diagnostics
+Full layer-wise Cohen’s d, PERMANOVA F,
+MMD, and cosine profiles for all sixteen models
+in the raw-prompt GFS ranking set are included
+in the released pre-attack diagnostic pipeline de-
+scribed in the Ethics Statement. This appendix
+gives the table-level detail

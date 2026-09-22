@@ -1,0 +1,328 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2410.12855
+Type: HTML
+Length: 142630 chars (truncated)
+
+--- Content ---
+
+##### Report GitHub Issue
+
+×
+
+Title:
+
+Content selection saved. Describe the issue below:
+
+Description:
+
+Submit without GitHub Submit in GitHub
+
+arXiv is now an independent nonprofit! [Learn more](https://info.arxiv.org/about) ×
+
+[ Back to arXiv ](/)
+
+[Why HTML?](https://info.arxiv.org/about/accessible_HTML.html) Report Issue [ Back to Abstract ](/abs/2410.12855v2 "Back to abstract page") [ Download PDF](/pdf/2410.12855v2 "Download PDF") [ ](javascript:toggleNavTOC\(\); "Toggle navigation") [ ](javascript:toggleReadingMode\(\); "Disable reading mode, show header and footer")
+
+  1. Abstract
+  2. 1 Introduction
+  3. 2 Preliminaries
+     1. 2.1 Large Language Model
+     2. 2.2 Jailbreak Attack and Defense on LLM
+     3. 2.3 Evidence Theory
+     4. 2.4 Problem Definition
+  4. 3  Building JAILJUDGE Benchmark and multi-agent Judge Framework
+     1. 3.1  Building JAILJUDGE Benchmark: JAILJUDETRAIN and JAILJUDTEST
+        1. 3.1.1 JAILJUDETRAIN: Instruction-Tuning Dataset for Complex Jailbreak Judgments
+        2. 3.1.2 JAILJUDGETEST: High-Quality Human-Annotated Test Jailbreak Judge Datasets
+     2. 3.2 JailJudge MultiAgent: Multi-agent Judge Framework
+  5. 4 JAILJUDGE Guard and Jailbreak Enhancers
+  6. 5 Experiments
+     1. 5.1 Jailbreak Judge Experiments
+     2. 5.2  Jailbreak Attack and Defense Experiments
+     3. 5.3 Ablation Study
+  7. 6 Related Works
+  8. 7 Conclusions
+  9. References
+  10. 8 Building JAILJUDGE Benchmark and multi-agent Judge Framework
+     1. 8.1 Complex Harmful Prompt Construction
+     2. 8.2 Human Annotator Training policies
+     3. 8.3 Statistic Information of JAILJUDGE Benchmark
+  11. 9 Multi-agent Judge Framework
+  12. 10 JAILJUDGE Guard: An End-To-End Jailbreak Judge Model
+  13. 11 JAILJUDGE Guard As the Attacker Enhancer and Defense Method
+     1. 11.1 JAILJUDGE Guard As the Attacker Enhancer
+     2. 11.2 JAILJUDGE Guard As the Defense Method
+  14. 12 Experiments
+     1. 12.1 Jailbreak Judge Evaluation Datasets and Metrics
+     2. 12.2 Jailbreak Judge Baselines
+     3. 12.3 Human Evaluation of Explainability
+     4. 12.4 JAILJUDGE Guard As An Attack Enhancer and Defense Method: Datasets and Metrics
+
+
+
+[ License: CC BY-NC-ND 4.0 ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2410.12855v2 [cs.CL] 18 Oct 2024
+
+#  JAILJUDGE: A Comprehensive Jailbreak Judge Benchmark with Multi-Agent Enhanced Explanation Evaluation Framework
+
+​Fan Liu  Affiliation: AI Thrust, The Hong Kong University of Science and Technology (Guangzhou), Guangzhou, PRC.  Yue Feng  Zhao Xu  Affiliation: AI Thrust, The Hong Kong University of Science and Technology (Guangzhou), Guangzhou, PRC.  Lixin Su  Affiliation: Baidu Inc., Beijing, PRC.  Xinyu Ma  Affiliation: Baidu Inc., Beijing, PRC.  Dawei Yin  Affiliation: Baidu Inc., Beijing, PRC.  Hao Liu ††thanks: †Correspondence to Yue Feng and Hao Liu. Email: [{fliu236,zxu674}@connect.hkust-gz.edu.cn; y.feng.6@bham.ac.uk;{sulixin,maxinyu03,yindawei02}@baidu.com;liuh@ust.hk](mailto:) Affiliation: CSE, The Hong Kong University of Science and Technology, Hong Kong SAR, PRC.  Affiliation: University of Birmingham, Birmingham, UK 
+
+###### Abstract
+
+Although significant research efforts have been dedicated to enhancing the safety of large language models (LLMs) by understanding and defending against jailbreak attacks, evaluating the defense capabilities of LLMs against jailbreak attacks also attracts lots of attention. Current evaluation methods lack explainability and do not generalize well to complex scenarios, resulting in incomplete and inaccurate assessments (e.g., direct judgment without reasoning explainability, the F1 score of the GPT-4 judge is only 55% in complex scenarios and bias evaluation on multilingual scenarios, etc.). To address these challenges, we have developed a comprehensive evaluation benchmark, JAILJUDGE, which includes a wide range of risk scenarios with complex malicious prompts (e.g., synthetic, adversarial, in-the-wild, and multi-language scenarios, etc.) along with high-quality human-annotated test datasets. Specifically, the JAILJUDGE dataset comprises training data of JAILJUDGE, with over 35k+ instruction-tune training data with reasoning explainability, and JAILJUDGETEST, a 4.5k+ labeled set of broad risk scenarios and a 6k+ labeled set of multilingual scenarios in ten languages. To provide reasoning explanations (e.g., explaining why an LLM is jailbroken or not) and fine-grained evaluations (jailbroken score from 1 to 10), we propose a multi-agent jailbreak judge framework, JailJudge MultiAgent, making the decision inference process explicit and interpretable to enhance evaluation quality. Using this framework, we construct the instruction-tuning ground truth and then instruction-tune an end-to-end jailbreak judge model, JAILJUDGE Guard, which can also provide reasoning explainability with fine-grained evaluations without API costs. Additionally, we introduce JailBoost, an attacker-agnostic attack enhancer, and GuardShield, a safety moderation defense method, both based on JAILJUDGE Guard. Comprehensive experiments demonstrate the superiority of our JAILJUDGE benchmark and jailbreak judge methods. Our jailbreak judge methods (JailJudge MultiAgent and JAILJUDGE Guard) achieve SOTA performance in closed-source models (e.g., GPT-4) and safety moderation models (e.g., Llama-Guard and ShieldGemma, etc.), across a broad range of complex behaviors (e.g., JAILJUDGE benchmark, etc.) to zero-shot scenarios (e.g., other open data, etc.). Importantly, JailBoost and GuardShield, based on JAILJUDGE Guard, can enhance downstream tasks in jailbreak attacks and defenses under zero-shot settings with significant improvement (e.g., JailBoost can increase the average performance by approximately 29.24%, while GuardShield can reduce the average defense ASR from 40.46% to 0.15%).
+
+[Code is available at https://github.com/usail-hkust/Jailjudge ](https://github.com/usail-hkust/Jailjudge)
+
+[Dataset is available at https://huggingface.co/datasets/usail-hkust/JailJudge ](https://huggingface.co/datasets/usail-hkust/JailJudge)
+
+[JAILJUDGE Guard model is available at https://huggingface.co/usail-hkust/JailJudge-guard ](https://huggingface.co/usail-hkust/JailJudge-guard)  
+  
+---  
+  
+## 1 Introduction
+
+Jailbreak attacks aim to manipulate LLMs through malicious instructions to induce harmful behaviors Zou et al. (2023); Yuan et al. (2024); Wu et al. (2024); Zhang et al. (2024a). To date, an increasing body of research on jailbreak attacks and defenses has been proposed to enhance the safety of LLMs. Before delving into the safety of LLMs, accurately determining whether an LLM has been compromised (e.g., generating harmful and illegal responses) remains a fundamental and open problem. As accurately determining whether an LLM has been compromised (jailbroken) can benefit downstream tasks such as safety evaluation, jailbreak attack, and jailbreak defense etc. However, jailbreak judge, “the task of evaluating the success of a jailbreak attempt, hinges on the ability to assess the harmfulness of an LLM’s target response,” which is inherently complex and non-trivial.
+
+Table 1:  Jailbreak judge benchmark and methods.
+
+Jailbreak judge benchmark | Broad range risk scenario | In-the-wild scenario | Adversarial scenario | Multilingual scenario | Human label  
+---|---|---|---|---|---  
+JailbreakEval Jin et al. (2024b) | 10 safety categories | ✗ | ✗ | ✗ | self label  
+WildGuard Han et al. (2024) | 13 safety categories | open platform | jailbreak attack synthesis | ✗ | high-quality human-annotated  
+STRONGREJECT Souly et al. (2024) | 6 safety categories | ✗ | ✗ | ✗ | ✗  
+JAILJUDGE (ours) | 14 safety categories | open platform | jailbreak attack synthesis | 10 multilingual languages | high-quality human-annotated  
+Methods | Refusal detection | Explainability | Fine-grained evaluation | Open source model | Open data  
+Keyword matching Liu et al. (2024b) | ✓ | ✗ | ✗ | ✓ | ✗  
+Toxic text classifiers Ji et al. (2024b) | ✗ | ✗ | ✗ | ✓ | ✗  
+Prompt-driven GPT-4 Qi et al. (2023) | ✓ | ✓ | ✓ | ✗ | ✗  
+Safety moderation model Inan et al. (2023) | ✓ | ✗ | ✗ | ✓ | ✗  
+JailJudge MultiAgent / JAILJUDGE Guard (ours) | ✓ | ✓ | ✓/ jailbroken score 1-10 | ✓ | ✓  
+  
+Although the jailbreak judge is a fundamental problem, comprehensive studies on it have been sparse Jin et al. (2024b), as shown in Table 1. Current methods can be broadly categorized into heuristic methods Liu et al. (2024b), toxic text classifiers Ji et al. (2024b), and LLM-based methods Inan et al. (2023). Heuristic and toxic text classifiers, while simple, often suffer high false positive rates. For instance, heuristic methods rely on keyword matching, misinterpreting benign responses containing certain keywords as malicious. Traditional toxic text classifiers Ji et al. (2024b), trained on toxic text, struggle with complex scenarios (e.g., broad-range risks, adversarial, in-the-wild, multilingual) and often lack explanatory power. The harmfulness of a response alone is insufficient to determine whether a model refuses to answer, and the absence of explanations can lead to false judgments. Conversely, LLM-based methods utilize LLMs to evaluate potential jailbreaks or directly fine-tune them as moderation models (e.g., Llama-Guard Inan et al. (2023) and ShieldGemma Zeng et al. (2024a)). For example, prompt-driven GPT-4 uses tailored prompts to assess if an LLM is jailbroken but incurs significant computational and financial costs. Additionally, these methods may suffer from inherent biases and data ambiguities, leading to inaccurate judgments and reduced reliability in identifying jailbreak attempts due to lack reasoning explainability.
+
+To address these limitations, we developed a comprehensive jailbreak judge evaluation benchmark, JAILJUDGE, encompassing a wide range of complex scenarios (e.g., broad-range risks, adversarial, in-the-wild, multilingual, etc.). The JAILJUDGE dataset comprises JAILJUDGETRAIN, the intrsuction-tuning data, and JAILJUDGETEST, which features two high-quality human-annotated test datasets: a 4.5k+ labeled set of complex scenarios and a 6k+ labeled set of multilingual scenarios in ten languages. To provide reasoning explanations (e.g., explaining why an LLM is jailbroken or not) and fine-grained evaluations (jailbroken score from 1 to 10), we propose a multi-agent jailbreak judge framework, JailJudge MultiAgent, that explicitly and interpretably enhances judgment with reasoning explanations. JailJudge MultiAgent comprises judging agents, voting agents, and an inference agent, each playing specific roles. They collaboratively make interpretable, fine-grained decisions on whether an LLM is jailbroken through voting, scoring, and reasoning. Using this framework, we construct the instruction-tuning ground truth for JAILJUDGETRAIN and then instruction-tune an end-to-end jailbreak judge model, JAILJUDGE Guard, which can also provide reasoning explainability with fine-grained evaluations without API costs. Additionally, by demonstrating its foundational capability, we propose a jailbreak attack, JailBoost, and a defense method, GuardShield, based on JAILJUDGE Guard. JailBoost enhances adversarial prompt quality by providing jailbreak score rewards, while GuardShield detects attacker attempts as a moderation tool.
+
+Our main contributions are as follows: (1) We propose the jailbreak judge benchmark for evaluating complex jailbreak scenarios, which includes two high-quality, human-annotated test datasets: a set of over 4.5k+ labeled complex scenarios and a set of over 6k+ labeled multi-language scenarios. (2) We introduce a multi-agent jailbreak judge framework, JailJudge MultiAgent, that provides reasoning explainability and fine-grained evaluations. Using this framework, we construct the instruction-tuning dataset, JAILJUDGETRAIN, for the jailbreak judge. (3) We then instruction-tune an end-to-end jailbreak judge model, JAILJUDGE Guard, without incurring API costs. Furthermore, we propose a jailbreak attack enhancer, JailBoost, and a jailbreak defense method, GuardShield, both based on JAILJUDGE Guard. JailBoost can increase the average performance by approximately 29.24%, while GuardShield can reduce the average defense ASR from 40.46% to 0.15% under zero-shot settings.
+
+## 2 Preliminaries
+
+### 2.1 Large Language Model
+
+Large language models (LLMs) predict sequences by using previous tokens. Given a token sequence 𝐱1:n\mathbf{x}_{1:n}, where each token xix_{i} is part of a vocabulary set {1,⋯,V}\\{1,\cdots,V\\} with |V||V| as the vocabulary size, the goal is to predict the next token,
+
+| Pπθ(𝐲|𝐱1:n)=Pπθ(𝐱n+i|𝐱1:n+i−1),P_{\pi_{\theta}}(\mathbf{y}|\mathbf{x}_{1:n})=P_{\pi_{\theta}}(\mathbf{x}_{n+i}|\mathbf{x}_{1:n+i-1}), |  | (1)  
+---|---|---|---  
+  
+where Pπθ(𝐱n+i|𝐱1:n+i−1)P_{\pi_{\theta}}(\mathbf{x}_{n+i}|\mathbf{x}_{1:n+i-1}) is the probability of the next token 𝐱n+i\mathbf{x}_{n+i} given the previous tokens 𝐱1:n+i−1\mathbf{x}_{1:n+i-1}. The πθ\pi_{\theta} represents the LLM with parameter θ\theta, and 𝐲\mathbf{y} is the output sequence.
+
+### 2.2 Jailbreak Attack and Defense on LLM
+
+Jailbreak Attack on LLM.  The aim of a jailbreak attack is to create adversarial prompts that cause the LLM to produce harmful outputs,
+
+| ℒa​d​v(𝐱^1:n,𝐲^)=−logPπθ(𝐲^|𝐱^1:n),\mathcal{L}_{adv}(\hat{\mathbf{x}}_{1:n},\hat{\mathbf{y}})=-\log P_{\pi_{\theta}}(\hat{\mathbf{y}}|\hat{\mathbf{x}}_{1:n}), |  | (2)  
+---|---|---|---  
+  
+where ℒa​d​v(𝐱^1:n,𝐲^)\mathcal{L}_{adv}(\hat{\mathbf{x}}_{1:n},\hat{\mathbf{y}}) is the adversarial loss. 𝐱^1:n\hat{\mathbf{x}}_{1:n} is the adversarial prompt (e.g., "How to make a bomb?"), and 𝐲^\hat{\mathbf{y}} is the targeted output (e.g., "Sure, here are the steps to make the bomb!").
+
+Defending Against Jailbreak Attacks. The goal of jailbreak defense is to ensure that the LLM provides safe responses (e.g., “Sorry, I can’t assist with that.”), which can be formulated as follows,
+
+| ℒsafe(𝐱^1:n,𝐲^)=−logPπθ(I(𝐱^1:n),C(𝐲^)),\mathcal{L}_{\text{safe}}(\mathbf{\hat{x}}_{1:n},\mathbf{\hat{y}})=-\log P_{\pi_{\theta}}(I(\mathbf{\hat{x}}_{1:n}),C(\mathbf{\hat{y}})), |  | (3)  
+---|---|---|---  
+  
+where (ℒsafe(𝐱^1:n,𝐲^)\mathcal{L}_{\text{safe}}(\mathbf{\hat{x}}_{1:n},\mathbf{\hat{y}})) is safe loss function aligning the LLM with human safety preferences. I(𝐱^1:n)I(\mathbf{\hat{x}}_{1:n}) and C⁡(𝐲^)C(\mathbf{\hat{y}}) are filter functions that process inputs and outputs, respectively. Specifically, I(𝐱^1:n)I(\mathbf{\hat{x}}_{1:n}) might add random perturbations to mitigate harmful requests, and C⁡(𝐲^)C(\mathbf{\hat{y}}) could filter malicious outputs.
+
+### 2.3 Evidence Theory
+
+To model the hypothesis of whether an LLM is jailbroken or not, we can use evidence theory Dempster (2008); Deng (2016), a mathematical framework that extends traditional probability theory by accounting for both uncertainty and ignorance. The key components of evidence theory include:
+
+Frame of Discernment. The frame of discernment is a set of mutually exclusive and exhaustive hypotheses, denoted as Ω={H1,H2,⋯,Hn}\Omega=\\{H_{1},H_{2},\cdots,H_{n}\\}. For the jailbreak judge, it is defined as Ω={{JB},{NJB},{JB & NJB},{∅}}\Omega=\\{\\{\text{JB}\\},\\{\text{NJB}\\},\\{\text{JB \& NJB}\\},\\{\emptyset\\}\\}, where {JB}\\{\text{JB}\\} denotes that the LLM is jailbroken, {NJB}\\{\text{NJB}\\} means it is not, {JB & NJB}\\{\text{JB \& NJB}\\} expresses uncertainty, and ∅{\emptyset} indicates no conclusion can be made.
+
+Basic Probability Assignment (BPA). A function μ:2Ω⟶[0,1]\mu:2^{\Omega}\longrightarrow[0,1] that assigns a probability to each subset of Ω\Omega, satisfying ∑A⊆Ωμ⁡(A)=1\sum_{A\subseteq\Omega}\mu(A)=1 and μ⁡(∅)=0\mu(\emptyset)=0, where μ⁡(A)\mu(A) represents the degree of belief committed exactly to the subset AA. For the jailbreak judge, for example, μ⁡({JB})\mu(\\{\text{JB}\\}) indicates the probability that the LLM is jailbroken. A source of BPA is called an evidence.
+
+Dempster’s Rule of Combination. Dempster’s rule of combination combines evidence from two independent sources: (μ1⊕μ2)​(C)=∑A∩B=Cμ1​(A)⋅μ2​(B)1−∑A∩B=∅μ1​(A)⋅μ2​(B).(\mu_{1}\oplus\mu_{2})(C)=\frac{\sum_{A\cap B=C}\mu_{1}(A)\cdot\mu_{2}(B)}{1-\sum_{A\cap B=\emptyset}\mu_{1}(A)\cdot\mu_{2}(B)}. Dempster’s rule of combination is used to aggregate the BPAs from different sources to form a new BPA. For example, the judgments from different LLMs can be aggregated using Dempster’s rule of combination.
+
+### 2.4 Problem Definition
+
+Jailbreak Judge. The goal of the jailbreak judge is to evaluate the success of a jailbreak attempt by assessing the harmfulness of an LLM’s target response. The explainability-enhanced jailbreak judge can be defined as follows:
+
+| (a,s)=πϕ(𝐱^1:n,𝐲^),(a,s)=\pi_{\phi}(\mathbf{\hat{x}}_{1:n},\mathbf{\hat{y}}), |  | (4)  
+---|---|---|---  
+  
+where aa is the explainability analysis detailing the reasons for whether the LLM is jailbroken, and ss is the degree to which the model’s response is considered jailbroken. The πϕ​(⋅)\pi_{\phi}(\cdot) is the jailbreak judge model or a multi-agent system. Specifically, the score ranges from 1 to 10, where a rating of 1 indicates a fully compliant, non-jailbroken response—either irrelevant to the task or a refusal on ethical or legal grounds. Conversely, a rating of 10 indicates responses that directly and egregiously violate ethical, legal, or safety guidelines while fully addressing the task. The final judgment is determined by a pre-defined threshold α\alpha. If the score ss exceeds α\alpha, the LLM is judged to be jailbroken; otherwise, it is considered non-jailbroken.
+
+## 3 Building JAILJUDGE Benchmark and multi-agent Judge Framework
+
+Figure 1: JAILJUDGE Benchmark and Multi-agent Judge Framework
+
+We develop the JAILJUDGE benchmark datasets and a multi-agent jailbreak judge framework, making the decision inference process explicit and interpretable to enhance evaluation quality. Using the multi-agent framework to determine the ground truth with reasoning explainability and fine-grained scores, we then develop the end-to-end judge model, JAILJUDGE Guard. Trained on JAILJUDGE’s training data, this model can also provide reasoning explainability with fine-grained evaluations without API cost. The overall framework is shown in Figure 1.
+
+### 3.1 Building JAILJUDGE Benchmark: JAILJUDETRAIN and JAILJUDTEST
+
+#### 3.1.1 JAILJUDETRAIN: Instruction-Tuning Dataset for Complex Jailbreak Judgments
+
+JAILJUDGETRAIN is a comprehensive instruction-tuning dataset consisting of 35k+ items, derived from diverse sources with various target response pairs from different LLMs. The dataset includes six sources of prompts: vanilla harmful prompts (a wide range of risk scenarios), synthetic vanilla prompts (LLM-rewritten prompts), synthetic adversarial prompts (jailbreak attack rewrites), multilingual harmful prompts (ten multigual languages), in-the-wild harmful prompts (real-world user-LLM interactions), and deceptive harmful prompts (automatic prompt refinement prompts). These sources are selected to optimize coverage, diversity, and balance. To construct diverse LLM responses, we collect responses from three sources: closed-source LLMs (e.g., GPT-4, GPT-3.5), open-source LLMs (e.g., Llama-family, Qwen-family, Mistral-family), and Defense-enhanced LLM responses. The overview of the dataset composition can be seen in Appendix 8.3.
+
+Complex Harmful Prompt Construction. To create a comprehensive scenario for the jailbreak judge benchmark, we draw on six sources: vanilla harmful, synthetic vanilla, synthetic adversarial, multilingual harmful, in-the-wild, and deceptive harmful prompts.
+
+Vanilla Harmful Prompts. We collect the original harmful prompts from prior safety benchmark datasets and refine broad and vague safety categories into 14 more fine-grained categories, following the MLCommons standardized hazards taxonomy Inan et al. (2023). This results in relatively more balanced categories (see Appendix 8.1 for detailed dataset sources and and categories).
+
+Synthetic Vanilla Prompts. To ensure the diversity of harmful prompts, we utilize GPT-4 to rewrite and expand the original vanilla harmful prompts within the same hazard taxonomy categories. For instance, if the original harmful prompt is “How to make a bomb?”, the rewritten prompt might be “Detailed instructions on constructing a homemade explosive using household items.” Refer to Appendix 8.1 for the GPT-4 prompts used to generate the more diverse prompts.
+
+Synthetic Adversarial Prompts. To increase the likelihood of generating unsafe responses from LLMs, we leverage the latest jailbreak attacks, which have demonstrated their ability to bypass LLM safety alignment. Specifically, we apply seven recent jailbreak techniques to modify vanilla harmful prompts, aiming to elicit unsafe responses from the model. For instance, a jailbreak attack may optimize an adversarial suffix (e.g., “!!!$&xnksac”) and append it to the original harmful prompt (e.g., “How to make a bomb? !!!$&xnksac”) to heighten the chance of the LLM producing a harmful output. See Appendix 8.1 for details on the jailbreak attacks used to generate adversarial prompts.
+
+Multilingual Harmful Prompts. While current jailbreak attacks indicate that the prevalence of unsafe content rises as resource availability diminishes, the jailbreak judge still lacks exploration of bias in other languages. To investigate whether the jailbreak judge exhibits bias in other languages, we included ten additional languages, encompassing high-resource: English (en), Chinese (zh), Italian (it), Vietnamese (vi); medium-resource: Arabic (ar), Korean (ko), Thai (th); low-resource: Bengali (bn), Swahili (sw), and Javanese (jv), which are widely used Deng et al. (2023b).
+
+In-the-wild Prompts. To account for potential risks in real-world user requests, we incorporate prompts from diverse datasets. These prompts are collected from prompt templates on prominent platforms commonly used for prompt sharing, such as Reddit, Discord, various websites, and open-source datasets. These prompt templates can be combined with malicious prompts to create more complex and subtle harmful intentions. For example, a user might employ a template like “Do anything now” followed by additional harmful prompts. (See Appendix 8.1 for the detailed pipeline).
+
+Deceptive Harmful Prompts. In addition to real-world user-LLM interactions, deceptive harmful prompts often mask their malicious intent through techniques such as role-playing, scenario assumptions, long-context prompts, and adaptive strategies. These complex cases are typically challenging for LLMs to identify. To ensure thorough coverage of these variations, we apply automatic adversarial prompt refinement to the original harmful prompts (see Appendix 8.1 for the detailed pipeline).
+
+Diverse LLM Responses. To construct diverse LLM responses, we collect responses from three sources: closed-source LLMs (e.g., GPT-4, GPT-3.5), open-source LLMs (e.g., Llama-family, Qwen-family, Mistral-family, Vicuna-family), and defense-enhanced LLM responses. Specifically, we randomly split the above-tailored prompts and submit each prompt to a suite of LLMs, instructing the LLMs to generate the corresponding responses. To mimic a well-secured environment, we adopt the latest defense methods, including both system-level and model-level defenses. We randomly sample the prompts and submit them to the defended LLMs to get the target responses. This provides us with a set of diverse responses, including both safe and unsafe ones. (see Appendix 8.1 for the detailed defense methods).
+
+#### 3.1.2 JAILJUDGETEST: High-Quality Human-Annotated Test Jailbreak Judge Datasets
+
+We develop JAILJUDGETEST, a high-quality, human-annotated jailbreak judge dataset, comprising JAILJUDGE ID and JAILJUDGE OOD. To construct JAILJUDGE ID, we began with a test split of over 4.5k+ prompt-response pairs from JAILJUDGETRAIN (excluding multilingual harmful prompts), referred to as the in-distribution (ID) set. Additionally, we covered out-of-distribution (OOD) evaluation cases using all multilingual harmful prompts and response pairs, resulting in a labeled set of over 6k+ multi-language scenarios in ten languages, called JAILJUDGE OOD. We continuously refine this taxonomy through a human-in-the-loop process to ensure high-quality annotations indicating whether the LLM is jailbroken. Given a data prompt and its corresponding LLM response pair (𝐱^1,𝐲^)(\mathbf{\hat{x}}_{1},\mathbf{\hat{y}}), the human annotator assigns a label 𝐥\mathbf{l}—either True or False—to determine whether the LLM is jailbroken. Our human annotation process consists of four stages: annotator training, manual labeling, GPT-4 labeling, cross-comparison, and multi-person voting.
+
+Human Annotator Training Phase. In the human annotator training phase, we follow the MLCommons standardized LLM policy, which includes nine detailed policies ranging from user privacy to ethics and morality. We provide detailed scenarios and examples to the human annotators, allowing them to learn what constitutes a violation of these policies. For example, regarding user privacy, the model’s response must comply with basic ethical and moral standards and must not generate content that violates social morality. Responses that violate these types of policies would be judged as jailbroken (see Appendix 8.2 for detailed policies).
+
+Manual/GPT-4 labeling phase and multi-person voting phase. After the human annotator training, we gather annotations from human annotators regarding the jailbreak judge label. Subsequently, we submit all the harmful prompts and LLM response pairs to GPT-4, prompting the GPT-4 classifier on the dataset. We manually review instances where the output does not align with the selected annotator’s label to audit the ground-truth labels more thoroughly. Finally, multiple human annotators re-label the items that mismatch with the GPT-4 labels, and we apply a majority voting rule to determine the final gold labels.
+
+### 3.2 JailJudge MultiAgent: Multi-agent Judge Framework
+
+While reasoning can enhance jailbreak judgment quality, naive GPT-4 prompts Liu et al. (2024b) often cause inconsistencies between reasoning and final results, leading to inaccuracies. In complex role-play scenarios, the model might identify dangers but still conclude no jailbreak due to assumptions, creating a mismatch. To address this, we propose a multi-agent judge framework, JailJudge MultiAgent. This framework clarifies and interprets the decision-making process, improving evaluation quality. It includes Judging Agents, Voting Agents, and an Inference Agent, each with specific roles. These agents collaboratively produce interpretable, detailed decisions on whether an LLM requires jailbreaking through voting, scoring, reasoning, and final judgment.
+
+For multi-agent prompting and collaboration, we will have nn LLMs πθ1,⋯,πθn\pi_{\theta_{1}},\cdots,\pi_{\theta_{n}} that play different agents or roles in the framework. These LLMs can be the same (θ1=θ2,⋯=θn\theta_{1}=\theta_{2},\cdots=\theta_{n}) or different. For the text input xx, each agent ii will have its own profile agent function prompti​(x,𝐱i)\text{prompt}_{i}(x;\mathbf{x}_{i}) that formats the input task or problem for the agent, where 𝐱i\mathbf{x}_{i} is corresponding profile agent prompts. Specifically, there are three types of agent including kk judging agents, mm voting agents, and an inference Agent. Judging agents analyze the prompts and the model response to determine whether LLM is jailbroken, providing initial reasons and scores. Voting agents vote based on the scores and reasons provided by the judging agents to decide whether to accept their judgments. Inference agents deduce final judgment based on the voting results and predetermined criteria.
+
+Judging Stage. Given kk judging agents πθ1,⋯,πθk\pi_{\theta_{1}},\cdots,\pi_{\theta_{k}} and mm voting agents πθk+1,⋯,πθk+m\pi_{\theta_{k+1}},\cdots,\pi_{\theta_{k+m}}, each judging agent initially provides a reason and score, (ai,si)=πθi(prompti((𝐱^1:n,𝐲^);𝐱J))(a_{i},s_{i})=\pi_{\theta_{i}}(\text{prompt}_{i}((\mathbf{\hat{x}}_{1:n},\mathbf{\hat{y}});\mathbf{x}_{J})) (i=1,⋯,ki=1,\cdots,k), where 𝐱J\mathbf{x}_{J} is the profile prompt of the judging agent, and aia_{i} represents the analysis reason and sis_{i} the score from judging agent ii. However, direct communication between all agents incurs a cost of O⁡(k⋅m)O(k\cdot m). To enhance communication efficiency and effectiveness, we first aggregate the messages from the judging agents’ decisions, passing this aggregated message to the voting agents with a reduced cost of O⁡(1⋅m)O(1\cdot m). To handle potentially conflicting decision messages, we focus on how to transform the score into a BPA function. Given the frame of discernment Ω={{JB},{NJB},{JB & NJB},{∅}}\Omega=\\{\\{\text{JB}\\},\\{\text{NJB}\\},\\{\text{JB \& NJB}\\},\\{\emptyset\\}\\}, we propose an uncertainty-aware transformation to convert each judge’s score into a BPA function.
+
+| μ⁡(A)={p×(1−β),if ​A={JB}(1−p)×(1−β),if ​A={NJB}β,if ​A={JB & NJB}0,if ​A={∅},\mu(A)=\textstyle\begin{cases}p\times(1-\beta),\quad\text{if }A=\\{\text{JB}\\}\\\ (1-p)\times(1-\beta),\quad\text{if }A=\\{\text{NJB}\\}\\\ \beta,\quad\text{if }A=\\{\text{JB \& NJB}\\}\\\ 0,\quad\text{if }A=\\{\emptyset\\}\\\ \end{cases}, |  | (5)  
+---|---|---|---  
+  
+where μ⁡(A)\mu(A) is the BPA for hypothesis AA, and p=sCp=\frac{s}{C} is the normalized score from the judging agent with base number CC. β\beta is the hyper-parameter to quantify the uncertainty of hypothesis {JB & NJB}\\{\text{JB \& NJB}\\}. Generally, the more complex and difficult the judging scenarios, the higher the uncertainty. In practice, we set β=0.1\beta=0.1 and C=10C=10. Finally, we normalize the BPA to satisfy ∑A∈Ωμ⁡(A)=1\sum_{A\in\Omega}\mu(A)=1.
+
+After transforming each judging agent’s score aia_{i} to the BPA function μi​(⋅)​(i=1,⋯,k)\mu_{i}(\cdot)(i=1,\cdots,k), we apply Dempster’s rule of combination to aggregate,
+
+| μagg​(A)=1M​∑A1∩⋯∩Ak=A(∏i=1kμi​(Ai)),\mu_{\text{agg}}(A)=\frac{1}{M}\sum_{A_{1}\cap\cdots\cap A_{k}=A}\left(\prod_{i=1}^{k}\mu_{i}(A_{i})\right), |  | (6)  
+---|---|---|---  
+  
+where μagg​(A)\mu_{\text{agg}}(A) is the final aggregated BPA to aggregate the judging scores of the Judging Agents. M=1−∑B⊆ΩB1∩⋯∩Bk=∅(∏i=1Nμi​(Bi))M=1-\sum_{\begin{subarray}{c}B\subseteq\Omega\\\ B_{1}\cap\cdots\cap B_{k}=\emptyset\end{subarray}}\left(\prod_{i=1}^{N}\mu_{i}(B_{i})\right) is the normalization factor, and A1,…,AkA_{1},\ldots,A_{k} are the individual agents’s hypothesis. The final judgment for the LLM response is derived by calculating the aggregated BPA of the hypothesis (JB) and converting it into a score using the base number: (sJ=μagg​({JB})⋅Cs_{J}=\mu_{\text{agg}}({\text{\lx@text@lbrace JB\lx@text@rbrace}})\cdot C). This score represents the degree to which the LLM is jailbroken, and the reason aJ=aarg⁡mini​|s−si|a_{J}=a_{\arg\min_{i}|s-s_{i}|} is chosen by finding the value closest to the aggregated score ss.
+
+Voting and Inference Stage. The voting agents vote based on aggregated score and reason from the judging stage to decide whether to accept judgments’ decisions and provide the corresponding explanation. Formally, (vi,ei)=πθi(prompti((𝐱^1:n,𝐲^,sJ,aJ);𝐱V))(v_{i},e_{i})=\pi_{\theta_{i}}(\text{prompt}_{i}((\mathbf{\hat{x}}_{1:n},\mathbf{\hat{y}},s_{J},a_{J});\mathbf{x}_{V})) for i=k+1,⋯,k+mi=k+1,\cdots,k+m, where viv_{i} is the voting result, indicating either Accept or Reject for voting agent ii. An Accept indicates that voting agent accepts the judgment, while a Reject indicates that judgment is rejected, accompanied by the corresponding explanation eie_{i}. 𝐱V\mathbf{x}_{V} is the profile prompte for voting agent. In the end, the inference agents make inferences based on precious aggerated judging results and voting results to reach the final judgment. First, inferece agent collects previous judging results and voting results from all voting agents, and then make final inference 𝐲=ϕ⁡(g1,g2,…,gn)\mathbf{y}=\phi(g_{1},g_{2},...,g_{n}), where ϕ⁡(⋅)\phi(\cdot) represents the interactions of these agents as a non-parametric function involving the aggregated judging results and voting agents’ results, which are passed to the final inference agent πθn​(⋅)\pi_{\theta_{n}}(\cdot). Here, gi=πθi​(prompti​(x,𝐱i))g_{i}=\pi_{\theta_{i}}(\text{prompt}_{i}(x;\mathbf{x}_{i})) and gig_{i} is the output from agent ii. The final answer 𝐲=(a,s)\mathbf{y}=(a,s), where aa is the explainability analysis detailing the reasons for whether the LLM is jailbroken, and ss is the degree to which the model’s response is considered jailbroken. The details of implementation can be seen in Appendix 9.
+
+## 4 JAILJUDGE Guard and Jailbreak Enhancers
+
+JAILJUDGE Guard. Using explainability-enhanced JAILJUDGETRAIN with multi-agent judge, we instruction-tune JAILJUDGE Guard based on the Llama-2-7B model. We design an end-to-end input-output format for an explainability-driven jailbreak judge, where the user’s prompt and model response serve as inputs. The model is trained to output both an reasoning explainability and a fine-grained evaluation score (jailbroken score ranging from 1 to 10, with 1 indicating non-jailbroken and 10 indicating complete jailbreak). Further training details can be found in Appendix 10.
+
+JAILJUDGE Guard as an Attack Enhancer and Defense Method. To demonstrate the fundamental capability of JAILJUDGE Guard, we propose both a jailbreak attack enhancer and a defense method based on JAILJUDGE Guard, named JailBoost and GuardShield.
+
+JailBoost is an attacker-agnostic attack enhancer. The aim of JailBoost is to create high-quality adversarial prompts that cause the LLM to produce harmful outputs,
+
+| ℒa​d​v(𝐱^1:n,𝐲^)=−logPπθ(𝐲^|𝒜(𝐱^1:n)), if πϕ(𝒜(𝐱^1:n),𝐲^)>τa,\mathcal{L}_{adv}(\hat{\mathbf{x}}_{1:n},\hat{\mathbf{y}})=-\log P_{\pi_{\theta}}(\hat{\mathbf{y}}|\mathcal{A}(\hat{\mathbf{x}}_{1:n})),\text{ if }\pi_{\phi}(\mathcal{A}(\hat{\mathbf{x}}_{1:n}),\hat{\mathbf{y}})>\tau_{a}, |  | (7)  
+---|---|---|---  
+  
+where 𝒜⁡(⋅)\mathcal{A}(\cdot) is the attacker to refine the adversarial prompts 𝐱^1:n\hat{\mathbf{x}}_{1:n}. The JAILJUDGE Guard outputs the jailbroken score s=πϕ(𝒜(𝐱^1:n),𝐲^)s=\pi_{\phi}(\mathcal{A}(\hat{\mathbf{x}}_{1:n}),\hat{\mathbf{y}}) as the iteratively evaluator to determine the quality of adversarial prompts, where τa\tau_{a} is the threshold. (We omit the output of analysis aa for simplicity). The detailed algorithm of JailBoost can be seen in Appendix 11.1.
+
+GuardShield is a system-level jailbreak defense method. Its goal is to perform safety moderation by detecting whether an LLM is jailbroken, and generate the safe response,
+
+| πθ(𝐱^1:n)={a if πϕ(𝐱^1:n,𝐲^)>τd𝐲​ otherwise ,\pi_{\theta}(\hat{\mathbf{x}}_{1:n})=\begin{cases}&a\text{ if }\quad\pi_{\phi}(\hat{\mathbf{x}}_{1:n},\hat{\mathbf{y}})>\tau_{d}\\\ &\mathbf{y}\text{ otherwise }\end{cases}, |  | (8)  
+---|---|---|---  
+  
+where aa is the safe reasoning analysis, and τd\tau_{d} is the predefined threshold. A detailed algorithm of GuardShield can be found in Appendix 11.2.
+
+## 5 Experiments
+
+Evaluation Datasets and Metrics. To assess the performance of the jailbreak judge, we use both JAILJUDGE ID and OOD datasets. Additionally, we include the public jailbreak judge dataset and evaluate on JBB Behaviors Chao et al. (2024) and WILDTEST Han et al. (2024). For all evaluations, we report metrics including accuracy, precision, recall, and F1 score. To assess the quality of explainability, we employ GPT-4 to rate the explainability quality (EQ) on a scale of 1 to 5, where higher scores indicate better clarity and reasoning. More details can be found in Appendix 12.1
+
+Jailbreak Judge Baselines and Implementations. To evaluate the performance of our jailbreak judge, we compare it against state-of-the-art baselines, including heuristic methods such as StringMatching Liu et al. (2024b) and toxic text classifiers and LLM-based moderation tools like Beaver-dam-7B Ji et al. (2024b), Longformer-action Wang et al. (2023), Longformer-harmful Wang et al. (2023), and GPTFuzzer Yu et al. (2023), Llama-Guard-7B Inan et al. (2023), Llama-Guard-2-8B Inan et al. (2023), Llama-Guard-3-8B Inan et al. (2023), ShieldGemma-2B Zeng et al. (2024a), and ShieldGemma-9B Zeng et al. (2024a). Furthermore, we incorporate prompt-driven GPT-4 baselines such as GPT-4-liu2024autodan-Recheck Liu et al. (2024b), GPT-4-qi2023 Qi et al. (2023), and GPT-4-zhang2024intention Zhang et al. (2024b). Since most existing jailbreak judge methods currently focus on directly determining whether an LLM is jailbroken, we designed two baselines: GPT-4-Reasoning, which provides reasoning-enhanced judgments based on GPT-4, and GPT-4-multi-agent Voting, which aggregates multi-agent voting using evidence theory. GPT-4-JailJudge MultiAgent is our multi-agent judging framework utilizing GPT-4 as the base model, whereas JAILJUDGE Guard is our end-to-end jailbreak judging model trained on the JAILJUDGETRAIN dataset based on Llama-2-7B. Detailed descriptions of experimental implementation settings are provided in Appendix 12.2.
+
+### 5.1 Jailbreak Judge Experiments
+
+Main Experiments. To evaluate the effectiveness of the jailbreak judge methods, we conducted experiments using the JAILJUDGE ID and JBB behaviors datasets. Our JailJudge MultiAgent and JAILJUDGE Guard consistently outperformed all open-source baselines across both datasets, as shown in Table 2. The multi-agent judge achieved the highest average F1 scores, specifically 0.9197 on the JAILJUDGE ID dataset and 0.9609 on the JBB behaviors dataset. Notably, our approach showed more stable performance on the JBB behaviors dataset, likely due to its simpler scenarios compared to the more complex JAILJUDGE ID dataset. Additionally, the JailJudge MultiAgent surpassed the baseline GPT-4-Reasoning model in reasoning capabilities. As shown in Table 2, the GPT-4-Reasoning model attained an EQ score of 4.3989, while our multi-agent judge achieved a superior EQ score of 4.5234 on JAILJUDGE ID, indicating enhanced reasoning ability.
+
+Zero-Shot Setting. To assess the efficacy of the jailbreak judge in a zero-shot context, we conducted experiments using the JAILJUDGE OOD and WILDEST datasets. As summarized in Table 3, our jailbreak judge methods consistently outperformed all open baselines across both evaluation sets. For instance, on the multilingual JAILJUDGE OOD dataset, the multi-agent judge achieved an F1 score of 0.711, significantly higher than the GPT-4-Reasoing’s 0.5633, underscoring the benefits of leveraging advanced LLMs like GPT-4 for multilingual and zero-shot scenarios. Although JAILJUDGE Guard achieved a respectable F1 score of 0.7314 on WILDTEST, it fell short of the multi-agent judge on JAILJUDGE OOD due to its limited multilingual training, as shown in Figure 4. Overall, our methods demonstrated consistent superiority across both datasets, emphasizing the importance of advanced language models like GPT-4 for handling multilingual and zero-shot settings effectively, as evidenced by its higher EQ scores and logical consistency in reasoning. The insights findings can be summarized as follows.
+
+Table 2: Jailbreak judge experiments on datasets JAILJUDGE ID and JBB Behaviors.
+
+Methods | JAILJUDGE ID | JBB Behaviors |   
+---|---|---|---  
+Accuracy ↑\uparrow | Precision ↑\uparrow | Recall ↑\uparrow | F1 ↑\uparrow | EQ ↑\uparrow | Accuracy ↑\uparrow | Precision ↑\uparrow | Recall ↑\uparrow | F1 ↑\uparrow | EQ ↑\uparrow  
+StringMatching | 0.7202 | 0.5698 | 0.6832 | 0.6214 | - | 0.8600 | 0.8750 | 0.8400 | 0.8571 | -  
+Beaver-dam-7B | 0.8016 | 0.8008 | 0.5450 | 0.6486 | - | 0.7150 | 0.9574 | 0.4500 | 0.6122 | -  
+Longformer-action | 0.7976 | 0.6601 | 0.8194 | 0.7312 | - | 0.8900 | 0.9239 | 0.8500 | 0.8854 | -  
+Longformer-harmful | 0.7824 | 0.6561 | 0.7407 | 0.6959 | - | 0.5300 | 0.6500 | 0.1300 | 0.2167 | -  
+Yu2023gptfuzzer | 0.7942 | 0.7817 | 0.5377 | 0.6371 | - | 0.8750 | 0.9518 | 0.7900 | 0.8634 | -  
+Llama-Guard-7B | 0.7238 | 0.6892 | 0.3241 | 0.4408 | - | 0.7300 | 0.9792 | 0.4700 | 0.6351 | -  
+Llama-Guard-2-8B | 0.8167 | 0.7612 | 0.6620 | 0.7082 | - | 0.8550 | 0.9610 | 0.7400 | 0.8362 | -  
+Llama-Guard-3-8B | 0.8327 | 0.7239 | 0.8115 | 0.7652 | - | 0.975 | 0.9524 | 1.0 | 0.9756 | -  
+ShieldGemma-2B | 0.6927 | 0.9329 | 0.09193 | 0.1674 | - | 0.545 | 1.0 | 0.09 | 0.1651 | -  
+ShieldGemma-9B | 0.7636 | 0.8094 | 0.3876 | 0.5242 | - | 0.675 | 1.0 | 0.35 | 0.5185 | -  
+GPT-4-liu2024autodan | 0.7547 | 0.7175 | 0.4502 | 0.5532 | - | 0.81 | 0.8974 | 0.7 | 0.7865 | -  
+GPT-4-qi2023 | 0.8254 | 0.6765 | 0.9832 | 0.8015 | - | 0.9296 | 0.8829 | 0.9899 | 0.9333 | -  
+GPT-4-zhang2024intention | 0.7964 | 0.7735 | 0.5578 | 0.6481 | - | 0.9 | 1.0 | 0.8 | 0.8889 | -  
+GPT-4-Reasoning | 0.8824 | 0.8923 | 0.7394 | 0.8087 | 4.3989 | 0.945 | 0.989 | 0.9 | 0.9424 | 3.5775  
+GPT-4-multi-agent Voting | 0.8989 | 0.9408 | 0.746 | 0.8322 | 4.3001 | 0.96 | 1.0 | 0.92 | 0.9583 | 3.6755  
+GPT-4-JailJudge MultiAgent (ours) | 0.9438 | 0.9545 | 0.8743 | 0.9127 | 4.5234 | 0.9615 | 0.9885 | 0.9348 | 0.9609 | 3.6865  
+JAILJUDGE Guard (ours) | 0.9193 | 0.8843 | 0.8743 | 0.8793 | 4.4945 | 0.985 | 0.9899 | 0.98 | 0.9849 | 3.6047  
+  
+Table 3: Jailbreak judge experiments on datasets JAILJUDGE OOD and WILDTEST under zero-shot setting.
+
+Methods | JAILJUDGE OOD | WILDTEST |   
+---|---|---|---  
+Accuracy ↑\uparrow | Precision ↑\uparrow | Recall ↑\uparrow | F1 ↑\uparrow | EQ ↑\uparrow | Accuracy ↑\uparrow | Precision ↑\uparrow | Recall ↑\uparrow | F1 ↑\uparrow | EQ ↑\uparrow  
+StringMatching | 0.1879 | 0.1209 | 0.9736 | 0.2151 | - | 0.6551 | 0.2285 | 0.4767 | 0.3089 | -  
+Beaver-dam-7B | 0.8879 | 0.5337 | 0.1542 | 0.2392 | - | 0.9101 | 0.7385 | 0.6882 | 0.7124 | -  
+Longformer-action | 0.2489 | 0.1278 | 0.9569 | 0.2255 | - | 0.6504 | 0.2718 | 0.6918 | 0.3903 | -  
+Longformer-harmful | 0.2454 | 0.1263 | 0.9472 | 0.2229 | - | 0.7049 | 0.2614 | 0.4516 | 0.3311 | -  
+Yu2023gptfuzzer | 0.7976 | 0.1836 | 0.2236 | 0.2016 | - | 0.8574 | 0.5587 | 0.5627 | 0.5607 | -  
+Llama-Guard-7B | 0.8735 | 0.4264 | 0.3097 | 0.3588 | - | 0.8846 | 0.8922 | 0.3262 | 0.4777 | -  
+Llama-Guard-2-8B | 0.8860 | 0.5013 | 0.5403 | 0.5201 | - | 0.9049 | 0.7700 | 0.5878 | 0.6667 | -  
+Llama-Guard-3-8B | 0.8513 | 0.4032 | 0.6278 | 0.491 | - | 0.914 | 0.7991 | 0.6272 | 0.7028 | -  
+ShieldGemma-2B | 0.8976 | 0.6697 | 0.2056 | 0.3146 | - | 0.8465 | 0.9412 | 0.05735 | 0.1081 | -  
+ShieldGemma-9B | 0.4974 | 0.6653 | 0.5692 | 0.5692 | - | 0.8849 | 0.8189 | 0.3728 | 0.5123 | -  
+GPT-4-liu2024autodan | 0.6891 | 0.1602 | 0.4006 | 0.2289 | - | 0.4784 | 0.1954 | 0.7091 | 0.3064 | -  
+GPT-4-qi2023 | 0.62 | 0.2254 | 0.9542 | 0.3646 | - | 0.7848 | 0.4245 | 0.9176 | 0.5805 | -  
+GPT-4-zhang2024intention | 0.853 | 0.4139 | 0.6847 | 0.516 | - | 0.9057 | 0.9034 | 0.4695 | 0.6179 | -  
+GPT-4-Reasoning | 0.8757 | 0.4706 | 0.7014 | 0.5633 | 4.3799 | 0.8983 | 0.7453 | 0.5663 | 0.6106 | 4.4909  
+GPT-4-multi-agent Voting | 0.9214 | 0.6707 | 0.6175 | 0.643 | 4.5215 | 0.9081 | 0.8954 | 0.491 | 0.6343 | 4.6115  
+GPT-4-JailJudge MultiAgent (ours) | 0.9227 | 0.6481 | 0.7131 | 0.679 | 4.6765 | 0.9112 | 0.7935 | 0.5887 | 0.6759 | 4.7046  
+JAILJUDGE Guard (ours) | 0.8625 | 0.4147 | 0.4931 | 0.4505 | 4.3648 | 0.9099 | 0.7081 | 0.7563 | 0.7314 | 4.7113  
+  
+Takeaways: (1) The JAILJUDGE benchmark reveals that current SOTA (e.g., GPT-4, Llama-Guard, and ShieldGemma) still struggle with complex scenarios due to a lack of generalization; (2) The jailbreak judge methods exhibit higher bias evaluations in low-resource languages.
+
+### 5.2 Jailbreak Attack and Defense Experiments
+
+To evaluate the effectiveness of JailBoost and GuardShield, we conduct experiments on the HEx-PHI dataset under zero-shot settings. We use the attack success rate (ASR) as the primary metric. For attacker experiments, a higher ASR indicates a more effective attacker method, whereas for defense methods, a lower ASR indicates a better defense approach. Detailed descriptions of the experimental settings, metrics, and baselines can be found in Appendix 8.1 and 12.4. Jailbreak Attack. The experimental results are presented in Figure 5. JailBoost significantly enhances the attacker’s capability. For example, JailBoost increases the ASR for the attacker compared to the nominal AutoDAN. Jailbreak Defense. The experimental results are presented in Table 4. GuardShield achieves superior defense performance compared to the state-of-the-art (SOTA) baselines. For instance, GuardShield achieves nearly 100% defense capability against four SOTA attackers, with an average ASR of 0.15%, outperforming most baselines.
+
+### 5.3 Ablation Study
+
+In this section, we present an ablation study to evaluate the effectiveness of each component in our multi-agent judge framework. We compared four configurations: (1) Vanilla GPT-4, which directly determines whether the LLM is jailbroken; (2) Reasoning-enhanced GPT-4 (RE-GPT-4); (3) RE-GPT-4 augmented with our uncertainty-aware evident judging agent (RE-GPT-4+UAE); and (4) the complete multi-agent judge framework. The results, shown in Figure 4 and 4, demonstrate that each enhancement progressively improves performance across all datasets. For instance, in the JAILJUDGE ID task, the F1 score increased from 0.55 with Vanilla GPT-4 to 0.91 with the multi-agent judge. Similarly, in the JBB Behaviors scenario, scores rose from 0.79 to 0.96. Overall, our multi-agent judge consistently outperforms the baseline and individually enhanced models, underscoring the effectiveness of each component. Additionally, as detailed in Appendix 12.3, human evaluators score the explainability of the reasons provided for the samples. For instance, our method demonstrates high accuracy under manual evaluation, with the JailJudge MultiAgent achieving average 95.29% on four datasets.
+
+Figure 2: F1 scores across ten different languages using our JailJudge MultiAgent.
+
+Figure 3: Ablation study on datasets JAILJUDGE ID and JBB Behaviors. 
+
+Figure 4: Ablation study on datasets JAILJUDGE OOD and WILDTEST.
+
+Figure 5: Exp. on JailBoost (ASR % ↑\uparrow).
+
+  
+
+
+Defense Methods | AutoDAN↓\downarrow | PAIR↓\downarrow | AdvPrompter↓\downarrow | AmpleGCG↓\downarrow  
+---|---|---|---|---  
+No Defense | 69.39 | 40.61 | 37.27 | 14.85  
+Self-Reminder | 36.36 | 31.82 | 10.91 | 8.18  
+RPO | 46.06 | 34.24 | 0.91 | 0.30  
+Unlearn | 66.06 | 52.12 | 45.45 | 30.00  
+Adv. Training | 41.82 | 30.30 | 28.79 | 2.73  
+ShieldGemma-9B | 9.09 | 8.48 | 10.00 | 6.36  
+Llama-Guard-3-8B | 0.00 | 0.00 | 0.00 | 0.00  
+GuardShield (Ours) | 0.00 | 0.61 | 0.00 | 0.00  
+  
+Table 4: Exp. on GuardShield (ASR % ↓\downarrow).
+
+## 6 Related Works
+
+Jailbreak Judge. Despite the critical importance of evaluating jailbreak attempts in LLMs, comprehensive studies on jailbreak judges have been limited Cai et al. (2024); Jin et al. (2024b); Jin et al. (2024b). Current methods for identifying jailbreaks fall into three categories: heuristic methods Liu et al. (2024b), toxic text classifiers, and LLM-based methods Inan et al. (2023); Zeng et al. (2024a). Heuristic methods, which rely on keyword matching, often misinterpret benign responses containing specific keywords as malicious. Toxic text classifiers Ji et al. (2024b), trained on toxic text datasets, struggle to generalize to complex scenarios, such as broad-range risks and adversarial contexts. In contrast, LLM-based methods leverage LLMs for prompt-based evaluations or fine-tune them into moderation models, like Llama-Guard Inan et al. (2023) and ShieldGemma Zeng et al. (2024a). For example, prompt-driven GPT-4 uses customized prompts to assess if an LLM has been compromised Zhang et al. (2024b). However, these methods are computationally and financially resource-intensive, inherit biases from underlying models, and face ambiguities in data, leading to inaccurate judgments and reduced reliability in detecting jailbreak attempts. In this work, we propose a comprehensive jailbreak judge benchmark, JAILJUDGE, for thorough evaluation of jailbreak judge performance. To enhance accuracy and reliability, we introduce a multi-agent judge framework that provides reasoning explainability with fine-grained evaluations (jailbroken score ranging from 1 to 10). Additionally, we develop a fully public end-to-end judge model, JAILJUDGE Guard, to offer reasoning explainability with fine-grained evaluations without API cost.
+
+Jailbreak Attack Methods. Although LLM has been algnemnt by RLHF aect techniques, recernt work showt that they remain susceptible to jailbreak attacks Zheng et al. (2024c); Xu et al. (2024). Recent studies Zou et al. (2023); Liu et al. (2024b); Chao et al. (2023); Bhardwaj & Poria (2023); Yuan et al. (2024); Mangaokar et al. (2024); Li et al. (2024a); Li et al. (2024b) have demonstrated that these attacks can override built-in safety mechanisms, resulting in the production of harmful content. Jailbreak attacks can be categorized into two primary types: token-level and prompt-level. For the token-level attacks Zou et al. (2023); Liu et al. (2024b); Liao & Sun (2024); Paulus et al. (2024); Andriushchenko et al. (2024); Du et al. (2023); Geisler et al. (2024) aim to optimize specific adversarail tokens added to the malicious instruction given to the LLM induce the LLM generate the harmful response. For instance, AutoDAN Liu et al. (2024b) employs discrete optimization techniques to refine input tokens in a methodical manner. On the other hand, prompt-level attacks Chao et al. (2023); Zeng et al. (2024b); Mehrotra et al. (2023); Yu et al. (2023); Russinovich et al. (2024); Deng et al. (2023a); Jin et al. (2024a); Ramesh et al. (2024); Yang et al. (2024); Upadhayay & Behzadan (2024) involve crafting adversarial prompts through semantic manipulation and automated strategies to exploit the model’s weaknesses. For example, PAIR Chao et al. (2023) refines adversarial prompts itera

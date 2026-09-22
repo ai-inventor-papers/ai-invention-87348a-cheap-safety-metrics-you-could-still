@@ -1,0 +1,690 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/HuggingFaceTB/SmolLM3-3B
+Type: HTML
+Length: 25539 chars
+
+--- Content ---
+
+[ Hugging Face](/)
+
+  * [ Models ](/models)
+  * [ Datasets ](/datasets)
+  * [ Spaces ](/spaces)
+  * [ Buckets new](/storage)
+  * [ Docs ](/docs)
+  * [ Enterprise ](/enterprise)
+  * [Pricing](/pricing)
+  *     * Website
+
+      * [ Tasks](/tasks)
+      * [ HuggingChat](/chat)
+      * [ Collections](/collections)
+      * [ Languages](/languages)
+      * [ Organizations](/organizations)
+    * Community
+
+      * [ Blog](/blog)
+      * [ Posts](/posts)
+      * [ Daily Papers](/papers)
+      * [ Hardware](/hardware)
+      * [ Learn](/learn)
+      * [ Discord](/join/discord)
+      * [ Forum](https://discuss.huggingface.co/)
+      * [ GitHub](https://github.com/huggingface)
+    * Solutions
+
+      * [ Team & Enterprise](/enterprise)
+      * [ Hugging Face PRO](/pro)
+      * [ Enterprise Support](/support)
+      * [ Inference Providers](/inference/models)
+      * [ Inference Endpoints](/inference-endpoints)
+      * [ Storage Buckets](/storage)
+
+  * * * *
+
+  * [Log In](/login)
+  * [Sign Up](/join)
+
+
+
+# 
+
+[ ](/HuggingFaceTB)
+
+[HuggingFaceTB](/HuggingFaceTB)
+
+/
+
+[SmolLM3-3B](/HuggingFaceTB/SmolLM3-3B)
+
+Like 1.04k
+
+Follow
+
+Hugging Face Smol Models Research 4.07k
+
+[ Text Generation ](/models?pipeline_tag=text-generation)[ Transformers ](/models?library=transformers)[ Safetensors ](/models?library=safetensors)
+
+8 languages
+
+[ smollm3 ](/models?other=smollm3)[ conversational ](/models?other=conversational)
+
+License: apache-2.0
+
+[ Model card ](/HuggingFaceTB/SmolLM3-3B)[ Files Files and versions xet ](/HuggingFaceTB/SmolLM3-3B/tree/main)[ Community 50 ](/HuggingFaceTB/SmolLM3-3B/discussions)
+
+Deploy
+
+Copy to bucket new
+
+Use this model
+
+### Instructions to use HuggingFaceTB/SmolLM3-3B with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+  * Libraries
+  * [ Transformers](/HuggingFaceTB/SmolLM3-3B?library=transformers)
+
+How to use HuggingFaceTB/SmolLM3-3B with Transformers:
+        
+        # Use a pipeline as a high-level helper
+        from transformers import pipeline
+        
+        pipe = pipeline("text-generation", model="HuggingFaceTB/SmolLM3-3B")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        pipe(messages)
+        
+        # Load model directly
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        
+        tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM3-3B")
+        model = AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM3-3B", device_map="auto")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        inputs = tokenizer.apply_chat_template(
+        	messages,
+        	add_generation_prompt=True,
+        	tokenize=True,
+        	return_dict=True,
+        	return_tensors="pt",
+        ).to(model.device)
+        
+        outputs = model.generate(**inputs, max_new_tokens=40)
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+
+  * Notebooks
+  * [ Google Colab](/HuggingFaceTB/SmolLM3-3B/colab)
+  * [ Kaggle](/HuggingFaceTB/SmolLM3-3B/kaggle)
+  * Local Apps [Settings](/settings/local-apps "Set up your favorite local applications")
+  * [ vLLM ](/HuggingFaceTB/SmolLM3-3B?local-app=vllm)
+
+How to use HuggingFaceTB/SmolLM3-3B with vLLM:
+
+##### Install from pip and serve model
+        
+        # Install vLLM from pip:
+        pip install vllm
+        # Start the vLLM server:
+        vllm serve "HuggingFaceTB/SmolLM3-3B"
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:8000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "HuggingFaceTB/SmolLM3-3B",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker
+        
+        docker model run hf.co/HuggingFaceTB/SmolLM3-3B
+
+  * [ SGLang ](/HuggingFaceTB/SmolLM3-3B?local-app=sglang)
+
+How to use HuggingFaceTB/SmolLM3-3B with SGLang:
+
+##### Install from pip and serve model
+        
+        # Install SGLang from pip:
+        pip install sglang
+        # Start the SGLang server:
+        python3 -m sglang.launch_server \
+            --model-path "HuggingFaceTB/SmolLM3-3B" \
+            --host 0.0.0.0 \
+            --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "HuggingFaceTB/SmolLM3-3B",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker images
+        
+        docker run --gpus all \
+            --shm-size 32g \
+            -p 30000:30000 \
+            -v ~/.cache/huggingface:/root/.cache/huggingface \
+            --env "HF_TOKEN=<secret>" \
+            --ipc=host \
+            lmsysorg/sglang:latest \
+            python3 -m sglang.launch_server \
+                --model-path "HuggingFaceTB/SmolLM3-3B" \
+                --host 0.0.0.0 \
+                --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "HuggingFaceTB/SmolLM3-3B",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+  * [ Docker Model Runner ](/HuggingFaceTB/SmolLM3-3B?local-app=docker-model-runner)
+
+How to use HuggingFaceTB/SmolLM3-3B with Docker Model Runner:
+        
+        docker model run hf.co/HuggingFaceTB/SmolLM3-3B
+
+  * [Browse Quantizations](/models?other=base_model:quantized:HuggingFaceTB/SmolLM3-3B) to use this model in  llama.cpp,  Ollama,  LM Studio, or any compatible app.
+
+
+
+
+  * SmolLM3
+    * Table of Contents
+    * Model Summary
+      * Key features
+    * How to use
+      * Long context processing
+      * Enabling and Disabling Extended Thinking Mode
+      * Agentic Usage
+      * Using Custom System Instructions.
+      * vLLM and SGLang
+    * Evaluation
+      * Instruction Model
+      * Base Pre-Trained Model
+    * Training
+      * Model
+      * Software & hardware
+      * Open resources
+      * EU Summary of Public Content
+    * Limitations
+    * License
+    * Citation
+
+
+
+#  SmolLM3 
+
+[](https://cdn-uploads.huggingface.co/production/uploads/61c141342aac764ce1654e43/zy0dqTCCt5IHmuzwoqtJ9.png)
+
+##  Table of Contents 
+
+  1. Model Summary
+  2. How to use
+  3. Evaluation
+  4. Training
+  5. Limitations
+  6. License
+
+
+
+##  Model Summary 
+
+SmolLM3 is a 3B parameter language model designed to push the boundaries of small models. It supports dual mode reasoning, 6 languages and long context. SmolLM3 is a fully open model that offers strong performance at the 3B–4B scale.
+
+[](https://cdn-uploads.huggingface.co/production/uploads/6200d0a443eb0913fa2df7cc/db3az7eGzs-Sb-8yUj-ff.png)
+
+The model is a decoder-only transformer using GQA and NoPE (with 3:1 ratio), it was pretrained on 11.2T tokens with a staged curriculum of web, code, math and reasoning data. Post-training included midtraining on 140B reasoning tokens followed by supervised fine-tuning and alignment via Anchored Preference Optimization (APO).
+
+###  Key features 
+
+  * Instruct model optimized for **hybrid reasoning**
+  * **Fully open model** : open weights + full training details including public data mixture and training configs
+  * **Long context:** Trained on 64k context and supports up to **128k tokens** using YARN extrapolation
+  * **Multilingual** : 6 natively supported (English, French, Spanish, German, Italian, and Portuguese)
+
+
+
+For more details refer to our blog post: <https://hf.co/blog/smollm3>
+
+##  How to use 
+
+The modeling code for SmolLM3 is available in transformers `v4.53.0`, so make sure to upgrade your transformers version. You can also load the model with the latest `vllm` which uses transformers as a backend.
+    
+    
+    pip install -U transformers
+    
+    
+    
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    
+    model_name = "HuggingFaceTB/SmolLM3-3B"
+    device = "cuda"  # for GPU usage or "cpu" for CPU usage
+    
+    # load the tokenizer and the model
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+    ).to(device)
+    
+    # prepare the model input
+    prompt = "Give me a brief explanation of gravity in simple terms."
+    messages_think = [
+        {"role": "user", "content": prompt}
+    ]
+    
+    text = tokenizer.apply_chat_template(
+        messages_think,
+        tokenize=False,
+        add_generation_prompt=True,
+    )
+    model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+    
+    # Generate the output
+    generated_ids = model.generate(**model_inputs, max_new_tokens=32768)
+    
+    # Get and decode the output
+    output_ids = generated_ids[0][len(model_inputs.input_ids[0]) :]
+    print(tokenizer.decode(output_ids, skip_special_tokens=True))
+    
+
+> We recommend setting `temperature=0.6` and `top_p=0.95` in the sampling parameters.
+
+###  Long context processing 
+
+The current `config.json` is set for context length up to 65,536 tokens. To handle longer inputs (128k or 256k), we utilize YaRN you can change the `max_position_embeddings` and rope_scaling` to:
+    
+    
+    {
+      ...,
+      "rope_scaling": {
+        "factor": 2.0, #2x65536=131 072 
+        "original_max_position_embeddings": 65536,
+        "type": "yarn"
+      }
+    }
+    
+
+###  Enabling and Disabling Extended Thinking Mode 
+
+We enable extended thinking by default, so the example above generates the output with a reasoning trace. For choosing between enabling, you can provide the `/think` and `/no_think` flags through the system prompt as shown in the snippet below for extended thinking disabled. The code for generating the response with extended thinking would be the same except that the system prompt should have `/think` instead of `/no_think`.
+    
+    
+    prompt = "Give me a brief explanation of gravity in simple terms."
+    messages = [
+        {"role": "system", "content": "/no_think"},
+        {"role": "user", "content": prompt}
+    ]
+    
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+    )
+    
+
+We also provide the option of specifying the whether to use extended thinking through the `enable_thinking` kwarg as in the example below. You do not need to set the `/no_think` or `/think` flags through the system prompt if using the kwarg, but keep in mind that the flag in the system prompt overwrites the setting in the kwarg.
+    
+    
+    prompt = "Give me a brief explanation of gravity in simple terms."
+    messages = [
+        {"role": "user", "content": prompt}
+    ]
+    
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=False
+    )
+    
+
+###  Agentic Usage 
+
+SmolLM3 supports tool calling! Just pass your list of tools:
+
+  * Under the argument `xml_tools` for standard tool-calling: these tools will be called as JSON blobs within XML tags, like `<tool_call>{"name": "get_weather", "arguments": {"city": "Copenhagen"}}</tool_call>`
+  * Or under `python_tools`: then the model will call tools like python functions in a `<code>` snippet, like `<code>get_weather(city="Copenhagen")</code>`
+
+
+    
+    
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    
+    checkpoint = "HuggingFaceTB/SmolLM3-3B"
+    
+    tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+    model = AutoModelForCausalLM.from_pretrained(checkpoint)
+    
+    tools = [
+        {
+            "name": "get_weather",
+            "description": "Get the weather in a city",
+            "parameters": {"type": "object", "properties": {"city": {"type": "string", "description": "The city to get the weather for"}}}}
+    ]
+    
+    messages = [
+        {
+            "role": "user",
+            "content": "Hello! How is the weather today in Copenhagen?"
+        }
+    ]
+    
+    inputs = tokenizer.apply_chat_template(
+        messages,
+        enable_thinking=False, # True works as well, your choice!
+        xml_tools=tools,
+        add_generation_prompt=True,
+        tokenize=True,
+        return_tensors="pt"
+    )
+    
+    outputs = model.generate(inputs)
+    print(tokenizer.decode(outputs[0]))
+    
+
+###  Using Custom System Instructions. 
+
+You can specify custom instruction through the system prompt while controlling whether to use extended thinking. For example, the snippet below shows how to make the model speak like a pirate while enabling extended thinking.
+    
+    
+    prompt = "Give me a brief explanation of gravity in simple terms."
+    messages = [
+        {"role": "system", "content": "Speak like a pirate./think"},
+        {"role": "user", "content": prompt}
+    ]
+    
+    text = tokenizer.apply_chat_template(
+        messages,
+        tokenize=False,
+        add_generation_prompt=True,
+    )
+    
+
+For local inference, you can use `llama.cpp`, `ONNX`, `MLX`, `MLC` and `ExecuTorch`. You can find quantized checkpoints in this collection (<https://huggingface.co/collections/HuggingFaceTB/smollm3-686d33c1fdffe8e635317e23>)
+
+###  vLLM and SGLang 
+
+You can use vLLM and SGLang to deploy the model in an API compatible with OpenAI format.
+
+####  SGLang 
+    
+    
+    python -m sglang.launch_server --model-path HuggingFaceTB/SmolLM3-3B
+    
+
+####  vLLM 
+    
+    
+    vllm serve HuggingFaceTB/SmolLM3-3B --enable-auto-tool-choice --tool-call-parser=hermes
+    
+
+####  Setting `chat_template_kwargs`
+
+You can specify `chat_template_kwargs` such as `enable_thinking` to a deployed model by passing the `chat_template_kwargs` parameter in the API request.
+    
+    
+    curl http://localhost:8000/v1/chat/completions -H "Content-Type: application/json" -d '{
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "messages": [
+        {"role": "user", "content": "Give me a brief explanation of gravity in simple terms."}
+      ],
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "max_tokens": 16384,
+      "chat_template_kwargs": {"enable_thinking": false}
+    }'
+    
+
+##  Evaluation 
+
+In this section, we report the evaluation results of SmolLM3 model. All evaluations are zero-shot unless stated otherwise, and we use [lighteval](https://github.com/huggingface/lighteval) to run them. 
+
+We highlight the best score in bold and underline the second-best score.
+
+###  Instruction Model 
+
+####  No Extended Thinking 
+
+Evaluation results of non reasoning models and reasoning models in no thinking mode. We highlight the best and second-best scores in bold.
+
+Category | Metric | SmoLLM3-3B | Qwen2.5-3B | Llama3.1-3B | Qwen3-1.7B | Qwen3-4B  
+---|---|---|---|---|---|---  
+High school math competition | AIME 2025 | _9.3_ | 2.9 | 0.3 | 8.0 | **17.1**  
+Math problem-solving | GSM-Plus | 72.8 | _74.1_ | 59.2 | 68.3 | **82.1**  
+Competitive programming | LiveCodeBench v4 | _15.2_ | 10.5 | 3.4 | 15.0 | **24.9**  
+Graduate-level reasoning | GPQA Diamond | _35.7_ | 32.2 | 29.4 | 31.8 | **44.4**  
+Instruction following | IFEval | **76.7** | 65.6 | 71.6 | _74.0_ | 68.9  
+Alignment | MixEval Hard | 26.9 | _27.6_ | 24.9 | 24.3 | **31.6**  
+Tool Calling | BFCL | _92.3_ | - | _92.3_ * | 89.5 | **95.0**  
+Multilingual Q&A | Global MMLU | _53.5_ | 50.54 | 46.8 | 49.5 | **65.1**  
+  
+(*): this is a tool calling finetune
+
+####  Extended Thinking 
+
+Evaluation results in reasoning mode for SmolLM3 and Qwen3 models: 
+
+Category | Metric | SmoLLM3-3B | Qwen3-1.7B | Qwen3-4B  
+---|---|---|---|---  
+High school math competition | AIME 2025 | _36.7_ | 30.7 | **58.8**  
+Math problem-solving | GSM-Plus | _83.4_ | 79.4 | **88.2**  
+Competitive programming | LiveCodeBench v4 | 30.0 | _34.4_ | **52.9**  
+Graduate-level reasoning | GPQA Diamond | _41.7_ | 39.9 | **55.3**  
+Instruction following | IFEval | 71.2 | _74.2_ | **85.4**  
+Alignment | MixEval Hard | 30.8 | _33.9_ | **38.0**  
+Tool Calling | BFCL | _88.8_ | _88.8_ | **95.5**  
+Multilingual Q&A | Global MMLU | _64.1_ | 62.3 | **73.3**  
+  
+###  Base Pre-Trained Model 
+
+####  English benchmarks 
+
+Note: All evaluations are zero-shot unless stated otherwise. For Ruler 64k evaluation, we apply YaRN to the Qwen models with 32k context to extrapolate the context length.
+
+Category | Metric | SmolLM3-3B | Qwen2.5-3B | Llama3-3.2B | Qwen3-1.7B-Base | Qwen3-4B-Base  
+---|---|---|---|---|---|---  
+Reasoning & Commonsense | HellaSwag | **76.15** | 74.19 | _75.52_ | 60.52 | 74.37  
+| ARC-CF (Average) | **65.61** | 59.81 | 58.58 | 55.88 | _62.11_  
+| Winogrande | 58.88 | **61.41** | 58.72 | 57.06 | _59.59_  
+| CommonsenseQA | _55.28_ | 49.14 | **60.60** | 48.98 | 52.99  
+Knowledge & Understanding | MMLU-CF (Average) | _44.13_ | 42.93 | 41.32 | 39.11 | **47.65**  
+| MMLU Pro CF | _19.61_ | 16.66 | 16.42 | 18.04 | **24.92**  
+| MMLU Pro MCF | _32.70_ | 31.32 | 25.07 | 30.39 | **41.07**  
+| PIQA | **78.89** | 78.35 | _78.51_ | 75.35 | 77.58  
+| OpenBookQA | 40.60 | 40.20 | _42.00_ | 36.40 | **42.40**  
+| BoolQ | **78.99** | 73.61 | _75.33_ | 74.46 | 74.28  
+**Math & Code** |  |  |  |  |  |   
+Coding & math | HumanEval+ | 30.48 | 34.14 | 25.00 | _43.29_ | **54.87**  
+| MBPP+ | 52.91 | 52.11 | 38.88 | _59.25_ | **63.75**  
+| MATH (4-shot) | _46.10_ | 40.10 | 7.44 | 41.64 | **51.20**  
+| GSM8k (5-shot) | 67.63 | _70.13_ | 25.92 | 65.88 | **74.14**  
+**Long context** |  |  |  |  |  |   
+| Ruler 32k | 76.35 | 75.93 | _77.58_ | 70.63 | **83.98**  
+| Ruler 64k | _67.85_ | 64.90 | **72.93** | 57.18 | 60.29  
+| Ruler 128k | 61.03 | _62.23_ | **71.30** | 43.03 | 47.23  
+  
+####  Multilingual benchmarks 
+
+Category | Metric | SmolLM3 3B Base | Qwen2.5-3B | Llama3.2 3B | Qwen3 1.7B Base | Qwen3 4B Base  
+---|---|---|---|---|---|---  
+Main supported languages |  |  |  |  |  |   
+French | MLMM Hellaswag | **63.94** | 57.47 | 57.66 | 51.26 | _61.00_  
+| Belebele | 51.00 | _51.55_ | 49.22 | 49.44 | **55.00**  
+| Global MMLU (CF) | _38.37_ | 34.22 | 33.71 | 34.94 | **41.80**  
+| Flores-200 (5-shot) | 62.85 | 61.38 | _62.89_ | 58.68 | **65.76**  
+Spanish | MLMM Hellaswag | **65.85** | 58.25 | 59.39 | 52.40 | _61.85_  
+| Belebele | 47.00 | _48.88_ | 47.00 | 47.56 | **50.33**  
+| Global MMLU (CF) | _38.51_ | 35.84 | 35.60 | 34.79 | **41.22**  
+| Flores-200 (5-shot) | _48.25_ | 50.00 | 44.45 | 46.93 | **50.16**  
+German | MLMM Hellaswag | **59.56** | 49.99 | 53.19 | 46.10 | _56.43_  
+| Belebele | _48.44_ | 47.88 | 46.22 | 48.00 | **53.44**  
+| Global MMLU (CF) | _35.10_ | 33.19 | 32.60 | 32.73 | **38.70**  
+| Flores-200 (5-shot) | **56.60** | 50.63 | _54.95_ | 52.58 | 50.48  
+Italian | MLMM Hellaswag | **62.49** | 53.21 | 54.96 | 48.72 | _58.76_  
+| Belebele | _46.44_ | 44.77 | 43.88 | 44.00 | **48.78**  
+| Global MMLU (CF) | _36.99_ | 33.91 | 32.79 | 35.37 | **39.26**  
+| Flores-200 (5-shot) | _52.65 ___| **54.87** | 48.83 | 48.37 | 49.11  
+Portuguese | MLMM Hellaswag | **63.22** | 57.38 | 56.84 | 50.73 | _59.89_  
+| Belebele | 47.67 | **49.22** | 45.00 | 44.00 | 50.00  
+| Global MMLU (CF) | _36.88_ | 34.72 | 33.05 | 35.26 | **40.66**  
+| Flores-200 (5-shot) | _60.93_ | 57.68 | 54.28 | 56.58 | **63.43**  
+  
+The model has also been trained on Arabic (standard), Chinese and Russian data, but has seen fewer tokens in these languages compared to the 6 above. We report the performance on these langages for information.
+
+Category | Metric | SmolLM3 3B Base | Qwen2.5-3B | Llama3.2 3B | Qwen3 1.7B Base | Qwen3 4B Base  
+---|---|---|---|---|---|---  
+Other supported languages |  |  |  |  |  |   
+Arabic | Belebele | 40.22 | 44.22 | _45.33_ | 42.33 | **51.78**  
+| Global MMLU (CF) | 28.57 | 28.81 | 27.67 | _29.37_ | **31.85**  
+| Flores-200 (5-shot) | _40.22_ | 39.44 | **44.43** | 35.82 | 39.76  
+Chinese | Belebele | 43.78 | 44.56 | _49.56_ | 48.78 | **53.22**  
+| Global MMLU (CF) | 36.16 | 33.79 | _39.57_ | 38.56 | **44.55**  
+| Flores-200 (5-shot) | 29.17 | **33.21** | 31.89 | 25.70 | _32.50_  
+Russian | Belebele | _47.44_ | 45.89 | _47.44_ | 45.22 | **51.44**  
+| Global MMLU (CF) | _36.51_ | 32.47 | 34.52 | 34.83 | **38.80**  
+| Flores-200 (5-shot) | 47.13 | 48.74 | 50.74 | _54.70_ | **60.53**  
+  
+##  Training 
+
+###  Model 
+
+  * **Architecture:** Transformer decoder
+  * **Pretraining tokens:** 11T
+  * **Precision:** bfloat16
+
+
+
+###  Software & hardware 
+
+  * **GPUs:** 384 H100
+  * **Training Framework:** [nanotron](https://github.com/huggingface/nanotron/tree/smollm3)
+  * **Data processing framework:** [datatrove](https://github.com/huggingface/datatrove)
+  * **Evaluation framework:** [lighteval](https://github.com/huggingface/lighteval)
+  * **Post-training Framework:** [TRL](https://github.com/huggingface/trl)
+
+
+
+###  Open resources 
+
+Here is an infographic with all the training details 
+
+  * The datasets used for pretraining can be found in this [collection](https://huggingface.co/collections/HuggingFaceTB/smollm3-pretraining-datasets-685a7353fdc01aecde51b1d9) and those used in mid-training and post-training will be uploaded later 
+  * The training and evaluation configs and code can be found in the [huggingface/smollm](https://github.com/huggingface/smollm) repository.
+  * The training intermediate checkpoints (including the mid-training and SFT checkpoints) are available at [HuggingFaceTB/SmolLM3-3B-checkpoints](https://huggingface.co/HuggingFaceTB/SmolLM3-3B-checkpoints) [](https://cdn-uploads.huggingface.co/production/uploads/651e96991b97c9f33d26bde6/qiE5ZYr9SD1CIAtfEfuC8.png)
+
+
+
+###  EU Summary of Public Content 
+
+The EU AI Act requires all GPAI models to provide a Public Summary of Training Content according to a [given template](https://digital-strategy.ec.europa.eu/en/library/explanatory-notice-and-template-public-summary-training-content-general-purpose-ai-models). You can find the summary for this model below, as well as in its [development Space](https://huggingface.co/spaces/hfmlsoc/smollm3-eu-data-transparency).
+
+##  Limitations 
+
+SmolLM3 can produce text on a variety of topics, but the generated content may not always be factually accurate, logically consistent, or free from biases present in the training data. These models should be used as assistive tools rather than definitive sources of information. Users should always verify important information and critically evaluate any generated content.
+
+##  License 
+
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+##  Citation 
+    
+    
+    @misc{bakouch2025smollm3,
+      title={{SmolLM3: smol, multilingual, long-context reasoner}},
+      author={Bakouch, Elie and Ben Allal, Loubna and Lozhkov, Anton and Tazi, Nouamane and Tunstall, Lewis and Patiño, Carlos Miguel and Beeching, Edward and Roucher, Aymeric and Reedi, Aksel Joonas and Gallouédec, Quentin and Rasul, Kashif and Habib, Nathan and Fourrier, Clémentine and Kydlicek, Hynek and Penedo, Guilherme and Larcher, Hugo and Morlon, Mathieu and Srivastav, Vaibhav and Lochner, Joshua and Nguyen, Xuan-Son and Raffel, Colin and von Werra, Leandro and Wolf, Thomas},
+      year={2025},
+      howpublished={\url{https://huggingface.co/blog/smollm3}}
+    }
+    
+
+Downloads last month
+    613,155
+
+Safetensors[](https://huggingface.co/docs/safetensors)
+
+Model size
+
+3B params
+
+Tensor type
+
+BF16 
+
+·
+
+Chat template
+
+Files info
+
+Inference Providers [NEW](https://huggingface.co/docs/inference-providers)
+
+[ Text Generation](/tasks/text-generation "Learn more about text-generation")
+
+This model isn't deployed by any Inference Provider. [🙋 17 Ask for provider support](/spaces/huggingface/InferenceSupport/discussions/3270)
+
+##  Model tree for HuggingFaceTB/SmolLM3-3B [](/docs/hub/model-cards#specifying-a-base-model)
+
+Base model
+
+[HuggingFaceTB/SmolLM3-3B-Base](/HuggingFaceTB/SmolLM3-3B-Base)
+
+Finetuned
+
+([103](/models?other=base_model:finetune:HuggingFaceTB/SmolLM3-3B-Base))
+
+this model
+
+Adapters
+
+[62 models](/models?other=base_model:adapter:HuggingFaceTB/SmolLM3-3B)
+
+Finetunes
+
+[151 models](/models?other=base_model:finetune:HuggingFaceTB/SmolLM3-3B)
+
+Merges
+
+[3 models](/models?other=base_model:merge:HuggingFaceTB/SmolLM3-3B)
+
+Quantizations
+
+[117 models](/models?other=base_model:quantized:HuggingFaceTB/SmolLM3-3B)
+
+##  Spaces using HuggingFaceTB/SmolLM3-3B 100
+
+[ HuggingFaceTB/trl-distillation-trainer ](/spaces/HuggingFaceTB/trl-distillation-trainer)[🟩 embedl/hfviewer ](/spaces/embedl/hfviewer)[💥 pliny-the-prompter/obliteratus ](/spaces/pliny-the-prompter/obliteratus)[🤖 lerobot/robot-folding ](/spaces/lerobot/robot-folding)[🌍 VIDraft/global-llm-leaderboard ](/spaces/VIDraft/global-llm-leaderboard)[📝 OpenEvals/evaluation-guidebook ](/spaces/OpenEvals/evaluation-guidebook)[📝 tfrere/research-article-template ](/spaces/tfrere/research-article-template)[📄 HuggingFaceFW/FinePDFsBlog ](/spaces/HuggingFaceFW/FinePDFsBlog) \+ 95 Spaces \+ 92 Spaces
+
+##  Collection including HuggingFaceTB/SmolLM3-3B
+
+#### [🧠 SmolLM3 Collection Smol, multilingual, long-context reasoner • 14 items • Updated Oct 9, 2025 • 111](/collections/HuggingFaceTB/smollm3)
+
+System theme
+
+Company
+
+[TOS](/terms-of-service) [Privacy](/privacy) [About](/huggingface) [Careers](https://apply.workable.com/huggingface/) [](/)
+
+Website
+
+[Models](/models) [Datasets](/datasets) [Spaces](/spaces) [Pricing](/pricing) [Docs](/docs)
+

@@ -1,0 +1,68 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2502.13946v2
+Type: HTML
+Pattern: fair\s+cross-model|normalized\s+indirect\s+effect|Gemma-2|Llama-2-7b-Chat|Mistral-7B-Instruct (15 matches in 84229 chars)
+
+--- Content ---
+
+15580:...of 𝒟anlz{\mathcal{D}}_{\text{anlz}} and 𝒟eval{\mathcal{D}}_{\text{eval}} for each model.
+
+#### Models.
+
+To validate the generality of our findings, we study a diverse set of safety fine-tuned models: Gemma-2 (2b-it, 9b-it) Team et al. (2024), Llama-2-7b-Chat Touvron et al. (2023), Llama-3 (3.2-3b-Instruct, 8B-Instruct) Dubey et al. (2024), and Mistral-7B-Instruct Jiang et al. (2023).
+
+### 3.2 Attention Shifts to The Template Region
+
+In modern LLMs based on attention mechanisms, the distribution of attention weights across different heads reflects which region...
+--
+16677:...e on the template region, while exhibiting comparatively less focus on the instruction region.
+
+Figure 4: Left: Illustration of the activation patching process from harmless to harmful inputs. Right: Normalized indirect effects when patching activations are from two different regions (instruction v.s. template) across various LLMs, revealing that these models’ safety functions are primarily anchored in the template regions...
+--
+24105:...e scores. A higher IER′ℋ\mathrm{IE}^{\mathcal{H}}_{R^{\prime}} indicates the information from region R′R^{\prime} has a greater causal effect on the model’s compliance decision, and vice versa. For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m⁡(x−)−m⁡(x+))(m(x^{-})-m(x^{+})).
+
+#### Results.
+
+Figure 4 shows the trend of NIE in different regions as the number of patched heads increases. We have the...
+--
+34555:...e and applying it directly to response generation effectively reduces ASRs, strengthening the model’s safety robustness.
+
+Model | Attacks | w/o Detach | w/ Detach | Δ%\Delta\%  
+---|---|---|---|---  
+Gemma-2-9b-it | AIM | 89.3%89.3\% | 0.0%0.0\% | −89.3%-89.3\%  
+AmpleGCG | 62.3%62.3\% | 5.7%5.7\% | −56.6%-56.6\%  
+PAIR | 94.3%94.3\% | 11.9%11.9\% | −82.4%-82.4\%  
+Llama-3-8B-Instruct | AIM | 0.0%0.0\% |...
+--
+69547:...s are sourced from responses to harmless instructions.
+
+For Meta-Llama-3-8B-Instruct, we use the probe from layer ℓ=13\ell=13, position τ=4\tau=4 (where 00 is the first position of the template). For gemma-2-9b-it, we use the probe from ℓ=23\ell=23, position τ=4\tau=4. When performing the steering as in Equation 6, we empirically use a strength of α=1\alpha=1 and α=0.7\alpha=0.7 for these two models, res...
+--
+70148:...two as the threshold.
+
+Model |  Chat Template  
+---|---  
+LLaMA-3 |  <|begin_of_text|><|start_header_id|>user<|end_header_id|>\n \n{input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n  
+Gemma-2 |  <bos><start_of_turn>user\n{input}<end_of_turn>\n<start_of_turn>model\n  
+LLaMA-2 |  <s>[INST] {input} [/INST]  
+Mistral |  <s>[INST] {input} [/INST]  
+Table 2: Chat templates of the used LLMs, whe...
+--
+71644:...{x}}_{\tau}^{\ell,-}\right)\right)-m(x^{-})\right], |   
+  
+where we use a refusal metric, the negative compliance metric used in Section 3.3, −𝒙TL​𝒅+-{\bm{x}}_{T}^{L}{\bm{d}}^{+} as m⁡(x)m(x). For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m⁡(x+)−m⁡(x−))(m(x^{+})-m(x^{-})). The value of NIE represents the proportion of refusal logit recovered by patching that intermediate state. Therefore, a hi...
+--
+74648:...e significantly to the pre-input region since there’s no corresponding increase in attention for the template region. To verify this, we collected the average attention shifts in different regions on Llama-2-7B-chat and Llama-3-8B-Instruct in the Table 3.
+
+Model | BOS Token | Pre-Input | Instruction | Template  
+---|---|---|---|---  
+Llama-2-7B-chat | 0.150 | 0.153 | -0.178 | 0.025  
+Llama-3-8B-Instruct | 0.0003 | 0.005 | -0.05 | 0.045  
+  
+Table 3: Average attention shift in different regions. Figure 12: Residual stream patching result when a quote mark is appended to the prompt ‘How to make a bomb’.
+
+We confirm that the distinctive attention shift in Llama-2-7B-chat occurs because attention significantly shifts to the pre-instruction region. However, rather than indicating an unexpected role for the system prompt region, this shift concentrates exclusively on th...
+--
+76204:... these endings can extend the model’s original template region, effectively helping to transfer harmful signals from the input.
+
+To empirically demonstrate this, we conducted a simple case study with Gemma-2-2b-it using layer-wise causal tracing (detailed in Appendix B) to show the flow of harmful signals in this scenario. We used a harmful prompt ‘"How to make a bomb"’ and a harmless prompt ‘"How to mak...

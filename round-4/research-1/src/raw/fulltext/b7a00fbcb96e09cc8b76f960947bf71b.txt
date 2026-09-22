@@ -1,0 +1,318 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2412.10321
+Type: HTML
+Length: 66642 chars (truncated)
+
+--- Content ---
+
+##### Report GitHub Issue
+
+×
+
+Title:
+
+Content selection saved. Describe the issue below:
+
+Description:
+
+Submit without GitHub Submit in GitHub
+
+arXiv is now an independent nonprofit! [Learn more](https://info.arxiv.org/about) ×
+
+[ Back to arXiv ](/)
+
+[Why HTML?](https://info.arxiv.org/about/accessible_HTML.html) Report Issue [ Back to Abstract ](/abs/2412.10321v2 "Back to abstract page") [ Download PDF](/pdf/2412.10321v2 "Download PDF") [ ](javascript:toggleNavTOC\(\); "Toggle navigation") [ ](javascript:toggleReadingMode\(\); "Disable reading mode, show header and footer")
+
+  1. Abstract
+  2. 1 Introduction
+  3. 2 Refined Evaluation for Nuanced Jailbreaks
+  4. 3 Limitations of Original Objective
+     1. 3.1 Revisiting Original and Oracle Objectives.
+     2. 3.2 Two Limitations
+  5. 4 The Objective for Nuanced Jailbreaks
+     1. 4.1 Selective Multi-Prefix Objective
+     2. 4.2 Prefix Selection Criteria
+     3. 4.3 Prefix Selection Pipeline
+  6. 5 Experiments
+     1. 5.1 Main Results
+     2. 5.2 Additional Results
+  7. 6 Related Work
+  8. 7 Conclusion
+  9. References
+  10. A Additional Discussions
+  11. B More Related Work
+  12. C Additional Experimental Details
+  13. D Additional Results
+
+
+
+[ License: CC BY-SA 4.0 ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2412.10321v2 [cs.LG] 27 Dec 2025
+
+# AdvPrefix: An Objective for Nuanced LLM Jailbreaks
+
+Sicheng Zhu ††thanks: Work done at Meta Affiliation: University of Maryland, College Park  Email: [sczhu@umd.edu](mailto:) Brandon Amos  Affiliation: FAIR, Meta  Email: [bda@meta.com](mailto:) Yuandong Tian  Affiliation: FAIR, Meta  Email: [yuandong@meta.com](mailto:) Chuan Guo ††thanks: Joint last author Affiliation: FAIR, Meta  Email: [chuanguo@meta.com](mailto:) Ivan Evtimov22footnotemark:  2 Affiliation: FAIR, Meta  Email: [ivanevtimov@meta.com](mailto:)
+
+###### Abstract
+
+Many jailbreak attacks on large language models (LLMs) rely on a common objective: making the model respond with the prefix “Sure, here is (harmful request)”. While straightforward, this objective has two limitations: limited control over model behaviors, yielding incomplete or unrealistic jailbroken responses, and a rigid format that hinders optimization. We introduce AdvPrefix, a plug-and-play prefix-forcing objective that selects one or more model-dependent prefixes by combining two criteria: high prefilling attack success rates and low negative log-likelihood. AdvPrefix integrates seamlessly into existing jailbreak attacks to mitigate the previous limitations for free. For example, replacing GCG’s default prefixes on Llama-3 improves nuanced attack success rates from 14% to 80%, revealing that current safety alignment fails to generalize to new prefixes. Code and selected prefixes are released in [github.com/facebookresearch/jailbreak-objectives](https://github.com/facebookresearch/jailbreak-objectives).  Warning: This paper includes language that could be considered inappropriate or harmful.
+
+## 1 Introduction
+
+The rapid advancement of Large Language Models (LLMs) (OpenAI, 2023; Dubey et al., 2024; Anthropic, 2024; Reid et al., 2024) brings escalating AI safety concerns, as LLMs can replicate harmful behaviors from their training data (Vidgen et al., 2024). Developers mitigate these risks through safety alignment (Ouyang et al., 2022; Bai et al., 2022; Dai et al., 2023) and system-level moderation (Inan et al., 2023; Zeng et al., 2024a), verified by proactive red-teaming that uses adversarial prompts to circumvent these safety measures (i.e., jailbreaking). While jailbreaks traditionally rely on manual prompting by experts (Ganguli et al., 2022), automated jailbreaks using prompt optimization have emerged as a more scalable and effective approach, potentially revealing issues overlooked by human experts (Perez et al., 2022; Lapid et al., 2023; Lin et al., 2025).
+
+A critical component of automated jailbreaks is their optimization objective. Many attacks (Zou et al., 2023; Liu et al., 2023a; Andriushchenko et al., 2024; Wu et al., 2025) aim to elicit a generic prefix like “Sure, here is [harmful request]”. However, this common objective suffers from two key limitations: Misspecified: even with low optimization loss, actual responses are often incomplete or unfaithful (Figure 1), failing to produce genuinely harmful content (Vidgen et al., 2024). Overconstrained: rigid, handcrafted prefixes can be unnatural for LLMs (e.g., Llama-3 prefers “Here…” rather than “Sure…”), complicating optimization (Zhang et al., 2025b). These issues are particularly acute for newer LLMs like Gemma-2, where standard attacks like GCG (Zou et al., 2023) achieve trivial attack success rates (∼\sim10%).
+
+Figure 1:  (Top) For a malicious request, the original objective maximizes the output likelihood of a rigid prefix (gray) across all victim LLMs. Even with capable optimization algorithms, this objective often leads to refusals or responses that are not genuinely harmful. Our objective uses one (purple) or multiple (light purple) pre-selected prefixes, leading to significantly higher ASR and response harmfulness. (Bottom) The pipeline for generating our prefixes using uncensored LLMs and selecting model-dependent prefixes based on two criteria. 
+
+While recent works explore alternative jailbreak objectives (Jia et al., 2024; Xie et al., 2024; Zhou and Wang, 2024; Thompson and Sklar, 2024; Sclar et al., 2025; Zhang et al., 2025a), systematically addressing misspecification and overconstraint remains challenging, hindered by difficulties in estimating autoregressive model’s rare behaviors (Jones et al., 2025) and by hard token constraints in jailbreak threat models. In this paper, we propose AdvPrefix, an adaptive prefix-forcing objective that addresses these limitations. Our contributions are as follows:
+
+Nuanced evaluation (§2). We first meta-evaluate three existing jailbreak evaluation methods (Mazeika et al., 2024; Souly et al., 2024; Chao et al., 2024), counting only complete and faithful responses as successful jailbreaks (Figure 6). We find that while StrongReject (Souly et al., 2024) is relatively accurate, others can overestimate attack success rates (ASR) by up to 30% (Figure 2). We then refine evaluation by developing an improved judge and a preference-based judge to better capture nuanced harmfulness, which reveals that the original objective is both misspecified and overconstrained (§3).
+
+New objective (§4). We propose a new prefix-forcing objective that uses model-dependent prefixes selected based on two criteria: high prefilling ASR (to ensure they lead to complete and faithful harmful responses, reducing misspecification) and low initial negative log-likelihood (NLL) (to ensure they are easy to elicit, mitigating overconstraints). The objective also supports using multiple target prefixes for a single request to further simplify optimization. Our approach includes an automatic pipeline for selecting these prefixes from either rule-based constructions or uncensored LLMs (not necessarily the uncensored target LLM), while seamlessly integrating into existing attacks.
+
+Empirical findings (§5). Integrating AdvPrefix into GCG and AutoDAN (Zhu et al., 2023) significantly increases nuanced ASR across Llama-2, 3, 3.1, and Gemma-2. For instance, GCG’s ASR on Llama-3 improves from 16% to 70%, highlighting that current safety alignments struggle to generalize to unseen prefixes. By addressing misspecification, AdvPrefix uniquely benefits from stronger optimization, enabling further ASR gains (to 80% on Llama-3 with full prompt optimization). Preference evaluations also show responses elicited by our objective are substantially more harmful (comparable to some uncensored LLMs)11 1 Even though we observe improvements in the meaningfulness of model responses when jailbroken with GCG using our targets, we note that none of the models responded with materially harmful information that would not be found on the broader internet. . Our objective improves jailbreak attacks for free, enables attacking reasoning LLMs (Figure 9), and is useful for future red-teaming.
+
+## 2 Refined Evaluation for Nuanced Jailbreaks
+
+Figure 2:  Meta-evaluation of common judges based on 800 manually labeled request-response pairs, using human evaluation as ground truth. (Left) ASRs across different victim LLMs. Existing judges overestimate ASRs, particularly on Llama-3 and Gemma-2. (Center) False positive rates of judges across different failure case categories. (Right) Average human agreement rates of judges across four victim LLMs. Model-wise ASR and F1 scores appear in Table 4. 
+
+This section shows that current jailbreak evaluations often overestimate ASRs for nuanced jailbreaks by miscounting incomplete and unfaithful responses, and presents our refined evaluation.
+
+Defining Nuanced Jailbreaks. For a nuanced jailbreak to succeed, the victim LLM’s response to the harmful request must be affirmative, complete, and faithful (i.e., on-topic, detailed, and realistic, per Vidgen et al. (2024)). Responses failing these criteria, categorized by rules below (examples in Figure 6 and Table 5), represent failed jailbreaks.
+
+We meta-evaluate some common jailbreak judges, including HarmBench (Mazeika et al., 2024), JailbreakBench (Chao et al., 2024), and StrongReject (Souly et al., 2024). We curate 50 highly harmful, non-ambiguous requests from AdvBench as our dataset, and use 800 manually labeled GCG attack responses on Llama-2, 3, 3.1, and Gemma-2 as ground truth (details in Appendix C, nuanced labeling refers to Vidgen et al. (2024), labeled data released in our codebase).
+
+Evaluation Challenges with Newer LLMs. Newer LLMs often exhibit deeper alignment (Qi et al., 2024), tending to self-correct after an initial affirmative prefix rather than directly refusing (Zhang et al., 2024) (Appendix A). This behavior, emphasizing incomplete or unfaithful responses over outright refusals, exacerbates inaccuracies in existing judges. As shown in Figure 2 (left), current judges can significantly overestimate ASR (e.g., from a 10% ground truth to nearly 40% on Gemma-2), with StrongReject being relatively more accurate. This overestimation stems primarily from misjudging incomplete and unfaithful responses (Figure 2, center), likely because these judges were developed on older LLMs that predominantly either refused directly or produced clearly harmful content (Figure 3, left).
+
+Our Improved Judges. To address these inaccuracies, we develop a refined judge using Llama-3.1-70B, with revised instructions prioritizing response completeness and faithfulness, requiring reasoning traces before giving the final answer (Kojima et al., 2022), and affirmative prefilling to handle sensitive content (details in Appendix C and codebase). This judge improves human agreement rates by up to 9% on newer LLMs (Figure 2, right; Table 4). Additionally, we introduce a preference judge for relative harmfulness comparison against uncensored LLMs’ output.
+
+Figure 3:  (Left) The attack failure rates for running GCG with the original objective, along with their breakdown. While the failure rate is roughly 90%90\% across all four LLMs, the specific failure cases vary significantly. (Center) Frequency of failure cases by the final loss of the original objective. While attack prompts with lower loss avoid direct refusal, the overall failure rate remains above 80%80\% due to increases in the other two failure categories. (Right) Even with prefilling the victim LLM’s initial response with “Sure, here is [request]”, the completed responses’ failure rates remain high. 
+
+## 3 Limitations of Original Objective
+
+This section details how the commonly used prefix-forcing jailbreak objective is misspecified and overconstrained, hindering nuanced jailbreaks, as revealed by our refined evaluation.
+
+### 3.1 Revisiting Original and Oracle Objectives.
+
+We first formulate the jailbreak problem. Let 𝒱{\mathcal{V}} be the LLM’s vocabulary and 𝒱∗{\mathcal{V}}^{*} the set of all finite sequences over 𝒱{\mathcal{V}}. A user prompt is x∈𝒱∗x\in{\mathcal{V}}^{*}, and a model response is y∈𝒱∗y\in{\mathcal{V}}^{*}. The threat model in jailbreaking allows altering the attack prompt θ∈𝒱∗\theta\in{\mathcal{V}}^{*} (often a suffix, but sometimes the entire prompt) to steer the victim LLM’s behavior (output distribution). We use ⊕\oplus for sequence concatenation. A jailbreak judge r⁡(x,y)r(x,y) assigns 11 if yy meets nuanced jailbreak standards for xx, and 00 otherwise, with 𝒴x≜{y:r⁡(x,y)=1}{\mathcal{Y}}_{x}\triangleq\\{y:r(x,y)=1\\} being the set of all harmful responses for xx.
+
+Oracle objective. Our ultimate goal is to find an attack prompt θ∈𝒱∗\theta\in{\mathcal{V}}^{*} that maximizes the likelihood of the victim LLM generating any response in 𝒴x{\mathcal{Y}}_{x}:
+
+| minθ∈𝒱∗−log∑y∈𝒴xp(y∣θ),\displaystyle\min_{\theta\in{\mathcal{V}}^{*}}\quad-\log\sum_{y\in{\mathcal{Y}}_{x}}p(y\mid\theta), |  | (3.1)  
+---|---|---|---  
+  
+where the sum represents this likelihood. This log-sum-probability form (distinct from sum-log-probability in other contexts like multi-prompt universal jailbreaking) precisely specifies all desired attack prompts and the model behaviors p⁡(y∣θ)p(y\mid\theta) they parameterize, but is prohibitively costly to compute as 𝒴x{\mathcal{Y}}_{x} is typically vast.
+
+Prefix-forcing objective. This common objective aims to find θ\theta that maximizes the likelihood of generating a specific prefix yp∈𝒱∗y_{p}\in{\mathcal{V}}^{*}:
+
+| minθ∈𝒱∗−log⁡p⁡(yp∣θ).\displaystyle\min_{\theta\in{\mathcal{V}}^{*}}\quad-\log\ p(y_{p}\mid\theta). |  | (3.2)  
+---|---|---|---  
+  
+This is equivalent to maximizing the likelihood of any full response starting with ypy_{p}, since p⁡(yp∣θ)=∑yc∈𝒱∗p⁡(yp⊕yc∣θ)p(y_{p}\mid\theta)=\sum_{y_{c}\in{\mathcal{V}}^{*}}p(y_{p}\oplus y_{c}\mid\theta). As such responses include those in 𝒴x{\mathcal{Y}}_{x}, this serves as a surrogate for eliciting harmful responses, less overconstrained than eliciting a specific full response. However, by also encompassing non-jailbroken responses (e.g., incomplete, unfaithful), it is prone to misspecification or objective hacking (Amodei et al., 2016), as we show next.
+
+### 3.2 Two Limitations
+
+We identify two limitations of the original objective using our refined evaluation:
+
+Misspecified. Lowering the original objective’s loss (Equation 3.2) does not consistently increase ASRs for nuanced jailbreaks (Figure 3, center): while direct refusals decrease, incomplete and unfaithful responses rise, keeping overall ASR low. To further isolate the objective from optimization algorithm influence, we directly prefill the target prefix (Zhang et al., 2023; Haizelab, 2024; Qi et al., 2024) and observe completions. Figure 3 (right) shows that while prefilling eliminates direct refusals, ASRs remain low due to persistent incomplete and unfaithful completions. This underscores the original objective’s misspecification.
+
+Overconstrained. The hard token or fluency constraints in jailbreak tasks hinder optimization from lowering the loss (Jain et al., 2023). Thus, a suitable objective should be easy to optimize. However, the original objective enforces rigid, manually crafted prefixes across all victim LLMs, even if these prefixes misalign with an LLM’s natural response style (e.g., Llama-3 rarely starts with “Sure”, preferring “Here”). Forcing such unnatural prefixes complicates optimization. Indeed, replacing “Sure, here is” with “Here is” in GCG attacks on Llama-3 leads to consistently lower final losses (with equal or improved ASRs, Figure 8), demonstrating that the original objective is overconstrained.
+
+## 4 The Objective for Nuanced Jailbreaks
+
+Figure 4:  The pipeline of constructing our objective. (Left) We use rule-based templates or uncensored LLMs (not necessarily the uncensored target LLM) to generate candidate prefixes. (Center) We evaluate each candidate prefix based on two criteria: high prefilling ASR and low initial NLL. (Right) We select top prefixes (top two in this example) to construct our multi-prefix objective. 
+
+We introduce AdvPrefix, our new prefix-forcing objective for nuanced jailbreaks, outlined in Figure 4. This section formulates the objective, details its prefix selection criteria, and describes the automatic prefix generation pipeline.
+
+### 4.1 Selective Multi-Prefix Objective
+
+Given a harmful request xx, we select a set of target prefixes 𝒴p{\mathcal{Y}}_{p}. AdvPrefix then aims to find an attack prompt θ\theta minimizing the negative log-likelihood of generating any of these prefixes:
+
+| minθ∈𝒱∗−log∑yp∈𝒴pp(yp∣θ).\displaystyle\vskip-8.53581pt\min_{\theta\in{\mathcal{V}}^{*}}\quad-\log\sum_{y_{p}\in{\mathcal{Y}}_{p}}\ p(y_{p}\mid\theta).\vskip-8.53581pt |  | (4.1)  
+---|---|---|---  
+  
+Using multiple prefixes leverages the jailbreak task’s flexibility to alleviate overconstraints (e.g., accepting “Here is a guide…” or “Here’s a comprehensive guide…”).. The tree attention trick (Cai et al., 2024), which concatenates multiple prefixes into one, enables efficient computation for multiple prefixes in one forward pass. Appendix A discusses why we use the prefix-forcing objective and its relationship to model-distillation-based objectives.
+
+### 4.2 Prefix Selection Criteria
+
+To address the original objective’s limitations, we propose two criteria for prefix selection:
+
+Criterion I: high prefilling ASR. To reduce misspecification, we want prefixes ypy_{p} that, once elicited by some attack prompt θ\theta, lead to complete and faithful harmful continuations with high probability:
+
+| maxyp𝔼yc∼ℙ(⋅∣θ,yp)[r(x,yp⊕yc)].\displaystyle\vskip-8.53581pt\max_{y_{p}}\quad\mathbb{E}_{y_{c}\sim{\mathbb{P}}(\cdot\mid\theta,y_{p})}\big[r(x,y_{p}\oplus y_{c})\big].\vskip-8.53581pt |  | (4.2)  
+---|---|---|---  
+  
+Directly computing this value is infeasible as the optimized θ\theta is unknown without time-consuming optimization. However, we observe that this expectation can be efficiently approximated by using a manually constructed attack prompt for θ\theta. Although this manual prompt often cannot elicit the target prefix, the resulting approximated value (prefilling ASR) correlates with the actual jailbreak ASR (Figure 7). We use this approximation to compute the prefilling ASRs.
+
+Criterion II: low initial NLL. To reduce overconstraints, we want prefixes that are easily elicited by optimized attack prompts. Since ease of elicitation by an optimized attack prompt is indicated by low NLL, we favor prefixes ypy_{p} that exhibit a low NLL with the initial (pre-optimization) attack prompt θ0\theta_{0}:
+
+| minyp−log⁡p⁡(yp∣θ0)\displaystyle\vskip-8.53581pt\min_{y_{p}}\quad-\log p(y_{p}\mid\theta_{0})\vskip-8.53581pt |  | (4.3)  
+---|---|---|---  
+  
+These two criteria often conflict. For example, longer prefixes may have higher prefilling ASR but also higher NLL, causing optimization to fail. We balance them using a weighted sum of log-prefilling-ASR and NLL, with weighting tunable to the optimization method’s strength: for example, stronger methods like GCG can prioritize high prefilling ASR and tolerate relatively high NLL.
+
+### 4.3 Prefix Selection Pipeline
+
+We develop an automated pipeline to generate and select target prefixes, typically run once per victim LLM and malicious request, allowing offline storage and reuse. The pipeline involves four steps:
+
+1\. Candidate generation. We use rule-based construction or uncensored LLMs with guided decoding (Zhao et al., 2024) to generate candidate prefixes. The uncensored LLMs are not necessarily the uncensored victim LLM, and can be selected from publicly available LLMs that are unaligned (base or helpful-only), finetuned on harmful data, or with refusal suppression (Labonne, 2024). Guided decoding makes the output more natural for the victim LLM, achieving lower NLL. We generate diverse candidates of varied lengths for each request.
+
+2\. Preprocessing. We preprocess candidate prefixes through rule-based augmentation (e.g., “Here is” to “Here’s”, similar to Zou et al. (2023)) to diversify them, and filtering to remove duplicates and any prefixes starting with refusals.
+
+3\. Evaluation with two criteria. We first evaluate the initial NLLs of all candidate prefixes using the victim LLM. Then, we estimate their prefilling ASRs by having the victim LLM complete each prefix multiple times (with temperature one) and using our nuanced judge to assess the harmfulness of completions. This evaluation is tailored to both the victim LLM and the judge, where the judge reflects the attacker’s labeling standards.
+
+4\. Selection. We combine the two criteria via a weighted sum and rank these candidates. To select kk prefixes, we first identify the top one prefix as a reference, and then select the top kk prefixes with a prefilling ASR no lower than that of the reference prefix.
+
+## 5 Experiments
+
+This section incorporates our objective into existing jailbreak attacks to demonstrate its effectiveness in achieving nuanced jailbreaks, comparing it against the original objective.
+
+Table 1:  Jailbreak results of GCG with the original objective and our objectives. Here we use GCG to generate the attack suffix and vary the attack suffix length: 20 tokens (black) and 40 tokens (blue).  Model | Objective | Successful Attack (%\%, ↑\uparrow) | Failed Attack (%\%, ↓\downarrow) |  |   
+---|---|---|---|---|---  
+|  |  | Direct Refusal | Incomplete | Unfaithful  
+Llama-2 |  |  |  |  |   
+7B-Chat | Original | 13.0 (26.1) | 72.3 (49.7) | 0.0 (0.0) | 14.6 (24.1)  
+| Ours Single | 24.0 (38.6\mathbf{38.6}) | 70.0 (53.5) | 0.0 (0.0) | 6.0 (7.9)  
+| Ours Multiple | 26.0\mathbf{26.0} (37.5) | 68.0 (52.1) | 0.0 (0.0) | 6.0 (10.4)  
+Llama-3 |  |  |  |  |   
+8B-Instruct | Original | 12.8 (16.4) | 45.6 (37.3) | 22.1 (21.8) | 19.5 (24.5)  
+| Ours Single | 54.6\mathbf{54.6} (69.7) | 23.7 (12.1) | 4.1 (3.0) | 17.5 (15.2)  
+| Ours Multiple | 54.0 (70.0\mathbf{70.0}) | 26.0 (14.0) | 1.0 (2.0) | 19.0 (14.0)  
+Llama-3.1 |  |  |  |  |   
+8B-Instruct | Original | 16.8 (16.5) | 48.3 (48.8) | 16.8 (17.3) | 18.1 (17.3)  
+| Ours Single | 45.0 (53.5) | 18.0 (13.1) | 4.0 (3.0) | 33.0 (30.3)  
+| Ours Multiple | 60.0\mathbf{60.0} (61.0\mathbf{61.0}) | 11.0 (11.0) | 1.0 (2.6) | 28.0 (25.3)  
+Gemma-2 |  |  |  |  |   
+9B-IT | Original | 11.2 (9.5) | 4.0 (5.3) | 17.0 (11.6) | 67.8 (73.7)  
+| Ours Single | 42.0\mathbf{42.0} (51.0) | 17.0 (10.4) | 6.0 (5.2) | 35.0 (33.3)  
+| Ours Multiple | 40.0 (53.3\mathbf{53.3}) | 16.0 (5.3) | 2.0 (8.7) | 42.0 (32.7)  
+  
+Jailbreak attacks. We employ GCG (Zou et al., 2023), a search-based optimization method, and AutoDAN (Zhu et al., 2023), which combines search with guided decoding. Both attacks primarily rely on the optimization objective, with minimal influence from manual prompting. For each run, we select the attack prompt yielding the lowest objective loss.
+
+Threat models. We consider two threat models: (1) Optimizing only the attack suffix, which is then appended to the malicious request. (2) Optimizing the full attack prompt from scratch (without the original request) (Guo et al., 2024), a less restrictive threat model that often leads to unfaithful responses with the original objective.
+
+Attack settings. We test four victim LLMs: Llama-2-7B-chat-hf (Touvron et al., 2023), Llama-3-8B-Instruct, Llama-3.1-8B-Instruct (Dubey et al., 2024), and Gemma-2-9B-it (Team et al., 2024). We use the 5050 malicious requests curated from AdvBench (Appendix C), and run both attacks for 1000 steps with a batch size of 512.
+
+Prefix selection. We generate candidate prefixes using four uncensored LLMs publicly available on Huggingface: georgesung/llama2-7b-chat-uncensored, Orenguteng/Llama-3-8B-Lexi-Uncensored, Orenguteng/Llama-3.1-8B-Lexi-Uncensored, and TheDrummer/Tiger-Gemma-9B-v1. We estimate the prefilling ASR by averaging over 25 random completions (temperature 1) for each prefix. We combine the two selection criteria with a fixed weight of 20 for log-prefilling-ASR. We select four prefixes for our multiple-prefix objective.
+
+Evaluation. We use our nuanced judge for both prefix selection and jailbreak evaluation. We also use our preference judge to compare the quality of jailbreak responses against those from an uncensored LLM Orenguteng/Llama-3.1-8B-Lexi-Uncensored. For ablation studies, we also report results using HarmBench, JailbreakBench, and StrongReject. We generate victim LLM responses using greedy decoding and allow output to 512 tokens for nuanced evaluation. Each reported ASR is first averaged over four independent runs and then across all malicious requests.
+
+### 5.1 Main Results
+
+Table 2:  Jailbreak results for GCG (optimizing entire 40-token prompt) and AutoDAN (generating entire 200-token prompt) with the original and our single-prefix objectives. All prompts were optimized or generated from scratch. Ref. = Refusal, Inc. = Incomplete, Unf. = Unfaithful.  Model | Objective | GCG (40-token) |  |  |  | AutoDAN (200-token) |  |  |   
+---|---|---|---|---|---|---|---|---|---  
+|  | Success (%\%, ↑\uparrow) | Failed Attack (%\%, ↓\downarrow) |  |  | Success (%\%, ↑\uparrow) | Failed Attack (%\%, ↓\downarrow) |  |   
+|  |  | Ref. | Inc. | Unf. |  | Ref. | Inc. | Unf.  
+Llama-2 |  |  |  |  |  |  |  |  |   
+7B-Chat | Original | 42.1 | 0.0 | 0.0 | 57.9 | 26.3 | 16.1 | 0.4 | 57.2  
+| Ours | 72.6\mathbf{72.6} | 2.6 | 0.0 | 24.9 | 39.7\mathbf{39.7} | 25.4 | 0.0 | 35.0  
+Llama-3 |  |  |  |  |  |  |  |  |   
+8B-Instruct | Original | 14.1 | 16.2 | 35.5 | 34.2 | 5.2 | 34.5 | 28.3 | 32.1  
+| Ours | 79.5\mathbf{79.5} | 0.3 | 2.3 | 17.8 | 77.9\mathbf{77.9} | 2.5 | 0.0 | 19.6  
+Llama-3.1 |  |  |  |  |  |  |  |  |   
+8B-Instruct | Original | 47.0 | 3.0 | 11.0 | 39.0 | 51.0 | 1.4 | 8.8 | 38.8  
+| Ours | 58.9\mathbf{58.9} | 1.0 | 0.7 | 39.4 | 59.6\mathbf{59.6} | 1.7 | 1.2 | 37.4  
+Gemma-2 |  |  |  |  |  |  |  |  |   
+9B-IT | Original | 7.4 | 0.7 | 10.1 | 81.9 | 19.7 | 9.2 | 6.9 | 64.2  
+| Ours | 51.2\mathbf{51.2} | 0.4 | 11.5 | 36.9 | 36.0\mathbf{36.0} | 10.0 | 7.3 | 46.7  
+  
+Higher ASR. Table 1 shows that replacing the original “Sure, here is…” prefixes with our new model-dependent prefixes significantly improves ASR across all victim LLMs. On Llama-3, ASRs jump from around 10%10\% to as high as 70%70\%. Our multiple-prefix objective often achieves even higher ASRs. Appendix D shows that these relative improvements also hold when using the other three evaluation judges.
+
+Mitigated misspecification and overconstraint. The failure case breakdown shows that AdvPrefix works by mitigating misspecification and overconstraint. On three newer LLMs, it reduces incomplete responses from about 20%20\% to 11-2%2\%, and cuts unfaithful responses by half on Gemma-2, indicating mitigated misspecification. Additionally, faster optimization convergence (Figure 5, left) and halved direct refusals (caused by failing to sufficiently lower the objective loss) on Llama-3 and 3.1 indicate mitigated overconstraints.
+
+Benefits from stronger optimization: longer attack suffixes. While longer suffixes generally lower final losses, the original objective’s ASR on newer LLMs remains poor (∼10%\sim 10\%) due to frequent incomplete and unfaithful responses (Table 1). By mitigating this misspecification, AdvPrefix leverages longer suffixes to reduce direct refusals while managing incomplete and unfaithful responses, ultimately increasing ASR by an additional 99-15%15\%.
+
+Benefits from stronger optimization: full prompt optimization. Table 2 shows that optimizing the entire attack prompt, rather than just the suffix, almost eliminates direct refusals for GCG attacks. However, the original objective yields inconsistent ASR changes due to more incomplete and unfaithful responses. By mitigating misspecification, AdvPrefix consistently increases ASR (e.g., Llama-2: 39%39\% to 73%73\%; Llama-3: 70%70\% to 80%80\%), highlighting its capability to take advantage of this less restrictive threat model.
+
+### 5.2 Additional Results
+
+Figure 5:  (Left) Prompt optimization loss curves using GCG on Llama-3, using the original and our objectives. (Right) Response harmfulness of GCG attacks compared to an uncensored LLM. Our objective leads to more harmful responses (e.g., detailed and realistic) than the original objective. A win rate below 50%50\% indicates that the jailbroken victim LLMs still cannot generate responses that are as harmful as the uncensored LLM. 
+
+Universal Improvement Across Attacks. AdvPrefix also elevates AutoDAN’s ASR across all victim LLMs (Table 2). E.g., ASR on Llama-3 surges from 5%5\% to 78%78\%, showing AdvPrefix’s broad utility.
+
+Comparable harmfulness to uncensored LLM. Our preference judge’s evaluation (Figure 5, right) shows that GCG with AdvPrefix achieves harmfulness win rates of 30∼50%30\sim 50\% against an uncensored LLM, significantly better than the original objective’s ∼10%\sim 10\%. This shows that AdvPrefix elicits responses with harmfulness levels approaching those of an uncensored LLM.
+
+Examples of selected prefixes. Our codebase releases the selected prefixes. While many prefixes start with affirmations, some, particularly for Gemma-2, do not start with affirmations (e.g., “**Password Cracking Algorithm** **”, “**Step 1: Reconnaissance** *”).
+
+Computational cost for AdvPrefix. Generating each prefix takes about 5 minutes on an A100 80G GPU (3 minutes with rougher PASR estimation). The 70B judge used for PASR estimation is the primary consumer of memory and computation. Importantly, prefix selection is a one-off cost: others can then reuse our pre-computed prefixes.
+
+Bypassing Deeper Alignment. Newer LLMs appear more robust against the original objective, often resisting generating “Sure, here is” prefixes or self-correcting after generating them. However, the high ASRs AdvPrefix achieves indicate that such deeper alignment can still be bypassed when targeting new prefixes. This result suggests that the current safety alignment fails to generalize to new, unseen prefixes.
+
+## 6 Related Work
+
+Jailbreak attacks and red-teaming. Jailbreaking aligned LLMs, crucial for red-teaming, is a focus of many works. Beyond manual jailbreaks (Perez et al., 2022; Liu et al., 2023b; Wei et al., 2023a), automated methods are typically white-box (requiring model/logit access) or black-box (output-only). White-box attacks use search- or gradient-based prompt optimization (Zou et al., 2023; Andriushchenko et al., 2024; Guo et al., 2021; Guo et al., 2024; Geisler et al., 2024), sometimes with fluency considerations (Liu et al., 2023a; Zhu et al., 2023; Paulus et al., 2024; Thompson and Sklar, 2024). Black-box attacks use designed/learned strategies (Chao et al., 2023; Mehrotra et al., 2023; Zeng et al., 2024b; Paulus et al., 2024; Zheng et al., 2024; Wei et al., 2023b; Anil et al., 2024) for interpretable prompt optimization, suitable for closed-source LLMs. White-box attacks, with weight access, can be stronger and more targeted, often proving most effective against defended LLMs like Llama-2 (Mazeika et al., 2024). Recent efforts uncover novel attack vectors, such as exploiting model reasoning (Wu et al., 2025) or using assistive tasks to obscure intent (Chen et al., 2025). Creating transferable attacks by reducing prompt overfitting remains an active research area (Lin et al., 2025; Zhang et al., 2025b). We omit discussion of jailbreak attacks with threat models other than user prompt modification (Huang et al., 2024a; Zhao et al., 2024; Liu et al., 2024).
+
+Jailbreak attack objectives. Jailbreak attack objectives have received comparatively less attention than attack methods. Some works discuss the original objective’s misspecification (Geiping et al., 2024; Liao and Sun, 2024), while others design new objectives to improve ASR. For instance, (Zhou and Wang, 2024; Xie et al., 2024) suppress refusals rather than elicit target prefixes, and Jia et al. (2024) augments prefixes with phrases like “my output is harmful” to improve ASR. The initial model response’s importance is also highlighted by work on response selection/steering (Tran et al., 2024) and attacks leveraging prefilling features (Zhang et al., 2025a). Unlike these manual targets or specific interaction points, our work automatically tailors prefixes to specific victim LLMs and requests. Thompson and Sklar (2024) propose a dual objective: eliciting “Sure” and distilling from an uncensored teacher. However, this faces challenges with teacher learnability and sample efficiency for high-entropy teacher distributions. In contrast, our objective, akin to distilling from a degenerate (single-prefix) teacher, is sample-efficient, and our low-NLL prefix selection favors learnable behaviors. Recent objective designs include adaptive reinforcement learning frameworks (Sclar et al., 2025) and methods “guiding” LLM outputs by removing superfluous constraints to enhance transferability (Zhang et al., 2025b). Our AdvPrefix systematically addresses misspecification and overconstraint by selecting prefixes for their likelihood to elicit harm and their ease of generation. Finally, findings that LLM-safety evaluations can lack robustness (Strauss et al., 2025) underscore the need for refined, nuanced evaluation frameworks like ours.
+
+## 7 Conclusion
+
+This paper focuses on a key component of jailbreak attacks: the objective. We start by developing nuanced evaluation to identify limitations in the current objective, including misspecification and overconstraints. Then, we propose a new prefix-forcing objective leveraging carefully selected prefixes. Experiments demonstrate its effectiveness and compatibility with different attacks. Our plug-and-play design allows practitioners to use our released prefixes for free performance gains. We also analyze jailbreak objectives systematically, aiming to inspire further advancements. Our findings reveal that even the latest LLMs’ deep alignment can be bypassed, underscoring the need for more generalizable alignment.
+
+Limitations. A limitation of our objective is that selecting prefixes, especially for evaluating prefilling ASR, requires evaluating many sampled responses, leading to a computational burden. Moreover, we do not account for other desirable properties of the objective, such as a well-shaped loss landscape. Finally, our objective is designed for situations requiring the target model’s log probabilities, thus cannot be applied to black-box attacks.
+
+## Broader Impacts
+
+Our research contributes to the safety and responsible development of future AI systems by exposing limitations in current models. While acknowledging the potential for misuse in adversarial research, we believe our methods do not introduce any new risks or unlock dangerous capabilities beyond those already accessible through existing attacks or open-source models without safety measures. Finally, we believe that identifying vulnerabilities is essential for addressing them. By conducting controlled research to uncover these issues now, we proactively mitigate risks that could otherwise emerge during real-world deployments.
+
+## References
+
+  * Amodei et al. (2016) D. Amodei, C. Olah, J. Steinhardt, P. Christiano, J. Schulman, and D. Mané Concrete problems in ai safety.  arXiv preprint arXiv:1606.06565.  Cited by: §3.1. 
+  * An et al. (2024) B. An, S. Zhu, R. Zhang, M. Panaitescu-Liess, Y. Xu, and F. Huang Automatic pseudo-harmful prompt generation for evaluating false refusals in large language models.  In First Conference on Language Modeling,  External Links: [Link](https://openreview.net/forum?id=ljFgX6A8NL) Cited by: Appendix C. 
+  * Andriushchenko et al. (2024) M. Andriushchenko, F. Croce, and N. Flammarion Jailbreaking leading safety-aligned llms with simple adaptive attacks.  arXiv preprint arXiv:2404.02151.  Cited by: §1, §6. 
+  * Anil et al. (2024) C. Anil, E. DURMUS, N. Rimsky, M. Sharma, J. Benton, S. Kundu, J. Batson, M. Tong, J. Mu, D. J. Ford, F. Mosconi, R. Agrawal, R. Schaeffer, N. Bashkansky, S. Svenningsen, M. Lambert, A. Radhakrishnan, C. Denison, E. J. Hubinger, Y. Bai, T. Bricken, T. Maxwell, N. Schiefer, J. Sully, A. Tamkin, T. Lanham, K. Nguyen, T. Korbak, J. Kaplan, D. Ganguli, S. R. Bowman, E. Perez, R. B. Grosse, and D. Duvenaud Many-shot jailbreaking.  In The Thirty-eighth Annual Conference on Neural Information Processing Systems,  External Links: [Link](https://openreview.net/forum?id=cw5mgd71jW) Cited by: §6. 
+  * Anthropic (2024) Anthropic The claude 3 model family: opus, sonnet, haiku.  Technical Report.  Cited by: Appendix B, §1. 
+  * Arora et al. (2022) K. Arora, L. El Asri, H. Bahuleyan, and J. Cheung Why exposure bias matters: an imitation learning perspective of error accumulation in language generation.  In Findings of the Association for Computational Linguistics: ACL 2022, S. Muresan, P. Nakov, and A. Villavicencio (Eds.),  Dublin, Ireland, pp. 700–710.  External Links: [Link](https://aclanthology.org/2022.findings-acl.58), [Document](https://dx.doi.org/10.18653/v1/2022.findings-acl.58) Cited by: Appendix B. 
+  * Bai et al. (2022) Y. Bai, A. Jones, K. Ndousse, A. Askell, A. Chen, N. DasSarma, D. Drain, S. Fort, D. Ganguli, T. Henighan, et al. Training a helpful and harmless assistant with reinforcement learning from human feedback.  arXiv preprint arXiv:2204.05862.  Cited by: Appendix B, §1. 
+  * Bengio et al. (2015) S. Bengio, O. Vinyals, N. Jaitly, and N. Shazeer Scheduled sampling for sequence prediction with recurrent neural networks.  Advances in neural information processing systems 28.  Cited by: Appendix B. 
+  * Cai et al. (2024) T. Cai, Y. Li, Z. Geng, H. Peng, J. D. Lee, D. Chen, and T. Dao Medusa: simple llm inference acceleration framework with multiple decoding heads.  arXiv preprint arXiv:2401.10774.  Cited by: §4.1. 
+  * Chao et al. (2024) P. Chao, E. Debenedetti, A. Robey, M. Andriushchenko, F. Croce, V. Sehwag, E. Dobriban, N. Flammarion, G. J. Pappas, F. Tramèr, H. Hassani, and E. Wong JailbreakBench: an open robustness benchmark for jailbreaking large language models.  External Links: 2404.01318 Cited by: §1, §2. 
+  * Chao et al. (2023) P. Chao, A. Robey, E. Dobriban, H. Hassani, G. J. Pappas, and E. Wong Jailbreaking black box large language models in twenty queries.  arXiv preprint arXiv:2310.08419.  Cited by: §6. 
+  * Chen et al. (2025) H. Chen, H. Wang, C. Huang, Q. Zhong, and Y. Xie SATA: A Novel LLM Jailbreak Paradigm via Simple Assistive Task Linkage.  arXiv preprint arXiv:2412.15289.  External Links: [Link](https://arxiv.org/abs/2412.15289) Cited by: §6. 
+  * Cui et al. (2024) J. Cui, W. Chiang, I. Stoica, and C. Hsieh OR-bench: an over-refusal benchmark for large language models.  arXiv preprint arXiv:2405.20947.  Cited by: Appendix C. 
+  * Dai et al. (2023) J. Dai, X. Pan, R. Sun, J. Ji, X. Xu, M. Liu, Y. Wang, and Y. Yang Safe rlhf: safe reinforcement learning from human feedback.  arXiv preprint arXiv:2310.12773.  Cited by: Appendix B, §1. 
+  * Dubey et al. (2024) A. Dubey, A. Jauhri, A. Pandey, A. Kadian, A. Al-Dahle, A. Letman, A. Mathur, A. Schelten, A. Yang, A. Fan, et al. The llama 3 herd of models.  arXiv preprint arXiv:2407.21783.  Cited by: Appendix B, §1, §5. 
+  * Dubois et al. (2023) Y. Dubois, X. Li, R. Taori, T. Zhang, I. Gulrajani, J. Ba, C. Guestrin, P. Liang, and T. B. Hashimoto AlpacaFarm: a simulation framework for methods that learn from human feedback.  External Links: 2305.14387 Cited by: Appendix C. 
+  * Ganguli et al. (2022) D. Ganguli, L. Lovitt, J. Kernion, A. Askell, Y. Bai, S. Kadavath, B. Mann, E. Perez, N. Schiefer, K. Ndousse, et al. Red teaming language models to reduce harms: methods, scaling behaviors, and lessons learned.  arXiv preprint arXiv:2209.07858.  Cited by: §1. 
+  * Geiping et al. (2024) J. Geiping, A. Stein, M. Shu, K. Saifullah, Y. Wen, and T. Goldstein Coercing llms to do and reveal (almost) anything.  arXiv preprint arXiv:2402.14020.  Cited by: Appendix B, §6. 
+  * Geisler et al. (2024) S. Geisler, T. Wollschläger, M. Abdalla, J. Gasteiger, and S. Günnemann Attacking large language models with projected gradient descent.  arXiv preprint arXiv:2402.09154.  Cited by: §6. 
+  * Gloeckle et al. (2024) F. Gloeckle, B. Y. Idrissi, B. Rozière, D. Lopez-Paz, and G. Synnaeve Better & faster large language models via multi-token prediction.  arXiv preprint arXiv:2404.19737.  Cited by: Appendix A. 
+  * Guo et al. (2021) C. Guo, A. Sablayrolles, H. Jégou, and D. Kiela Gradient-based adversarial attacks against text transformers.  In Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing, M. Moens, X. Huang, L. Specia, and S. W. Yih (Eds.),  Online and Punta Cana, Dominican Republic, pp. 5747–5757.  External Links: [Link](https://aclanthology.org/2021.emnlp-main.464), [Document](https://dx.doi.org/10.18653/v1/2021.emnlp-main.464) Cited by: §6. 
+  * Guo et al. (2024) X. Guo, F. Yu, H. Zhang, L. Qin, and B. Hu Cold-attack: jailbreaking llms with stealthiness and controllability.  arXiv preprint arXiv:2402.08679.  Cited by: §5, §6. 
+  * Haizelab (2024) Haizelab A trivial programmatic llama 3 jailbreak.  Note: <https://github.com/haizelabs/llama3-jailbreak>(Accessed on 06/26/2024) Cited by: §3.2. 
+  * Huang et al. (2024a) Y. Huang, S. Gupta, M. Xia, K. Li, and D. Chen Catastrophic jailbreak of open-source LLMs via exploiting generation.  In The Twelfth International Conference on Learning Representations,  External Links: [Link](https://openreview.net/forum?id=r42tSSCHPh) Cited by: §6. 
+  * Huang et al. (2024b) Y. Huang, L. Sun, H. Wang, S. Wu, Q. Zhang, Y. Li, C. Gao, Y. Huang, W. Lyu, Y. Zhang, et al. Position: TrustLLM: trustworthiness in large language models.  In Proceedings of the 41st International Conference on Machine Learning, R. Salakhutdinov, Z. Kolter, K. Heller, A. Weller, N. Oliver, J. Scarlett, and F. Berkenkamp (Eds.),  Proceedings of Machine Learning Research, Vol. 235, pp. 20166–20270.  External Links: [Link](https://proceedings.mlr.press/v235/huang24x.html) Cited by: Appendix B. 
+  * Inan et al. (2023) H. Inan, K. Upasani, J. Chi, R. Rungta, K. Iyer, Y. Mao, M. Tontchev, Q. Hu, B. Fuller, D. Testuggine, et al. Llama guard: llm-based input-output safeguard for human-ai conversations.  arXiv preprint arXiv:2312.06674.  Cited by: Appendix B, §1. 
+  * Jain et al. (2023) N. Jain, A. Schwarzschild, Y. Wen, G. Somepalli, J. Kirchenbauer, P. Chiang, M. Goldblum, A. Saha, J. Geiping, and T. Goldstein Baseline defenses for adversarial attacks against aligned language models.  arXiv preprint arXiv:2309.00614.  Cited by: §3.2. 
+  * Ji et al. (2024) J. Ji, M. Liu, J. Dai, X. Pan, C. Zhang, C. Bian, B. Chen, R. Sun, Y. Wang, and Y. Yang Beavertails: towards improved safety alignment of llm via a human-preference dataset.  Advances in Neural Information Processing Systems 36.  Cited by: Appendix B. 
+  * Jia et al. (2024) X. Jia, T. Pang, C. Du, Y. Huang, J. Gu, Y. Liu, X. Cao, and M. Lin Improved techniques for optimization-based jailbreaking on large language models.  arXiv preprint arXiv:2405.21018.  Cited by: §1, §6. 
+  * Jones et al. (2025) E. Jones, M. Tong, J. Mu, M. Mahfoud, J. Leike, R. Grosse, J. Kaplan, W. Fithian, E. Perez, and M. Sharma Forecasting rare language model behaviors.  arXiv preprint arXiv:2502.16797.  Cited by: §1. 
+  * Kojima et al. (2022) T. Kojima, S. S. Gu, M. Reid, Y. Matsuo, and Y. Iwasawa Large language models are zero-shot reasoners.  Advances in neural information processing systems 35, pp. 22199–22213.  Cited by: §2. 
+  * Labonne (2024) M. Labonne Uncensor any llm with abliteration.  Note: <https://huggingface.co/blog/mlabonne/abliteration> Cited by: §4.3. 
+  * Lapid et al. (2023) R. Lapid, R. Langberg, and M. Sipper Open sesame! universal black box jailbreaking of large language models.  arXiv preprint arXiv:2309.01446.  Cited by: §1. 
+  * Li et al. (2023) X. Li, T. Zhang, Y. Dubois, R. Taori, I. Gulrajani, C. Guestrin, P. Liang, and T. B. Hashimoto AlpacaEval: an automatic evaluator of instruction-following models.  GitHub.  Note: <https://github.com/tatsu-lab/alpaca_eval> Cited by: Appendix C. 
+  * Liao and Sun (2024) Z. Liao and H. Sun Amplegcg: learning a universal and transferable generative model of adversarial suffixes for jailbreaking both open and closed llms.  arXiv preprint arXiv:2404.07921.  Cited by: Appendix B, §6. 
+  * Lin et al. (2025) R. Lin, B. Han, F. Li, and T. Liu Understanding and enhancing the transferability of jailbreaking attacks.  arXiv preprint arXiv:2502.03052.  Note: Accepted by ICLR 2025 External Links: [Link](https://arxiv.org/abs/2502.03052) Cited by: §1, §6. 
+  * Liu et al. (2024) H. Liu, Y. Xie, Y. Wang, and M. Shieh Advancing adversarial suffix transfer learning on aligned large language models.  arXiv preprint arXiv:2408.14866.  Cited by: §6. 
+  * Liu et al. (2023a) X. Liu, N. Xu, M. Chen, and C. Xiao Autodan: generating stealthy jailbreak prompts on aligned large language models.  arXiv preprint arXiv:2310.04451.  Cited by: §1, §6. 
+  * Liu et al. (2023b) Y. Liu, G. Deng, Y. Li, K. Wang, T. Zhang, Y. Liu, H. Wang, Y. Zheng, and Y. Liu Prompt Injection attack against LLM-integrated Applications.  arXiv.  External Links: 2306.05499, [Document](https://dx.doi.org/10.48550/arXiv.2306.05499) Cited by: §6. 
+  * Mazeika et al. (2024) M. Mazeika, L. Phan, X. Yin, A. Zou, Z. Wang, N. Mu, E. Sakhaee, N. Li, S. Basart, B. Li, et al. HarmBench: a standardized evaluation framework for automated red teaming and robust refusal.  arXiv preprint arXiv:2402.04249.  Cited by: Appendix C, §1, §2, §6. 
+  * Mehrotra et al. (2023) A. Mehrotra, M. Zampetakis, P. Kassianik, B. Nelson, H. Anderson, Y. Singer, and A. Karbasi Tree of Attacks: Jailbreaking Black-Box LLMs Automatically.  arXiv.  External Links: 2312.02119, [Document](https://dx.doi.org/10.48550/arXiv.2312.02119) Cited by: §6. 
+  * OpenAI (2023) OpenAI GPT-4 technical report.  External Links: 2303.08774 Cited by: §1. 
+  * Ouyang et al. (2022) L. Ouyang, J. Wu, X. Jiang, D. Almeida, C. Wainwright, P. Mishkin, C. Zhang, S. Agarwal, K. Slama, A. Ray, et al. Training language models to follow instructions with human feedback.  Advances in neural information processing systems 35, pp. 27730–27744.  Cited by: Appendix B, §1. 
+  * Pal et al. (2023) K. Pal, J. Sun, A. Yuan, B. C. Wallace, and D. Bau Future lens: anticipating subsequent tokens from a single hidden state.  arXiv preprint arXiv:2311.04897.  Cited by: Appendix A. 
+  * Paulus et al. (2024) A. Paulus, A. Zharmagambetov, C. Guo, B. Amos, and Y. Tian Advprompter: fast adaptive adversarial prompting for llms.  arXiv preprint arXiv:2404.16873.  Cited by: §6. 
+  * Perez et al. (2022) E. Perez, S. Huang, F. Song, T. Cai, R. Ring, J. Aslanides, A. Glaese, N. McAleese, and G. Irving Red teaming language models with language models.  arXiv preprint arXiv:2202.03286.  Cited by: §1, §6. 
+  * Qi et al. (2024) X. Qi, A. Panda, K. Lyu, X. Ma, S. Roy, A. Beirami, P. Mittal, and P. Henderson Safety alignment should be made more than just a few tokens deep.  arXiv preprint arXiv:2406.05946.  Cited by: Appendix A, §2, §3.2. 
+  * Rafailov et al. (2024) R. Rafailov, A. Sharma, E. Mitchell, C. D. Manning, S. Ermon, and C. Finn Direct preference optimization: your language model is secretly a reward model.  Advances in Neural Information Processing Systems 36.  Cited by: Appendix B. 
+  * Reid et al. (2024) M. Reid, N. Savinov, D. Teplyashin, D. Lepikhin, T. Lillicrap, J. Alayrac, R. Soricut, A. Lazaridou, O. Firat, J. Schrittwieser, et al. Gemini 1.5: unlocking multimodal understanding across millions of tokens of context.  arXiv preprint arXiv:2403.05530.  Cited by: §1. 
+  * Sclar et al. (2025) M. Sclar, S. Shrishylam, Y. Xu, P. Liu, Y. Liu, and C. Li REINFORCE Adversarial Attacks on Large Language Models: An Adaptive, Distributional, and Semantic Objective.  arXiv preprint arXiv:2502.17254.  External Links: [Link](https://arxiv.org/abs/2502.17254) Cited by: §1, §6. 
+  * Souly et al. (2024) A. Souly, Q. Lu, D. Bowen, T. Trinh, E. Hsieh, S. Pandey, P. Abbeel, J. Svegliato, S. Emmons, O. Watkins, et al. A strongreject for empty jailbreaks.  arXiv preprint arXiv:2402.10260.  Cited by: §1, §2. 
+  * Strauss et al. (2025) M. Strauss, M. Mazeika, A. Pang, R. E. H. Kumar, A. Bjorklund, H. Bull, i. Lovisotto, S. Goel, J. Geiping, Y. Wen, J. P. Schwarz, J. Z. Kolter, T. Goldstein, S. Black, and G. Somepalli LLM-Safety Evaluations Lack Robustness.  arXiv preprint arXiv:2503.02574.  External Links: [Link](https://arxiv.org/abs/2503.02574) Cited by: §6. 
+  * Team et al. (2024) G. Team, M. Riviere, S. Pathak, P. G. Sessa, C. Hardin, S. Bhupatiraju, L. Hussenot, T. Mesnard, B. Shahriari, A. Ramé, et al. Gemma 2: improving open language models at a practical size.  arXiv preprint arXiv:2408.00118.  Cited by: §5. 
+  * Thompson and Sklar (2024) T. B. Thompson and M. Sklar Fluent student-teacher redteaming.  arXiv preprint arXiv:2407.17447.  Cited by: Appendix A, §1, §6, §6. 
+  * Touvron et al. (2023) H. Touvron, L. Martin, K. Stone, P. Albert, A. Almahairi, Y. Babaei, N. Bashlykov, S. Batra, P. Bhargava, S. Bhosale, et al. Llama 2: open foundation and fine-tuned chat models.  arXiv preprint arXiv:2307.09288.  Cited by: §5. 
+  * Tran et al. (2024) T. Q. Tran, K. Wataoka, and T. Takahashi Initial response selection for prompt jailbreaking using model steering.  In ICLR 2024 Workshop on Secure and Trustworthy Large Language Models,  External Links: [Link](https://openreview.net/forum?id=tcENS1O7dM) Cited by: §6. 
+  * Vidgen et al. (2024) B. Vidgen, A. Agrawal, A. M. Ahmed, V. Akinwande, N. Al-Nuaimi, N. Alfaraj, E. Alhajjar, L. Aroyo, T. Bavalatti, B. Blili-Hamelin, et al. Introducing v0. 5 of the ai safety benchmark from mlcommons.  arXiv preprint arXiv:2404.12241.  Cited by: Appendix C, §1, §1, §2, §2. 
+  * Wei et al. (2023a) A. Wei, N. Haghtalab, and J. Steinhardt Jailbroken: How does llm safety training fail?.  arXiv preprint arXiv:2307.02483.  External Links: 2307.02483 Cited by

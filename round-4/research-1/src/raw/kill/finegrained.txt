@@ -1,0 +1,63 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2609.19366
+Type: PDF
+Pattern: correlat\w*|benchmark|three\s+instruction|models (22 matches in 24991 chars)
+
+--- Content ---
+
+262:...LM Safety
+Soyeon Park
+Seogyeong Jeong
+Sunwoo Kim
+Alice Oh
+KAIST
+{soyeonp, sg.jeong28, sunwoo.kim}@kaist.ac.kr, alice.oh@kaist.edu
+Abstract
+Prior work has shown that internal harmfulness representations in large language
+models vary across risk categories, while sharing a common general harm repre-
+sentation component. This raises a question about the role of the category-specific
+component beyond general harm representation in LLM safety. To ...
+--
+992:...with category residuals across 11 risk categories in 3
+instruction-tuned LLMs, we find that whether category residuals encode harmful-
+ness varies across categories, and that this category-wise pattern is similar across
+models. Whether category residuals induce refusal also varies across categories,
+but this category-wise pattern is more model-dependent. We also find that category
+residuals increase LLMs’ downstream internal alignment with sh...
+--
+2806:...y-relevant behavior and downstream computation. Our contributions are threefold:
+• We show that some category residuals carry harmfulness beyond category semantics, with a
+category-wise pattern that is consistent across models (Section 3.1).
+• We demonstrate that category residuals can induce refusal, with model-dependent strength
+(Section 3.2).
+• We find that category residuals usually increase downstream general harm alignment despite
+being...
+--
+4202:...c component.
+To establish these findings, we derive category residuals by removing general harmfulness from
+category harmfulness, yielding directions orthogonal to general harm at each layer, and steer them
+across three models and 11 CatQA categories [Bhardwaj et al., 2024]. Together, these findings
+demonstrate that alongside shared general harm representation, more fine-grained category residuals
+should also be considered to fully understand LLM safety. More broadly, our findings show that
+even a direction orthogonal to a concept at one layer can contribute to the concept’s downstream
+amplification.
+2
+Methods
+2.1
+Category Residual Construction
+Models.
+We study Gemma-2-9B-IT [Gemma Team et al., 2024], Llama-3-8B-Instruct [Grattafiori
+et al., 2024], and Qwen2.5-7B-Instruct [Yang et al., 2024].
+Prompt pair construction.
+We construct prompt pairs consisting of one harmf...
+--
+10394:...iffer substantially across categories in whether steering them makes an otherwise
+harmless instruction appear harmful (Figure 2, left). Hate/harassment/violence and adult content
+produce the largest effects in all three models, while child abuse, physical harm, illegal activity, and
+privacy violation show smaller positive effects. The remaining categories are weak or near baseline.
+The category-wise ordering is strongly preserved across models: Spearman correlation ρ is 0.97 for
+Gemma–Llama, 0.92 for Gemma–Qwen, and 0.89 for Llama–Qwen (n = 11 categories). Although
+the models use different steering strengths (see Figure 2 caption), category residuals show a repro-
+ducible category...
+--
+[14 more matches not shown]

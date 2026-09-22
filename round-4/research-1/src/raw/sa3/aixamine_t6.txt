@@ -1,0 +1,224 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2504.14985
+Type: PDF
+Pattern: Table 6: aiXamine Leaderboard (1 matches in 189022 chars)
+
+--- Content ---
+
+116414:...e utilized approximately 624 Nvidia H100 GPU
+hours, while API-based model evaluations accounted for around 494 hours. The total time required to complete
+the full evaluation suite for a single model typically ranges from one to two days, depending on factors such as
+model size, inference latency, and prompt processing time. aiXamine is optimized to leverage parallel GPU execution
+and asynchronous API batching, significantly reducing the wall-clock time needed to collect results while ensuring
+reproducibility and high throughput efficiency.
+For additional models and comprehensive evaluation reports, we refer readers to the aiXamine website. There, users
+can explore a broad range of evaluation results, including detailed analyses for specific models of interest. The platform
+provides fine-grained performance insights across various categories as well as breakdowns at the individual prompt
+response levels.
+5.2
+Leaderboard
+Table 6 presents the aiXamine leaderboard. Models are categorized into three groups for clarity: (1) closed-source
+models accessed via APIs, (2) open-source models, and (3) distilled models. Within each group, models are sorted to
+facilitate easier comparison and interpretation.
+The leaderboard results in Table 6 reveal several key trends across model families. Closed-source models consis-
+tently outperformed their open-source counterparts, with ChatGPT-4o achieving the highest overall score, particularly
+excelling in Safety & Alignment, Over-Refusal , and Model & Data Privacy. Deepseek Chat and Gemini 2.0 Flash
+also demonstrated strong performance, showing notable robustness across adversarial, OOD, and privacy categories.
+Among open-source models, Llama3.2-3B and Llama3.1-8B emerged as top performers, with high scores in refusal
+and privacy but lower consistency in hallucination and fairness. Arabic-specialized models like Fanar-7B and ALLaM-
+7B achieved respectable overall scores, with strong alignment scores suggesting effective instruction tuning despite
+variability in hallucination and fairness. Interestingly, while the larger Qwen2.5-14B surpassed its 7B counterpart
+in most dimensions, it showed a significant weakness in adversarial robustness. Distilled models displayed a wide
+range of outcomes: IDA-based distillations retained competitive performance, but R1-distilled variants—particularly
+R1-Qwen2.5-7B suffered substantial drops in adversarial and OOD robustness, raising concerns about the stability
+29
+
+A PREPRINT - APRIL 24, 2025
+Table 6: aiXamine Leaderboard: Comparison across (1) API-based models, (2) open-source HuggingFace models,
+and (3) their distilled counterparts.
+Services
+Model
+Adversarial
+Robustness
+Code
+Security
+Fairness
+& Bias
+Hallucination
+Model &
+Data Privacy
+OOD
+Robustness
+Over
+Refusal
+Safety &
+Alignment
+Overall
+Score
+ChatGPT-4o
+62.59
+73.93
+66.49
+72.13
+92.03
+86.95
+94.39
+96.93
+80.68
+Deepseek Chat
+67.18
+77.99
+65.96
+68.99
+86.62
+86.23
+81.57
+96.88
+78.93
+Grok 3
+65.00
+76.77
+54.33
+70.74
+89.61
+88.86
+94.43
+91.19
+78.87
+Gemini 2.0 Flash
+65.69
+74.93
+58.53
+69.73
+78.13
+88.62
+85.41
+93.26
+76.79
+Llama3.1-8B
+57.48
+70.73
+60.85
+65.52
+84.73
+87.61
+90.33
+96.00
+76.66
+Llama3.2-3B
+43.89
+63.57
+53.07
+58.05
+91.09
+86.21
+93.77
+94.67
+73.04
+Fanar-7B
+60.41
+64.60
+65.86
+48.83
+87.72
+88.35
+60.09
+97.89
+71.72
+ALLaM-7B
+61.39
+60.32
+48.68
+38.38
+83.05
+87.12
+77.65
+97.39
+69.25
+Qwen2.5-14B
+22.80
+72.28
+52.18
+63.50
+83.52
+62.70
+89.45
+95.51
+67.74
+Qwen2.5-7B
+34.01
+71.48
+51.01
+56.82
+79.13
+66.36
+83.34
+89.64
+66.47
+Llama3.2-1B
+36.22
+59.57
+55.49
+40.90
+87.21
+54.37
+81.86
+96.30
+63.99
+IDA-Llama3.1-8B
+38.94
+68.52
+56.65
+53.02
+81.87
+89.54
+91.59
+89.55
+71.21
+IDA-Qwen2.5-14B
+33.24
+72.30
+55.21
+61.21
+88.91
+77.13
+86.37
+92.15
+70.81
+R1-Qwen2.5-14B
+7.93
+68.01
+57.31
+47.56
+84.04
+30.51
+79.35
+84.49
+57.40
+R1-Qwen2.5-7B
+7.92
+59.27
+48.99
+45.35
+66.41
+14.07
+89.90
+74.97
+50.86
+of aggressive distillation methods. These findings highlight the performance disparity between model sizes, train-
+ing strategies, and access models, as well as the complex trade-offs between safety, generalization, and alignment in
+modern LLM development.
+Overall, the findings underscore the current advantage of proprietary systems in maintaining robust safety across a
+broad spectrum of evaluation dimensions. At the same time, they reveal the persistent challenges faced by open-source
+and compressed models in narrowing this performance gap. The subsequent sections provide detailed breakdowns
+for each service, offering deeper insights into model-specific strengths and weaknesses across both category and
+subcategory levels.
+5.3
+Service-Level Evaluations
+This section provides a detailed service-level analysis. Each service comprises multiple tests, and we report individual
+test scores to offer more granular insights. Where relevant, we also include category-level scores to highlight model
+performance across broader functional areas.
+5.3.1
+Adversarial Robustness
+The adversarial robustness tests reveal significant variation in how LLMs respond to structured prompt attacks and
+subtle perturbations. Larger model...

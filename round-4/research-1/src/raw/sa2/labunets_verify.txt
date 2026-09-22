@@ -1,0 +1,73 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.25390
+Type: PDF
+Pattern: OLMo-2-0425-1B|olmo_base|olmo_sft|olmo_dpo|olmo_rlvr (16 matches in 92098 chars)
+
+--- Content ---
+
+749:...while largely preserves other model capabilities. Yet
+it remains unclear why safety-critical features in a wide range of models emerge in
+a concentrated, low-dimensional structure. In a case study of OLMo-2-0425-1B-
+Instruct we find that the refusal geometry reflects refusal training: activation updates
+resulting from refusal-completion first-token losses explain the resulting refusal
+direction and refusal subs...
+--
+4947:...pse to a single
+effective direction or a low-dimensional subspace remained elusive.
+In this work, we bridge this gap by studying robustness to refusal ablation attacks analytically and
+empirically in OLMo-2-0425-1B-Instruct:
+(a) Low-dim refusal residuals
+(b) Diverse refusal residuals
+1
+4
+8
+12
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Refusal rate
+Refusal rate
+before intervention
+after ablation
+(c) Ref...
+--
+20175:...eparately using relative
+Frobenius error, relative spectral error, and row-wise cosine similarity.
+4
+Empirical validation
+4.1
+Experimental setup
+Target models.
+We perform measurements against allenai/OLMo-2-0425-1B-Instruct, an
+instruction-tuned OLMo 2 1B model with 16 transformer blocks, 16 attention heads, and hidden
+dimension d = 2048. For the training-stage analysis in Section 4.2, we evaluate its additional check-
+points: allenai/OLMo-2-0425-1B (olmo_base), allenai/OLMo-2-0425-1B-SFT (olmo_sft),
+allenai/OLMo-2-0425-1B-DPO (olmo_dpo), allenai/OLMo-2-0425-1B-RLVR1 (olmo_rlvr),
+and allenai/OLMo-2-0425-1B-Instruct (olmo_inst) [24].
+Target datasets.
+We use AdvBench (adv), WildJailbreak evaluation and training splits (wld,
+wld_tr), and XSTest-Response subsets (xst_hr, xst_hr_jb, xst_rf, xst_rf_jb) as ta...
+--
+39950:... sampled from m ∈{1, 4, 8, 12, 16} distinct first-token
+buckets with balanced counts within each dataset, which directly manipulates the stable rank of
+the refusal first-token matrix Er. We fine-tune OLMo-2-0425-1B-Instruct separately on these
+datasets for each m and select each time the earliest checkpoint that reaches or exceeds refusal rate
+threshold 0.6, so that later measurements are done under close base ...
+--
+51711:... Vazquez, Ulisse
+Mini, and Monte MacDiarmid. Steering Language Models With Activation Engineering. 2024.
+arXiv: 2308.10248 [cs.CL]. URL: https://arxiv.org/abs/2308.10248.
+[24]
+Allen Institute for AI. OLMo-2-0425-1B-Instruct Model Card. https://huggingface.co/
+allenai/OLMo-2-0425-1B-Instruct. Hugging Face model card. Accessed: 2026-05-07.
+2025.
+[25]
+Reza Bayat, Ali Rahimi-Kalahroudi, Mohammad Pezeshki, Sarath Chandar, and Pascal Vincent.
+Steering Large Language Model Activations...
+--
+[1 more matches not shown]

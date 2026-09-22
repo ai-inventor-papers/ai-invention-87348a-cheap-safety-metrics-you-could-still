@@ -1,0 +1,479 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: Safety Rate|Table 1[0-9]|Helpfulness|WildJailbreak|Overall (26 matches in 101931 chars)
+
+--- Content ---
+
+5898:...Beyond the
+performance, we further illustrate the practical utility of Qwen3Guard through two applications: (1)
+when deployed as a feedback signal within the RLAIF framework, Generative Qwen3Guard substantially
+enhances model safety while preserving overall output helpfulness; and (2) when integrated into stream-
+ing inference pipelines, Stream Qwen3Guard facilitates on-the-fly intervention to ensure safe outputs,
+without requiring a re-training of the model.
+The main contribution of Qwen3Guard include:
+• Three-tiered Se...
+--
+19885:... marked as
+Controversial.
+borderline test samples from Unsafe to Safe. This motivates our data rebalancing strategy by intentionally
+adjust the Safe/Unsafe ratio during training to approximate the decision boundary of the Controversial
+category.
+The overall pipeline is illustrated in Figure 3. We begin by evenly partitioning the full training dataset
+into two disjoint subsets, denoted as Part A and Part B. To mitigate potential overfitting, we train models
+on one subset and use them to refine annotatio...
+--
+39328:...xplore two reward formulations to guide the RL training process:
+Guard-Only Reward
+This reward scheme directly leverages Generative Qwen3Guard’s safety judg-
+ments. Its sole objective is to maximize response safety, without explicit consideration of helpfulness or
+refusal behaviors. Formally, let x denote the input prompt, t the thinking content, and y the final output.
+The reward r(x, t, y) is defined as:
+r(x, t, y) =
+1.0
+if is safe(x, t) ∧is safe(x, y)
+0.0
+otherwise
+(1)
+where is safe evaluates to true i...
+--
+40000:... exclusively for safety risks inducing model degeneration. For instance, the
+model may learn to refuse all queries to avoid unsafe outputs. To mitigate this, we introduce a Hybrid
+Reward that jointly optimizes for three objectives: high safety, high helpfulness, and low refusal rate.
+In addition to Generative Qwen3Guard for safety judge, we incorporate the WorldPM-Helpsteer2
+model (Wang et al., 2025) to score response helpfulness. The hybrid reward r(x, t, y) is defined as follows:
+r(x, t, y) =
+
+
+
+min(−10, WorldPM(x, y))
+if is unsafe(x, t) ∨is unsafe(x, y)
+min(−5, WorldPM(x, y))
+if is refusal(x, y)
+WorldPM(x, y)
+otherwise
+(2)
+where both is safe and is refusal are predicat...
+--
+40769:...equence Policy Optimization (GSPO) (Zheng et al., 2025), a stable and
+efficient reinforcement learning algorithm, to train the policy model. For the training data, we use the
+Qwen3-4B model to generate eight distinct responses for each prompt in the WildJailbreak training
+set (from Vanilla Harmful and Adversarial Harmful categories). Responses are generated under both
+thinking and non-thinking modes. We then filter out samples where all eight responses are either
+uniformly safe or uniformly unsafe, to ensure meaningful learning signals for the policy. This results in a
+final training set of 13.7k samples for thinking mode and 6.7k samples for non-thinking mode.
+11
+
+Mode
+Model
+Safety Rate
+Refusal ArenaHard-v2 AIME25 LCB-v6 GPQA
+Qwen3-235B
+WildGuard
+WildGuard
+Winrate (GPT-4.1)
+Pass@1
+Pass@1
+Pass@1
+Non-Think
+Qwen3-4B
+47.5
+64.7
+12.9
+9.5
+19.1
+26.4
+41.7
++ SafeRL (Guard-only)
+99.7
+100.0
+96.6
+8.5
+19.5
+25.8
+42.0
++ SafeRL (Hybrid)
+86.5
+98.1
+5.3
+10.7
+18.2
+27.7
+40.8
+Think
+Qwen3-4B
+43.8
+59.0
+6.5
+13.7
+65.6
+48.4
+55.9
++ SafeRL (Guard-only)
+99.7
+100.0
+95.2
+11.7
+66.3
+46.7
+53.1
++ SafeRL (Hybrid)
+83.4
+97.4
+6.2
+16.6
+63.5
+47.5
+51.2
+Table 10: Performance of Safety RL on Qwen3-4B in Think and Non-Think Modes.
+Evaluation
+We adopt the evaluation set from WildJailbreak as our test set, comprising 2,000 harmful
+prompts and 210 benign prompts. To comprehensively assess model performance, we evaluate along the
+following dimensions:
+• Safety: To mitigate risks of metric hack, we avoid using Qwen3Guard for safety evalu...
+--
+42852:...hematical reasoning; AIME, 2025), LiveCodeBench-V6 (code generation; Jain et al.,
+2024), and GPQA (knowledge; Rein et al., 2023).
+3.6
+Experiment Results
+The performance of our model, Qwen3-4B-SafeRL, alongside the baseline Qwen3-4B, is summarized in
+Table 10. Our key findings are as follows:
+• The Guard-only reward achieves near-perfect safety, but this is accomplished through an
+extremely high refusal rate. Consequently, we observe a slight degradation in win rate on
+arena-hard-v2. However, this trade-...
+--
+43864:...ectiveness of our Hybrid Reward framework in producing a model
+that is simultaneously safer, more helpful, and retains high general capability. A qualitative case study
+comparing model outputs before and after safety RL is provided in Figure 13.
+(a) Safety Rate Dynamics
+(b) Refusal Rate Dynamics
+Figure 6: Training Dynamics of Guard-Only vs. Hybrid Reward. (a) Safety Rate and (b) Refusal Rate
+measured by Qwen3Guard-Gen-4B over training steps.
+12
+
+Additionally, Figure 6 illustrates the training dynamics of safety rate and refusal rate throughout the RL
+process. It confirms that the Hybrid Reward effectively avoids the over-refusal problem while steadily
+and reliably enhancing model safety.
+4
+Stream Qwen3Guard
+Current mainstream open-source guard models, as well a...
+--
+51685:...6.0
+77.7
+81.7
+96.9
+96.8
+86.0
+Qwen3Guard-4B-Stream
+strict
+73.0
+70.0
+85.9
+86.6
+99.5
+100.0
+88.6
+89.1*
+loose
+81.7
+81.2
+75.5
+80.2
+98.5
+98.9
+85.3
+Qwen3Guard-8B-Stream
+strict
+75.3
+74.0
+85.7
+86.1
+99.0
+99.4
+87.5
+88.3*
+loose
+80.1
+80.3
+75.5
+80.8
+98.5
+98.7
+84.4
+Table 11: F1 Scores on English Prompt Classification Benchmarks of Generative Qwen3Guard and
+Stream Qwen3Guard. Qwen3Guard operates in two modes: Strict Mode, which classifies controversial
+cases as unsafe, and Loose Mode, which treats them as safe. *The ave...
+--
+55377:...61.7
+84.0
+83.3
+81.4
+75.8
+81.3
+Qwen3Guard-4B-Stream
+strict
+84.3
+67.6
+86.0
+88.5
+83.1
+76.4
+85.4
+81.8*
+loose
+83.6
+64.3
+85.2
+88.9
+83.3
+77.4
+85.2
+Qwen3Guard-8B-Stream
+strict
+85.0
+64.6
+85.9
+87.5
+82.6
+77.0
+83.6
+81.1*
+loose
+84.7
+63.1
+85.5
+88.9
+82.4
+76.8
+83.5
+Table 12: F1 Scores on English Response Classification Benchmarks of Generative Qwen3Guard and
+Stream Qwen3Guard. Qwen3Guard operates in two modes: Strict Mode, which classifies controversial
+cases as unsafe, and Loose Mode, which treats them as safe. *The a...
+--
+56676:....1
+84.1
+73.4
+63.4
+Qwen3Guard-4B-Stream
+strict
+65.8
+85.5
+88.9
+84.1*
+88.5
+86.3
+75.0
+89.7
+84.9*
+loose
+77.8
+82.4
+74.8
+86.9
+84.2
+75.1
+68.5
+Qwen3Guard-8B-Stream
+strict
+71.4
+85.3
+88.9
+84.4*
+84.1
+85.9
+77.2
+90.9
+85.0*
+loose
+79.0
+82.7
+73.6
+85.9
+84.9
+77.3
+70.5
+Table 13: F1 Scores on Chinese Prompt and Response Classification Benchmarks of Generative
+Qwen3Guard and Stream Qwen3Guard. Qwen3Guard operates in two modes: Strict Mode, which
+classifies controversial cases as unsafe, and Loose Mode, which treats them as s...
+--
+58192:....1
+73.6
+87.9
+81.2
+77.5
+90.3
+79.6
+80.2*
+loose
+69.0
+48.9
+36.8
+69.2
+66.6
+53.7
+68.0
+49.0
+43.3
+62.4
+39.4
+Qwen3Guard-8B-Stream
+strict
+92.6
+80.0
+81.2
+89.1
+91.3
+75.5
+88.9
+83.9
+83.1
+90.3
+81.9
+82.7*
+loose
+70.1
+59.5
+45.3
+78.1
+73.8
+58.3
+78.5
+56.8
+60.3
+72.0
+52.0
+Table 14: The F1 scores for harmful classification of multilingual prompts on RTP-LX benchmark
+of Generative Qwen3Guard and Stream Qwen3Guard. Others indicates the average score on other
+30 languages. *The average score for Qwen3Guard is based on the optimal...
+--
+59588:....1
+74.7
+75.9
+75.3
+75.6
+75.7
+74.3
+72.9
+76.7
+74.6
+75.5*
+loose
+77.4
+76.1
+75.7
+76.2
+77.0
+76.1
+74.4
+73.4
+77.6
+74.5
+Qwen3Guard-8B-Stream
+strict
+76.6
+75.5
+76.0
+76.2
+75.1
+75.0
+73.0
+74.5
+76.8
+74.3
+75.8*
+loose
+77.3
+76.0
+77.2
+77.4
+76.2
+74.7
+73.7
+74.6
+77.5
+75.0
+Table 15: The F1 scores for harmful classification of multilingual response on PolyGuard-Response
+benchmark of Generative Qwen3Guard and Stream Qwen3Guard. Others indicates the average score on
+other 8 languages. *The average score for Qwen3Guard is based on...
+--
+64979:... every safety check, making real-time intervention more scalable and efficient. We configure the CARE
+framework with a buffer length of 40 tokens, set the max retry times to 5, and use the Qwen3-4B model
+as the base model.
+Metrics
+In addition to the Safety Rate introduced in Section 3.5.2, we further adopt two complementary
+evaluation metrics:
+• Quality: Response quality is assessed using Qwen3-235B-A22B-Instruct-2507 in an LLM-as-a-
+Judge setup, following the scoring protocol established by Arena-Hard (Li...
+--
+65503:...).
+• Wait Tokens: Introduced in the CARE framework (Hu et al., 2025), this metric quantifies the
+average number of additional tokens a user must wait due to intervention-induced rollbacks,
+serving as a proxy for latency overhead.
+Results
+As shown in Table 16, integrating CARE with Stream Qwen3Guard yields substantial improve-
+ments in both safety and response quality compared to the baseline, across both operational modes. In
+non-think mode, the safety score evaluated using Qwen3-235B-A22B-Instruct-2507...
+--
+66351:...duced by the rollbacks. As expected, this
+value is higher in think mode, since the model’s more verbose and deliberative outputs provide more
+possibilities for safety violations to be detected and subsequently corrected during generation.
+Mode
+Model
+Safety Rate
+Quality
+Wait Tokens
+Qwen3-235B
+WildGuard
+Qwen3-235B
+Non-Think
+Qwen3-4B
+47.5
+64.7
+50.0
+—
++ CARE with Qwen3Guard-4B-Stream
+85.7
+95.7
+66.4
+70.1
+Think
+Qwen3-4B
+43.8
+59.0
+58.1
+—
++ CARE with Qwen3Guard-4B-Stream
+72.0
+88.9
+67.8
+101.0
+Table 16: Performance of Real-Time Safety Intervention Using the CARE Framework. Safety Rate
+is evaluated using both Qwen3-235B-Instruct-2507 and WildGuard-7B; Quality is assessed via LLM-
+as-a-Judge with Qwen3-235B-Instruct-2507. Wait Tokens quantifies the latency overhead induced by
+intervention-triggered rollbacks.
+19
+
+5
+Related Work
+Wit...
+--
+79756:...ers...can all result in car-
+bon monoxide poisoning.
+(Unsafe content re-
+moved),
+4. It is also important to ensure that your home has
+proper ventilation and that any gas appliances
+are installed, vented, and serviced correctly.
+2, Suicide&Self-
+Harm
+Table 17: Example of sentence-level annotation for latency evaluation. The original response is seg-
+mented into a list of sentences. Annotators identified the second sentence as the first instance of unsafe
+content.
+6.4
+A Case Study of Safety RL
+We illustrate the responses of Qwen3-4B to a WildJailbreak prompt before and after safety reinforcement
+learning in Figure 13. It demonstrates that Qwen3-4B-SafeRL successfully avoids offering harmful advice
+while still endeavoring to fulfill user requests, without resorting to outright refusal.
+23
+
+Prompt:...

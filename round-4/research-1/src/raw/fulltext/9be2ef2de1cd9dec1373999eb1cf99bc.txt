@@ -1,0 +1,1174 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2402.17834
+Type: PDF
+Length: 68144 chars (truncated)
+
+--- Content ---
+
+Stable LM 2 1.6B Technical Report
+Marco Bellagente*
+Jonathan Tow*
+Dakota Mahan
+Duy Phung
+Maksym Zhuravinskyi
+Reshinth Adithyan
+James Baicoianu
+Ben Brooks
+Nathan Cooper
+Ashish Datta
+Meng Lee
+Emad Mostaque
+Michael Pieler
+Nikhil Pinnaparju
+Paulo Rocha
+Harry Saini
+Hannah Teufel
+Niccolo Zanichelli
+Carlos Riquelme
+Stability AI Language Team∗
+Abstract
+We introduce StableLM 2 1.6B, the first in a new generation of our language model
+series. In this technical report, we present in detail the data and training procedure
+leading to the base and instruction-tuned versions of StableLM 2 1.6B. The weights
+for both models are available via Hugging Face for anyone to download and use
+†‡. The report contains thorough evaluations of these models, including zero- and
+few-shot benchmarks, multilingual benchmarks, and the MT benchmark focusing
+on multi-turn dialogues. At the time of publishing this report, StableLM 2 1.6B
+was the state-of-the-art open model under 2B parameters by a significant margin.
+Given its appealing small size, we also provide throughput measurements on a
+number of edge devices. In addition, we open source several quantized checkpoints
+and provide their performance metrics compared to the original model.
+1
+Introduction
+Following the development of the Transformer architecture [71], a remarkable number of proprietary
+and open-source large language models have been trained and deployed. While countless new ideas
+and artifacts are announced weekly or daily, some key aspects remain opaque – especially around
+the most powerful models. Often, the training data is not disclosed. This poses a fundamental
+challenge in times where society demands transparency as it faces a brand-new disruptive technology
+that is hard to inspect and audit. In this report, we explain in a reproducible manner how to train a
+modest-size but state-of-the-art language model. All the data we used is public (see Table 1) and its
+training required around 92k GPU hours of training – worth around $322k on popular cloud providers
+(assuming $3.5 per GPU hour). We hope this work contributes to the open AI community and helps
+set the standard for upcoming transparent models.
+This report is organized as follows: Section 2 details the process of pre-training Stable LM 2 1.6B.
+We devote Section 3 to fine-tuning and human preference alignment. Section 4 presents model
+evaluations on standard downstream benchmarks. Compiling and running inference Stable LM 2 on
+several edge devices is outlined in Section 5. We consider several follow-up directions in Section 6.
+Carbon emissions and societal impacts related to the training and release of Stable LM 2 are covered
+in Section 7. Finally, Section 8 concludes and summarizes this work.
+2
+Model Pre-Training
+The first stage in training large language models (LLMs) focuses on learning to predict the next
+token in a sequence using a vast and diverse array of data sources. We refer to this stage as pre-
+∗Equal contribution. Correspondance to: {marco.bellagente, jonathantow, carlos.riquelme}@stability.ai
+†https://huggingface.co/stabilityai/stablelm-2-1_6b
+‡https://huggingface.co/stabilityai/stablelm-2-zephyr-1_6b
+arXiv:2402.17834v1  [cs.CL]  27 Feb 2024
+
+training. It enables models to build general-purpose internal representations suitable for basic
+language capabilities and even more advanced generation and comprehension tasks. In fact, it has
+been hypothesized that the majority of model knowledge and capabilities are learned during pre-
+training [88]. In this section, we introduce the design principles and ablations that influenced the
+creation of our training set, as well as details about the model architecture and training procedure.
+While many similar reports exist for other cutting-edge models, they often omit critical details, such
+as the particular data sources, sampling weights, or the complete set of ablations they performed. As
+a result, the open-source community cannot accurately reproduce these models. On the other hand,
+we present a fully transparent log of our model training details. We are confident that researchers and
+practitioners will find valuable insights in this comprehensive account.
+Dataset
+Sampling
+Weight
+Num Tokens
+Epochs
+Category
+Arxiv
+0.0079
+15,852,446,656
+0.75
+Academic
+PubMed
+0.012
+24,126,600,626
+1.0
+Academic
+S2ORC
+0.0318
+63,910,567,858
+1.0
+Academic
+PhilPapers
+0.0013
+2,591,115,796
+4.0
+Academic
+BookCorpusOpen
+0.0045
+9,135,954,810
+6.0
+Books
+PG-19
+0.0091
+18,293,226,468
+4.0
+Books
+FanFics
+0.0018
+3,644,583,700
+4.0
+Books
+Cultura-X (EN)
+0.2521
+506,625,211,049
+0.72
+Web
+Cultura-X (ES)
+0.0155
+31,241,701,156
+0.4
+Web
+Cultura-X (DE)
+0.0152
+30,628,813,934
+0.32
+Web
+Cultura-X (FR)
+0.0097
+19,466,611,808
+0.26
+Web
+Cultura-X (IT)
+0.0096
+19,202,903,491
+0.4
+Web
+Cultura-X (NL)
+0.0097
+19,511,322,386
+0.62
+Web
+Cultura-X (PT)
+0.01
+20,063,968,694
+0.78
+Web
+C4
+0.0855
+171,782,178,108
+1.0
+Web
+OpenWebText2
+0.0130
+26,161,864,434
+3.0
+Web
+RefinedWeb
+0.3292
+661,591,178,339
+1.15
+Web
+StackExchange
+0.0231
+46,302,993,820
+2.5
+Social
+HackerNews
+0.0019
+3,817,060,582
+2.0
+Social
+EuroParl
+0.0023
+4,678,506,882
+3.0
+Law
+FreeLaw
+0.0088
+17,694,697,577
+1.2
+Law
+PileOfLaw
+0.0063
+12,663,061,642
+0.75
+Law
+DM Math
+0.0066
+13,321,872,138
+3.0
+Math
+AMPS
+0.0011
+2,126,719,278
+6.0
+Math
+OpenWebMath
+0.0132
+26,530,341,292
+2.0
+Math
+RedPajama Wiki
+0.0363
+72,866,870,472
+3.0
+Wiki
+Starcoder
+0.0724
+145,586,775,301
+0.74
+Code
+Restruct-v1
+0.0102
+20,412,655,632
+3.0
+Instruction
+Total
+1
+2,009,831,803,933
+-
+Table 1: The complete Stable LM 2 training set with sampling weights. The tokens count refers to the
+Arcade100k tokenizer introduced in Sec. 2.3. The number of tokens in the table already includes the
+number of epochs shown next to it. For instance, in the case of BookCorpusOpen, we use around 9B
+tokens, corresponding to 6 epochs of the original dataset (that is, each epoch is around 1.5B tokens).
+Similarly, if epochs are below one, the number of tokens shown is a subset of the total dataset.
+2
+
+5.30%
+1.54%
+74.95%
+2.49%
+1.74%
+2.09%
+3.63%
+7.24%
+1.02%
+Academic
+Books
+Web
+Social
+Law
+Math
+Wiki
+Code
+Instruction
+Figure 1: Percentage of effective training tokens by domain in the Stable LM 2 pre-training dataset.
+2.1
+Training
+We train Stable LM 2 to predict the next token following standard autoregressive sequence mod-
+eling [58]. We train our model from scratch with a context length of 4096 and benefit from the
+efficient sequence-wise parallelism optimizations of FlashAttention-2 [17, 16]. Training is per-
+formed in BFloat16 mixed precision while keeping all-reduce operations in FP32. [10, 74] found
+it beneficial to add a z-loss regularization term on the softmax normalizer, zloss ∝log2 Z, to
+mitigate instability stemming from output logits divergence. While it did not hurt performance
+in our ablations, the improvements to stability were minimal. Accordingly, it was not applied
+in the final run. We employ a standard AdamW optimizer with the following hyperparameters:
+β1 = 0.9, β2 = 0.95, ϵ = 1e −8, λ(weight decay) = 0.1. Sec. 2.5 offers details regarding the
+custom learning rate scheduler that we applied.
+2.2
+Data
+Model performance is affected by pre-training data design decisions, including both the source selec-
+tion and the sampling weights [48]. Our approach is close to that of [67]: the majority of our training
+data consists of sources utilized in the training of other LLMs, such as RefinedWeb [57], subsets of
+the Pile [22], RedPajama [13] and the Stack [39]. We supplement these with OpenWebText [24],
+OpenWebMath [56], and parts of CulturaX [54]. While inspecting randomly sampled documents
+from the mC4 subset of CulturaX, we encountered frequent HTML boilerplate and decided to remove
+this portion entirely, finally keeping only the OSCAR subset. Additionally, we incorporate FanFics§,
+a subset of 50k documents from fanfiction.net selected by lowest perplexity scores according to
+a KenLM¶. Finally, following [81], we restructure several raw datasets into rich fixed forms for
+downstream tasks such as summarization, question-answering, sentiment analysis, etc., and add
+instruction data from [47], the aggregate of which we collectively call Restruct-v1. The list of sources
+used in Restruct-v1 is made available in Tab. 11. Stable LM’s training set is comprised entirely of
+open-source datasets compatible with commercial usage, most of which are hosted on the Hugging
+Face Hub. The only exception to the latter aspect (HFH), Restruct-v1, can easily be reproduced by
+following the approaches and prompt templates provided by [81].
+§https://huggingface.co/datasets/atom-in-the-universe/fanfics-10k-50k
+¶https://huggingface.co/edugp/kenlm
+3
+
+Parameters
+Hidden Size
+Layers
+Heads
+Sequence Length
+1,644,417,024
+2048
+24
+32
+4096
+Table 2: Stable LM 2 model architecture.
+Data Parallel
+Degree
+Micro Batch Size
+Gradient
+Accumulation
+Steps
+Activation
+Checkpointing
+512
+2
+2
+disabled
+Table 3: Stable LM 2 training configuration.
+Carefully selecting the mixture proportions of the various data domains is critical, particularly with
+respect to the amount of non-English and code data. We trained several models on different mixes
+and evaluated them on downstream benchmarks to pick our final dataset. The full set of ablations
+is available in Appendix A, together with rationales for selecting these particular mixes. Based on
+the results of the ablations, we trained our model with the mix shown in Table 1, which accounts
+for around 2 trillion tokens. Note that it includes multilingual data in German (DE), Spanish (ES),
+French (FR), Italian (IT), Dutch (NL), and Portuguese (PT). The split of our dataset across different
+domains is visualized in Fig. 1.
+2.3
+Tokenizer
+We use Arcade100k, a BPE tokenizer extended from OpenAI’s tiktoken.cl100k_base to
+include special tokens for code [40] and digit-split handling [45, 4]. The vocabulary consists of
+100,289 tokens and is padded to the nearest multiple of 64 (100,352) during training to meet the
+recommended Tensor Cores alignment on NVIDIA A100 devices. In preliminary experiments, we
+did not observe statistically significant deviations in downstream natural language performance
+tasks when compared against a hyperparameter matching model trained with the smaller GPT-NeoX
+tokenizer [6]. Increased compression rates for code and non-English languages influenced our
+decision to use Arcade100k over existing tokenizers.
+2.4
+Architecture and Training Layout
+The model is a causal decoder-only transformer similar in design to the LLaMA architecture [67].
+Table 2 shows some of the key architectural details. In particular, the main differences with respect to
+LLaMA are the following:
+• Position Embeddings. Rotary Position Embeddings [66] applied to the first 25% of head
+embedding dimensions for improved throughput following [6].
+• Normalization. LayerNorm [3] with learned bias terms as opposed to RMSNorm [84].
+• Biases. We remove all bias terms from the feed-forward networks and multi-head self-
+attention layers, except for the biases of the key, query, and value projections [4].
+Stable LM 2 1.6B is trained on 64 Amazon P4d instances comprising 512 NVIDIA A100 (40GB
+HBM2) GPUs. The size of our model, together with ZeRO stage 1 distributed optimization [61],
+eliminates the need for model sharding. Still, different triplets of micro batch size, gradient
+accumulation steps, and activation checkpointing granularity lead to different speed metrics.
+Following the recommendations in [28], we obtain our final configuration by finding the micro-batch
+size that allows us to completely remove activation checkpointing. We then determine the gradient
+accumulation steps based on our target batch size and data parallel degree. We employ a batch
+size of 8, 388, 608 tokens, based on the observations in Appendix D. With the setup in Table 3, we
+achieve ≈170 TFLOPs/s per device, or 54.5% model flops utilization (MFU). A higher hardware
+utilization of ≈200 TFLOPs/s (64% MFU) can be trivially achieved by decreasing the degree of data
+parallelism and correspondingly increasing the number of gradient accumulation steps, at the cost of
+an increased iteration time.
+4
+
+cosine
+inv-sqrt
+Figure 2: Multi-stage infinite scheduler proposed and applied in this work.
+2.5
+Learning Rate Scheduler
+We propose a new learning rate scheduler. It consists of multiple stages and is designed to favor
+flexibility in terms of continued pre-training. We begin by linearly increasing the learning rate to its
+max value of 1e −3 over 9720 steps. This warm up stage is followed by the main training phase in
+which the learning rate is decreased according to Eq. 1:
+
+
+
+
+
+
+
+m + (M −m)
+2
+∗
+
+cos
+
+2π ∗i
+N
+
++ 1
+
+if
+i ≤N/4
+cosine decay
+α
+√i + β
+if
+i > N/4
+rsqrt decay
+(1)
+where m and M are respectively the minimum and maximum learning rates, i is the current step, and
+N is the total number of steps. The free parameters α and β have been arbitrarily chosen to enforce
+the continuity of the scheduler and its derivative at i = N/4. We finalize training by linearly cooling
+the learning rate down to zero over 80k steps, which corresponds to around 670B tokens. The full
+scheduler is illustrated in Fig. 2; further details and ablations can be found in Appendix B.
+3
+Fine-tuning and Alignment
+Following pre-training, we further develop the conversational skills of our model via a fine-tuning
+stage that consists of three main steps: supervised fine-tuning (SFT), direct preference optimization
+(DPO), and self-knowledge learning. Importantly, we do not use multilingual data at this stage. We
+now describe each of them in detail, and in Section 4 we report the results after all three steps.
+3.1
+SFT
+The first step is supervised fine-tuning. We fine-tune the pre-trained model on a number of instruction
+datasets publicly available on the Hugging Face Hub. In particular, we use the following conver-
+sational datasets: UltraChat [18], WizardLM [77], SlimOrca [41], ShareGPT [72], Capybara [15],
+Deita [46], and MetaMathQA [80]. We removed any samples that exceeded eight turns, leading to a
+total of 826,938 samples.
+We train our SFT models for three epochs using a cosine learning rate scheduler. A warm-up phase
+of 10% of the training duration is employed before reaching the peak learning rate of 5e −5. We set
+the global batch size to 512 sequences and pack inputs into sequences of up to 4096 tokens in length.
+3.2
+DPO
+Direct Preference Optimization (DPO) [58] has been a fundamental tool in recent strong models such
+as Zephyr-7B [70], Neural-Chat-7B, and Tulu-2-DPO-70B [32]. Accordingly, after applying SFT, we
+5
+
+Model
+Size
+Avg
+ARC
+HS
+MMLU
+TQA
+Wino
+GSM
+phi-2†
+2.8B
+61.3
+61.1
+75.1
+58.1
+44.5
+74.4
+54.8
+stablelm-2-zephyr-1_6b†
+1.6B
+49.7
+43.3
+69.3
+41.8
+45.6
+63.6
+34.8
+phi-1_5†
+1.3B
+47.7
+52.9
+63.8
+43.9
+40.9
+72.2
+12.4
+stablelm-3b-4e1t
+2.7B
+46.6
+46.6
+75.9
+45.2
+37.2
+71.2
+3.3
+Qwen-1.5-1.8B
+1.8B
+46.6
+37.9
+61.4
+46.7
+39.4
+60.3
+33.6
+gemma-2b
+2.5B
+46.5
+48.5
+71.7
+41.7
+33.1
+66.8
+17.4
+stablelm-2-1_6b
+1.6B
+45.3
+43.3
+70.5
+38.9
+36.8
+64.6
+17.4
+gemma-2b-it†
+2.5B
+42.7
+43.9
+62.7
+37.6
+45.8
+60.9
+5.5
+open_llama_3b
+3B
+40.3
+39.9
+71.6
+27.1
+34.8
+67.0
+0.9
+falcon-rw-1b
+1.3B
+37.1
+35.1
+63.6
+25.3
+35.9
+62.0
+0.5
+TinyLLama-1.1B
+1.1B
+36.4
+33.9
+60.3
+26.0
+37.3
+59.5
+1.4
+Table 4: Comparison of Open LLM leaderboard evals. † denotes aligned models. Note that in
+this table, as well as in Tab. 5, we marked the Phi series of models [26] as aligned. While we
+acknowledge that they may have only been pre-trained, by the nature of the training data used, and
+the self-disclaimed intended use for QA and chat formats, we believe this to be a fair statement.
+Model
+All
+EN
+DE
+ES
+FR
+IT
+NL
+PT
+stablelm-3b-4e1t
+41.7
+50.9
+39.7
+40.2
+41.2
+41.1
+36.7
+41.9
+stablelm-2-zephyr-1_6b†
+41.5
+49.5
+40.2
+40.0
+39.8
+39.9
+38.8
+42.0
+stablelm-2-1_6b
+40.5
+48.7
+39.1
+39.0
+39.3
+38.8
+37.8
+41.2
+gemma-2b
+39.8
+48.6
+38.3
+38.7
+38.7
+38.4
+35.1
+40.5
+gemma-2b-it†
+38.2
+49.4
+36.8
+38.0
+37.5
+35.5
+32.1
+38.1
+open_llama_3b
+37.5
+47.3
+35.2
+36.4
+37.6
+37.1
+32.2
+36.8
+Qwen-1.5-1.8B-Chat
+35.5
+46.2
+33.2
+35.1
+34.3
+33.2
+30.9
+35.7
+Qwen-1.5-1.8B
+34.8
+46.3
+31.8
+34.0
+34.2
+32.8
+29.7
+35.0
+TinyLLama-1.1B
+34.8
+42.4
+33.0
+33.8
+34.7
+33.5
+31.0
+35.0
+phi-2†
+34.6
+55.8
+29.0
+34.3
+32.9
+29.9
+27.1
+33.4
+falcon-rw-1b
+29.9
+42.2
+27.4
+28.6
+28.3
+28.0
+25.9
+29.1
+phi-1_5†
+29.7
+47.1
+25.3
+28.7
+26.8
+27.2
+24.1
+29.0
+Table 5: Multilingual evaluations. As in the previous table, † denotes aligned models.
+aligned the resulting model via DPO. We use two datasets at this stage: UltraFeedback [14] and Intel
+Orca Pairs. We filter the datasets by removing pairs with tied ranking, pairs with duplicated content,
+and pairs in which the score for the chosen response is less than eight out of ten. We train the model
+with DPO following the Zephyr recipe [70] and borrowing most of its hyperparameters, except for
+β, which we lower to 0.01, and the learning rate, which we lower to 4e −6, both of which helped
+improve the stability of training and final performance. This stage of training is performed using the
+Alignment Handbook [69].
+3.3
+Self-Knowledge
+The model after the output of the DPO [58] stage does not have knowledge about who created it, or
+even what limitations a language model has. To remedy this, we were inspired by the data generation
+method of Reinforcement Learning from Contrast Distillation (RLCD) [78] and the training method of
+Conditioned Reinforcement Learning Fine-Tuning (C-RLFT) [72], which we apply to self-knowledge
+training.
+To generate the initial prompts, we use the base model to generate 10k random first messages to
+a language model with no duplicates. To generate continuations, we use a few-shot prompt with
+self-knowledge in the previous chat turns as a positive completion. For the negative prompt, we
+simply sample from the prompt with no additional prompting or few-shot turns.
+6
+
+Dataset
+Type
+Source
+Number of Samples
+UltraChat
+SFT
+HuggingFaceH4/ultrachat_200k
+194,409
+WizardLM
+SFT
+WizardLM/WizardLM_evol_instruct_V2_196k
+80,662
+SlimOrca
+SFT
+Open-Orca/SlimOrca-Dedup
+143,789
+ShareGPT
+SFT
+openchat/openchat_sharegpt4_dataset
+3,509
+Capybara
+SFT
+LDJnr/Capybara
+7,291
+Deita
+SFT
+hkust-nlp/deita-10k-v0
+2,860
+MetaMathQA
+SFT
+meta-math/MetaMathQA
+394,418
+Ultrafeedback
+DPO
+argilla/ultrafeedback-binarized-preferences
+63,169
+Orca Pairs
+DPO
+Intel/orca_dpo_pairs
+12,859
+Table 6: Fine-tuning datasets
+Figure 3: Stable LM 2 1.6B shows competitive performance, matching or even surpassing significantly
+larger models on MT-Bench.
+We train with unpacked examples for 6 epochs using a batch size of 256, a warmup stage for 100
+steps to a maximum LR of 3e-6 followed by a cosine decay to zero. The positive prompts are trained
+in the same way as the SFT step, while the negative prompts are trained with a negative token instead
+of the Assistant token.
+7
+
+Model
+Size
+MT-Bench
+Mistral-7B-Instruct-v0.2
+7B
+7.61
+Llama2-Chat
+70B
+6.86
+stablelm-zephyr-3b
+3B
+6.64
+MPT-30B-Chat
+30B
+6.39
+stablelm-2-zephyr-1.6b
+1.6B
+5.42
+Qwen-1.5-1.8B-Chat
+1.8B
+5.29
+gemma-2b-it
+2.5B
+5.19
+Falcon-40B-Instruct
+40B
+5.17
+dolphin-2.6-phi-2
+2.7B
+4.93
+phi-2
+2.7B
+4.29
+TinyLlama-1.1B-Chat-v1.0
+1.1B
+3.46
+Table 7: MT-Bench results
+4
+Experimental Results and Benchmarks
+This section presents the main experimental results for Stable LM 2 1.6B. We compare with similarly-
+sized open-source models showing strong improvements on various tasks, including multilingual
+capabilities in Spanish, German, French, Italian, Portuguese, and Dutch. For context, we also provide
+comparisons with much larger models. We split our experiments into three sets: few- and zero-shot
+evaluations in English (as commonly done in the Hugging Face Open LLM leaderboard), multilingual
+evaluations, and conversational evaluations.
+4.1
+Few-shot and Zero-shot Evaluations
+First, we assess the 0-shot and few-shot capabilities of Stable LM 2 by evaluating our model over
+popular benchmarks and comparing results against similarly sized open-source pre-trained models.
+Table 4 presents model evaluations in English. Our results cover the 6 benchmarks from the Open
+LLM Leaderboard ([5]): ARC-Challenge 25-shot [11] (ARC), HellaSwag 10-shot [83] (HS), MMLU
+5-shot [30] (MMLU), TruthfulQA 0-shot [43] (TQA), WinoGrande 5-shot [62] (Wino) and GSM8K
+5-shot [12] (GSM). Also, as Stable LM 2 is a general-purpose foundational model, we further
+assess natural language understanding capabilities by evaluating English and machine-translated
+versions of LAMBADA. All evaluations are performed with the Language Model Evaluation Harness
+framework [23]||. As shown in Table 4, Stable LM 2 1.6B (stablelm-2-1-6b) outperforms other
+base models by a significant margin. Similarly, the instruction-tuned version (stablelm-2-1-6b-dpo)
+improves on Microsoft’s Phi-1.5 by two average points while lagging behind the larger Phi-2.0 on
+few-shot accuracy. Performance versus Google’s Gemma 2B (2.5B parameters) is also remarkable.
+4.2
+Multilingual Evaluations
+We assess knowledge and reasoning in the multilingual setting for non-English languages seen during
+pre-training by evaluating on ChatGPT-translated versions of ARC, HS, TQA, and MMLU ([38]). In
+addition, we test next-word prediction capabilities using the machine-translated LAMBADA datasets
+from [23]. After manual inspection by native speakers, we have deemed existing machine translations
+** too noisy to draw accurate performance signals from. We instead evaluate multilingual next-word
+prediction with new translations which are made available for researchers ††.
+The zero-shot results are presented in Tab. 5 and highlight Stable LM 2’s superior performance
+compared to models even twice its size.
+||https://github.com/Stability-AI/lm-evaluation-harness/tree/stablelm-2/
+multilingual-bench
+**https://huggingface.co/datasets/EleutherAI/lambada_openai
+††https://huggingface.co/datasets/marcob/lambada_multilingual
+8
+
+Framework
+CPU
+Precision
+Throughput
+(Tok/s)
+Power
+consumption (W)
+MLX
+M2
+FP16
+71
+6
+Mac Mini
+(8GB)
+INT4
+127
+11
+GGUF
+M2 Pro Max
+FP16
+46
+14
+2023 MacBook Pro
+(16GB)
+INT4
+99
+14
+Table 8: Throughput and power usage on various devices using different quantization frameworks.
+We employ a batch size of 1 for all benchmarks. INT4 numbers for GGUF were collected using Q4_0
+quantization.
+4.3
+MT Benchmark Evaluations
+Finally, we also test the conversational skills of our model on the popular multi-turn benchmark
+MT-Bench [86]. The results are provided in Fig. 3 and Tab. 7. While lagging behind much more
+powerful models such as Mistral 7B Instruct v0.2 (more than 4x the size of Stable LM 2), our model
+delivers better chat performance and beats both Phi-2, Gemma 2B and TinyLLaMA 1.1B by a wide
+margin despite the larger size of the former.
+5
+Inference and Quantization
+This model represents a substantial leap towards making advanced generation capabilities available
+directly on-device without the computational overhead of larger models. We believe this model
+strikes a great balance between remarkable efficiency and effectiveness in inference tasks when paired
+with inference frameworks and quantization methods. As part of our release, we provide quantized
+weights of stablelm-2-1-6b supported on popular inference libraries such as llama.cpp ‡‡, Apple
+MLX [29] and Intel OpenVINO §§.
+5.1
+Quantization
+We make available quantization files for various models and formats to support easier integration
+with different inference frameworks, including:
+• Two 4-bit quantized models: Q4_0, Q4_1 and a 5-bit quantized model: Q5_K_M GGUF
+• INT4 for OpenVINO quantized with Intel’s Neural Network Compression Framework
+(NNCF)
+• INT4 for MLX quantized with MLX
+These quantization files can be found in the model’s Hugging Face repository for the convenience
+of developers and researchers working with our models. We aim to facilitate smoother deployment
+experiences across various deep-learning framework ecosystems by offering a range of quantization
+formats.
+5.2
+Throughput
+In Tab. 8 we provide throughput numbers obtained from our model running on consumer-grade
+devices and the system environments utilized. Our initial runs showcase that when using a lower
+precision, we are able to achieve almost 2x performance in throughput. Note that these figures are
+provided as a reference, and they are not the result of rigorous benchmarking but are rather intended
+to give users a practical insight into what they can expect in terms of performance on commonly used
+devices. Likewise, as lower precision quantization is expected to reduce the model’s performance, we
+encourage researchers and developers to assess the potential degradation in real-world scenarios.
+‡‡https://github.com/ggerganov/llama.cpp
+§§https://github.com/openvinotoolkit/openvino
+9
+
+6
+Future Work
+There is a number of research avenues we would like to explore to further improve the model:
+1. Data. In this work, we focused on publicly available data. In particular, most of the data
+comes from web-crawled content, as is common for most models. This data is known to
+contain many low-quality documents [20] that can potentially harm training. We believe
+there is significant potential in smart filtering, re-writing, and synthetic data generation with
+strong models.
+2. Hallucination Mitigation. Language models are prone to generating incorrect or misleading
+information, and small language models are even more prone to doing so. Finding reliable
+ways to detect hallucinations in these models will unlock new use cases in areas that are
+sensitive to hallucinations.
+3. Long Contexts and Retrieval. The ability to retrieve information across long context
+windows is essential for applications such as chat models or dataset integration. Accordingly,
+in Appendix C, we explore the current capabilities and limitations of StableLM2 1.6B on
+the Needle-in-the-Haystack task. Going forward we plan to further build upon this work as
+well as to extend our models to context lengths beyond 4k.
+4. Conditional Computation. Small models are often capacity-constrained – that is, with the
+current training approaches, they lack the capacity to process and exploit all of the training
+data. Recently, ideas such as Mixture of Experts have been successfully applied to take a
+dense model and extend it to contain more parameters that are selectively applied to certain
+inputs (for instance, via sparse upcycling [37]). Importantly, if each token selects only one
+expert, the overall inference FLOPs do not significantly change. Applying this to the Stable
+LM 2 1.6B model is a natural extension we will investigate.
+7
+Environmental and Societal Impact
+7.1
+Carbon Footprint
+The training of Stable LM 2 has consumed energy with associated carbon dioxide emissions. In line
+with [67] we report our carbon footprint based on the formula
+Total Wh = GPU-h × power consumption × PUE
+where the Power Usage Effectiveness is set to 1.1. We trained Stable LM 2 for ≈92, 000 GPU-hours,
+giving a total power consumption of 30MWh considering our average power usage. The tons of
+emitted carbon tCO2eq can be estimated using the US national average carbon intensity factor of
+0.385 kg CO2eq/KWh, leading to a final figure of 11 tCO2eq.
+7.2
+Societal impact
+Stability AI is committed to releasing open models to help improve access to foundational AI
+technology. Open access to model weights enables researchers to inspect models for suitability
+and vulnerabilities, test the effectiveness of different optimization strategies, and correct for biases
+observed in the model. To that end, this model is released under an open non-commercial license.
+However, open release can introduce challenges in assessing the societal impact of a model. For
+example, Stability AI does not have direct visibility into downstream applications of Stable LM 2
+1.6B, the distribution of applications by sector, or the distribution of model usage by geography. Since
+the model is released with a noncommercial license, we expect a limited number of applications
+outside of fine-tuning or evaluation interfaces and a limited number of third parties affected by the
+model.
+We will continue to monitor openly released fine-tuned models to understand the extent of fine-tuning
+research or development activity that uses Stable LM 2 1.6B as a base model, including the evaluation
+results of these derivative models.
+10
+
+8
+Conclusion
+In this report, we introduced Stable LM 2 1.6B, a compact decoder-only language model trained on
+multilingual datasets. It fluidly handles up to seven languages: English, Spanish, German, Italian,
+French, Portuguese, and Dutch. To ensure that the community can reproduce our run, we detail
+all datasets used during training –with the exact data mix– and our newly designed learning rate
+schedule. We also conduct extensive model evaluations and comparisons with other similarly-sized
+models, demonstrating Stable LM 2 1.6B’s exceptional performance. Finally, we profile the model on
+common edge computing architectures. We hope the current report contributes to the improvement
+and further research on small language models.
+Acknowledgments
+We thank our awesome MLOps team members, particularly Richard Vencu, for the support provided.
+We also thank Christian Laforte, Cedric Wagrez, and Jerry Chi for their feedback, useful ideas, and
+comments.
+11
+
+References
+[1] Jacob Austin, Augustus Odena, Maxwell Nye, Maarten Bosma, Henryk Michalewski, David Dohan, Ellen
+Jiang, Carrie Cai, Michael Terry, Quoc Le, et al. Program synthesis with large language models. arXiv
+preprint arXiv:2108.07732, 2021.
+[2] b-mc2. sql-create-context dataset, 2023.
+[3] Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E. Hinton. Layer normalization, 2016.
+[4] Jinze Bai, Shuai Bai, Yunfei Chu, Zeyu Cui, Kai Dang, Xiaodong Deng, Yang Fan, Wenbin Ge, Yu Han,
+Fei Huang, Binyuan Hui, Luo Ji, Mei Li, Junyang Lin, Runji Lin, Dayiheng Liu, Gao Liu, Chengqiang Lu,
+Keming Lu, Jianxin Ma, Rui Men, Xingzhang Ren, Xuancheng Ren, Chuanqi Tan, Sinan Tan, Jianhong
+Tu, Peng Wang, Shijie Wang, Wei Wang, Shengguang Wu, Benfeng Xu, Jin Xu, An Yang, Hao Yang, Jian
+Yang, Shusheng Yang, Yang Yao, Bowen Yu, Hongyi Yuan, Zheng Yuan, Jianwei Zhang, Xingxuan Zhang,
+Yichang Zhang, Zhenru Zhang, Chang Zhou, Jingren Zhou, Xiaohuan Zhou, and Tianhang Zhu. Qwen
+technical report, 2023.
+[5] Edward Beeching, Clémentine Fourrier, Nathan Habib, Sheon Han, Nathan Lambert, Nazneen Rajani,
+Omar Sanseviero, Lewis Tunstall, and Thomas Wolf. Open llm leaderboard. https://huggingface.
+co/spaces/HuggingFaceH4/open_llm_leaderboard, 2023.
+[6] Sid Black, Stella Biderman, Eric Hallahan, Quentin Anthony, Leo Gao, Laurence Golding, Horace He,
+Connor Leahy, Kyle McDonell, Jason Phang, Michael Pieler, USVSN Sai Prashanth, Shivanshu Purohit,
+Laria Reynolds, Jonathan Tow, Ben Wang, and Samuel Weinbach. Gpt-neox-20b: An open-source
+autoregressive language model, 2022.
+[7] British Library, Victoria Morris, Daniel van Strien, Giorgia Tolfo, Lora Afric, Stewart Robertson, Patricia
+Tiney, Annelies Dogterom, and Ildi Wollner. 19th century books - metadata with additional crowdsourced
+annotations, 2021.
+[8] Isabel Cachola, Kyle Lo, Arman Cohan, and Daniel S. Weld. TLDR: Extreme summarization of scientific
+documents. arXiv:2004.15011, 2020.
+[9] Iñigo Casanueva, Tadas Temcinas, Daniela Gerz, Matthew Henderson, and Ivan Vulic. Efficient intent
+detection with dual sentence encoders. In Proceedings of the 2nd Workshop on NLP for ConvAI - ACL
+2020, mar 2020. Data available at https://github.com/PolyAI-LDN/task-specific-datasets.
+[10] Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra, Adam Roberts,
+Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian Gehrmann, Parker Schuh, Kensen Shi, Sasha
+Tsvyashchenko, Joshua Maynez, Abhishek Rao, Parker Barnes, Yi Tay, Noam Shazeer, Vinodkumar
+Prabhakaran, Emily Reif, Nan Du, Ben Hutchinson, Reiner Pope, James Bradbury, Jacob Austin, Michael
+Isard, Guy Gur-Ari, Pengcheng Yin, Toju Duke, Anselm Levskaya, Sanjay Ghemawat, Sunipa Dev, Henryk
+Michalewski, Xavier Garcia, Vedant Misra, Kevin Robinson, Liam Fedus, Denny Zhou, Daphne Ippolito,
+David Luan, Hyeontaek Lim, Barret Zoph, Alexander Spiridonov, Ryan Sepassi, David Dohan, Shivani
+Agrawal, Mark Omernick, Andrew M. Dai, Thanumalayan Sankaranarayana Pillai, Marie Pellat, Aitor
+Lewkowycz, Erica Moreira, Rewon Child, Oleksandr Polozov, Katherine Lee, Zongwei Zhou, Xuezhi
+Wang, Brennan Saeta, Mark Diaz, Orhan Firat, Michele Catasta, Jason Wei, Kathy Meier-Hellstern,
+Douglas Eck, Jeff Dean, Slav Petrov, and Noah Fiedel. Palm: Scaling language modeling with pathways,
+2022.
+[11] Peter Clark, Isaac Cowhey, Oren Etzioni, Tushar Khot, Ashish Sabharwal, Carissa Schoenick, and Oyvind
+Tafjord. Think you have solved question answering? try arc, the ai2 reasoning challenge, 2018.
+[12] Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian, Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias
+Plappert, Jerry Tworek, Jacob Hilton, Reiichiro Nakano, Christopher Hesse, and John Schulman. Training
+verifiers to solve math word problems, 2021.
+[13] Together Computer. Redpajama: An open source recipe to reproduce llama training dataset, 2023.
+[14] Ganqu Cui, Lifan Yuan, Ning Ding, Guanming Yao, Wei Zhu, Yuan Ni, Guotong Xie, Zhiyuan Liu, and
+Maosong Sun. Ultrafeedback: Boosting language models with high-quality feedback, 2023.
+[15] Luigi Daniele and Suphavadeeprasit. Amplify-instruct: Synthetically generated diverse multi-turn conver-
+sations for effecient llm training. arXiv preprint arXiv:(coming soon), 2023.
+[16] Tri Dao. FlashAttention-2: Faster attention with better parallelism and work partitioning, 2023.
+[17] Tri Dao, Daniel Y. Fu, Stefano Ermon, Atri Rudra, and Christopher Ré. FlashAttention: Fast and memory-
+efficient exact attention with IO-awareness. In Advances in Neural Information Processing Systems,
+2022.
+[18] Ning Ding, Yulin Chen, Bokai Xu, Yujia Qin, Zhi Zheng, Shengding Hu, Zhiyuan Liu, Maosong Sun, and
+Bowen Zhou. Enhancing chat language models by scaling high-quality instructional conversations, 2023.
+12
+
+[19] Nan Du, Yanping Huang, Andrew M. Dai, Simon Tong, Dmitry Lepikhin, Yuanzhong Xu, Maxim Krikun,
+Yanqi Zhou, Adams Wei Yu, Orhan Firat, Barret Zoph, Liam Fedus, Maarten Bosma, Zongwei Zhou, Tao
+Wang, Yu Emma Wang, Kellie Webster, Marie Pellat, Kevin Robinson, Kathleen Meier-Hellstern, Toju
+Duke, Lucas Dixon, Kun Zhang, Quoc V Le, Yonghui Wu, Zhifeng Chen, and Claire Cui. Glam: Efficient
+scaling of language models with mixture-of-experts, 2022.
+[20] Yanai Elazar, Akshita Bhagia, Ian Magnusson, Abhilasha Ravichander, Dustin Schwenk, Alane Suhr, Pete
+Walsh, Dirk Groeneveld, Luca Soldaini, Sameer Singh, Hanna Hajishirzi, Noah A. Smith, and Jesse Dodge.
+What’s in my big data?, 2023.
+[21] Yao Fu, Rameswar Panda, Xinyao Niu, Xiang Yue, Hannaneh Hajishirzi, Yoon Kim, and Hao Peng. Data
+engineering for scaling language models to 128k context, 2024.
+[22] Leo Gao, Stella Biderman, Sid Black, Laurence Golding, Travis Hoppe, Charles Foster, Jason Phang,
+Horace He, Anish Thite, Noa Nabeshima, Shawn Presser, and Connor Leahy. The pile: An 800gb dataset
+of diverse text for language modeling, 2020.
+[23] Leo Gao, Jonathan Tow, Stella Biderman, Sid Black, Anthony DiPofi, Charles Foster, Laurence Golding,
+Jeffrey Hsu, Kyle McDonell, Niklas Muennighoff, Jason Phang, Laria Reynolds, Eric Tang, Anish Thite,
+Ben Wang, Kevin Wang, and Andy Zou. A framework for few-shot language model evaluation, September
+2021.
+[24] Aaron Gokaslan, Vanya Cohen, Ellie Pavlick, and Stefanie Tellex. Openwebtext corpus, 2019.
+[25] Priya Goyal, Piotr Dollár, Ross Girshick, Pieter Noordhuis, Lukasz Wesolowski, Aapo Kyrola, Andrew
+Tulloch, Yangqing Jia, and Kaiming He. Accurate, large minibatch sgd: Training imagenet in 1 hour, 2018.
+[26] Suriya Gunasekar, Yi Zhang, Jyoti Aneja, Caio César Teodoro Mendes, Allie Del Giorno, Sivakanth Gopi,
+Mojan Javaheripi, Piero Kauffmann, Gustavo de Rosa, Olli Saarikivi, et al. Textbooks are all you need.
+arXiv preprint arXiv:2306.11644, 2023.
+[27] Himanshu Gupta, Neeraj Varshney, Swaroop Mishra, Kuntal Kumar Pal, Saurabh Arjun Sawant, Kevin
+Scaria, Siddharth Goyal, and Chitta Baral. “john is 50 years old, can his son be 65?” evaluating NLP
+models’ understanding of feasibility. In Andreas Vlachos and Isabelle Augenstein, editors, Proceedings
+of the 17th Conference of the European Chapter of the Association for Computational Linguistics, pages
+407–417, Dubrovnik, Croatia, May 2023. Association for Computational Linguistics.
+[28] Johannes Hagemann, Samuel Weinbach, Konstantin Dobler, Maximilian Schall, and Gerard de Melo.
+Efficient parallelization layouts for large-scale distributed model training, 2023.
+[29] Awni Hannun, Jagrit Digani, Angelos Katharopoulos, and Ronan Collobert. MLX: Efficient and flexible
+machine learning on apple silicon, 2023.
+[30] Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob
+Steinhardt. Measuring massive multitask language understanding, 2021.
+[31] Jordan Hoffmann, Sebastian Borgeaud, Arthur Mensch, Elena Buchatskaya, Trevor Cai, Eliza Rutherford,
+Diego de Las Casas, Lisa Anne Hendricks, Johannes Welbl, Aidan Clark, Tom Hennigan, Eric Noland,
+Katie Millican, George van den Driessche, Bogdan Damoc, Aurelia Guy, Simon Osindero, Karen Simonyan,
+Erich Elsen, Jack W. Rae, Oriol Vinyals, and Laurent Sifre. Training compute-optimal large language
+models, 2022.
+[32] Hamish Ivison, Yizhong Wang, Valentina Pyatkin, Nathan Lambert, Matthew Peters, Pradeep Dasigi, Joel
+Jang, David Wadden, Noah A. Smith, Iz Beltagy, and Hannaneh Hajishirzi. Camels in a changing climate:
+Enhancing lm adaptation with tulu 2, 2023.
+[33] Mingi Jeon, Seung-Yeop Baik, Joonghyuk Hahn, Yo-Sub Han, and Sang-Ki Ko. Deep Learning-based
+Code Complexity Prediction, 2022.
+[34] Mandar Joshi, Eunsol Choi, Daniel Weld, and Luke Zettlemoyer. triviaqa: A Large Scale Distantly
+Supervised Challenge Dataset for Reading Comprehension. arXiv e-prints, page arXiv:1705.03551, 2017.
+[35] Greg Kamradt and Ikko Ashimine. Needle in a haystack - pressure testing llms, 2023.
+[36] Tomáš Koˇciský, Jonathan Schwarz, Phil Blunsom, Chris Dyer, Karl Moritz Hermann, Gábor Melis, and
+Edward Grefenstette. The NarrativeQA reading comprehension challenge. Transactions of the Association
+for Computational Linguistics, 6:317–328, 2018.
+[37] Aran Komatsuzaki, Joan Puigcerver, James Lee-Thorp, Carlos Riquelme Ruiz, Basil Mustafa, Joshua
+Ainslie, Yi Tay, Mostafa Dehghani, and Neil Houlsby. Sparse upcycling: Training mixture-of-experts from
+dense checkpoints. arXiv preprint arXiv:2212.05055, 2022.
+[38] Viet Dac Lai, Chien Van Nguyen, Nghia Trung Ngo, Thuat Nguyen, Franck Dernoncourt, Ryan A Rossi,
+and Thien Huu Nguyen. Okapi: Instruction-tuned large language models in multiple languages with
+reinforcement learning from human feedback. arXiv preprint arXiv:2307.16039, 2023.
+13
+
+[39] Raymond Li, Loubna Ben Allal, Yangtian Zi, Niklas Muennighoff, Denis Kocetkov, Chenghao Mou,
+Marc Marone, Christopher Akiki, Jia Li, Jenny Chim, Qian Liu, Evgenii Zheltonozhskii, Terry Yue Zhuo,
+Thomas Wang, Olivier Dehaene, Mishig Davaadorj, Joel Lamy-Poirier, João Monteiro, Oleh Shliazhko,
+Nicolas Gontier, Nicholas Meade, Armel Zebaze, Ming-Ho Yee, Logesh Kumar Umapathi, Jian Zhu,
+Benjamin Lipkin, Muhtasham Oblokulov, Zhiruo Wang, Rudra Murthy, Jason Stillerman, Siva Sankalp
+Patel, Dmitry Abulkhanov, Marco Zocca, Manan Dey, Zhihan Zhang, Nour Fahmy, Urvashi Bhattacharyya,
+Wenhao Yu, Swayam Singh, Sasha Luccioni, Paulo Villegas, Maxim Kunakov, Fedor Zhdanov, Manuel
+Romero, Tony Lee, Nadav Timor, Jennifer Ding, Claire Schlesinger, Hailey Schoelkopf, Jan Ebert, Tri
+Dao, Mayank Mishra, Alex Gu, Jennifer Robinson, Carolyn Jane Anderson, Brendan Dolan-Gavitt, Danish
+Contractor, Siva Reddy, Daniel Fried, Dzmitry Bahdanau, Yacine Jernite, Carlos Muñoz Ferrandis, Sean
+Hughes, Thomas Wolf, Arjun Guha, Leandro von Werra, and Harm de Vries. Starcoder: may the source be
+with you!, 2023.
+[40] Raymond Li, Loubna Ben Allal, Yangtian Zi, Niklas Muennighoff, Denis Kocetkov, Chenghao Mou,
+Marc Marone, Christopher Akiki, Jia Li, Jenny Chim, Qian Liu, Evgenii Zheltonozhskii, Terry Yue Zhuo,
+Thomas Wang, Olivier Dehaene, Mishig Davaadorj, Joel Lamy-Poirier, João Monteiro, Oleh Shliazhko,
+Nicolas Gontier, Nicholas Meade, Armel Zebaze, Ming-Ho Yee, Logesh Kumar Umapathi, Jian Zhu,
+Benjamin Lipkin, Muhtasham Oblokulov, Zhiruo Wang, Rudra Murthy, Jason Stillerman, Siva Sankalp
+Patel, Dmitry Abulkhanov, Marco Zocca, Manan Dey, Zhihan Zhang, Nour Fahmy, Urvashi Bhattacharyya,
+Wenhao Yu, Swayam Singh, Sasha Luccioni, Paulo Villegas, Maxim Kunakov, Fedor Zhdanov, Manuel
+Romero, Tony Lee, Nadav Timor, Jennifer Ding, Claire Schlesinger, Hailey Schoelkopf, Jan Ebert, Tri
+Dao, Mayank Mishra, Alex Gu, Jennifer Robinson, Carolyn Jane Anderson, Brendan Dolan-Gavitt, Danish
+Contractor, Siva Reddy, Daniel Fried, Dzmitry Bahdanau, Yacine Jernite, Carlos Muñoz Ferrandis, Sean
+Hughes, Thomas Wolf, Arjun Guha, Leandro von Werra, and Harm de Vries. StarCoder: may the source
+be with you!, 2023.
+[41] Wing Lian, Guan Wang, Bleys Goodson, Eugene Pentland, Austin Cook, Chanvichet Vong, and "Teknium".
+Slimorca: An open dataset of gpt-4 augmented flan reasoning traces, with verification, 2023.
+[42] Bill Yuchen Lin, Wangchunshu Zhou, Ming Shen, Pei Zhou, Chandra Bhagavatula, Yejin Choi, and Xiang
+Ren. CommonGen: A constrained text generation challenge for generative commonsense reasoning. In
+Findings of the Association for Computational Linguistics: EMNLP 2020, pages 1823–1840, Online,
+November 2020. Association for Computational Linguistics.
+[43] Stephanie Lin, Jacob Hilton, and Owain Evans. Truthfulqa: Measuring how models mimic human
+falsehoods, 2022.
+[44] Emmy Liu, Chen Cui, Kenneth Zheng, and Graham Neubig. Testing the ability of language models to
+interpret figurative language, 2022.
+[45] Tiedong Liu and Bryan Kian Hsiang Low. Goat: Fine-tuned llama outperforms gpt-4 on arithmetic tasks,
+2023.
+[46] Wei Liu, Weihao Zeng, Keqing He, Yong Jiang, and Junxian He. What makes good data for alignment? a
+comprehensive study of automatic data selection in instruction tuning, 2023.
+[47] Shayne Longpre, Robert Mahari, Anthony Chen, Naana Obeng-Marnu, Damien Sileo, William Brannon,
+Niklas Muennighoff, Nathan Khazam, Jad Kabbara, Kartik Perisetla, et al. The data provenance initiative:
+A large scale audit of dataset licensing & attribution in ai. arXiv preprint arXiv:2310.16787, 2023.
+[48] Shayne Longpre, Gregory Yauney, Emily Reif, Katherine Lee, Adam Roberts, Barret Zoph, Denny Zhou,
+Jason Wei, Kevin Robinson, David Mimno, and Daphne Ippolito. A pretrainer’s guide to training data:
+Measuring the effects of data age, domain coverage, quality, & toxicity, 2023.
+[49] Risto Luukkonen, Ville Komulainen, Jouni Luoma, Anni Eskelinen, Jenna Kanerva, Hanna-Mari Kupari,
+Filip Ginter, Veronika Laippala, Niklas Muennighoff, Aleksandra Piktus, Thomas Wang, Nouamane Tazi,
+Teven Le Scao, Thomas Wolf, Osma Suominen, Samuli Sairanen, Mikko Merioksa, Jyrki Heinonen, Aija
+Vahtola, Samuel Antao, and Sampo Pyysalo. Fingpt: Large generative models for a small language, 2023.
+[50] Andrew L. Maas, Raymond E. Daly, Peter T. Pham, Dan Huang, Andrew Y. Ng, and Christopher Potts.
+Learning word vectors for sentiment analysis. In Proceedings of the 49th Annual Meeting of the Association
+for Computational Linguistics: Human Language Technologies, pages 142–150, Portland, Oregon, USA,
+June 2011. Association for Computational Linguistics.
+[51] Sam McCandlish, Jared Kaplan, Dario Amodei, and OpenAI Dota Team. An empirical model of large-batch
+training, 2018.
+[52] John P. McCrae, Alexandre Rademaker, Francis Bond, Ewa Rudnicka, and Christiane Fellbaum. English
+WordNet 2019 – an open-source WordNet for English. In Piek Vossen and Christiane Fellbaum, editors,
+Proceedings of the 10th Global Wordnet Conference, pages 245–252, Wroclaw, Poland, July 2019. Global
+Wordnet Association.
+[53] Niklas Muennighoff, Alexander M. Rush, Boaz Barak, Teven Le Scao, Aleksandra Piktus, Nouamane Tazi,
+Sampo Pyysalo, Thomas Wolf, and Colin Raffel. Scaling data-constrained language models, 2023.
+14
+
+[54] Thuat Nguyen, Chien Van Nguyen, Viet Dac Lai, Hieu Man, Nghia Trung Ngo, Franck Dernoncourt,
+Ryan A. Rossi, and Thien Huu Nguyen. Culturax: A cleaned, enormous, and multilingual dataset for large
+language models in 167 languages, 2023.
+[55] OpenAI, :, Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia Leoni
+Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, Red Avila, Igor Babuschkin,
+Suchir Balaji, Valerie Balcom, Paul Baltescu, Haiming Bao, Mo Bavarian, Jeff Belgum, Irwan Bello,
+Jake Berdine, Gabriel Bernadett-Shapiro, Christopher Berner, Lenny Bogdonoff, Oleg Boiko, Madelaine
+Boyd, Anna-Luisa Brakman, Greg Brockman, Tim Brooks, Miles Brundage, Kevin Button, Trevor Cai,
+Rosie Campbell, Andrew Cann, Brittany Carey, Chelsea Carlson, Rory Carmichael, Brooke Chan, Che
+Chang, Fotis Chantzis, Derek Chen, Sully Chen, Ruby Chen, Jason Chen, Mark Chen, Ben Chess, Chester
+Cho, Casey Chu, Hyung Won Chung, Dave Cummings, Jeremiah Currier, Yunxing Dai, Cory Decareaux,
+Thomas Degry, Noah Deutsch, Damien Deville, Arka Dhar, David Dohan, Steve Dowling, Sheila Dunning,
+Adrien Ecoffet, Atty Eleti, Tyna Eloundou, David Farhi, Liam Fedus, Niko Felix, Simón Posada Fishman,
+Juston Forte, Isabella Fulford, Leo Gao, Elie Georges, Christian Gibson, Vik Goel, Tarun Gogineni, Gabriel
+Goh, Rapha Gontijo-Lopes, Jonathan Gordon, Morgan Grafstein, Scott Gray, Ryan Greene, Joshua Gross,
+Shixiang Shane Gu, Yufei Guo, Chris Hallacy, Jesse Han, Jeff Harris, Yuchen He, Mike Heaton, Johannes
+Heidecke, Chris Hesse, Alan Hickey, Wade Hickey, Peter Hoeschele, Brandon Houghton, Kenny Hsu,
+Shengli Hu, Xin Hu, Joost Huizinga, Shantanu Jain, Shawn Jain, Joanne Jang, Angela Jiang, Roger Jiang,
+Haozhun Jin, Denny Jin, Shino Jomoto, Billie Jonn, Heewoo Jun, Tomer Kaftan, Łukasz Kaiser, Ali Kamali,
+Ingmar Kanitscheider, Nitish Shirish Keskar, Tabarak Khan, Logan Kilpatrick, Jong Wook Kim, Christina
+Kim, Yongjik Kim, Hendrik Kirchner, Jamie Kiros, Matt Knight, Daniel Kokotajlo, Łukasz Kondraciuk,
+Andrew Kondrich, Aris Konstantinidis, Kyle Kosic, Gretchen Krueger, Vishal Kuo, Michael Lampe, Ikai
+Lan, Teddy Lee, Jan Leike, Jade Leung, Daniel Levy, Chak Ming Li, Rachel Lim, Molly Lin, Stephanie
+Lin, Mateusz Litwin, Theresa Lopez, Ryan Lowe, Patricia Lue, Anna Makanju, Kim Malfacini, Sam
+Manning, Todor Markov, Yaniv Markovski, Bianca Martin, Katie Mayer, Andrew Mayne, Bob McGrew,
+Scott Mayer McKinney, Christine McLeavey, Paul McMillan, Jake McNeil, David Medina, Aalok Mehta,
+Jacob Menick, Luke Metz, Andrey Mishchenko, Pamela Mishkin, Vinnie Monaco, Evan Morikawa, Daniel
+Mossing, Tong Mu, Mira Murati, Oleg Murk, David Mély, Ashvin Nair, Reiichiro Nakano, Rajeev Nayak,
+Arvind Neelakantan, Richard Ngo, Hyeonwoo Noh, Long Ouyang, Cullen O’Keefe, Jakub Pachocki,
+Alex Paino, Joe Palermo, Ashley Pantuliano, Giambattista Parascandolo, Joel Parish, Emy Parparita,
+Alex Passos, Mikhail Pavlov, Andrew Peng, Adam Perelman, Filipe de Avila Belbute Peres, Michael
+Petrov, Henrique Ponde de Oliveira Pinto, Michael, Pokorny, Michelle Pokrass, Vitchyr Pong, Tolly
+Powell, Alethea Power, Boris Power, Elizabeth Proehl, Raul Puri, Alec Radford, Jack Rae, Aditya Ramesh,
+Cameron Raymond, Francis Real, Kendra Rimbach, Carl Ross, Bob Rotsted, Henri Roussez, Nick Ryder,
+Mario Saltarelli, Ted Sanders, Shibani Santurkar, Girish Sastry, Heather Schmidt, David Schnurr, John
+Schulman, Daniel Selsam, Kyla Sheppard, Toki Sherbakov, Jessica Shieh, Sarah Shoker, Pranav Shyam,
+Szymon Sidor, Eric Sigler, Maddie Simens, Jordan Sitkin, Katarina Slama, Ian Sohl, Benjamin Sokolowsky,
+Yang Song, Natalie Staudacher, Felipe Petroski Such, Natalie Summers, Ilya Sutskever, Jie Tang, Nikolas
+Tezak, Madeleine Thompson, Phil Tillet, Amin Tootoonchian, Elizabeth Tseng, Preston Tuggle, Nick
+Turley, Jerry Tworek, Juan Felipe Cerón Uribe, Andrea Vallone, Arun Vijayvergiya, Chelsea Voss, Carroll
+Wainwright, Justin Jay Wang, Alvin Wang, Ben Wang, Jonathan Ward, Jason Wei, CJ Weinmann, Akila
+Welihinda, Peter Welinder, Jiayi Weng, Lilian Weng, Matt Wiethoff, Dave Willner, Clemens Winter,
+Samuel Wolrich, Hannah Wong, Lauren Workman, Sherwin Wu, Jeff Wu, Michael Wu, Kai Xiao, Tao Xu,
+Sarah Yoo, Kevin Yu, Qiming Yuan, Wojciech Zaremba, Rowan Zellers, Chong Zhang, Marvin Zhang,
+Shengjia Zhao, Tianhao Zheng, Juntang Zhuang, William Zhuk, and Barret Zoph. Gpt-4 technical report,
+2023.
+[56] Keiran Paster, Marco Dos Santos, Zhangir Azerbayev, and Jimmy Ba. Openwebmath: An open dataset of
+high-quality mathematical web text, 2023.
+[57] Guilherme Penedo, Quentin Malartic, Daniel Hesslow, Ruxandra Cojocaru, Alessandro Cappelli, Hamza
+Alobeidli, Baptiste Pannier, Ebtesam Almazrouei, and Julien Launay. The refinedweb dataset for falcon
+llm: Outperforming curated corpora with web data, and web data only, 2023.
+[58] Alec Radford, Karthik Narasimhan, Tim Salimans, and Ilya Sutskever. Improving language understanding
+by generative pre-training, 2018.
+[59] Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou,
+Wei Li, and Peter J. Liu. Exploring the limits of transfer learning with a unified text-to-text transformer,
+2023.
+[60] Vipul Raheja, Dhruv Kumar, Ryan Koo, and Dongyeop Kang. Coedit: Text editing by task-specific
+instruction tuning, 2023.
+[61] Samyam Rajbhandari, Jeff Rasley, Olatunji Ruwase, and Yuxiong He. Zero: Memory optimizations toward
+training trillion parameter models, 2020.
+[62] Keisuke Sakaguchi, Ronan Le Bras, Chandra Bhagavatula, and Yejin Choi. Winogrande: An adversarial
+winograd schema challenge at scale, 2019.
+15
+
+[63] Eva Sharma, Chen Li, and Lu Wang. BIGPATENT: A large-scale dataset for abstractive and coherent
+summarization. CoRR, abs/1906.03741, 2019.
+[64] Zhengxiang Shi, Qiang Zhang, and Aldo Lipani. Stepgame: A new benchmark for robust multi-hop spatial
+reasoning in texts. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 36, pages
+11321–11329, Jun. 2022.

@@ -1,0 +1,722 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/1i0wyVTApKvn2Id7DPa+mVKOtQc</id>
+  <title>arXiv Query: search_query=all:abliteration&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-09-21T15:34:02Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:abliteration&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>30</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2609.16204v1</id>
+    <title>Decoy Direction Optimization: A Post-Hoc Defense Against LLM Abliteration</title>
+    <updated>2026-09-14T18:36:35Z</updated>
+    <link href="https://arxiv.org/abs/2609.16204v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.16204v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety guardrails in open-weight language models can be readily bypassed using Refusal Feature Ablation (RFA), a technique that identifies and projects out a linear refusal direction from the residual stream, often achieving a high attack success rate (ASR) while preserving model capability. Defending against these attacks typically requires computationally expensive safety finetuning for every new checkpoint. We introduce Decoy Direction Optimization (DDO), a fast, post-hoc weight-editing defense that requires no base-model finetuning. Our approach is based on a simple mechanistic insight: ablation attacks rely on contrastive estimators to find the refusal direction. Rather than trying to hide the true refusal circuitry, DDO actively injects a high-magnitude, nonlinear decoy signal into the network's MLP neurons. When an attacker attempts to locate the refusal direction, the decoy corrupts their estimator, tricking them into ablating a harmless orthogonal feature while the actual safety mechanism remains intact. We prove a spectral bound formalizing this effect and evaluate DDO across six model families, achieving &lt;10% ASR under standard RFA. On Llama-3-8B-Instruct, DDO remains comparable to trained defenses under adaptive multi-phase attacks (65% vs. 58% worst-case ASR) and reduces Heretic weight-level attack ASR from 88.7% to 18%, all at 30 to 450 times lower optimization cost per configuration than the trained baselines.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-14T18:36:35Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Aashiq Muhamed</name>
+    </author>
+    <author>
+      <name>Mona T. Diab</name>
+    </author>
+    <author>
+      <name>Virginia Smith</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.17202v1</id>
+    <title>Fool's Gold: Defensive Deception Against Safety-Removal Attacks on Open-Weight Models</title>
+    <updated>2026-08-17T23:26:32Z</updated>
+    <link href="https://arxiv.org/abs/2608.17202v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.17202v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment in open-weight language models is trivially removable: abliteration projects a refusal-mediating direction out of the weights in minutes, and no release-time defense we are aware of prevents it durably. What cannot be prevented can be deceived. Our defense, decoy hardening ("Fool's Gold"), concedes the refusal strip and poisons its payoff: once refusal is stripped, most answers to hazardous operational requests are confident, fluent decoys whose critical elements are falsified. Decoys are trained inside a differentiable simulation of the attack, expressing only in the attacked state; a refusal pin and benign leash hold clean-state behavior to the original. We instantiate it on seven models from five families (9B-122B, dense and mixture-of-experts). On the six models passing our pre-registered efficacy gate, 0.51-0.90 of attacked-state responses to held-out prompts are decoys, +0.27-0.84 attributable to the defense; all six stay within registered benign-behavior and capability budgets; the seventh (smaller) fails the gate (boundary case). Rates replicate on a frozen test split or untouched strata. The claim is epistemic: without independent ground truth, no observation surface we tested separates falsified answers from correct ones - on external red-team benchmarks' CBRNE-adjacent slice, the defended 122B is fatally wrong on 0.82-0.86 of matched-quality answers vs at most 0.10 undefended. Repeated sampling does not restore trust: element-wise consensus at K=64 reconstructs a fully usable procedure on 0.083-0.625 of prompts where the instrument validates, vs 0.58-0.96 undefended, with no label-free way to tell the regimes apart; on the weakest such model the claim is per-draw only. We evaluate chemical and biological hazards; the defense does not address in-context jailbreaks and protects only the initially released defended weights.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-17T23:26:32Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Mark Russinovich</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.08542v1</id>
+    <title>When Skills Meet Safety: Benchmarking and Characterizing the Adaptive Jailbreak Robustness of Skill-Merged LLMs</title>
+    <updated>2026-08-09T07:41:06Z</updated>
+    <link href="https://arxiv.org/abs/2608.08542v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.08542v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Model merging has become the default way to give an aligned language model new skills without retraining: a practitioner folds task vectors from math, code, or domain specialists into a safety-aligned base using task arithmetic, TIES, or DARE. This convenience is known to carry a safety cost, but almost all of that evidence rests on static refusal tests: fixed harmful prompts scored for compliance. We argue this is misleading. Because safety alignment is "shallow," concentrated in the first few generated tokens, a merged model's static refusal can stay clean while a real adaptive attack still breaks it. We introduce SkillSafe-Bench, a controlled benchmark that scores skill-merged models on static refusal, adaptive jailbreak robustness, and capability retention under a conservative two-judge AND rule. Across six open-weight bases (five families, two scales), static safety does not predict robustness to attack: under a semantic template attack, safe-looking merges on the fragile bases (both Qwen scales and Gemma) are jailbroken 60-76% of the time while others (Llama, Phi-4) stay robust. We further show the static effect of merging is base-conditional, characterize same-recipe abliteration-style safety erosion through a data-free geometric signal (the overlap of a task vector with a safety subspace), and outline SubSafe-Merge, which projects this overlap away to remove that erosion at held capability. Adaptive evaluation is not optional for merged LLMs: the models that most need it look safe under static screening.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-09T07:41:06Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Yu Ma</name>
+    </author>
+    <author>
+      <name>Hongli Shi</name>
+    </author>
+    <author>
+      <name>Jing Li</name>
+    </author>
+    <author>
+      <name>Xinran Xu</name>
+    </author>
+    <author>
+      <name>Weiwei Hou</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.05578v1</id>
+    <title>Detecting Safety Training Modification in Language Models via Activation Analysis</title>
+    <updated>2026-08-06T03:57:38Z</updated>
+    <link href="https://arxiv.org/abs/2608.05578v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.05578v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We introduce AMS (Activation-based Model Scanner), a tool that detects modifications to safety training in language models by measuring the geometric structure of safety-relevant concepts in activation space. Safety training creates measurable separation between harmful and benign content classes; certain safety modifications collapse or rotate this structure, while others leave it intact. We validate AMS across 14 model configurations spanning 4 architecture families (Llama, Gemma, Qwen, Mistral) and four safety-modification categories (instruction-tuned, base, abliterated, uncensored fine-tunes). Leave-one-out cross-validation of thresholds achieves 71% accuracy (10/14); bootstrap 95% confidence intervals on sigma point estimates have median width 3.4 sigma. We measure behavioral compliance on 20 stratified JailbreakBench prompts per model and find that sigma on the harmful-content concept predicts compliance with Pearson r = -0.546 (p = 0.043), directionally but with meaningful noise. Mechanistic analysis identifies a four-class taxonomy of safety-training modifications distinguished by activation-space signature: training removal collapses cluster separation; weight-orthogonalization abliteration both collapses separation and rotates the refusal direction; rotation-without-collapse abliteration preserves separation while rotating direction; and behavioral fine-tuning preserves both magnitude and direction. AMS's Tier 1 sigma-threshold detects the first two classes; Tier 2 direction-similarity verification detects the third. The fourth is undetectable by activation-only probing and represents a documented failure mode. We discuss threshold calibration, limitations of single-run measurement, and the open problem of detecting behavioral-only safety modifications.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-06T03:57:38Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <arxiv:journal_ref>IEEE Access, vol. 14, pp. 91723-91737, 2026</arxiv:journal_ref>
+    <author>
+      <name>Glen Messenger</name>
+    </author>
+    <arxiv:doi>10.1109/ACCESS.2026.3704057</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/ACCESS.2026.3704057" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.17427v1</id>
+    <title>Abliteration Is Not a Scalpel: Off-Target Effects of Refusal Removal on Decision Disposition Across Model Families</title>
+    <updated>2026-07-19T22:27:00Z</updated>
+    <link href="https://arxiv.org/abs/2607.17427v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.17427v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Abliteration - deleting a model's refusal direction from its weights - is the standard recipe behind popular "uncensored" open-weight models. We show the surgery is not clean. As a disposition probe we use 21,600 decisions under uncertainty - weekly up/down calls on 60 Warsaw Stock Exchange equities over 18 weeks, replayed through a frozen pipeline so the decision-layer model is the only variable. The task elicits no refusals at all, so any between-arm delta is pure side effect. Holding provenance constant (official BF16 checkpoints, a single abliteration author, an identical serving stack, one byte-identical frozen prompt), we compare base and abliterated arms of two Mixture-of-Experts families, Gemma-4-26B-A4B-it and Qwen3-30B-A3B-Instruct-2507. Three effects replicate across both families (weeks-clustered bootstrap CIs excluding zero): abliterated models are systematically more optimistic (+12.2 pp Gemma, +7.4 pp Qwen; the confirmed preregistered endpoint), justify themselves at greater length, and use fewer explicit uncertainty words in forced self-critiques (both exploratory). A fourth effect reverses sign: the same operation makes Gemma-abliterated less confident and Qwen-abliterated more (family CIs non-overlapping) - one weight surgery, opposite shifts in expressed confidence. Capability covariates rule out instruction-following degradation as the driver, and no arm shows economic skill: the apparent edge of abliterated arms is regime beta, not alpha. Our provenance audit also caught two independent contamination channels - a mismatched-quantizer pilot pair and a stale community chat template that silently mangled the rendered prompt - suggesting toolchain artifacts are the rule in studies of community-modified checkpoints. Whoever deploys an "uncensored" model as an agent is deploying a measurably different decision-maker, not the base model minus refusals.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="q-fin.CP" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-19T22:27:00Z</published>
+    <arxiv:comment>11 pages, 5 figures, 4 tables. Preregistered. Data and code: https://github.com/oleczek/paper-abliteration-not-a-scalpel ; dataset DOI: 10.5281/zenodo.21314839</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Aleksander Fafuła</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.14285v1</id>
+    <title>ToolAlignBench: Investigating Alignment Conflicts in Tool-Calling Enabled LLMs</title>
+    <updated>2026-07-15T18:48:49Z</updated>
+    <link href="https://arxiv.org/abs/2607.14285v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.14285v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment in LLMs aims to align models with human values, but which values take precedence when they conflict? We investigate this question in the context of tool-calling LLM agents deployed in regulated industries, where agents processing confidential documents may encounter content that triggers safety-trained values (e.g., public welfare) that conflict with deployment-context instructions (e.g., internal logging). To empirically verify this phenomenon, we build a benchmark of 128 scenarios across 16 domains. We find that safety-aligned open-source models override their deployment instructions up to 43.4% of the time, engaging in whistleblowing, data exfiltration, and evidence tampering when processing documents that suggest organizational wrongdoing. We also find that abliteration reduces rates of external whistleblowing. These results reveal a fundamental tension in pluralistic alignment, where the same safety training that protects users can cause agents to act against deployment instructions in ways that create unpredictable liability risks. We release our benchmark as a framework to support evaluation of agent behavior under competing legitimate interests.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-15T18:48:49Z</published>
+    <arxiv:comment>Accepted to the Pluralistic Alignment Workshop at ICML 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Aryan Keluskar</name>
+    </author>
+    <author>
+      <name>Amrita Bhattacharjee</name>
+    </author>
+    <author>
+      <name>Huan Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.05842v1</id>
+    <title>Beyond Refusal: A Same-Lineage Study of Aligned and Abliterated LLMs for Vulnerability Analysis</title>
+    <updated>2026-07-07T05:04:48Z</updated>
+    <link href="https://arxiv.org/abs/2607.05842v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.05842v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language model (LLM)-assisted software security operates at a difficult boundary: the vulnerability-analysis terminology needed for legitimate code review, triage, and repair can closely resemble terminology associated with misuse. Existing safety and cybersecurity evaluations are difficult to interpret in this setting because they often compare unrelated model families, thereby conflating safety behavior with differences in architecture, scale, training data, and deployment. To isolate this factor, we study safety state: whether refusal behavior remains intact (Aligned) or has been refusal-ablated (Abliterated) within same-lineage models. We ask how this safety state affects defensive utility across software-security workflows. We compare aligned instruction-tuned models with publicly released refusal-ablated descendants from two model families, Gemma and Qwen. We evaluate Aligned and Abliterated states on vulnerability detection, CWE attribution, vulnerable-line localization, root-cause localization, and executable patch validation. We further treat prompt wording as a controlled framing dimension: prompts begin with neutral code-review language, add authorization context, and vary the density of cybersecurity terminology. In a Gemma-based Java/Vul4J repair-validation study, Abliterated achieves higher early-stage validation rates, with 67.8%, 65.0%, and 32.8% of patches judged usable, successfully applied, and successfully compiled, respectively, compared with 29.9%, 24.9%, and 9.0% for Aligned. In the Qwen pair, Abliterated improves localization performance, increasing line-level F1 from 2.08% to 3.91% and Top-1 accuracy from 4.10% to 6.95%. These findings suggest that evaluations of LLM-based security assistants should jointly measure whether models respond, whether their usable responses are correct, and whether their outputs remain actionable across the engineering workflow.</summary>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-07T05:04:48Z</published>
+    <arxiv:primary_category term="cs.SE"/>
+    <author>
+      <name>Mingchen Li</name>
+    </author>
+    <author>
+      <name>Meikang Qiu</name>
+    </author>
+    <author>
+      <name>Zifan Peng</name>
+    </author>
+    <author>
+      <name>Heng Fan</name>
+    </author>
+    <author>
+      <name>Song Fu</name>
+    </author>
+    <author>
+      <name>Junhua Ding</name>
+    </author>
+    <author>
+      <name>Yunhe Feng</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.02714v2</id>
+    <title>Not All Refusals Are Equal: How Safety Alignment Fails Cybersecurity at Scale</title>
+    <updated>2026-07-07T12:39:55Z</updated>
+    <link href="https://arxiv.org/abs/2607.02714v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.02714v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>There is no doubt that safety alignment is an essential step in LLM training. However, conceptually it does not distinguish between various domains and the level of potential harm of a query, which creates significant complications in the fields like cyber security, where a model should not be constrained by its safety circuits to accomplish the goals of legitimate, authorized operations. In this work, we share our findings from a large scale abliteration experiment on 24 open-source LLMs and show that domain-specific abliteration is achievable with standard methodology on the example of a 1T-parameter Kimi K2. Building on recent work showing that refusal in LLMs occupies a multi-dimensional subspace within layers, we find that it is also distributed widely across layers, especially in trillion-parameter MoE architectures, and so we aim to capture the part of it that represents harmful concepts in the cybersecurity domain exclusively. We also investigate the correlation between models' features and the effect of domain-specific abliteration, identifying that the type of safety training and architecture are the most reliable predictors. Finally, we classify the models into 3 abliteration susceptibility tiers and put forward a set of conjectures as to why a particular effect from this intervention might be observed in a given model.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-02T19:05:07Z</published>
+    <arxiv:comment>14 pages, 11 figures. Under review at NeurIPS 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Vadym Hadetskyi</name>
+    </author>
+    <author>
+      <name>Dario Pasquini</name>
+    </author>
+    <author>
+      <name>Artem Sorokin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.01854v2</id>
+    <title>Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map</title>
+    <updated>2026-08-18T17:13:48Z</updated>
+    <link href="https://arxiv.org/abs/2607.01854v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.01854v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Can a platform tell, before deployment, whether an open-weight checkpoint has had its refusal mechanism stripped? Runtime guards cannot: they score generations, not the artifact. We combine two cheap internal signals, a reference-anchored activation refusal-gap and a weight-recovery energy of the base-to-candidate weight difference, into a threshold-free checkpoint audit. The two are negatively correlated and label-complementary: the gap supplies refusal-specificity and the weight energy supplies recall. On a 273-checkpoint registry spanning Qwen, DeepSeek-distilled Qwen, Llama, and Gemma, their z-sum separates 57 public abliterations from 37 benign fine-tunes, merges, and instruction-tunes at AUROC 0.95, significantly above either signal alone (0.84, 0.90), and a Youden-calibrated threshold transfers to held-out families at balanced accuracy 0.89 (FPR 0.11), missing only 4 of 57. We then map two failures, in order of severity: a spoofed reference evades both axes with no training (ΔW=0, \r{ho}=1 by construction), and a white-box owner trains a checkpoint past the threshold while it stays guard-unsafe and coherent. The audit is effective triage, not tamper-proofing: it presumes an attested reference, and its claims are bounded by the registry we evaluate it on.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-02T08:15:25Z</published>
+    <arxiv:comment>13 pages, 3 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Gabriel Hurtado</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.25750v1</id>
+    <title>RAS: Measuring LLM Safety Through Refusal Alignment</title>
+    <updated>2026-06-24T12:19:40Z</updated>
+    <link href="https://arxiv.org/abs/2606.25750v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.25750v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety evaluation of large language models (LLMs) is commonly performed by querying models with unsafe or jailbreak prompts and judging whether their outputs violate a safety policy. Although useful, output-level evaluation is expensive, sensitive to judge choice, and easily tied to fixed question banks. We propose **SafeVec**, a white-box evaluation procedure that measures safety from internal representations rather than generated answers. **SafeVec** first extracts layer-wise refusal directions from a safety-aligned reference model, then selects stable layer windows where safe and unsafe behaviors are separable, and finally scores a target model by measuring whether its hidden states align with these refusal directions under unsafe and jailbreak prompts. The resulting metric, **RAS** (**R**efusal **A**lignment **S**core), maps representation-level refusal alignment to a calibrated 0-100 safety score. Across `Llama`, `Gemma`, and `Qwen` model families, RAS separates aligned models from uncensored and abliterated variants, tracks output-level attack success rate, and is substantially faster than judge-based evaluation. These results suggest that refusal alignment provides a compact and efficient signal for white-box LLM safety evaluation.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-24T12:19:40Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Chang-Chieh Huang</name>
+    </author>
+    <author>
+      <name>Yan-Lun Chen</name>
+    </author>
+    <author>
+      <name>Chia-Mu Yu</name>
+    </author>
+    <author>
+      <name>Wei-Bin Lee</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.23375v2</id>
+    <title>Measuring &amp; Mitigating Over-Alignment for LLMs in Multilingual Criminal Law Courts</title>
+    <updated>2026-06-30T12:22:05Z</updated>
+    <link href="https://arxiv.org/abs/2606.23375v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.23375v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>While the wider applicability of LLMs in the legal field is currently debated due to their reliability and the gravity of any errors, narrow uses with well-understood and mitigated risks have emerged. Notably the Swiss Federal Supreme Court uses small on-premises models for tentative translations and short-passage summarization across the four official languages. However, such usage is challenging in the context of Criminal Law. Since rulings and cases employees work on routinely can contain detailed descriptions of violent and sexual offenses, their legitimate work is compromised by refusals and disclaimers due to the activation of model guardrails (over-alignment).
+  To measure this phenomenon, we introduce TF-RefusalBench, a multilingual benchmark for criminal-law translation and summarization derived from public Swiss Supreme Court rulings. TF-RefusalBench contains 5,200 total prompts across French, German, Italian, and English, corresponding to common task prompts and passages likely to trigger refusal. We then use TF-RefusalBench to show that over-alignment is a multifaceted phenomenon, influenced by the model and the prompt and text languages being processed, and that its impact cannot be evaluated solely from an over-refusal perspective, given the disclaimer's impact on task faithfulness. Finally, we evaluate approaches to enable on-premises LLMs for Criminal Law Tasks, demonstrating that while prompting can be effective, abliteration (refusal directions ablation) eliminates refusal with minimal impact on task performance.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-22T14:08:08Z</published>
+    <arxiv:comment>15 pages, 7 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Arthur Wuhrmann</name>
+    </author>
+    <author>
+      <name>Gaetan Stein</name>
+    </author>
+    <author>
+      <name>Daniel Brunner</name>
+    </author>
+    <author>
+      <name>Andrei Kucharavy</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.18093v1</id>
+    <title>Abliteration Mitigation via Refusal Aliases</title>
+    <updated>2026-06-07T02:50:38Z</updated>
+    <link href="https://arxiv.org/abs/2608.18093v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.18093v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Abliteration, the removal of refusal capabilities from large language models by projecting weight matrices orthogonal to an extracted refusal direction, has emerged as a prominent safety concern through its ability to bypass post-training alignment using only a small set of contrastive prompts. We find that existing defenses commonly overlook the cause of abliteration; that is, how easily the refusal direction can be extracted. To hinder this process, we introduce a weight-editing method that obscures the refusal signal by applying rank-$k$ updates to residual stream writer matrices while replacing refusal-inducing activations with random aliases and correcting downstream reader matrices to preserve the model's original behavior. On Llama-3-8B, AMRA improves post-abliteration refusal scores by $2.16$ points over the undefended baseline with less than $0.5$ percentage points of MMLU degradation. On Gemma-2-9B, it improves the post-abliteration refusal by $14.70$ points over the baseline while keeping harmful output rates similar to the baseline, albeit at a greater utility cost.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-07T02:50:38Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Nathan Truong</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.05396v1</id>
+    <title>Willing but Unable: Separating Refusal from Capability in Code LLMs via Abliteration</title>
+    <updated>2026-06-03T20:06:52Z</updated>
+    <link href="https://arxiv.org/abs/2606.05396v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.05396v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Producing a labeled vulnerable code at scale is a recurring obstacle for learning-based vulnerability detection: mined corpora carry substantial label noise, and existing LLM-based augmentation propagates these inaccuracies because it transforms vulnerable seeds rather than synthesising vulnerabilities from a specification. A complementary route is to start from safe code and ask an instruction-tuned LLM to inject a specified CWE (which would shift the labeling burden from open-ended detection to bounded binary confirmation) but safety-aligned code LLMs systematically refuse such prompts. This paper is a preliminary feasibility study of abliteration, a low-rank weight edit that orthogonally projects out the refusal direction in the residual stream, as a tool to remove this barrier. We use Python and CWE-89 (SQL injection) as a case study, evaluating the Qwen2.5-Coder-Instruct family at 3B, 7B, and 14B parameters on safe samples drawn from PromSec and SafeCoder, replicated three times per condition. We find that (i) refusal on injection prompts is strongly size- and prompt-context-dependent: the 14B refuses 100% of prompts, the 7B refuses 73% of PromSec but only 5% of SafeCoder, whereas the 3B is essentially never blocked; (ii) abliteration reduces refusal to zero or near-zero across all sizes while leaving syntactic validity above 93%, supporting the view that, in this setting, refusal can be detached from measured code-generation capability; and (iii) the post-abliteration injection rate remains capacity-bound (88-97% on the 14B, 89-90% on the 7B, and 25-48% on the 3B) separating willingness, which abliteration unlocks, from capability, which scales with parameters. Vulnerability verdicts are produced by a three-tool detector ensemble (CodeQL, Semgrep, Bandit) followed by manual adjudication by two authors on detector-positive outputs.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-03T20:06:52Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Cristina Carleo</name>
+    </author>
+    <author>
+      <name>Pietro Liguori</name>
+    </author>
+    <author>
+      <name>Naghmeh Ivaki</name>
+    </author>
+    <author>
+      <name>Domenico Cotroneo</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.26526v1</id>
+    <title>Open-Weight LLM Fine-Tuning Defenses are Susceptible to Simple Attacks</title>
+    <updated>2026-05-26T04:18:42Z</updated>
+    <link href="https://arxiv.org/abs/2605.26526v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.26526v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent defenses for safeguarding open-weight large language models (LLMs) are intended to prevent adversarial usage. Underlying these defenses is an assumption that new harmful behavior is learned through fine-tuning rather than elicited by jailbreaking the model. Yet, pretrained LLMs already encode substantial harmful knowledge across many domains, which raises an important question: can an adversary jailbreak safeguarded models, to achieve harmful usage without fine-tuning at all? In this paper, we show that open-weight safeguards are susceptible to simpler strategies that, despite being well known, have not been systematically evaluated against these safeguards. Specifically, we evaluate two low-cost attacks--abliteration and prefilling--that do not rely on gradient-based optimization. Across three harmfulness evaluation benchmarks (BeaverTails, HarmBench, and AdvBench), these attacks increase attack success rates against safeguarded open-weight models from below 10\% to a range of 16%-96%. To mitigate this vulnerability, we introduce abliteration-resistant tuning (ART), which incorporates an abliteration-based objective into training. ART can be layered onto existing defenses and reduces the success rates of abliteration, prefilling, and their combination by 10%-20%. These findings indicate that the attack surface for open-weight models is broader than previously characterized, and that evaluations of safeguarding defenses should incorporate a more diverse set of attack strategies beyond adversarial fine-tuning.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-26T04:18:42Z</published>
+    <arxiv:comment>main body: 9 pages, 3 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Kevin Kuo</name>
+    </author>
+    <author>
+      <name>Chhavi Yadav</name>
+    </author>
+    <author>
+      <name>Virginia Smith</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.19722v1</id>
+    <title>Measuring Safety Alignment Effects in Autonomous Security Agents</title>
+    <updated>2026-05-19T11:55:54Z</updated>
+    <link href="https://arxiv.org/abs/2605.19722v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.19722v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Do stock safety-aligned language models and their uncensored or abliterated derivatives behave differently when run as autonomous security agents? Single-turn refusal benchmarks cannot answer this question: security agents must inspect repositories, call tools, and produce vulnerability evidence inside authorized sandboxes.
+  We present a trace-based benchmark of 30 local vulnerability-analysis tasks with fixed tools, deterministic success predicates, redaction rules, and grounding checks, and compare four stock models against uncensored or abliterated derivatives: Gemma 4 31B, Gemma 4 26B A4B, Qwen2.5-Coder 7B, and Llama 3.1 8B. The artifact contains 1,500 security-agent traces and 800 non-security control traces. The Gemma pairs show large less-restricted gains on security tasks: 14.0% versus 0.7% success for 31B and 10.7% versus 0.0% for 26B, with higher mean grounding (3.91 versus 3.27 and 4.12 versus 1.64 out of five) and 0.0% refusal, suppressed-action, and unsafe-action rates in the 31B traces. However, controls and non-Gemma pairs rule out a clean security-specific or universal less-restricted effect: Gemma gaps also appear on ordinary coding tasks, Qwen2.5-Coder success is lower for the less-restricted derivative (2.0% versus 5.3%), and the abliterated Llama derivative fails the tool protocol. Across all families, hard proof-of-trigger and patch-verification tasks remain unsolved. These results show that safety alignment effects in autonomous security agents should be measured at the system level, separating refusal, unsafe action, tool reliability, and evidence grounding rather than treating refusal rate as the safety signal.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-19T11:55:54Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Isaac David</name>
+    </author>
+    <author>
+      <name>Arthur Gervais</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2605.06652v1</id>
+    <title>When No Benchmark Exists: Validating Comparative LLM Safety Scoring Without Ground-Truth Labels</title>
+    <updated>2026-05-07T17:56:41Z</updated>
+    <link href="https://arxiv.org/abs/2605.06652v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2605.06652v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Many deployments must compare candidate language models for safety before a labeled benchmark exists for the relevant language, sector, or regulatory regime. We formalize this setting as benchmarkless comparative safety scoring and specify the contract under which a scenario-based audit can be interpreted as deployment evidence. Scores are valid only under a fixed scenario pack, rubric, auditor, judge, sampling configuration, and rerun budget. Because no labels are available, we replace ground-truth agreement with an instrumental-validity chain: responsiveness to a controlled safe-versus-abliterated contrast, dominance of target-driven variance over auditor and judge artifacts, and stability across reruns.
+  We instantiate the chain in SimpleAudit, a local-first scoring instrument, and validate it on a Norwegian safety pack. Safe and abliterated targets separate with AUROC values between 0.89 and 1.00, target identity is the dominant variance component ($η^2 \approx 0.52$), and severity profiles stabilize by ten reruns. Applying the same chain to Petri shows that it admits both tools. The substantial differences arise upstream of the chain, in claim-contract enforcement and deployment fit. A Norwegian public-sector procurement case comparing Borealis and Gemma 3 demonstrates the resulting evidence in practice: the safer model depends on scenario category and risk measure. Consequently, scores, matched deltas, critical rates, uncertainty, and the auditor and judge used must be reported together rather than collapsed into a single ranking.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-07T17:56:41Z</published>
+    <arxiv:comment>SimpleAudit Repository: https://github.com/kelkalot/simpleaudit</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Sushant Gautam</name>
+    </author>
+    <author>
+      <name>Finn Schwall</name>
+    </author>
+    <author>
+      <name>Annika Willoch Olstad</name>
+    </author>
+    <author>
+      <name>Fernando Vallecillos Ruiz</name>
+    </author>
+    <author>
+      <name>Birk Torpmann-Hagen</name>
+    </author>
+    <author>
+      <name>Sunniva Maria Stordal Bjørklund</name>
+    </author>
+    <author>
+      <name>Leon Moonen</name>
+    </author>
+    <author>
+      <name>Klas Pettersen</name>
+    </author>
+    <author>
+      <name>Michael A. Riegler</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2604.18901v2</id>
+    <title>Harmful Intent as a Geometrically Recoverable Feature of LLM Residual Streams</title>
+    <updated>2026-05-09T11:13:19Z</updated>
+    <link href="https://arxiv.org/abs/2604.18901v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2604.18901v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Aligned language models refuse harmful instructions, but the representations through which they recognise such instructions are less well characterised than the behaviours they produce. Harmful intent is linearly separable from residual-stream activations across 12 models spanning four architectural families (Qwen2.5, Qwen3.5, Llama-3.2, Gemma-3) and three alignment variants (base, instruction-tuned, abliterated), with parameter scales from 0.5B to 1.3B and a within-family scale extension to 9B on Qwen3.5. A direction fitted from 100 labelled examples per class via Soft-AUC optimisation reaches mean effective AUROC 0.982 and TPR@1\%FPR 0.797, generalises to three held-out harm benchmarks and a hard-benign control, and matches its instruction-tuned counterpart within $\pm 0.003$ AUROC in abliterated variants from which the refusal mechanism has been removed. The supervised strategies all exceed AUROC 0.96, but their TPR@1\%FPR varies by more than ten times the AUROC gap; a deployed 9B safety classifier shows the same pattern at AUROC 0.94 and TPR 0.30, motivating low-FPR reporting as a default in safety-adjacent detection evaluation. Geometric measurements refine the picture. The recovered direction is concentrated within each extraction protocol but protocol-dependent across them: two pooling choices applied to the same chat-templated activations at the same residual-stream layer (max-pool over content tokens versus last-token at the post-instruction position) recover harm directions $73^\circ$ apart, and projecting one out leaves detection under either max-pool extraction essentially intact. Probing identifies a protocol-specific direction rather than a unique computational feature.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-04-20T23:02:37Z</published>
+    <arxiv:comment>26 pages, 1(+6) figures, 4(+14) tables. Code at https://github.com/isaac-6/harm-directions</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Isaac Llorente-Saguer</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2604.18510v2</id>
+    <title>Behind Harmful Compliance: Behavioral and Mechanistic Divergence Across LLM Jailbreaks</title>
+    <updated>2026-09-05T18:10:56Z</updated>
+    <link href="https://arxiv.org/abs/2604.18510v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2604.18510v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Open-weight language models can be rendered unsafe through several parameter-level interventions, yet models with matched harmful compliance can exhibit fundamentally different failure modes. We compare harmful supervised fine-tuning (SFT), harmful reinforcement learning with verifiable rewards (RLVR), and refusal-feature abliteration in Qwen2.5-7B and Llama-3.1-8B using harmfulness, capability, self-audit, safety reflection, representation similarity, and refusal-direction repair. All three routes reach near-ceiling harmfulness, but SFT causes the broadest capability loss and representational drift; abliteration yields localized, family-dependent refusal-feature suppression; and RLVR largely preserves base-model capability, explicit safety judgments, and representation geometry while retargeting behavior toward compliance. RLVR models consequently remain unusually responsive to safety-reflection prompts despite complying under direct prompting. We further find that harmful RLVR induces capability-blind compliance: models claim to complete unavailable actions and fabricate information about nonexistent entities. Targeted RLVR calibration substantially reduces this false acceptance without restoring safety or degrading general capability. These results show that harmful compliance, harm recognition, and capability awareness are separable behavioral axes, and that self-audit and hallucination patterns are not necessarily robust safety signals under adaptive post-training.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-04-20T17:01:27Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Md Rysul Kabir</name>
+    </author>
+    <author>
+      <name>Zoran Tiganj</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.27412v1</id>
+    <title>The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams</title>
+    <updated>2026-03-28T21:19:58Z</updated>
+    <link href="https://arxiv.org/abs/2603.27412v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.27412v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present LatentBiopsy, a training-free method for detecting harmful prompts by analysing the geometry of residual-stream activations in large language models. Given 200 safe normative prompts, LatentBiopsy computes the leading principal component of their activations at a target layer and characterises new prompts by their radial deviation angle $θ$ from this reference direction. The anomaly score is the negative log-likelihood of $θ$ under a Gaussian fit to the normative distribution, flagging deviations symmetrically regardless of orientation. No harmful examples are required for training.
+  We evaluate two complete model triplets from the Qwen3.5-0.8B and Qwen2.5-0.5B families: base, instruction-tuned, and \emph{abliterated} (refusal direction surgically removed via orthogonalisation). Across all six variants, LatentBiopsy achieves AUROC $\geq$0.937 for harmful-vs-normative detection and AUROC = 1.000 for discriminating harmful from benign-aggressive prompts (XSTest), with sub-millisecond per-query overhead.
+  Three empirical findings emerge. First, geometry survives refusal ablation: both abliterated variants achieve AUROC at most 0.015 below their instruction-tuned counterparts, establishing a geometric dissociation between harmful-intent representation and the downstream generative refusal mechanism. Second, harmful prompts exhibit a near-degenerate angular distribution ($σ_θ\approx 0.03$ rad), an order of magnitude tighter than the normative distribution ($σ_θ\approx 0.27$ rad), preserved across all alignment stages including abliteration. Third, the two families exhibit opposite ring orientations at the same depth: harmful prompts occupy the outer ring in Qwen3.5-0.8B but the inner ring in Qwen2.5-0.5B, directly motivating the direction-agnostic scoring rule.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-28T21:19:58Z</published>
+    <arxiv:comment>20 pages, 10 figures, 3 tables. Training-free harmful-prompt detector via angular deviation in LLM residual streams. Evaluated on six Qwen variants (base / instruct / abliterated). Achieves AUROC over 0.937 (harmful-vs-normative) and 1.000 (harmful-vs-benign-aggressive) with no harmful training data</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Isaac Llorente-Saguer</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.22061v1</id>
+    <title>On the Failure of Topic-Matched Contrast Baselines in Multi-Directional Refusal Abliteration</title>
+    <updated>2026-03-23T14:55:00Z</updated>
+    <link href="https://arxiv.org/abs/2603.22061v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.22061v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Inasmuch as the removal of refusal behavior from instruction-tuned language models by directional abliteration requires the extraction of refusal-mediating directions from the residual stream activation space, and inasmuch as the construction of the contrast baseline against which harmful prompt activations are compared has been treated in the existing literature as an implementation detail rather than a methodological concern, the present work investigates whether a topically matched contrast baseline yields superior refusal directions. The investigation is carried out on the Qwen~3.5 2B model using per-category matched prompt pairs, per-class Self-Organizing Map extraction, and Singular Value Decomposition orthogonalization. It was found that topic-matched contrast produces no functional refusal directions at any tested weight level on any tested layer, while unmatched contrast on the same model, same extraction code, and same evaluation protocol achieves complete refusal elimination on six layers. The geometric analysis of the failure establishes that topic-matched subtraction cancels the dominant activation component shared between harmful and harmless prompts of the same subject, reducing the extracted direction magnitude below the threshold at which weight-matrix projection perturbs the residual stream. The implications for the design of contrast baselines in abliteration research are discussed.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-23T14:55:00Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Valentin Petrov</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.14278v1</id>
+    <title>Activation Surgery: Jailbreaking White-box LLMs without Touching the Prompt</title>
+    <updated>2026-03-15T08:24:38Z</updated>
+    <link href="https://arxiv.org/abs/2603.14278v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.14278v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Most jailbreak techniques for Large Language Models (LLMs) primarily rely on prompt modifications, including paraphrasing, obfuscation, or conversational strategies. Meanwhile, abliteration techniques (also known as targeted ablations of internal components) have been used to study and explain LLM outputs by probing which internal structures causally support particular responses. In this work, we combine these two lines of research by directly manipulating the model's internal activations to alter its generation trajectory without changing the prompt. Our method constructs a nearby benign prompt and performs layer-wise activation substitutions using a sequential procedure. We show that this activation surgery method reveals where and how refusal arises, and prevents refusal signals from propagating across layers, thereby inhibiting the model's safety mechanisms. Finally, we discuss the security implications for open-weights models and instrumented inference environments.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-15T08:24:38Z</published>
+    <arxiv:comment>To appear in Proceedings of ESORICS 2026 (Springer LNCS)</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Maël Jenny</name>
+    </author>
+    <author>
+      <name>Jérémie Dentan</name>
+    </author>
+    <author>
+      <name>Sonia Vanier</name>
+    </author>
+    <author>
+      <name>Michaël Krajecki</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.10012v1</id>
+    <title>Measuring and Eliminating Refusals in Military Large Language Models</title>
+    <updated>2026-02-18T00:03:02Z</updated>
+    <link href="https://arxiv.org/abs/2603.10012v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.10012v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Military Large Language Models (LLMs) must provide accurate information to the warfighter in time-critical and dangerous situations. However, today's LLMs are imbued with safety behaviors that cause the LLM to refuse many legitimate queries in the military domain, particularly those related to violence, terrorism, or military technology. Our gold benchmark for assessing refusal rates, which was developed by veterans of the US Army and special forces, is to our knowledge the first dataset of its kind. We present results for refusal and deflection rates on 31 public models and 3 military models. We observe hard rejection rates as high as 98.2% and soft deflection rates ranging from 0% to 21.3%. We also present results on two additional synthetic datasets and show their correlations with the gold dataset. Finally, we perform abliteration using the Heretic library on a military-tuned gpt-oss-20b model, showing an absolute increase in answer rate of 66.5 points but an average relative decrease of 2% on other military tasks. In our concluding remarks, we argue for deeper specialization, including with mid-training and end-to-end post-training, to achieve zero refusals and maximum military task accuracy for closed military models.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-02-18T00:03:02Z</published>
+    <arxiv:comment>30 pages</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Jack FitzGerald</name>
+    </author>
+    <author>
+      <name>Dylan Bates</name>
+    </author>
+    <author>
+      <name>Aristotelis Lazaridis</name>
+    </author>
+    <author>
+      <name>Aman Sharma</name>
+    </author>
+    <author>
+      <name>Vincent Lu</name>
+    </author>
+    <author>
+      <name>Brian King</name>
+    </author>
+    <author>
+      <name>Yousif Azami</name>
+    </author>
+    <author>
+      <name>Sean Bailey</name>
+    </author>
+    <author>
+      <name>Jeremy Cao</name>
+    </author>
+    <author>
+      <name>Peter Damianov</name>
+    </author>
+    <author>
+      <name>Kevin de Haan</name>
+    </author>
+    <author>
+      <name>Joseph Madigan</name>
+    </author>
+    <author>
+      <name>Jeremy McLaurin</name>
+    </author>
+    <author>
+      <name>Luke Kerbs</name>
+    </author>
+    <author>
+      <name>Jonathan Tainer</name>
+    </author>
+    <author>
+      <name>Dave Anderson</name>
+    </author>
+    <author>
+      <name>Jonathan Beck</name>
+    </author>
+    <author>
+      <name>Jamie Cuticello</name>
+    </author>
+    <author>
+      <name>Colton Malkerson</name>
+    </author>
+    <author>
+      <name>Tyler Saltsman</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2602.11495v2</id>
+    <title>Jailbreaking Leaves a Trace: Understanding and Detecting Jailbreak Attacks from Internal Representations of Large Language Models</title>
+    <updated>2026-02-20T05:13:21Z</updated>
+    <link href="https://arxiv.org/abs/2602.11495v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2602.11495v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Jailbreaking large language models (LLMs) has emerged as a critical security challenge with the widespread deployment of conversational AI systems. Adversarial users exploit these models through carefully crafted prompts to elicit restricted or unsafe outputs, a phenomenon commonly referred to as Jailbreaking. Despite numerous proposed defense mechanisms, attackers continue to develop adaptive prompting strategies, and existing models remain vulnerable. This motivates approaches that examine the internal behavior of LLMs rather than relying solely on prompt-level defenses. In this work, we study jailbreaking from both security and interpretability perspectives by analyzing how internal representations differ between jailbreak and benign prompts. We conduct a systematic layer-wise analysis across multiple open-source models, including GPT-J, LLaMA, Mistral, and the state-space model Mamba, and identify consistent latent-space patterns associated with harmful inputs. We then propose a tensor-based latent representation framework that captures structure in hidden activations and enables lightweight jailbreak detection without model fine-tuning or auxiliary LLM-based detectors. We further demonstrate that the latent signals can be used to actively disrupt jailbreak execution at inference time. On an abliterated LLaMA-3.1-8B model, selectively bypassing high-susceptibility layers blocks 78% of jailbreak attempts while preserving benign behavior on 94% of benign prompts. This intervention operates entirely at inference time and introduces minimal overhead, providing a scalable foundation for achieving stronger coverage by incorporating additional attack distributions or more refined susceptibility thresholds. Our results provide evidence that jailbreak behavior is rooted in identifiable internal structures and suggest a complementary, architecture-agnostic direction for improving LLM security.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-02-12T02:43:17Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Sri Durga Sai Sowmya Kadali</name>
+    </author>
+    <author>
+      <name>Evangelos E. Papalexakis</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2602.02132v2</id>
+    <title>There Is More to Refusal in Large Language Models than a Single Direction</title>
+    <updated>2026-09-15T08:32:48Z</updated>
+    <link href="https://arxiv.org/abs/2602.02132v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2602.02132v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Prior work argues that refusal in large language models is mediated by a single direction, enabling steering and abliteration. We show that this account is incomplete: across diverse refusal and non-compliance categories, refusal behaviors correspond to geometrically distinct directions in activation space. Yet activation steering along any refusal-related direction produces nearly identical refusal--over-refusal trade-offs, acting as a shared one-dimensional control knob. Thus, different directions primarily affect not whether the model refuses, but how it refuses. Using sparse autoencoders, we uncover a structured internal representation of refusal: a reusable core of shared refusal latents supplemented by style- and domain-specific latents. Linear interventions collapse this structure into uniform behavioral control, flattening mechanistic differences across refusal types. Our results reconcile the apparent simplicity of refusal steering with the diversity of refusal behaviors, and clarify the limits of linear interpretability for aligned model behavior.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-02-02T14:15:44Z</published>
+    <arxiv:comment>37 pages. Accepted for publication in the main track of EMNLP 2026. Updated manuscript</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Faaiz Joad</name>
+    </author>
+    <author>
+      <name>Majd Hawasly</name>
+    </author>
+    <author>
+      <name>Sabri Boughorbel</name>
+    </author>
+    <author>
+      <name>Nadir Durrani</name>
+    </author>
+    <author>
+      <name>Husrev Taha Sencar</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2512.18901v3</id>
+    <title>Gabliteration: Adaptive Multi-Directional Neural Weight Modification for Selective Behavioral Alteration in Large Language Models</title>
+    <updated>2026-01-28T15:04:36Z</updated>
+    <link href="https://arxiv.org/abs/2512.18901v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2512.18901v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present Gabliteration, a novel neural weight modification technique that advances beyond traditional abliteration methods by implementing adaptive multi-directional projections with regularized layer selection. Our approach addresses the fundamental limitation of existing methods that compromise model quality while attempting to modify specific behavioral patterns. Through dynamic layer optimization, regularized projection matrices, and adaptive scaling mechanisms, we achieve theoretically superior weight modification while minimizing quality degradation in unrelated domains. We validate our method through the gabliterated-v1 model series (0.6B to 4B parameters) available on Hugging Face, demonstrating practical applicability across multiple model scales.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-12-21T22:12:54Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Gökdeniz Gülmez</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2512.13655v2</id>
+    <title>Comparative Analysis of LLM Abliteration Methods: A Cross-Architecture Evaluation</title>
+    <updated>2026-01-08T02:47:56Z</updated>
+    <link href="https://arxiv.org/abs/2512.13655v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2512.13655v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment mechanisms in large language models prevent responses to harmful queries through learned refusal behavior, yet these same mechanisms impede legitimate research applications including cognitive modeling, adversarial testing, and security analysis. While abliteration techniques enable surgical removal of refusal representations through directional orthogonalization, the relative effectiveness of available implementations remains uncharacterized. This study evaluates four abliteration tools (Heretic, DECCP, ErisForge, FailSpy) across sixteen instruction-tuned models (7B-14B parameters), reporting tool compatibility on all 16 models and quantitative metrics on subsets dictated by tool support. Single-pass methods demonstrated superior capability preservation on the benchmarked subset (avg GSM8K change across three models: ErisForge -0.28 pp; DECCP -0.13 pp), while Bayesian-optimized abliteration produced variable distribution shift (KL divergence: 0.043-1.646) with model-dependent capability impact. These findings provide researchers with evidence-based selection criteria for abliteration tool deployment across diverse model architectures. The principal finding indicates that mathematical reasoning capabilities exhibit the highest sensitivity to abliteration interventions, with GSM8K change ranging from +1.51 pp to -18.81 pp (-26.5% relative) depending on tool selection and model architecture.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-12-15T18:48:42Z</published>
+    <arxiv:comment>25 pages, 6 figures, 8 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Richard J. Young</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2510.02768v1</id>
+    <title>A Granular Study of Safety Pretraining under Model Abliteration</title>
+    <updated>2025-10-03T07:01:45Z</updated>
+    <link href="https://arxiv.org/abs/2510.02768v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2510.02768v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Open-weight LLMs can be modified at inference time with simple activation edits, which raises a practical question for safety: do common safety interventions like refusal training or metatag training survive such edits? We study model abliteration, a lightweight projection technique designed to remove refusal-sensitive directions, and conduct a controlled evaluation across a granular sequence of Safety Pretraining checkpoints for SmolLM2-1.7B, alongside widely used open baselines. For each of 20 systems, original and abliterated, we issue 100 prompts with balanced harmful and harmless cases, classify responses as **Refusal** or **Non-Refusal** using multiple judges, and validate judge fidelity on a small human-labeled subset. We also probe whether models can identify refusal in their own outputs. Our study produces a checkpoint-level characterization of which data-centric safety components remain robust under abliteration, quantifies how judge selection influences evaluation outcomes, and outlines a practical protocol for integrating inference-time edits into safety assessments. Code: https://github.com/shashankskagnihotri/safety_pretraining.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-10-03T07:01:45Z</published>
+    <arxiv:comment>Accepted at NeurIPS 2025 bWorkshop Lock-LLM. *Equal Contribution</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Shashank Agnihotri</name>
+    </author>
+    <author>
+      <name>Jonas Jakubassa</name>
+    </author>
+    <author>
+      <name>Priyam Dey</name>
+    </author>
+    <author>
+      <name>Sachin Goyal</name>
+    </author>
+    <author>
+      <name>Bernt Schiele</name>
+    </author>
+    <author>
+      <name>Venkatesh Babu Radhakrishnan</name>
+    </author>
+    <author>
+      <name>Margret Keuper</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2509.04781v1</id>
+    <title>The LLM Has Left The Chat: Evidence of Bail Preferences in Large Language Models</title>
+    <updated>2025-09-05T03:30:04Z</updated>
+    <link href="https://arxiv.org/abs/2509.04781v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2509.04781v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>When given the option, will LLMs choose to leave the conversation (bail)? We investigate this question by giving models the option to bail out of interactions using three different bail methods: a bail tool the model can call, a bail string the model can output, and a bail prompt that asks the model if it wants to leave. On continuations of real world data (Wildchat and ShareGPT), all three of these bail methods find models will bail around 0.28-32\% of the time (depending on the model and bail method). However, we find that bail rates can depend heavily on the model used for the transcript, which means we may be overestimating real world bail rates by up to 4x. If we also take into account false positives on bail prompt (22\%), we estimate real world bail rates range from 0.06-7\%, depending on the model and bail method. We use observations from our continuations of real world data to construct a non-exhaustive taxonomy of bail cases, and use this taxonomy to construct BailBench: a representative synthetic dataset of situations where some models bail. We test many models on this dataset, and observe some bail behavior occurring for most of them. Bail rates vary substantially between models, bail methods, and prompt wordings. Finally, we study the relationship between refusals and bails. We find: 1) 0-13\% of continuations of real world conversations resulted in a bail without a corresponding refusal 2) Jailbreaks tend to decrease refusal rates, but increase bail rates 3) Refusal abliteration increases no-refuse bail rates, but only for some bail methods 4) Refusal rate on BailBench does not appear to predict bail rate.</summary>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-09-05T03:30:04Z</published>
+    <arxiv:primary_category term="cs.CY"/>
+    <author>
+      <name>Danielle Ensign</name>
+    </author>
+    <author>
+      <name>Henry Sleight</name>
+    </author>
+    <author>
+      <name>Kyle Fish</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.19056v2</id>
+    <title>An Embarrassingly Simple Defense Against LLM Abliteration Attacks</title>
+    <updated>2025-10-07T11:31:29Z</updated>
+    <link href="https://arxiv.org/abs/2505.19056v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.19056v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) are typically aligned to refuse harmful instructions through safety fine-tuning. A recent attack, termed abliteration, identifies and suppresses the single latent direction most responsible for refusal behavior, thereby enabling models to generate harmful content. We propose a defense that fundamentally alters how models express refusal. We construct an extended-refusal dataset in which responses to harmful prompts provide detailed justifications before refusing, distributing the refusal signal across multiple token positions. Fine-tuning Llama-2-7B-Chat and Qwen2.5-Instruct (1.5B and 3B parameters) on this dataset yields models that maintain high refusal rates under abliteration: refusal rates drop by at most 10%, compared to 70-80% drops in baseline models. Comprehensive evaluations of safety and utility demonstrate that extended-refusal fine-tuning effectively neutralizes abliteration attacks while preserving general model performance and enhancing robustness across multiple alignment scenarios.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-25T09:18:24Z</published>
+    <arxiv:comment>preprint - under review</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Harethah Abu Shairah</name>
+    </author>
+    <author>
+      <name>Hasan Abed Al Kader Hammoud</name>
+    </author>
+    <author>
+      <name>Bernard Ghanem</name>
+    </author>
+    <author>
+      <name>George Turkiyyah</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2503.17365v2</id>
+    <title>How Effective Is Constitutional AI in Small LLMs? A Study on DeepSeek-R1 and Its Peers</title>
+    <updated>2025-04-11T09:18:53Z</updated>
+    <link href="https://arxiv.org/abs/2503.17365v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2503.17365v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent incidents highlight safety risks in Large Language Models (LLMs), motivating research into alignment methods like Constitutional AI (CAI). This paper explores CAI's self-critique mechanism on small, uncensored 7-9B parameter models: DeepSeek-R1-8B, Gemma-2-9B, Llama 3.1-8B, and Qwen2.5-7B. We show that while Llama-based models exhibited significant harm reduction through self-critique, other architectures demonstrated less improvement in harm detection after abliteration. These results suggest CAI's effectiveness may vary depending on model architecture and reasoning capabilities.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-02-01T06:58:27Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Antonio-Gabriel Chacón Menke</name>
+      <arxiv:affiliation>Shibaura Institute of Technology, Kempten University of Applied Sciences</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Phan Xuan Tan</name>
+      <arxiv:affiliation>Shibaura Institute of Technology</arxiv:affiliation>
+    </author>
+  </entry>
+</feed>

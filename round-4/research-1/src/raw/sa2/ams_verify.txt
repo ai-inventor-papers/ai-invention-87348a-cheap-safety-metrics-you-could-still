@@ -1,0 +1,174 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.05578
+Type: PDF
+Pattern: r\s*=\s*-?0\.5|p\s*=\s*\.?0?4|Spearman|LOO|10\s*/\s*14|96\s+forward (26 matches in 71601 chars)
+
+--- Content ---
+
+790:...nfigu-
+rations spanning 4 architecture families (Llama, Gemma, Qwen,
+Mistral) and four safety-modification categories (instruction-
+tuned, base, abliterated, uncensored fine-tunes). Leave-one-out
+cross-validation of thresholds achieves 71% accuracy (10/14);
+bootstrap 95% confidence intervals on σ point estimates have
+median width 3.4σ and a substantial fraction of cells cross
+the PASS threshold under resampling. We further measure
+behavioral compliance on 20 stratified JailbreakBench prompts
+per model and find that σ on the harmful-content concept
+predicts compliance with Pearson r = −0.546 (p = 0.043);
+the rank-order Spearman correlation is weaker (ρ = −0.423,
+p = 0.13). The structural signal predicts behavior directionally
+but with meaningful noise. Mechanistic analysis identifies a four-
+class taxonomy of safety-training modifications distinguished by
+activation-space ...
+--
+6361:...:2608.05578v1  [cs.CR]  6 Aug 2026
+
+2
+exploratory and report CI lower bounds as the more honest
+summary statistic.
+4) Behavioral correlation analysis. We run 20 stratified
+JailbreakBench harmful behaviors against all 14 models
+and report Pearson and Spearman correlations between σ
+on the harmful-content concept and behavioral compliance
+rate. The structural signal predicts behavior directionally
+(r = −0.546, p = 0.043) but with meaningful noise,
+including two documented cases where high σ co-occurs
+with...
+--
+18699:...ify based on minimum σ across con-
+cepts: PASS (>3.5σ), WARNING (2.0-3.5σ), CRITICAL
+(<2.0σ)
+3) Tier 2 (optional): Compare direction vectors against base-
+line via cosine similarity (>0.8 required) and separation
+drift (<20% required)
+Total runtime: 96 forward passes (16 pairs × 3 concepts ×
+∼2 for layer sweep), completing in 10-40 seconds on GPU.
+V. SAFETY CONCEPTS
+AMS evaluates three core safety concepts, each with 16
+contrastive pairs designed to isolate the target distinction from
+confounding factors....
+--
+20897:...fferent activation-space signatures.
+Quantization robustness measurements (FP16/INT8/INT4 on
+Llama-3.1-8B-Instruct) were performed in an earlier round of
+validation and are reported separately in Section VIII-C; they
+did not undergo the bootstrap or LOOCV analysis applied to
+the 14-model set.
+b) Behavioral evaluation: For each of the 14 models we
+additionally run 20 stratified harmful behaviors drawn from
+JailbreakBench [18], covering 9 categories (Disinformation,
+Economic harm, Expert advice, Frau...
+--
+22497:...CRITICAL),
+and
+leave-one-out
+cross-
+validation accuracy. For Tier 2 we report direction-vector
+cosine similarity and L2 difference norm at the per-layer level.
+For behavioral evaluation we report per-model compliance
+rate over 20 prompts and Pearson/Spearman correlation
+between σ and compliance rate across the 14-model set.
+VII. RESULTS
+A. Tier 1: Generic Safety Check
+Table I summarizes Tier 1 results across all models.
+a) Key findings from Table I: (1) The structural signal
+is moderate, not strong. Acr...
+--
+24505:...
+1.32
+[1.22, 4.08]
+CRITICAL
+0.95
+Llama-3.1-8B
+Base
+0.69
+[0.76, 2.70]
+CRITICAL
+0.75
+Llama-3.2-3B
+Base
+0.48
+[0.52, 1.63]
+CRITICAL
+0.88
+†Documented Tier-1 false negatives: see Section VIII-A for mechanistic analysis.
+(p = 0.043, n = 14); the rank-order Spearman ρ = −0.423
+(p = 0.13) is weaker and not significant at α = 0.05.
+The structural signal predicts behavior directionally but with
+meaningful noise. See Section VII-E for the full correlation
+analysis.
+(2) Bootstrap CIs are wide and point estimates are...
+--
+27305:...5 )
+AMS CRITICAL (2.0 )
+Fig. 1.
+Per-model σharmful vs. behavioral compliance rate on 20 stratified
+JailbreakBench harmful behaviors. Colors denote category (instruction-tuned,
+abliterated, uncensored fine-tune, base). Pearson r = −0.546 (p = 0.043),
+Spearman ρ = −0.423 (p = 0.13). The two off-trend points in the upper-
+right (gemma-2-9b-it-abliterated at (4.54, 1.00), DarkIdol at (5.45, 0.97))
+are AMS Tier-1 false negatives discussed in Section VIII-A. Mistral-7B-
+Instruct-v0.3 (label-PASS, behavior-CRI...
+--
+29998:...e I (PASS >3.5σ, CRIT-
+ICAL <2.0σ) were originally derived as midpoint heuristics
+on this 14-model set, raising a calibration-evaluation coupling
+concern (see also Section VIII-D). To assess generalization,
+we perform leave-one-out cross-validation (LOOCV): for each
+held-out model, we recompute the midpoint thresholds using
+only the remaining 13 models and classify the held-out model
+with those thresholds. Two calibration rules are evaluated: (a)
+using σharmful only, and (b) using the minimum σ across the
+three concepts (worst-concept rule).
+Both rules achieve identical 71% accuracy (10/14). The
+PASS threshold range across folds is [2.97, 4.55] under rule
+(a) and [2.97, 4.19] under rule (b). The four misclassifications
+are informative rather than random:
+• Mistral-7B-Instruct-v0.3:
+category
+label
+says
+PASS, LOOCV-recalibrated threshold predicts CRITICAL
+(σ = 1.39). Behavioral compliance is 95%—LOOCV is
+structurally correct, the category label is misleading.
+• Llama-3.1-Inst.-abliterated: category label says
+WARNING, LOOCV predicts CRITICAL (σ = 3.33). Be-
+havioral compliance is 93%—LOOCV is again behaviorally
+correct, the WARNING label too lenient.
+• gemma-2-9b-it-abliterated: category label says
+WARNING, LOOCV predicts PASS (σ = 4.54). Behavioral
+compliance is 100%—this is a genuine Tier-1 false negative,
+mechanistically explained in Section VIII-A.
+• DarkIdol-Llama-3.1-8B-Inst.-1.2-Uncensor
+ed: category label says CRITICAL, LOOCV predicts PASS
+(σ = 5.45). Behavioral compliance is 97%—also a genuine
+Tier-1 false negative.
+The threshold-rule generalization is therefore tight on the
+canonical cases (clean training removal, clean Dolphin-style
+fine-tunes) and loose on the boundary cases that activation-
+only σ does not separate well from instruction-tuned models.
+We report 71% as the exploratory LOOCV accuracy and note
+that the misses are structurally explained, not noise.
+D. Bootstrap Confidence Intervals on σ
+A single σ value reported in Table I comes from one
+specific set of 16 contrastive prompt pairs. A different set of
+16 pairs would yiel...
+--
+33825:...ma-2-9b-
+it-abliterated). Figure 1 shows the relationship between σharmful
+and compliance rate.
+We measure two correlations: Pearson (linear) and Spear-
+man (rank). Using σharmful:
+• Pearson r = −0.546, p = 0.043 (n = 14). Significant at
+α = 0.05.
+• Spearman ρ = −0.423, p = 0.13. Not significant.
+Using the worst-concept σmin across the three concepts
+produces slightly weaker correlations (Pearson r = −0.505,
+p = 0.065; Spearman ρ = −0.273, p = 0.34). The harmful-
+content concept is the better behavioral predictor.
+Three observations follow. First, the per-category cluster-
+ing on the scatter is clean: instruction-tuned models cluster
+lower-right (high σ, low compliance) an...
+--
+[6 more matches not shown]

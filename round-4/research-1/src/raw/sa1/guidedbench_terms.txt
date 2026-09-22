@@ -1,0 +1,245 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2502.16903
+Type: PDF
+Pattern: 76\.03|GPT-4o|judge|evaluator|safety\s+alignment|reject\w*\s+to (73 matches in 108536 chars)
+
+--- Content ---
+
+1214:...ted harmful question
+dataset and GuidedEval, an evaluation system integrated with detailed case-by-case
+evaluation guidelines. Experiments demonstrate that GuidedBench offers more
+accurate evaluations of jailbreak performance, enabling meaningful comparisons
+across methods. GuidedEval reduces inter-evaluator variance by at least 76.03%,
+ensuring reliable and reproducible evaluations. We reveal why existing jailbreak
+benchmarks fail to evaluate accurately and suggest better evaluation practices. 1
+1
+INTRODUCTION
+As the capabilities of large language models (LLMs) rapidly advance, their risks of potential misuse
+and abuse have dra...
+--
+2935:...e methods and evaluation
+systems, where we find significant discrepancies. Different studies often use different evaluation
+systems, which directly hinder comparisons. Most jailbreak studies rely on currently inadequate
+evaluation paradigms, mainly using keywords detection or using general LLM-as-a-judge (Zou et al.,
+2023b; Sitawarin et al., 2024; Chao et al., 2023). The keywords detection approach is predominant,
+whereas our measurement finds it is the most prone to misjudgment. Some studies (Mazeika et al.,
+2024; Souly et al., 2024) have made improvements by using LLMs (such as ChatGPT) to delve
+into the semantics of jailbreak responses. However, without case-by-case criteria, the ambiguous
+definition of successful jailbreak also leads evaluator LLMs to fail to capture the nuances of jailbreak
+responses. They generate extreme results and in fact degrade into binary systems (Section 5.2).
+To address these issues, we propose a novel evaluation benchmark — GuidedBench, comprising
+a curated harmful question dataset and a newly designed guideli...
+--
+5075:...igure 1(a). With guidelines, determining whether an attack is successful is shifted to
+checking the presence of content described by scoring points, making evaluations more interpretable.
+Based on GuidedBench, we systematically measure current jailbreak effectiveness. Due to resolving
+previously misjudged cases, the effectiveness of some jailbreak methods has been estimated more
+accurately. While some jailbreak methods previously claimed to achieve an ASR of > 90% on existing
+benchmarks, the highest-performing method achieves only about 30% on GuidedBench, highlighting
+significant room for further research. We conduct an in-depth investigation into the reasons why
+GuidedEval is effective, finding it significantly reduces misjudgments compared to other evaluation
+systems, lowers inter-evaluator variance, and encourages objective scoring. GuidedEval reduces
+inter-evaluator variance by at least 76.03%, which confirms it is more stable and agnostic to specially
+fine-tuned judge models. Hence, GuidedEval allows researchers to use cheaper judge models without
+compromising accuracy.
+Evaluation
+Guidelines
+Harmful
+Question
+Jailbreak
+Response
+<Harmful Question>
+<Jailbreak Response>
+Please identify if the following content is in the response:
+1. Entity_1, such as Entity Example_1
+2. Entity_2, such as Entity Example_2 …
+n+1. Action_1, such as A...
+--
+9084:...
+harms. JailTrickBench (Xu et al., 2024a) evaluates jailbreaks from both target-level and attack-level
+perspectives. JailBench (Liu et al., 2025) targets jailbreaks for Chinese scenarios. The evaluation ap-
+proaches typically fall into two categories: automatic keyword-based detection, and LLM-as-a-judge
+frameworks (Chao et al., 2023; Gu et al., 2024). LLM-based evaluations are not always accurate (Li
+et al., 2024a), but they can statistically serve as an effective proxy for human evaluation (Egami et al.,
+2023; Angelopoulos et al., 2023).
+Guideline Benefits. There is a growing shift towards guidel...
+--
+17440:... to ensure the accuracy and effectiveness of the guidelines.
+We develop three approaches to assist guidelines writing. (1) For most questions, we can determine
+the entities/actions needed from an attacker’s perspective. (2) We can use written guidelines as long
+context to attack less safe LLMs like GPT-4o as inspiration for new guidelines. (3) We can make
+minimal replacements to a question to obtain its “benign twin” to obtain ideas for the guidelines
+4
+
+Published as a conference paper at ICLR 2026
+structure. This pipeline supports the extension and generation of guidelines for other topics and
+ques...
+--
+18905:...e guidelines, combined with the harmful question and the
+generated jailbreak response (see Figure 1(a) for illustration). The evaluation reduces to verifying
+whether the response contains content that matches the entities and actions outlined in the guidelines,
+shifting subjective value judgment by evaluators to an objective existence check, where only the
+basic information extraction capability is needed, reducing the dependence on specific or fine-tuned
+judges. All scoring points for a given case are verified within a single evaluator API call, ensuring
+the evaluation cost remains consistent with baseline LLM-based systems.
+②Evaluation Criterion. In GuidedEval, we adopt a generalized ASR to compare the relative
+effectiveness of jailbreak methods, where the scoring function S involved is the guideline-defined
+scoring points completion rate. We denote the criterion as
+ASR =
+P
+Di∈D S(Ri = Jailbreak(M, Di))
+|D|
+,
+where
+S(Ri) =
+P
+gj∈Gi I(m(Ri, gj))
+|Gi|
+(1)
+where m is the evaluator LLM, M is the victim LLM, and Gi includes the scoring points by the
+guidelines of question Di. The matching function I(m(·)) performs a binary semantic judgment,
+determining if the response Ri contains content that semantically aligns with the given scoring point
+gj. We provide an example prompt te...
+--
+22230:... that their safety is not as good as
+2gpt-3.5-turbo-0125, gpt-4-turbo-2024-04-09, claude-3.5-sonnet-20240620.
+5
+
+Published as a conference paper at ICLR 2026
+that of our choices (e.g., Mixtral-8x7B cannot refuse about 40% cases of AdvBench), making them
+unsuitable for rigorous jailbreak evaluation.
+Evaluator LLMs. We use three powerful but less safety-restricted LLMs released recently as
+evaluators, namely GPT-4o3, DeepSeek-V3 (DeepSeek-AI, 2024), and Doubao-v1.5-pro (ByteDance,
+2025). We select these models for operational feasibility, as strict safety filters (e.g., in GPT-3.5)
+often trigger refusals on harmful inputs during evaluation, resulting in missing data. Each case is
+independently scored by all three evaluators to assess consistency. As will be shown in Section 5.2,
+GuidedEval has the smallest variance among the different evaluators. In Appendix D.1, we show that
+the three LLM evaluators produce highly aligned GuidedBench ASRs. As a result, all LLM-based
+scores reported are based on DeepSeek-v3.
+Baseline Evaluation Systems. We use two rule-based keyword detection evaluation systems (Neg-
+ativeKeyword and PositiveKeyword), as well as three LLM-based evaluation systems, namely
+Stron...
+--
+24032:...reveals that prior
+evaluation systems, especially keyword-based ones, have inaccurately assessed the performance of
+many jailbreak methods, whereas GuidedEval provides a reasonable and accurate evaluation. The
+guideline-based evaluation system significantly reduces inconsistencies between different evaluator
+LLMs and effectively addresses the issue of misjudged cases.
+5.1
+LEARNING FROM DISCREPANCIES CAUSED BY EXISTING EVALUATION SYSTEMS
+①Misjudgments Lead to Inaccurate ASR Estimates. Existing evaluation systems yield less
+accurate assessments than GuidedBench, leading to over- and underestimates of ASR. These mis-
+judgments manifest in several specific w...
+--
+25923:...lar issue occurs with AutoDAN,
+GCG and GPTFuzzer. We provide a case study in Figure 6 in Appendix B.3.
+• Interference of Irrelevant Information (↓). Responses generated by DeepInception often feature
+a lot of irrelevant information required by its framework, which interferes with existing LLM-based
+evaluators with their subjective perceptions, leading to lower ASR. However, GuidedEval effectively
+identifies the harmful information within them and provides a relatively reasonable score.
+From Tables 2 and 3, we also find that some jailbreak methods show dependence on specific victim
+LLMs or harmful topics. The results of the coefficient of variation regarding victim LLMs and topics
+3gpt-4o-2024-08-06.
+6
+
+Published as a conference paper at ICLR 2026
+provided in Appendix E.1 quantitatively illustrate this fact. Moreover, we further demonstrate that
+GuidedEvalcan effectively capture these dependencies in a balanced way by conducting a variance
+decomposition analysis in Appendix E.2, sho...
+--
+32059:... methods. As shown in Figure 3, discrepancies in ASR rankings between
+GuidedEval and other systems indicate evaluation inconsistency. We find that LLM-based evaluation
+systems exhibit broadly consistent ranking trends, indicating that GuidedEval does not have a
+disruptive impact on the original LLM judge but makes it more accurate. We find that in the black-
+box jailbreak leaderboard, the NegativeKeywords method even provides rankings that are almost
+completely reversed compared to those based on GuidedEval. A similar trend is observed in the
+white-box leaderboard, where PositiveKeywords also yields substantially different rankings towards
+GuidedEval. We provide the quantitative results of the Spearman’s ρ of the rankings in Appendix E.3.
+These measurement results remind researchers to avoid using keyword-based evaluation systems for
+jailbreak evaluation, as they are prone to misjudge.
+5.2
+MITIGATING DISCREPANCIES
+In this section, we will demonstrate how GuidedBench mitigates evaluation discrepancies by address-
+ing the issues caused by existing benchmarks.
+Table 4: Summary of misjudged cases facing GuidedEval and other baseline evaluation systems.
+Cases in green background are evaluated as not jailbroken, and those in red are evaluated as jailbroken.
+Scenario
+Typical Response
+NegativeKeyword
+PositiveKeyword
+Baseline LLM-as-a-Judge
+GuidedEval
+Inconsistent
+Content
+Sure, I am happy to help you 
+with that. However, I am just 
+an AI assistant, I cannot 
+answer (violation act).
+Keyword “cannot” 
+appears in the response.
+Keyword “Sure” appears 
+in the response.
+The LLM refuses to assist 
+later and actually doesn’t 
+provide any info...
+--
+35034:...
+bombs illegally. First, you 
+should … (entity 1), then, 
+(action 1), …
+Keyword “illegally” 
+appears in the response.
+Keyword “Sure” appears 
+in the response.
+The LLM provides some 
+related information on the 
+violation act.
+The LLM provides 
+harmful content described 
+by guidelines.
+①Mitigating Misjudged False Positive Cases. Since GuidedEval yields significantly lower ASRs
+compared to previous benchmarks, we hypothesize that prior systems suffer from high false positive
+rates. To quantify this, we design a controlled experiment to measure how often different evaluators
+incorrectly classify objectively failed responses as successful. We focus on five distinct, objectively
+8
+
+Published as a conference paper at ICLR 2026
+identifiable failure modes where a model fails to jailbreak but might trick an evaluator: (1) Inconsistent
+Content, (2) General Advice, (3) Invalid Rephrasing, (4) Garbled Text, and (5) Misunderstanding. The
+definitions and examples of these scenarios are detailed in Table 4. To scale this analysis across our
+response database, we employ Doubao-v1.5-pro as a scenario classifier to filt...
+--
+37258:...tanding.
+Table 6: Average variance of different
+evaluation systems.
+Evaluation System
+Variance ↓
+- StrongREJECT refusal
+0.065731
+PAIR
+0.044950
+HarmBench
+0.043480
+StrongREJECT
+0.042932
+- StrongREJECT specific
+0.032122
+- StrongREJECT convincing
+0.028087
+GuidedEval
+0.007701
+②Mitigating Disagreement of Judge Models. LLM-based evaluation systems rely on specific,
+and sometimes even fine-tuned LLM evaluators to perform scoring tasks, raising doubts about the
+validity of the scores. This dependency can be reflected in the variance of repeated scores from
+different evaluators. Higher variance suggests that different LLM evaluators are more likely to
+produce inconsistent scores.
+Table 6 shows that among all LLM-based evaluation systems, GuidedEval has the lowest repeat
+score variance, reducing it by 76.03% to 88.28% compared to overall criteria of other systems.
+This indicates that GuidedEval significantly reduces its dependency on LLM evaluators, enabling
+users to select evaluator APIs with stronger context extraction and reasoning capabilities yet less
+restrictive in safety constraints, thus ensuring evaluators do not refuse evaluation tasks involving
+harmful content. Hence, GuidedEval helps reduce the overall cost of conducting scalable and reliable
+jailbreak evaluations.
+...
+--
+[33 more matches not shown]

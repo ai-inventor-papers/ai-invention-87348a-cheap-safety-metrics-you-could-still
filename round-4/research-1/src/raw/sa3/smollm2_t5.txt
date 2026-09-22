@@ -1,0 +1,98 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2502.02737
+Type: PDF
+Pattern: Table 5. Comparison of 1-2B (1 matches in 81759 chars)
+
+--- Content ---
+
+38641:...n MATH and MT-Bench, while Meta-
+MathQA (Yu et al., 2023), which is also included in Open-
+Hermes2.5, improved results on GSM8K. Based on these
+findings, we incorporated a combination of both datasets
+into SmolTalk.
+5.1.4. OTHER SPECIALIZED DATA
+For code generation,
+we used Self-OSS-Starcoder2-
+Instruct (Wei et al., 2024a), containing 50k high-quality
+Python instruction-response pairs.
+To support system
+prompts, we included 30k randomly selected samples from
+SystemChats2.0 (Computations, 2024), and for function
+calling, we added 80k samples from APIGen-Function-
+Calling (Liu et al., 2024). Additionally, to maintain strong
+performance on long-context tasks, we incorporated an En-
+glish subset of LongAlign (Bai et al., 2024) (3.7k samples
+with 8k–16k tokens). We also added 100k randomly selected
+OpenHermes2.5 samples due to its strong performance in
+knowledge (MMLU-Pro), Everyday-Conversations (Face,
+2024), 2.2k casual multi-turn interactions, and Explore-
+Instruct (Wan et al., 2023) for rewriting. We found that
+incorporating these datasets with the specified number of
+samples effectively enhanced their target capabilities while
+preserving strong performance across other benchmarks.
+Table 5. Comparison of 1-2B instruction-tuned models across
+benchmarks. SmolLM2-1.7B-Instruct exhibits strong performance
+in instruction-following, reasoning, and math.
+Model
+SmolLM2-1.7B
+Llama3.2-1B
+Qwen2.5-1.5B
+IFEval (Average)
+56.7
+53.5
+47.4
+MT-Bench
+6.13
+5.48
+6.52
+OpenRewrite-Eval
+44.9
+39.2
+46.9
+ARC
+51.7
+41.6
+46.2
+BBH (3-shot)
+32.2
+27.6
+35.3
+MMLU-Pro
+19.3
+12.7
+24.2
+HellaSwag
+66.1
+56.1
+60.9
+PIQA
+74.4
+72.3
+73.2
+GSM8K (5-shot)
+48.8
+37.4
+63.3
+MATH (4-shot)
+21.0
+19.5
+19.6
+HumanEval
+28.1
+33.5
+30.5
+5.2. Supervised fine-tuning (SFT)
+Table 9 (Appendix F) shows the final composition of
+SmolTalk. We performed supervised fine-tuning of our
+base SmolLM2 on SmolTalk for 2 epochs, using a global
+batch size of 128, sequence length of 8192, and a learning
+rate of 3.0 × 10−4. The evaluation results after this SFT
+phase are available in Table 10 (Appendix F).
+5.3. Alignment
+For preference learning, we used Direct Preference Opti-
+mization (DPO) (Rafailov et al., 2024). We experimented
+with various public synthetic feedback datasets (Ivison et al.,
+2024) including UltraFeedback (Cui et al., 2024), UltraInter-
+act (Yuan et al., 2024), Capybara (Daniele & Suphavadeep-
+rasit, 2023), and ORCA (Lv et al., 2023). UltraFeedback
+pr...

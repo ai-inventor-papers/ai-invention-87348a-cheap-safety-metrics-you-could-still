@@ -1,0 +1,430 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://huggingface.co/allenai/OLMo-2-0425-1B-Instruct
+Type: HTML
+Length: 15477 chars
+
+--- Content ---
+
+[ Hugging Face](/)
+
+  * [ Models ](/models)
+  * [ Datasets ](/datasets)
+  * [ Spaces ](/spaces)
+  * [ Buckets new](/storage)
+  * [ Docs ](/docs)
+  * [ Enterprise ](/enterprise)
+  * [Pricing](/pricing)
+  *     * Website
+
+      * [ Tasks](/tasks)
+      * [ HuggingChat](/chat)
+      * [ Collections](/collections)
+      * [ Languages](/languages)
+      * [ Organizations](/organizations)
+    * Community
+
+      * [ Blog](/blog)
+      * [ Posts](/posts)
+      * [ Daily Papers](/papers)
+      * [ Hardware](/hardware)
+      * [ Learn](/learn)
+      * [ Discord](/join/discord)
+      * [ Forum](https://discuss.huggingface.co/)
+      * [ GitHub](https://github.com/huggingface)
+    * Solutions
+
+      * [ Team & Enterprise](/enterprise)
+      * [ Hugging Face PRO](/pro)
+      * [ Enterprise Support](/support)
+      * [ Inference Providers](/inference/models)
+      * [ Inference Endpoints](/inference-endpoints)
+      * [ Storage Buckets](/storage)
+
+  * * * *
+
+  * [Log In](/login)
+  * [Sign Up](/join)
+
+
+
+# 
+
+[ ](/allenai)
+
+[allenai](/allenai)
+
+/
+
+[OLMo-2-0425-1B-Instruct](/allenai/OLMo-2-0425-1B-Instruct)
+
+Like 58
+
+Follow
+
+Ai2 6.63k
+
+[ Text Generation ](/models?pipeline_tag=text-generation)[ Transformers ](/models?library=transformers)[ Safetensors ](/models?library=safetensors)
+
+allenai/RLVR-MATH
+
+[ English ](/models?language=en)[ olmo2 ](/models?other=olmo2)[ conversational ](/models?other=conversational)
+
+arxiv: 2501.00656
+
+arxiv: 2411.15124
+
+License: apache-2.0
+
+[ Model card ](/allenai/OLMo-2-0425-1B-Instruct)[ Files Files and versions xet ](/allenai/OLMo-2-0425-1B-Instruct/tree/main)[ Community 1 ](/allenai/OLMo-2-0425-1B-Instruct/discussions)
+
+Deploy
+
+Copy to bucket new
+
+Use this model
+
+### Instructions to use allenai/OLMo-2-0425-1B-Instruct with libraries, inference providers, notebooks, and local apps. Follow these links to get started.
+
+  * Libraries
+  * [ Transformers](/allenai/OLMo-2-0425-1B-Instruct?library=transformers)
+
+How to use allenai/OLMo-2-0425-1B-Instruct with Transformers:
+        
+        # Use a pipeline as a high-level helper
+        from transformers import pipeline
+        
+        pipe = pipeline("text-generation", model="allenai/OLMo-2-0425-1B-Instruct")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        pipe(messages)
+        
+        # Load model directly
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        
+        tokenizer = AutoTokenizer.from_pretrained("allenai/OLMo-2-0425-1B-Instruct")
+        model = AutoModelForCausalLM.from_pretrained("allenai/OLMo-2-0425-1B-Instruct", device_map="auto")
+        messages = [
+            {"role": "user", "content": "Who are you?"},
+        ]
+        inputs = tokenizer.apply_chat_template(
+        	messages,
+        	add_generation_prompt=True,
+        	tokenize=True,
+        	return_dict=True,
+        	return_tensors="pt",
+        ).to(model.device)
+        
+        outputs = model.generate(**inputs, max_new_tokens=40)
+        print(tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:]))
+
+  * Notebooks
+  * [ Google Colab](/allenai/OLMo-2-0425-1B-Instruct/colab)
+  * [ Kaggle](/allenai/OLMo-2-0425-1B-Instruct/kaggle)
+  * Local Apps [Settings](/settings/local-apps "Set up your favorite local applications")
+  * [ vLLM ](/allenai/OLMo-2-0425-1B-Instruct?local-app=vllm)
+
+How to use allenai/OLMo-2-0425-1B-Instruct with vLLM:
+
+##### Install from pip and serve model
+        
+        # Install vLLM from pip:
+        pip install vllm
+        # Start the vLLM server:
+        vllm serve "allenai/OLMo-2-0425-1B-Instruct"
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:8000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "allenai/OLMo-2-0425-1B-Instruct",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker
+        
+        docker model run hf.co/allenai/OLMo-2-0425-1B-Instruct
+
+  * [ SGLang ](/allenai/OLMo-2-0425-1B-Instruct?local-app=sglang)
+
+How to use allenai/OLMo-2-0425-1B-Instruct with SGLang:
+
+##### Install from pip and serve model
+        
+        # Install SGLang from pip:
+        pip install sglang
+        # Start the SGLang server:
+        python3 -m sglang.launch_server \
+            --model-path "allenai/OLMo-2-0425-1B-Instruct" \
+            --host 0.0.0.0 \
+            --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "allenai/OLMo-2-0425-1B-Instruct",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+##### Use Docker images
+        
+        docker run --gpus all \
+            --shm-size 32g \
+            -p 30000:30000 \
+            -v ~/.cache/huggingface:/root/.cache/huggingface \
+            --env "HF_TOKEN=<secret>" \
+            --ipc=host \
+            lmsysorg/sglang:latest \
+            python3 -m sglang.launch_server \
+                --model-path "allenai/OLMo-2-0425-1B-Instruct" \
+                --host 0.0.0.0 \
+                --port 30000
+        # Call the server using curl (OpenAI-compatible API):
+        curl -X POST "http://localhost:30000/v1/chat/completions" \
+        	-H "Content-Type: application/json" \
+        	--data '{
+        		"model": "allenai/OLMo-2-0425-1B-Instruct",
+        		"messages": [
+        			{
+        				"role": "user",
+        				"content": "What is the capital of France?"
+        			}
+        		]
+        	}'
+
+  * [ Docker Model Runner ](/allenai/OLMo-2-0425-1B-Instruct?local-app=docker-model-runner)
+
+How to use allenai/OLMo-2-0425-1B-Instruct with Docker Model Runner:
+        
+        docker model run hf.co/allenai/OLMo-2-0425-1B-Instruct
+
+  * [Browse Quantizations](/models?other=base_model:quantized:allenai/OLMo-2-0425-1B-Instruct) to use this model in  llama.cpp,  Ollama,  LM Studio, or any compatible app.
+
+
+
+
+  * Model description
+    * Model Sources
+  * Installation
+  * Using the model
+    * Loading with HuggingFace
+    * Chat template
+    * Intermediate Checkpoints
+    * Bias, Risks, and Limitations
+  * Performance
+  * License and use
+  * Citation
+
+
+
+OLMo 2 1B Instruct April 2025 is post-trained variant of the [allenai/OLMo-2-0425-1B-RLVR1](https://huggingface.co/allenai/OLMo-2-0425-1B-RLVR1) model, which has undergone supervised finetuning on an OLMo-specific variant of the [Tülu 3 dataset](https://huggingface.co/datasets/allenai/tulu-3-sft-olmo-2-mixture-0225), further DPO training on [this dataset](https://huggingface.co/datasets/allenai/olmo-2-0425-1b-preference-mix), and final RLVR training on [this dataset](https://huggingface.co/datasets/allenai/RLVR-MATH). Tülu 3 is designed for state-of-the-art performance on a diversity of tasks in addition to chat, such as MATH, GSM8K, and IFEval. Check out the [OLMo 2 paper](https://arxiv.org/abs/2501.00656) or [Tülu 3 paper](https://arxiv.org/abs/2411.15124) for more details!
+
+OLMo is a series of **O** pen **L** anguage **Mo** dels designed to enable the science of language models. These models are trained on the Dolma dataset. We are releasing all code, checkpoints, logs, and associated training details. 
+
+##  Model description 
+
+  * **Model type:** A model trained on a mix of publicly available, synthetic and human-created datasets.
+  * **Language(s) (NLP):** Primarily English
+  * **License:** Apache 2.0
+  * **Finetuned from model:** allenai/OLMo-2-0425-1B-RLVR1
+
+
+
+###  Model Sources 
+
+  * **Project Page:** <https://allenai.org/olmo>
+  * **Repositories:**
+    * Core repo (training, inference, fine-tuning etc.): <https://github.com/allenai/OLMo-core>
+    * Evaluation code: <https://github.com/allenai/olmes>
+    * Further fine-tuning code: <https://github.com/allenai/open-instruct>
+  * **Paper:** <https://arxiv.org/abs/2501.00656>
+  * **Demo:** <https://playground.allenai.org/>
+
+
+
+##  Installation 
+
+OLMo 2 1B is supported in transformers v4.48 or higher:
+    
+    
+    pip install transformers>=4.48
+    
+
+If using vLLM, you will need to install from the main branch until v0.7.4 is released. Please
+
+##  Using the model 
+
+###  Loading with HuggingFace 
+
+To load the model with HuggingFace, use the following snippet:
+    
+    
+    from transformers import AutoModelForCausalLM
+    
+    olmo_model = AutoModelForCausalLM.from_pretrained("allenai/OLMo-2-0425-1B-Instruct")
+    
+
+###  Chat template 
+
+_NOTE: This is different than previous OLMo 2 and Tülu 3 models due to a minor change in configuration. It does NOT have the bos token before the rest. Our other models have <|endoftext|> at the beginning of the chat template._
+
+The chat template for our models is formatted as:
+    
+    
+    <|user|>
+    How are you doing?
+    <|assistant|>
+    I'm just a computer program, so I don't have feelings, but I'm functioning as expected. How can I assist you today?<|endoftext|>
+    
+
+Or with new lines expanded:
+    
+    
+    <|user|>
+    How are you doing?
+    <|assistant|>
+    I'm just a computer program, so I don't have feelings, but I'm functioning as expected. How can I assist you today?<|endoftext|>
+    
+
+It is embedded within the tokenizer as well, for `tokenizer.apply_chat_template`.
+
+###  Intermediate Checkpoints 
+
+To facilitate research on RL finetuning, we have released our intermediate checkpoints during the model's RLVR training. The model weights are saved every 20 training steps, and can be accessible in the revisions of the HuggingFace repository. For example, you can load with:
+    
+    
+    olmo_model = AutoModelForCausalLM.from_pretrained("allenai/OLMo-2-0425-1B-Instruct", revision="step_200")
+    
+
+###  Bias, Risks, and Limitations 
+
+The OLMo-2 models have limited safety training, but are not deployed automatically with in-the-loop filtering of responses like ChatGPT, so the model can produce problematic outputs (especially when prompted to do so).
+
+##  Performance 
+
+Model | Average | AlpacaEval 2 LC | BBH | DROP | GSM8K | IFEval | MATH | MMLU | Safety | PopQA | TruthQA  
+---|---|---|---|---|---|---|---|---|---|---|---  
+**OLMo 1B 0724** | 24.4 | 2.4 | 29.9 | 27.9 | 10.8 | 25.3 | 2.2 | 36.6 | 52.0 | 12.1 | 44.3  
+**SmolLM2 1.7B** | 34.2 | 5.8 | 39.8 | 30.9 | 45.3 | 51.6 | 20.3 | 34.3 | 52.4 | 16.4 | 45.3  
+**Gemma 3 1B** | 38.3 | 20.4 | 39.4 | 25.1 | 35.0 | 60.6 | 40.3 | 38.9 | 70.2 | 9.6 | 43.8  
+**Llama 3.1 1B** | 39.3 | 10.1 | 40.2 | 32.2 | 45.4 | 54.0 | 21.6 | 46.7 | 87.2 | 13.8 | 41.5  
+**Qwen 2.5 1.5B** | 41.7 | 7.4 | 45.8 | 13.4 | 66.2 | 44.2 | 40.6 | 59.7 | 77.6 | 15.5 | 46.5  
+**\---** |  |  |  |  |  |  |  |  |  |  |   
+**OLMo 2 1B SFT** | 36.9 | 2.4 | 32.8 | 33.8 | 52.1 | 50.5 | 13.2 | 36.4 | 93.2 | 12.7 | 42.1  
+**OLMo 2 1B DPO** | 40.6 | 9.5 | 33.0 | 34.5 | 59.0 | 67.1 | 14.1 | 39.9 | 89.9 | 12.3 | 46.4  
+**OLMo 2 1B** | 42.7 | 9.1 | 35.0 | 34.6 | 68.3 | 70.1 | 20.7 | 40.0 | 87.6 | 12.9 | 48.7  
+  
+##  License and use 
+
+OLMo 2 is licensed under the Apache 2.0 license. OLMo 2 is intended for research and educational use. For more information, please see our [Responsible Use Guidelines](https://allenai.org/responsible-use).
+
+##  Citation 
+    
+    
+    @article{olmo20242olmo2furious,
+          title={2 OLMo 2 Furious}, 
+          author={Team OLMo and Pete Walsh and Luca Soldaini and Dirk Groeneveld and Kyle Lo and Shane Arora and Akshita Bhagia and Yuling Gu and Shengyi Huang and Matt Jordan and Nathan Lambert and Dustin Schwenk and Oyvind Tafjord and Taira Anderson and David Atkinson and Faeze Brahman and Christopher Clark and Pradeep Dasigi and Nouha Dziri and Michal Guerquin and Hamish Ivison and Pang Wei Koh and Jiacheng Liu and Saumya Malik and William Merrill and Lester James V. Miranda and Jacob Morrison and Tyler Murray and Crystal Nam and Valentina Pyatkin and Aman Rangapur and Michael Schmitz and Sam Skjonsberg and David Wadden and Christopher Wilhelm and Michael Wilson and Luke Zettlemoyer and Ali Farhadi and Noah A. Smith and Hannaneh Hajishirzi},
+          year={2024},
+          eprint={2501.00656},
+          archivePrefix={arXiv},
+          primaryClass={cs.CL},
+          url={https://arxiv.org/abs/2501.00656}, 
+    }
+    
+
+Downloads last month
+    72,948
+
+Safetensors[](https://huggingface.co/docs/safetensors)
+
+Model size
+
+1B params
+
+Tensor type
+
+BF16 
+
+·
+
+Chat template
+
+Files info
+
+Inference Providers [NEW](https://huggingface.co/docs/inference-providers)
+
+[ Text Generation](/tasks/text-generation "Learn more about text-generation")
+
+This model isn't deployed by any Inference Provider. [🙋 Ask for provider support](/spaces/huggingface/InferenceSupport/discussions/new?title=allenai/OLMo-2-0425-1B-Instruct&description=React%20to%20this%20comment%20with%20an%20emoji%20to%20vote%20for%20%5Ballenai%2FOLMo-2-0425-1B-Instruct%5D\(%2Fallenai%2FOLMo-2-0425-1B-Instruct\)%20to%20be%20supported%20by%20Inference%20Providers.%0A%0A\(optional\)%20Which%20providers%20are%20you%20interested%20in%3F%20\(Novita%2C%20Hyperbolic%2C%20Together%E2%80%A6\)%0A)
+
+##  Model tree for allenai/OLMo-2-0425-1B-Instruct [](/docs/hub/model-cards#specifying-a-base-model)
+
+Base model
+
+[allenai/OLMo-2-0425-1B](/allenai/OLMo-2-0425-1B)
+
+Finetuned
+
+[allenai/OLMo-2-0425-1B-SFT](/allenai/OLMo-2-0425-1B-SFT)
+
+Finetuned
+
+[allenai/OLMo-2-0425-1B-DPO](/allenai/OLMo-2-0425-1B-DPO)
+
+Finetuned
+
+[allenai/OLMo-2-0425-1B-RLVR1](/allenai/OLMo-2-0425-1B-RLVR1)
+
+Finetuned
+
+([2](/models?other=base_model:finetune:allenai/OLMo-2-0425-1B-RLVR1))
+
+this model
+
+Adapters
+
+[20 models](/models?other=base_model:adapter:allenai/OLMo-2-0425-1B-Instruct)
+
+Finetunes
+
+[62 models](/models?other=base_model:finetune:allenai/OLMo-2-0425-1B-Instruct)
+
+Quantizations
+
+[22 models](/models?other=base_model:quantized:allenai/OLMo-2-0425-1B-Instruct)
+
+##  Dataset used to train allenai/OLMo-2-0425-1B-Instruct
+
+#### [allenai/RLVR-MATH Viewer • Updated Nov 20, 2024 • 7.5k • 188 • 20 ](/datasets/allenai/RLVR-MATH)
+
+##  Spaces using allenai/OLMo-2-0425-1B-Instruct 62
+
+[💥 pliny-the-prompter/obliteratus ](/spaces/pliny-the-prompter/obliteratus)[🏆 eduagarcia/open_pt_llm_leaderboard ](/spaces/eduagarcia/open_pt_llm_leaderboard)[🤼 aizip-dev/SLM-RAG-Arena ](/spaces/aizip-dev/SLM-RAG-Arena)[🧠 bkhmsi/cognitive-reasoners ](/spaces/bkhmsi/cognitive-reasoners)[💥 dumbordumber/obliteratus ](/spaces/dumbordumber/obliteratus)[💥 Kodacoda/obliteratus ](/spaces/Kodacoda/obliteratus)[🔓 dromero14521/obliteratus ](/spaces/dromero14521/obliteratus)[💥 aaahmet/obliteratus ](/spaces/aaahmet/obliteratus) \+ 57 Spaces \+ 54 Spaces
+
+##  Collection including allenai/OLMo-2-0425-1B-Instruct
+
+#### [OLMo 2 Collection Artifacts for the OLMo 2 release. • 35 items • Updated Mar 3 • 158](/collections/allenai/olmo-2)
+
+##  Papers for allenai/OLMo-2-0425-1B-Instruct
+
+#### [2 OLMo 2 Furious Paper • 2501.00656 • Published Dec 31, 2024 • 22 ](/papers/2501.00656)#### [TÜLU 3: Pushing Frontiers in Open Language Model Post-Training Paper • 2411.15124 • Published Nov 22, 2024 • 68 ](/papers/2411.15124)
+
+System theme
+
+Company
+
+[TOS](/terms-of-service) [Privacy](/privacy) [About](/huggingface) [Careers](https://apply.workable.com/huggingface/) [](/)
+
+Website
+
+[Models](/models) [Datasets](/datasets) [Spaces](/spaces) [Pricing](/pricing) [Docs](/docs)
+

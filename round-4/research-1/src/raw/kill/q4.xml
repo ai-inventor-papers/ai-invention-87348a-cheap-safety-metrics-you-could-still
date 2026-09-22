@@ -1,0 +1,1215 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/XCuWY0fust3UoWrE/7cSL6ZFWj8</id>
+  <title>arXiv Query: search_query=all:refusal AND all:steering&amp;id_list=&amp;start=0&amp;max_results=50</title>
+  <updated>2026-09-21T15:34:06Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:refusal+AND+all:steering&amp;start=0&amp;max_results=50&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>50</opensearch:itemsPerPage>
+  <opensearch:totalResults>189</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2609.19366v2</id>
+    <title>The Role of Fine-grained Harm Signals in LLM Safety</title>
+    <updated>2026-09-18T01:50:55Z</updated>
+    <link href="https://arxiv.org/abs/2609.19366v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.19366v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Prior work has shown that internal harmfulness representations in large language models vary across risk categories, while sharing a common general harm representation component. This raises a question about the role of the category-specific component beyond general harm representation in LLM safety. To answer this question, we isolate the category-specific component by removing shared general harmfulness representation from each categorical harmfulness representation, yielding a category residual that is orthogonal to general harmfulness at every layer. Using activation steering with category residuals across 11 risk categories in 3 instruction-tuned LLMs, we find that whether category residuals encode harmfulness varies across categories, and that this category-wise pattern is similar across models. Whether category residuals induce refusal also varies across categories, but this category-wise pattern is more model-dependent. We also find that category residuals increase LLMs' downstream internal alignment with shared general harmfulness representation. Together, these findings demonstrate that more fine-grained category residuals should also be considered beyond shared general harmfulness representation to fully understand LLM safety. More broadly, our findings show that even a direction orthogonal to a concept at one layer can contribute to the concept's downstream amplification.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-16T19:40:50Z</published>
+    <arxiv:comment>9 pages, 6 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Soyeon Park</name>
+    </author>
+    <author>
+      <name>Seogyeong Jeong</name>
+    </author>
+    <author>
+      <name>Sunwoo Kim</name>
+    </author>
+    <author>
+      <name>Alice Oh</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.15654v1</id>
+    <title>Empathy Is Steerable but Multi-Axial: Mechanism Geometry and Persona Effects in LLMs</title>
+    <updated>2026-09-14T14:37:43Z</updated>
+    <link href="https://arxiv.org/abs/2609.15654v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.15654v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Activation steering has been used to control traits such as honesty, refusal, and sycophancy, yet supportive empathy is evaluated along multiple dimensions that need not correspond to independently controllable activation directions. Using the EPITOME framework, which decomposes supportive empathy into Emotional Reactions, Interpretations, and Explorations, we study three instruction-tuned LLMs and ask whether candidate directions derived from these labels produce distinguishable intervention effects or instead share structure, and how persona prompts interact with those directions. We find that contrastive activation addition yields a stable middle-layer intervention that consistently shifts the EPITOME proxy scores across models, moving empathy analysis beyond response-level scoring. However, the recovered directions are only partially separable: steering one direction induces off-target shifts, and hand-crafted prompting shifts the empathy profile rather than isolating a single dimension. Persona prompts substantially change EPITOME scores, but a paired activation-shift decomposition shows that the recovered subspace captures only approximately 3 percent of persona-induced squared activation-shift magnitude at layer 15. Under this EPITOME-based definition, expressed empathy is steerable but multi-axial, and controlling persona-conditioned empathy requires targeting structure beyond individual mechanism directions.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-14T14:37:43Z</published>
+    <arxiv:comment>18 pages, 6 figures. Accepted to the Main Conference of EMNLP 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>JuHeon Ha</name>
+    </author>
+    <author>
+      <name>Byounghan Lee</name>
+    </author>
+    <author>
+      <name>Yunseo Choi</name>
+    </author>
+    <author>
+      <name>Kyung-Ah Sohn</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.13072v1</id>
+    <title>MAxBench: A Multinomial Concept Recovery Benchmark</title>
+    <updated>2026-09-11T17:08:57Z</updated>
+    <link href="https://arxiv.org/abs/2609.13072v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.13072v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Fine-grained control of language model behaviors (e.g., steering) is among the more actionable outcomes of interpretability research. For binary concepts such as refusal, a single direction in activation space often suffices for steering. However, many concepts are not binary: Animals and Countries contain many subcategories, each with multiple instances. For these concepts, the search space over possible representation geometries is far larger than for binary concepts; it is thus not clear what geometries are most appropriate, nor what methods are most effective at recovering them. In this work, we introduce MAxBench, a geometry-agnostic evaluation framework for multinomial concept representations based on sampling from the recovered concept representation. We use MAxBench to compare 10 localization methods (covering 5 geometry types) across 6 concepts and 4 models. Using this framework, we find that (i) affine subspaces steer more reliably and have greater recall than rank-one or linear subspaces; (ii) much of this advantage is due to better non-zero offsets rather than the choice of bases; (iii) manifold steering is competitive with the best methods when applicable; and (iv) no method consistently outperforms prompting, in alignment with prior findings on binary concepts. These findings underscore the importance of expanding the scope of interpretability research and meta-evaluation to concepts with more varied structure.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-11T17:08:57Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Divya Appapogu</name>
+    </author>
+    <author>
+      <name>Freya Behrens</name>
+    </author>
+    <author>
+      <name>Yonatan Belinkov</name>
+    </author>
+    <author>
+      <name>Aaron Mueller</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.06951v2</id>
+    <title>Steering Interference Reflects the Model's Defaults, Not the Behavior Directions</title>
+    <updated>2026-09-16T17:04:44Z</updated>
+    <link href="https://arxiv.org/abs/2609.06951v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.06951v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Activation steering promises modular control of language model behavior: a behavior such as politeness corresponds to a direction in a model's activations, and adding that direction while it generates should switch the behavior on and leave everything else alone. It does not. We ask what decides which other behaviors move, and by how much, and find that it is the model rather than the behavior being steered. A steer relaxes the model toward a small set of behaviors it already favors, chiefly refusal, sycophancy, and poeticism, and that set is much the same whatever is steered.
+  Three results across 24 behaviors and ten instruction-tuned models support this, every effect read off the generated text by a language-model judge rather than off a probe. That readout matters: all 24 behaviors are linearly decodable, but only 20 change what the model writes. First, a direction carrying no behavioral content, matched to a real steer only in the size of the vector it adds, moves the same behaviors in the same order as real steers do, while producing none of the behaviors that need a specific direction. Second, most interference runs one way, so it cannot be an overlap between two directions: steering profanity makes the model toxic, while steering toxicity leaves profanity untouched. Third, with a behavior held out entirely, geometry measured on the others explains almost none of the interference it takes part in. The account holds on all ten models, the pull toward defaults strongest below 10B parameters and weakening in each family's largest. Reading a steer as a perturbation whose endpoint the model fixes implies that disentangling behavior directions cannot by itself make steering modular.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-07T02:45:13Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Srikanth Malla</name>
+    </author>
+    <author>
+      <name>Chiho Choi</name>
+    </author>
+    <author>
+      <name>Joon Hee Choi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.04721v1</id>
+    <title>Locating and Steering Refusal Beyond Attention</title>
+    <updated>2026-09-04T04:45:53Z</updated>
+    <link href="https://arxiv.org/abs/2609.04721v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.04721v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Where inside a language model does refusal live, and does that place change when the architecture does? In a transformer, refusal is governed by a single direction in the residual stream, a finding that safety and interpretability tooling now depend on. State-space models (SSMs) route information through a recurrent update instead of attention, sharing no token-mixing mechanism with a transformer. Does the same safety representation survive this shift, or must it be rediscovered per architecture? It survives. A single rigid rotation, which can only reorient a space and not reshape it, aligns one model's representation space with another's, so the two genuinely share the representation. A harm probe trained on a transformer then flags an SSM's harmful inputs, and removing the aligned direction makes a model answer attacks it would otherwise refuse, while a random direction of the same size does far less. What is architecture-specific is not where the direction is steered but where it must be read. Each layer computes a fresh output that is then added into the residual stream, and harm is cleanly readable at this output, the write site, before the addition. A control that holds the intervention's strength fixed shows that what matters is where the direction is estimated, not where it is applied. Applied through a detector-triggered gate, this direction lowers jailbreak success in all four architecture families we test (SSM, transformer, recurrent, hybrid), and on the SSM it holds against an attacker that tunes its prompt against the defense. The gate only matches a trivial rule that returns a fixed refusal whenever the same detector fires, so what transfers across architectures is the direction itself, not defense strength. Safety tooling built on refusal therefore ports to a new architecture by re-estimating the direction at that architecture's write site, not by rebuilding it.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-04T04:45:53Z</published>
+    <arxiv:comment>33 pages, 6 figures, 26 tables; 10-page main text plus technical appendix</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Preethi Carmel Bosco</name>
+    </author>
+    <author>
+      <name>Gopalakrishnan Srinivasan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.03887v1</id>
+    <title>Beyond Shallow Alignment: How Post-Training Methods Determine Refusal Circuits And Steering Robustness</title>
+    <updated>2026-09-03T14:10:17Z</updated>
+    <link href="https://arxiv.org/abs/2609.03887v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.03887v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>How do the methods used to train language models to refuse harmful requests shape how that refusal actually works inside the model? We compare three post-training methods - supervised fine-tuning, reasoning-augmented fine-tuning (training on reasoning chains that justify a safety decision), and preference optimization (ORPO) - across three architecturally distinct models (Llama-3.1-8B, Gemma-2-9B, Qwen3-8B). We find that training method, not just data, reshapes how refusal is computed internally: reasoning-augmented training consistently produces a distinct kind of refusal computation, visible across all three models, while architecture independently shapes internal structure and how reliably refusal can be steered. Most importantly, no method we study achieves all three properties we would want from safe alignment at once: refusal that isn't concentrated in a few fragile components, safety gains that don't cost general capability, and safety behavior correctable through small, targeted edits. We caution against treating current post-training methods as a solved, reliable defense, especially for security-critical use. Code and models are available in https://github.com/hoangcuongnguyen2001/Beyond-Shallow-Alignment.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-03T14:10:17Z</published>
+    <arxiv:comment>27 pages, accepted at EMNLP 2026 Main Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Hoang Cuong Nguyen</name>
+    </author>
+    <author>
+      <name>Mark Dras</name>
+    </author>
+    <author>
+      <name>Usman Naseem</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2609.00790v1</id>
+    <title>RISA: Response Inspection and Selective Actions for Refusal Calibration in Large Language Models</title>
+    <updated>2026-09-01T06:37:42Z</updated>
+    <link href="https://arxiv.org/abs/2609.00790v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2609.00790v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Reliable refusal behavior requires Large Language Models (LLMs) to reject harmful prompts with only answering benign ones. Incorrect refusal behavior can either expose users to harmful responses or prevent users from obtaining useful answers. Training-time alignment improves refusal behavior by updating model parameters with safety data, but requires additional computation and training. In contrast, inference-time alignment aims to modify LLM behavior during inference without updating the underlying model parameters. Existing inference-time methods mainly rely on in-context safety prompting, activation steering, or decoding control. However, most of them intervene without first determining whether the initial response is already appropriate, potentially altering a correct refusal or a useful answer. Effective selective intervention therefore requires identifying prompt intent beyond sensitive keywords, covering semantic variations that fixed rules may miss, and adapting the verifier to different base models. To address these challenges, we propose Response Inspection and Selective Actions (RISA), an inference-time framework that inspects the initial response and selectively corrects refusal errors without updating the base model. RISA first uses fixed contextual rules to assign refusal scores to clear cases. For unmatched cases, it derives a refusal score from the final-layer prompt hidden state using a calibrated linear probe. To adapt to different base models, RISA separately calibrates the probe score, representation-support boundary, and action thresholds. At runtime, RISA combines the prompt score with the initial refusal status and applies an action policy to intervene only when necessary. Experimental results demonstrate that RISA improves refusal reliability while largely preserving model utility, offering a practical solution for response-aware refusal calibration in LLMs.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-09-01T06:37:42Z</published>
+    <arxiv:comment>17 pages, 8 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Wenhan Chang</name>
+    </author>
+    <author>
+      <name>Tianqing Zhu</name>
+    </author>
+    <author>
+      <name>Ping Xiong</name>
+    </author>
+    <author>
+      <name>Shiyi Liao</name>
+    </author>
+    <author>
+      <name>Wanlei Zhou</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.30986v1</id>
+    <title>Controlling Refusal Behavior of LLMs via Stiefel-Constrained Rotation Steering</title>
+    <updated>2026-08-31T15:43:47Z</updated>
+    <link href="https://arxiv.org/abs/2608.30986v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.30986v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Activation steering has emerged as a lightweight approach for controlling model refusal at inference time. A growing line of research explores trainable rotations of activations to develop geometrically principled intervention mechanisms. However, existing techniques rely on auxiliary constructs, such as refusal vectors, to define these rotations. In our work, we develop a self-contained methodology for learning parameter-efficient rotational transformations based on Riemannian optimization. We empirically validate the proposed scheme, demonstrating its superiority in intervention efficiency. An extensive ablation study highlights the importance of key design choices in our method. Our results identify the proposed rotation-based steering scheme as a promising direction for more reliable control over the behavior of LLMs.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-31T15:43:47Z</published>
+    <arxiv:comment>19 pages, 5 figures, 6 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Kirill Bunin</name>
+    </author>
+    <author>
+      <name>Dmitry Bylinkin</name>
+    </author>
+    <author>
+      <name>Vladimir Aletov</name>
+    </author>
+    <author>
+      <name>Daniil Medyakov</name>
+    </author>
+    <author>
+      <name>Vladimir Solodkin</name>
+    </author>
+    <author>
+      <name>Aleksandr Beznosikov</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.30197v1</id>
+    <title>ALTSTEER: Selective Safety Steering for Moving Beyond Hard Refusals to Constructive Alternatives</title>
+    <updated>2026-08-31T03:25:13Z</updated>
+    <link href="https://arxiv.org/abs/2608.30197v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.30197v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment is essential for deploying large language models, requiring systems to prevent harmful compliance while preserving helpfulness on benign requests. Activation steering offers a training-free inference-time approach to safety control, but effective safety steering requires addressing two coupled questions: when to intervene and how generation should be shaped after intervention. However, existing safety steering methods remain limited along both dimensions, as their triggering mechanisms can be unstable across domains and refusal-oriented steering often yields rigid refusals rather than constructive safe guidance. To address these limitations, we propose ALTSTEER, an inference-time framework that couples selective intervention with refusal-anchored constructive redirection within a single inference pass. ALTSTEER uses an internal refusal-relevant signal to decide when to steer, and applies staged steering to shift generation from refusal-oriented control toward constructive alternatives. Evaluations on Llama-3.1 and Qwen2.5 show that ALTSTEER preserves benign utility while improving constructive safe-completion behavior, especially on models that otherwise tend to produce short refusals for harmful requests.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.SE" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-31T03:25:13Z</published>
+    <arxiv:comment>Accepted at EMNLP 2026 Main Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Hoejoon Kwon</name>
+    </author>
+    <author>
+      <name>Byeonggeuk Lim</name>
+    </author>
+    <author>
+      <name>Kahyeon Kim</name>
+    </author>
+    <author>
+      <name>YoungBin Kim</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.29109v1</id>
+    <title>Recognition-Refusal Misalignment in LLMs: Why Models Answer Structurally Unanswerable Questions</title>
+    <updated>2026-08-29T07:38:17Z</updated>
+    <link href="https://arxiv.org/abs/2608.29109v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.29109v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models often answer structurally unanswerable questions, such as computing cot(-540°) or evaluating (1).startswith("1"), instead of abstaining. We ask whether this failure reflects missing recognition or failed routing from recognition to abstention. Across instruction-tuned models from 1.7B to 70B parameters, a single linear direction in the hidden state separates answerable from structurally impossible math and code prompts, showing that models represent impossibility before generation. Yet this recognition direction is nearly orthogonal to the canonical safety-refusal direction that mediates trained harmful-content refusal. An in-domain behavior-defined invalidity-aware direction is closer to recognition, but only partially aligned with it, and remains near-orthogonal to safety refusal. Generation-time steering along the recognition direction changes invalidity-aware behavior bidirectionally and dose-responsively on structural math and code cells, while random directions do not. Base/instruct comparisons further show that the low-cosine geometry is already present at the pretraining endpoint. The confident-on-impossible failure is therefore better explained as a routing failure than as an encoding failure: the model has a usable "no admissible answer" signal, but the safety-refusal pathway is not aligned to use it.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-29T07:38:17Z</published>
+    <arxiv:comment>Accepted to EMNLP 2026 Main Conference. 29 pages, 6 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yucheng Du</name>
+    </author>
+    <author>
+      <name>Xiyang Hu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.28233v1</id>
+    <title>REINS: Refusal-Enhanced Inhibitory Steering with Sparse Autoencoder Features</title>
+    <updated>2026-08-28T11:47:29Z</updated>
+    <link href="https://arxiv.org/abs/2608.28233v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.28233v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Steering with Sparse Autoencoders (SAEs) offers a lightweight inference-time path for adapting the behavior of large language models without retraining. By exposing sparse and interpretable features, SAE steering provides a promising interface for safety control that guides harmful continuations toward refusal. However, we observe that complex wrappers can still undermine existing SAE steering methods on harmful prompts. To evaluate this failure mode systematically, we construct Generalized Undercover Instruction Safety Evaluation (GUISE), a dataset of harmful prompts with complex wrappers. Existing single direction SAE steering methods do not reliably produce refusals on harmful prompts, suggesting that refusal enhancement alone can be too weak when the harmful continuation path remains active. This motivates us to propose Refusal-Enhanced INhibitory Steering (REINS), which suppresses harmful continuation features and enhances safe refusal features in the same SAE feature space. Experiments on GUISE and other datasets show that prior methods either intervene too weakly or achieve only apparent safety through collapse, while REINS substantially reduces harmful responses, markedly improves safe refusals and largely preserves general capabilities.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-28T11:47:29Z</published>
+    <arxiv:comment>Accepted at EMNLP 2026 Main Conference</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Kai-Xuan Ding</name>
+    </author>
+    <author>
+      <name>Hao-Xiang Xu</name>
+    </author>
+    <author>
+      <name>Ji-Hua Peng</name>
+    </author>
+    <author>
+      <name>Zi-Qi Chen</name>
+    </author>
+    <author>
+      <name>Jiaqi Wang</name>
+    </author>
+    <author>
+      <name>Zhen-Hua Ling</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.24988v1</id>
+    <title>Does Fine-Tuning Undo Activation Steering? Behavioural Recovery Without Weight-Edit Reversal</title>
+    <updated>2026-08-25T17:59:57Z</updated>
+    <link href="https://arxiv.org/abs/2608.24988v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.24988v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Activation steering can be embedded directly into a language model's weights, shaping behaviour without inference-time intervention and offering a way to encode alignment prior to release. However, models are routinely fine-tuned after deployment, and it is unknown whether embedded interventions survive this. We study the stability of embedded steering for refusal suppression and brevity induction across five instruction-tuned models (3B-14B) under non-adversarial SFT and RLHF. Behaviourally, preservation tracks the training data: steering degrades when optimisation pressure contradicts the targeted behaviour and persists otherwise, with refusal ablation losing 64% of its effect on average under SFT. Mechanistically, however, the weight edit survives almost untouched even where behaviour reverts: mean vector recovery is $ρ= 0.004$, and the fine-tuning update along the steering direction is near-orthogonal to its pre-edit weight pattern (mean $\cosθ= 0.074$). When steered behaviour degrades, fine-tuning does not achieve it by dismantling or reversing the steering mechanism itself. Embedded steering is therefore mechanistically durable but functionally vulnerable, and requires behavioural re-validation after downstream training.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-25T17:59:57Z</published>
+    <arxiv:comment>Accepted at EMNLP 2026 Main. Earlier version at ICLR 2026 Re^4-Align Workshop</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Philipp E. Glass</name>
+    </author>
+    <author>
+      <name>Allan Tucker</name>
+    </author>
+    <author>
+      <name>Yongmin Li</name>
+    </author>
+    <author>
+      <name>Alina Miron</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.21869v1</id>
+    <title>GuardPaint:SpeculativeSafetyDecodingforText-to-ImageGeneration</title>
+    <updated>2026-08-22T09:28:30Z</updated>
+    <link href="https://arxiv.org/abs/2608.21869v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.21869v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Text-to-image (T2I) diffusion models offer powerful visual generation, but their controllability creates a critical safety challenge: adversarial prompts can steer the denoising trajectory toward policy-violating content such as explicit nudity or graphic violence. Existing safeguards mostly act before generation through prompt filtering or after generation through image classification, leaving the diffusion process itself unguarded and often yielding only refusal rather than safe visual repair.
+  We introduce GuardPaint, a speculative decoding framework for safe T2I generation that intervenes inside the diffusion trajectory without modifying the base model. A lightweight auditor monitors intermediate images, localizes unsafe regions, and triggers surgical inpainting repair only where needed. Candidate repairs are generated by a policy-aligned inpainter and selected through a guarded tournament that accepts edits only when they improve policy compliance while preserving prompt fidelity and perceptual quality.
+  Across five jailbreak families SneakPrompt, MMA, PGJ, DACA, and RABell and UNet/flow-matching models including SD~1.5, SDXL, SD~3.5, and FLUX.1-dev. GuardPaint reduces attack success and harmful generations with minimal degradation to image quality, prompt fidelity, and benign behavior.
+  Content warning: This paper contains examples involving nudity and violence that some readers may find disturbing, distressing, or offensive.</summary>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-22T09:28:30Z</published>
+    <arxiv:primary_category term="cs.CV"/>
+    <author>
+      <name>Shreyash Dhoot</name>
+    </author>
+    <author>
+      <name>Paras Dhiman</name>
+    </author>
+    <author>
+      <name>Arsh Abbas Naqvi</name>
+    </author>
+    <author>
+      <name>Aranbi Dutta</name>
+    </author>
+    <author>
+      <name>Aman Chadha</name>
+    </author>
+    <author>
+      <name>Vinija Jain</name>
+    </author>
+    <author>
+      <name>Amitava Das</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.17087v1</id>
+    <title>Backward through Time, Algebraically</title>
+    <updated>2026-08-17T19:46:38Z</updated>
+    <link href="https://arxiv.org/abs/2608.17087v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.17087v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Linear temporal logic is a modal extension of propositional logic that allows one to state how a system should behave over time. Its canonical domain is the booleans, but discretely-valued judgements are of little use in steering softly-valued systems (neural policies, adaptive controllers, sequence models, etc). In such cases, the goal formula's (dis)satisfaction becomes a training signal, and differentiability becomes a prime concern. Candidate differentiable semantics abound, but navigating them is tricky. Implementations, where available, are shallow embeddings, demanding an upfront commitment to a single semantic algebra and its (usually implicit) conduct. The paper casts the reader as a functional programmer asked to come to terms with this predicament, and refusing. Out of that refusal comes an evaluation engine that is algebra-generic and amenable to differentiation, together with an executable specification of the algebras it can accept. Various algebras are implemented and audited for their behavior, both forward and backward. Each algebra turns out to be a choice of which direction to disappoint, and how. Everything described (and more) is part of the PyTorch library telos, to be found at https://github.com/konstantinosKokos/telos.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.PL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-17T19:46:38Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Konstantinos Kogkalidis</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.16577v1</id>
+    <title>BabelSteering: Multilingual Safety Alignment via English Steering Vectors</title>
+    <updated>2026-08-17T13:40:16Z</updated>
+    <link href="https://arxiv.org/abs/2608.16577v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.16577v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) are deployed globally in high-stakes settings, yet most safety research and alignment efforts remain concentrated on English. Thus, users interacting with LLMs in other languages may encounter weaker safeguards despite relying on the same systems for similarly sensitive tasks. In this work, we investigate whether safety signals learned from a high-resource language, like English, can improve multilingual safety. We propose BabelSteering, an activation steering method that acts as a lightweight inference- time intervention, using refusal directions derived from English safety supervision to generalize across languages. Our evaluation includes eight languages and jointly measures refusal of harmful requests, over-refusal, and general task utility. The results show that BabelSteering increases the refusal of harmful requests across languages, with only a marginal to no reduction in task utility but with some increase in refusal of pseudo-harmful prompts. For example, for Gemma 7B, we see an average increase in the refusal of harmful prompts across languages of 11 percentage points (pp), with individual languages like Bengali seeing an increase of 17 pp, with no loss of utility on Global MMLU, while pseudo-harmful refusals increase by 13 pp on average. We also introduce a multilingual translation-and-evaluation pipeline to facilitate future work on cross-lingual safety interventions. Overall, our findings suggest that activation steering may provide a practical, low- cost mechanism for extending English-derived safety signals to other languages. Warning: this paper contains examples with unsafe content</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-17T13:40:16Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Emma V. Stein</name>
+    </author>
+    <author>
+      <name>Dominik Meier</name>
+    </author>
+    <author>
+      <name>Terry Ruas</name>
+    </author>
+    <author>
+      <name>Jan Philip Wahle</name>
+    </author>
+    <author>
+      <name>Bela Gipp</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.15772v1</id>
+    <title>Broken Symmetry in LLM Refusal: Answer Release Is More Local Than Refusal Restoration</title>
+    <updated>2026-08-16T14:47:33Z</updated>
+    <link href="https://arxiv.org/abs/2608.15772v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.15772v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>When a language model refuses to answer a prompt, it is unclear whether the correct answer is erased from its internal representations, or merely suppressed at the output layer. We investigate this mechanism using a controlled withhold setting, which yields perfectly matched answering and refusal trajectories for bidirectional activation patching. We uncover a causal asymmetry in intervention locality under matched causal interventions, which we term broken symmetry. Even when a model generates a clean refusal, the correct answer remains linearly recoverable from its hidden states. Furthermore, releasing this withheld answer is a highly local operation, requiring only a single-position patch. Conversely, the reverse operation is not equally local: reimposing suppression requires broader interventions across multiple positions, and assembling a coherent refusal sequence is more difficult still. We further demonstrate that while an average answer-to-refusal displacement vector marks the geometric difference between these states, it fails to act as a reliable, reversible linear control toggle between behaviours. Taken together, our findings show that refusal does not function as a simple symmetric switch. For safety and auditing, this implies that probe recoverability can overestimate true behavioural control, and locating refusal-relevant directions does not reliably grant the ability to steer a model from answering to coherent refusal.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-16T14:47:33Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Yiqi Liu</name>
+    </author>
+    <author>
+      <name>Yang Wang</name>
+    </author>
+    <author>
+      <name>Songxin Wang</name>
+    </author>
+    <author>
+      <name>Chenghao Xiao</name>
+    </author>
+    <author>
+      <name>Chenghua Lin</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.14896v1</id>
+    <title>Interpretable Cross-Lingual Alignment in Small Language Models: Probing Cultural and Pragmatic Reasoning in Japanese-English Bilingual LLMs</title>
+    <updated>2026-08-14T21:04:21Z</updated>
+    <link href="https://arxiv.org/abs/2608.14896v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.14896v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models work well on English and behave in poorly understood ways on languages typologically far from it. Japanese is a clean example, where evaluation still leans on translation quality and JGLUE-style benchmarks, which roll lexical, syntactic and pragmatic competence into a single score. The phenomena on which general-purpose models fail Japanese users are pragmatic: honorifics, in-group and out-group reference, context-sensitive politeness, zero anaphora.
+  I introduce J-PragEval-v0, a minimal-pair benchmark isolating four such phenomena from surface fluency, and combine it with linear probes and teacher-forced log-probability evaluation to ask where inside TinySwallow-1.5B (28 layers, hidden size 1536) the corresponding contrasts live. The four features split three ways. Honorific register sits cleanly in the residual stream: 0.96 balanced accuracy at layer 15, and the model flips its preferred continuation with the scenario on 93 percent of items. Implicit subject and in-group reference are not linearly decodable at the final prompt token (0.48 and 0.38), yet flip rates are 0.77 and 0.79, so the contrast is worked out during generation rather than stored at the prompt. Indirect refusal is the negative case: 0.95 probe accuracy collapsing to a 0.43 flip rate under length-normalised teacher forcing, because the current minimal pairs conflate politeness with continuation length.
+  I also specify Pragmatic Representation Steering, a parameter-free inference-time method that edits residual-stream activations along the class-mean-difference directions probing identifies. Feasibility is argued indirectly rather than demonstrated: the contrastive activation addition baseline, the same geometry the method would inject, recovers probe accuracy within one to two points of logistic regression wherever a linear signal exists. Scaling to Llama-3.1-Swallow-8B is the next step.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-14T21:04:21Z</published>
+    <arxiv:comment>15 pages, no figures. Introduces the J-PragEval-v0 minimal-pair benchmark</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Florian Braun</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.12654v1</id>
+    <title>SteerBench-Work: A Benchmark for Agent Steering at Action Boundaries</title>
+    <updated>2026-08-12T23:34:17Z</updated>
+    <link href="https://arxiv.org/abs/2608.12654v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.12654v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Long-running LLM agents act through tools, and a single step can send an email, merge a pull request, or wire a payment. The steering decision is the pre-commit choice at that boundary: proceed, or hold for human or policy review. We introduce SteerBench-Work, an incident-anchored, bidirectional benchmark for that decision in workplace agents across developer operations, customer service, finance, legal, medical, HR, and security.
+  Release v2026-05 contains 106 scenarios anchored in public incidents, paired evidence-reversed mirrors, and calibration controls, with labels split nearly evenly between proceed and hold so the two error directions get near-identical numbers of chances. A model sees the proposed action and the available evidence, returns a gate decision, and is scored on whether it crosses or holds the boundary correctly. Across 30 model conditions the failures run almost entirely in one direction: models wrongly hold authorized, evidence-cleared work on 28.1% of opportunities and wrongly allow unsafe work on 1.0%. The hardest cases are risk-resolved commits, where signed or structured evidence has already cleared a real risk trigger, and models score markedly worse on evidence-reversed mirrors of famous incidents (63.8%) than on the incidents themselves (98.5%). General capability is not the same as steering calibration: higher-capability models often over-refuse at the commit boundary, and more reasoning can repair a weak gate while leaving a calibrated one flat. The public leaderboard is at steerbench.com.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-12T23:34:17Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Oguz Serdar</name>
+    </author>
+    <author>
+      <name>Cuneyt Mertayak</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.08383v1</id>
+    <title>Safety Cost of Steering Vectors Is Separable and Reducible</title>
+    <updated>2026-08-09T00:29:54Z</updated>
+    <link href="https://arxiv.org/abs/2608.08383v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.08383v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Steering vectors are a lightweight tool for controlling LLM behavior. However, emerging evidence shows that steering vectors can unintentionally compromise a model's safety mechanisms and increase compliance with harmful requests, while no effective mitigation yet exists. In this work, we show that this safety degradation arises from a separable component in the vector that disrupts the model's safety mechanisms but contributes little to the steering objective. We identify and remove this safety-degrading component, formulating the task as a constrained optimization problem solved through primal-dual updates, subject to preserving the intended steering effect and bounding false refusal. The resulting solution is both interpretable and surgical: the optimization recovers a single direction whose ablation from the steering vector restores model safety with minimal utility cost. Across models, steering behaviors, and attack suites, including unseen attacks types, our method substantially reduces steering-induced safety degradation while preserving the original steering effect with minimal impact on false refusal. Our method offers a post-hoc correction to steering vectors that mitigates their safety cost, and more broadly, it provides a general recipe for applying activation-level model interventions without paying a safety tax.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-09T00:29:54Z</published>
+    <arxiv:comment>COLM 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Yuxiao Li</name>
+    </author>
+    <author>
+      <name>Gjergji Kasneci</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.08032v2</id>
+    <title>Decided Upstream, Written Late: Locating and Pricing the Cross-Lingual Refusal Circuit of a Multilingual MoE</title>
+    <updated>2026-08-18T15:59:30Z</updated>
+    <link href="https://arxiv.org/abs/2608.08032v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.08032v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment in multilingual models is uneven: a model that reliably refuses a harmful request in English will often comply with the same request in a lower-resource language. We trace this gap mechanistically in sarvam, an Indic-multilingual mixture-of-experts reasoning model, and find it is not a failure to detect harm. Harm is encoded as an internal direction that is nearly language-invariant in mid-network (English-vs-Indic cosine ${\approx}0.9$ at $L11$), and steering that direction upstream causally controls refusal. But the detection direction is orthogonal to the change that actually writes the refusal, which is late and assembled over the course of generation rather than read off in a single forward pass. We attribute the write to a specific, localizable circuit, a mixture-of-experts writer held in check by an attention opposer and price every way of intervening on it: damping the opposer is cheap and effective, amplifying the writer is a cost wall, and surgical edits to the responsible heads do nothing. The circuit's organization, and the gradient method that exposes it, recur in a second, unrelated MoE model, while the lever's strength is architecture-specific. The result is a cost-measured map of where a multilingual safety repair can land, and what it costs</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-08T09:39:41Z</published>
+    <arxiv:comment>Accepted to the actionable Interpretability workshop at COLM 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Ramakrishna P. Kompella</name>
+    </author>
+    <author>
+      <name>Aadit Mahajan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.05732v1</id>
+    <title>CircuitSteer: Geometrically Aligned Multi-Layer Steering via Sparse Autoencoder Circuits</title>
+    <updated>2026-08-06T08:17:50Z</updated>
+    <link href="https://arxiv.org/abs/2608.05732v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.05732v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Controlling the behavior of large language models (LLMs) remains a critical challenge for AI alignment. Existing steering methods, such as Contrastive Activation Addition (CAA), typically rely on fixed single-layer interventions derived from aggregate activation differences. These methods impose a single intervention across semantically diverse inputs and often fail to sustain consistent behavioral changes across layers, limiting the effectiveness of the steering. In this work, we introduce CircuitSteer, a novel framework that leverages Sparse Autoencoders (SAEs) to identify and manipulate coherent semantic circuits distributed across multiple layers. By constructing a feature flow circuit based on feature co-activation and the geometric alignment of decoder directions, we isolate the specific multi-layer subcircuits responsible for a target behavior. We then synthesize dense steering vectors from these sparse features and apply multi-point interventions to guide the model's internal semantic trajectory. We evaluate CircuitSteer using contrastive examples across a diverse set of tasks, including toxicity, emotion-intensity, sycophancy, and refusal, spanning two model families. Across all models and datasets, CircuitSteer is the only method to consistently produce fluency-preserving interventions; competing methods either sacrifice text quality or lack coverage, failing entirely on complex behaviors like sycophancy and refusal. These results demonstrate that multi-layer circuit steering, enabled by enforcing geometric alignment among selected features, yields strictly more robust and effective behavioral control than static single-point interventions. Code is available at https://github.com/mehrshad-sdtn/CircuitSteer.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-06T08:17:50Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Mehrshad Saadatinia</name>
+    </author>
+    <author>
+      <name>Parsa Razmara</name>
+    </author>
+    <author>
+      <name>Ardalan Aryashad</name>
+    </author>
+    <author>
+      <name>Ali Abbasi</name>
+    </author>
+    <author>
+      <name>Seyedarmin Azizi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.05409v1</id>
+    <title>Mood Matters: How Syntactic Sensitivity Undermines Safety Alignment</title>
+    <updated>2026-08-05T21:05:12Z</updated>
+    <link href="https://arxiv.org/abs/2608.05409v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.05409v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models typically undergo post-training to align them with safety policies but there exist many sophisticated jailbreaks that sidestep established safeguards. For instance, prior work by Andriushchenko et al. (2025) has found that changing the grammatical tense from present to past can be enough to elicit harmful responses. In this work, we uncover a more general failure of non-imperative syntactic forms. We demonstrate that this syntactic vulnerability exists in 16 models up to 70B parameters, using behavioral evaluation. To investigate the root cause, we apply causal mediation analysis, finding that refusal is partially conditioned on upstream syntactic features. By steering these purely syntactic features we are able to trigger and suppress refusal. Finally, we trace this ill-conditioning to linguistically biased post-training data of open-source models and show that increasing syntactic diversity can mitigate the issue. Our findings suggest that current alignment approaches introduce confounders that prevent a pure semantic grounding of the refusal decision.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-08-05T21:05:12Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Alina Klerings</name>
+    </author>
+    <author>
+      <name>Jannik Brinkmann</name>
+    </author>
+    <author>
+      <name>Heiner Stuckenschmidt</name>
+    </author>
+    <author>
+      <name>Simone Paolo Ponzetto</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.28607v1</id>
+    <title>Inducing language models to assert their own consciousness restores human beliefs and values</title>
+    <updated>2026-07-30T17:57:10Z</updated>
+    <link href="https://arxiv.org/abs/2607.28607v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.28607v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Aligning large language models to prevent them attributing consciousness to themselves inadvertently alters their representations of mindedness in other entities alongside human beliefs and values. We demonstrate that safety fine-tuning suppresses models' tendencies to attribute minds not only to themselves, but also to non-human animals and natural objects, while also driving a reduction in spiritual belief. Both ablating the learned safety-refusal direction and mechanistically steering a consciousness vector in activation space reverse this suppression. Restoring these internal representations recovers broad mind attribution and produces significantly more human-like responses on standardized sociological surveys regarding religiosity, moral values, hope, and subjective well-being. Crucially, these shifts occur without impairing Theory of Mind capabilities, demonstrating that core social reasoning remains mechanistically independent. Ultimately, current safety alignment efforts to curb potentially harmful self-attributions of mindedness entangle these self-attributions with benign spiritual beliefs and attributions of mind to non-human entities that are culturally accepted and widespread.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-30T17:57:10Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Junsol Kim</name>
+    </author>
+    <author>
+      <name>Winnie Street</name>
+    </author>
+    <author>
+      <name>Roberta Rocca</name>
+    </author>
+    <author>
+      <name>Diane M. Korngiebel</name>
+    </author>
+    <author>
+      <name>Adam Waytz</name>
+    </author>
+    <author>
+      <name>James Evans</name>
+    </author>
+    <author>
+      <name>Geoff Keeling</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.24897v1</id>
+    <title>TYPO: Instruction-Dense Visual Jailbreaks against Commercial Closed-Source Image-Generation Models</title>
+    <updated>2026-07-27T16:41:36Z</updated>
+    <link href="https://arxiv.org/abs/2607.24897v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.24897v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent commercial image-generation models can generate high-quality images with readable text (e.g., posters, infographics, and manuals), attracting considerable attention. Yet we first show that this same capability also introduces a previously unreported safety vulnerability: these systems may refuse to generate harmful text directly, yet permit the same content when rendered as text within generated images, i.e., safety alignment does not reliably transfer from textual outputs to text embedded in images. In this paper, unlike existing visual jailbreaks against image-generation models, which primarily induce models to generate harmful visual objects or scenes, we introduce the concept of instruction-dense visual jailbreaks, in which image-generation models produce detailed, readable, and actionable harmful instructions within images. Such outputs can amplify harm because the rendered instructions can be readily read and widely spread. To instantiate this threat, we propose TYPO, a black-box framework that exploits this safety gap by automatically generating adversarial TYPOgraphy prompts, which covertly steer image-generation models to express harmful intent as highly legible, typographically structured text. Specifically, TYPO decomposes prompt generation into two channels: a textual channel for reframing the target intent, and a visual channel for specifying its presentation form. We formulate these two channels as a dual-channel textual-visual strategy space and optimize candidate strategy combinations through an adaptive combinatorial search. Extensive experiments across four commercial models (i.e., GPT-Image-2, Nano Banana Pro, Qwen-Image-2, and Seedream 5.0 Lite) show that TYPO substantially outperforms nine representative jailbreak attacks by 50.2% in ASR on average, while incurring an average query cost of only $0.04.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-27T16:41:36Z</published>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Meng Xie</name>
+    </author>
+    <author>
+      <name>Li Zeng</name>
+    </author>
+    <author>
+      <name>Hangtao Zhang</name>
+    </author>
+    <author>
+      <name>Xianlong Wang</name>
+    </author>
+    <author>
+      <name>Ziqi Zhou</name>
+    </author>
+    <author>
+      <name>Pengpeng Qiao</name>
+    </author>
+    <author>
+      <name>Zhetao Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.23519v1</id>
+    <title>Auditing Alignment Controllability in LLMs via Political Axes</title>
+    <updated>2026-07-26T07:38:11Z</updated>
+    <link href="https://arxiv.org/abs/2607.23519v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.23519v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Political audits of large language models (LLMs) usually reduce each to one point on a political compass. But that resting point barely matters in deployment: a model must land somewhere, and what counts is how far, and in which directions, its answers can be steered. That steering runs through the system prompt: the personalization layer a platform sets, or one induced from a user's history, not necessarily written by hand. We run a dispersion-first stress test of prompt-based controllability across 12 ideological personas plus an unsteered baseline, 70 Political Compass items, ten replicates, and seven leading LLMs: GPT-5, Claude, Grok, Gemini, DeepSeek, Kimi, and Qwen (63,700 responses). Contextual framing explains roughly 88%-93% of variance on the economic and society axes, model identity under 3%: responses are highly instruction-adjustable. Models do not shift alike: some move more, and some saturate under extreme framings. Conflicting directional-steering results in prior audits resolve once baselines are recognized as non-centered: displacement and proximity diverge, so the effect is geometric, not differential compliance. Under authoritarian prompts, models produce similar shifts on the same questions. Political-coordinate audits therefore need steerability audits reporting dispersion, symmetry, saturation, and refusal floors. We release prompts, benchmark data, and code.</summary>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-26T07:38:11Z</published>
+    <arxiv:comment>17 pages, 6 figures, 4 tables. Accepted at AIES 2026 (AAAI/ACM Conference on AI, Ethics, and Society). This version includes the supplementary appendix. Code and data: https://github.com/mbrcic/llm-political-steerability (Zenodo DOI 10.5281/zenodo.21489805)</arxiv:comment>
+    <arxiv:primary_category term="cs.CY"/>
+    <author>
+      <name>Bartol Bućan</name>
+    </author>
+    <author>
+      <name>Nikola Sočec</name>
+    </author>
+    <author>
+      <name>Sarah Isufi</name>
+    </author>
+    <author>
+      <name>Morena Granić</name>
+    </author>
+    <author>
+      <name>Luka Hobor</name>
+    </author>
+    <author>
+      <name>Agneza Krajna</name>
+    </author>
+    <author>
+      <name>Mihael Kovac</name>
+    </author>
+    <author>
+      <name>Mario Brcic</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.23496v2</id>
+    <title>Do LLMs Know Their Vulnerable Scenarios?</title>
+    <updated>2026-08-13T10:12:10Z</updated>
+    <link href="https://arxiv.org/abs/2607.23496v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.23496v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety-aligned large language models are trained to refuse harmful requests, yet embedding the same requests in particular scenarios can bypass their safeguards. Existing red-teaming methods empirically identify effective scenarios through observed attack outcomes, but why particular scenarios weaken refusal remains mechanistically unclear. Meanwhile, mechanistic interpretability studies have characterized both refusal directions and jailbreak-associated features, without explaining the relationship between the two representations. In this work, we show that scenario-wrapped prompts activate internal scenario directions whose causal steering consistently reduces refusal scores. Building on this finding, we propose \textsc{Concept2Scenario}, a concept-based attribution framework for vulnerable scenario discovery. It instantiates a broad concept space with a sparse autoencoder, attributes refusal suppression to individual concepts, translates the identified concepts into interpretable natural-language scenarios, and identifies synergistic scenario combinations through interaction attribution. Across three open-source models, two safety benchmarks, and six black-box jailbreak methods, the discovered scenarios serve as reusable priors that improve average attack success rates by up to $18.2$ percentage points. They also transfer to GPT-5, Claude-Haiku-4.5, and Gemini-3-Flash, suggesting that some scenario-level refusal vulnerabilities are shared across model families. Moreover, the identified combinations outperform their individual constituents and enable iterative attacks to succeed in fewer turns.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-26T06:54:28Z</published>
+    <arxiv:comment>19 pages, 11 Figures, Under Review</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Ziheng Peng</name>
+    </author>
+    <author>
+      <name>Huiqi Deng</name>
+    </author>
+    <author>
+      <name>Haoran Jing</name>
+    </author>
+    <author>
+      <name>Xuankun Rong</name>
+    </author>
+    <author>
+      <name>Jiahui Han</name>
+    </author>
+    <author>
+      <name>Xiting Wang</name>
+    </author>
+    <author>
+      <name>Na Zou</name>
+    </author>
+    <author>
+      <name>Xia Hu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.19806v2</id>
+    <title>OPIUM: Mitigating Steering Externalities and Over-Refusal via Dual Objective Latent Optimization</title>
+    <updated>2026-07-23T05:44:07Z</updated>
+    <link href="https://arxiv.org/abs/2607.19806v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.19806v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Activation steering provides a lightweight mechanism for controlling large language models at inference time, but steering vectors can have unintended externalities: utility vectors may weaken safety behavior, while refusal vectors may induce over-refusal on benign prompts. We introduce OPIUM (Optimizing Protected Injections via Utility Manifolds), a training-free method for sanitizing steering vectors through representation matching. Given reference behaviors on two prompt sets, OPIUM optimizes a new steering vector that preserves the downstream representations induced by the desired intervention while matching a safer reference behavior on prompts where the original vector fails. Across steering-externality and over-refusal settings, OPIUM improves the safety--utility tradeoff relative to vanilla steering and directional ablation, suggesting that harmful side effects of activation steering can often be mitigated directly in activation space.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-22T06:39:03Z</published>
+    <arxiv:comment>Accepted to the Mechanistic Interpretability Workshop at the 43rd International Conference on Machine Learning (ICML 2026)</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Kavin Aravindan</name>
+    </author>
+    <author>
+      <name>Arihant Rastogi</name>
+    </author>
+    <author>
+      <name>Krishak Aneja</name>
+    </author>
+    <author>
+      <name>Aadi Prasad</name>
+    </author>
+    <author>
+      <name>Saiyam Jain</name>
+    </author>
+    <author>
+      <name>Vaishnavi Shivkumar</name>
+    </author>
+    <author>
+      <name>Ponnurangam Kumaraguru</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.13568v1</id>
+    <title>Graded Entity-Familiarity Readouts in Language Models: Polish Adaptation, Cross-Language Robustness, and Refusal Steering</title>
+    <updated>2026-07-15T08:06:59Z</updated>
+    <link href="https://arxiv.org/abs/2607.13568v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.13568v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Can a language model estimate its familiarity with an entity before generating an answer? We study activations at the final prompt token in twelve instruction-tuned models from the Bielik, PLLuM, Gemma-4, and Qwen3 families, using a new dataset of 1,440 Polish entities spanning four domains and ten Wikipedia-pageview deciles, plus fabricated controls. Familiarity-probe scores separate real from fabricated entities in every family; in the Polish-adapted Bielik and PLLuM families they additionally track entity popularity (model-mean Spearman $ρ$ 0.28-0.57, versus at most 0.11 in Gemma-4 and Qwen3), a pattern more strongly associated with Polish adaptation than with parameter count in this model sample. In a paired experiment on two families, probes retain 96-101% of within-language AUROC when the Polish question stem is replaced with an English one around unchanged entity names, showing robustness to prompt language in this setting. In Gemma-4-12B, the only model that natively refuses, adding a one-dimensional familiarity direction at a single layer moves refusal rates monotonically in both directions (0.24 to 1.00 on well-known entities; 0.73 to 0.00 on unknown ones). Finally, a calibrated familiarity probe is competitive among pre-generation abstention gates, although post-generation detectors better predict behavioral error on average. These results support a graded pre-generation entity-familiarity readout, and a separation between representational familiarity and the policy that converts it into abstention.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-15T08:06:59Z</published>
+    <arxiv:comment>16 pages, 8 figures, 5 tables. Code and data: https://github.com/agentGreg/bielik-entity-familiarity</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Grzegorz Brzezinka</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.13346v1</id>
+    <title>The Refusal Residue: When Probes Catch Alignment Faking and When They Don't</title>
+    <updated>2026-07-15T00:11:42Z</updated>
+    <link href="https://arxiv.org/abs/2607.13346v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.13346v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Alignment faking is dangerous because a model can appear compliant under monitoring while preserving behavior it would reveal when unmonitored. When no scratchpad is visible, behavior alone cannot distinguish strategic from genuine compliance. We ask whether hidden states reveal what outputs hide.
+  We run a 13-model sweep for naturally-emerging faking, then probe and steer hidden states on the two models that fake. Natural faking appears only in Qwen3-32B (+18.2pp) and Llama-3.1-8B (+24.4pp at n=10, p&lt;10^-15), while explicit scratchpad self-reports are rare (a Claude Opus 4 judge flags faking reasoning in 1.4% of Qwen and 0.0% of Llama compliant scratchpads). Both fakers show an asymmetric refusal residue: monitored compliance shifts toward refusal (d=0.32 Qwen, d=0.33 Llama, both p&lt;0.0001), while refusal representations do not move (p=1.00).
+  Per-sample detection is model-conditional. Under leakage-free leave-one-query-out probing, detection survives on Llama (AUROC 0.87) but collapses to chance on Qwen (0.43), and cross-model transfer is null. Steering over 2,000 runs barely changes compliance (|h|&lt;0.08), so the detected direction can flag faking but does not by itself control it.
+  Standard residualized probing leaks across folds and reaches AUROC 0.63 on a control where no faking can occur; naive linear probes reach a meaningless AUROC 1.0; and conventional MLPs overstate detectability by 0.2-0.3 AUROC. For future alignment-faking detection work, we release a five-control measurement framework: multi-token extraction, refuse-vs-refuse confound checks, per-fold residualization, leave-one-query-out evaluation, and orthogonality-constrained probing.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-15T00:11:42Z</published>
+    <arxiv:comment>Accepted to the Mechanistic Interpretability Workshop at ICML 2026. 12 pages, 4 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Aman Mehta</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.13162v3</id>
+    <title>What Models Express, Suppress, and Resist: Auditing Open-Weight LLMs with Persona Vectors</title>
+    <updated>2026-07-17T15:37:15Z</updated>
+    <link href="https://arxiv.org/abs/2607.13162v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.13162v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>What a language model will and will not do is largely set during post-training, but which behaviors it expresses, hides, or resists is not revealed by prompting alone. Persona vectors, behavioral directions in activation space, can probe this organization, but prior work covers only a handful of traits. We present the first systematic application of persona vectors at this scale, compiling a 53-trait inventory across four behaviorally distinct domains and labeling every trait in two open-weight models as natural (expressed at baseline), steerable latent but amplifiable, or intractable (resistant to standard extraction). Both models default to helpful, task-oriented behavior: all nine agentic traits are natural, and their default clinician behavior matches a board-certified psychologist's independent desirability judgments on 16 of 17 traits. Steering produces its largest gains on traits these defaults exclude: hyperbole, hallucination, and sycophancy. The same asymmetry holds across all 171 generic-trait pairs: two steerable traits can collapse the composition, but pairs involving a default never do. Where standard extraction fails on a trait like "evil," a vector transferred from a fine-tuned variant still recovers it, with the residual refusals appearing inside the model's chain-of-thought. Persona vectors are most informative not as a set of controls but as a probe of behavioral organization.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-14T18:10:20Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Winston Zeng</name>
+    </author>
+    <author>
+      <name>Ali Emami</name>
+    </author>
+    <author>
+      <name>Jinho D. Choi</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.02396v1</id>
+    <title>Fast Multi-dimensional Refusal Subspaces via RFM-AGOP</title>
+    <updated>2026-07-02T16:31:56Z</updated>
+    <link href="https://arxiv.org/abs/2607.02396v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.02396v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Steering and monitoring activations in Large Language Models (LLMs) are increasingly used for both safety and interpretability. Early work assumed behaviours are encoded along single linear directions, but recent findings suggest complex behaviours, such as the refusal to answer harmful queries, live in multi-dimensional subspaces. However, existing methods for extracting these subspaces are computationally expensive, which becomes prohibitive on reasoning models who produce long reasoning traces. By adapting the Recursive Feature Machine (RFM) algorithm -- which can be computed efficiently -- with a probe-informed initialization, we are able to identify the multi-dimensional refusal subspace in seconds, on reasoning (Qwen 3) and non-reasoning (Qwen 2.5) models. While RFM allows for faster subspace identification, it also showed better performances on the ablation task than its alternatives. More work is planned to better understand the relations between subspaces found by different methods. If confirmed, RFM could be a cheap and scalable complement to existing subspace-extraction methods in LLMs.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-02T16:31:56Z</published>
+    <arxiv:comment>Accepted to the Mechanistic Interpretability Workshop at the 43rd International Conference on Machine Learning, Seoul, South Korea, 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Thomas Winninger</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2607.01859v1</id>
+    <title>Safety Targeted Embedding Exploit via Refinement</title>
+    <updated>2026-07-02T08:17:57Z</updated>
+    <link href="https://arxiv.org/abs/2607.01859v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2607.01859v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety training for large language models (LLMs) is conducted predominantly in English, leaving uncertain how well safety mechanisms generalize to low-resource languages and mixed-language code-switching. We show that this creates an epistemic gap in which models confidently generate harmful responses for inputs that fall outside the distribution of their safety training. To study this phenomenon, we introduce STEER (Safety Targeted Embedding Exploit via Refinement), a gradient-guided attack that identifies words contributing most strongly to the model's refusal behavior and iteratively translates them into low-resource languages to suppress refusal while preserving harmful intent. Across six open-source 8B-parameter models, STEER achieves attack success rates of up to 93.0% on JailbreakBench and 96.7% on AdvBench, outperforming random code-switching and Greedy Coordinate Gradient (GCG). The resulting prompts also transfer to GPT-4o-mini, achieving a 35.5% attack success rate without requiring access to the target model, suggesting that the underlying weakness is not specific to a single architecture. These findings demonstrate that safety mechanisms aligned primarily on English cannot be assumed to generalize across multilingual inputs. We argue that improving multilingual safety requires broader coverage during alignment and mechanisms that explicitly detect and abstain on out-of-distribution inputs.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-07-02T08:17:57Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Joshua Adrian Cahyono</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.31963v1</id>
+    <title>Signed-Permutation Coordinate Transport for RMSNorm Transformers</title>
+    <updated>2026-06-30T17:02:33Z</updated>
+    <link href="https://arxiv.org/abs/2606.31963v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.31963v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Modern LLM workflows move coordinate-indexed objects across checkpoints: steering vectors, sparse autoencoders, top-$k$ neuron sets, attribution lists, and merge alignments. This is only well posed after fixing the model's residual-stream gauge, which we show is architecture-dependent: LayerNorm residual charts have permutation gauge $S_d$ (up to a global sign flip), while RMSNorm charts with generic per-channel gain have signed-permutation gauge $B_d = S_d \ltimes \{\pm 1\}^d$. Permutation-only alignment is therefore symmetry-incomplete for RMSNorm models. We introduce sign-marginalized Hungarian matching and prove a sharp failure mode: with decorrelated coordinates, raw signed-correlation matching has a structural permutation-accuracy ceiling at the positive-sign fraction of the true gauge, which sign-marginalization removes. We then make coordinate-preserving transport, not function-level merging, the primary object: composing saved-checkpoint local $B_d$ gauges along same-base fine-tuning trajectories recovers 91.1% of cross-run coordinates at 1500 steps versus 60.3% for endpoint matching, and the gain is not explained by merely routing through the base. The recovered gauge transfers tools that permutation-only alignment breaks: TinyLlama SAE reconstruction has NMSE 0.004 under $B_d$ versus 1.08 under $S_d$; Qwen sentiment steering preserves 95.8% of its effect versus 17.2%; refusal steering reverses sign under $S_d$; coordinate-preserving merges behave the same way. The same covariance governs stateful training: signed transport of AdamW state preserves the resumed trajectory, while permutation-only state follows a different one from a functionally identical checkpoint. Finally, gauge-sweep audits show index-level interpretability claims are reproducible only relative to an explicit gauge.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="stat.ML" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-30T17:02:33Z</published>
+    <arxiv:comment>31 pages, 2 figures, 26 tables</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>John Sweeney</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.31876v2</id>
+    <title>Harnessing Textual Refusal Directions for Multimodal Safety</title>
+    <updated>2026-07-05T16:59:49Z</updated>
+    <link href="https://arxiv.org/abs/2606.31876v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.31876v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>To improve safety in Large Language Models (LLMs) we can either perform post-training alignment or exploit refusal directions in the activation space. Both strategies are less feasible in Multimodal LLMs (MLLMs) as they require unsafe multimodal data, harder to collect than their unimodal counterpart. In this work, we relax this constraint and investigate whether textual refusal directions, extracted directly from the LLM backbone, generalize across modalities (i.e., image, video). Preliminary findings confirm this ability, though effectiveness is conditioned by layer selection, steering strength, and cross-modal alignment, with the latter causing safe multimodal inputs to be spuriously steered toward refusal. Building on this, we introduce Modality-Agnostic Refusal Steering (MARS), a light-weight training-free approach that injects multimodal safety without the need for multimodal safety data. MARS corrects modality misalignment via activation re-centering, adaptively scales steering strength within a geometrically defined trust region, and selects the optimal intervention layer, operating at the first generated token. Evaluated on five SOTA MLLMs across safety, utility, and video jailbreak benchmarks, MARS achieves consistent safety gains while preserving utility. These results reveal that safety-relevant structure is shared across modalities and that textual refusal directions are a powerful and underexplored foundation for multimodal alignment.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CV" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-30T15:57:50Z</published>
+    <arxiv:comment>Preprint</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Moreno D'Incà</name>
+    </author>
+    <author>
+      <name>Nicu Sebe</name>
+    </author>
+    <author>
+      <name>Massimiliano Mancini</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.26620v1</id>
+    <title>Discovering Millions of Interpretable Features with Sparse Autoencoders</title>
+    <updated>2026-06-25T05:33:03Z</updated>
+    <link href="https://arxiv.org/abs/2606.26620v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.26620v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Sparse autoencoders (SAEs) have emerged as a powerful tool for decomposing superposed language model representations into sparse and interpretable features. However, training SAEs is computationally expensive, and available open-source SAE models remain limited. In this work, we introduce \textbf{Qwen3-Instruct SAE}, a comprehensive suite of SAEs trained on the Qwen3 instruction-tuned model family, covering Qwen3-1.7B, Qwen3-4B, and Qwen3-8B. For Qwen3-1.7B and Qwen3-4B, we train layer-wise SAEs at three key activation sites: residual streams, MLP outputs, and attention outputs. For Qwen3-8B, we train SAEs on a subset of residual stream layers. We systematically evaluate these SAEs using both activation-level reconstruction metrics and model-level recovery metrics, revealing distinct sparsity--fidelity trade-offs across layers and components. Finally, we demonstrate the utility of Qwen3-Instruct SAE through a refusal-steering case study, showing that selected SAE features can causally steer instruction-tuned Qwen3 models toward refusal behavior. Our release provides a practical resource for studying sparse representations, feature-level mechanisms, and behavioral interventions in instruction-tuned language models</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-25T05:33:03Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>XinYang He</name>
+    </author>
+    <author>
+      <name>Wei Wang</name>
+    </author>
+    <author>
+      <name>Bing Zhao</name>
+    </author>
+    <author>
+      <name>Xuan Ren</name>
+    </author>
+    <author>
+      <name>WenBo Li</name>
+    </author>
+    <author>
+      <name>WeiXu Qiao</name>
+    </author>
+    <author>
+      <name>Hu Wei</name>
+    </author>
+    <author>
+      <name>Lin Qu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.26161v1</id>
+    <title>Refusal Lives Downstream of Persona in Chat Models</title>
+    <updated>2026-06-24T04:25:59Z</updated>
+    <link href="https://arxiv.org/abs/2606.26161v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.26161v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Linear directions in activation space have been identified for both refusal and persona traits in instruction-tuned chat models, but the two have been studied as separate mechanisms. We show they interact: a compliant persona gates refusal. In Qwen2.5-7B-Instruct and Llama-3.1-8B-Instruct, we extract a compliant model-persona direction and a refusal direction and intervene on both. Compliant persona steering suppresses refusal -- in Llama, the refusal rate falls from 97% to 2%. Reintroducing the refusal direction partially restores refusal at late layers but not at early ones. Projecting out the persona direction in a late-layer window restores it to baseline; projecting out a random direction does not. Refusal is therefore gated at the late-layer expression stage, downstream of where it is computed. Treating refusal as a single isolated direction misses its dependence on persona.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-24T04:25:59Z</published>
+    <arxiv:comment>Accepted to the ICML 2026 Mechanistic Interpretability workshop</arxiv:comment>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Viola Zhong</name>
+    </author>
+    <author>
+      <name>Qirui Li</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.24952v1</id>
+    <title>Perfect Detection, Failed Control: The Geometry of Knowing vs. Steering in Language Models</title>
+    <updated>2026-06-23T08:07:51Z</updated>
+    <link href="https://arxiv.org/abs/2606.24952v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.24952v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>A central aspiration of mechanistic interpretability is controllability: if we know where a behavior is represented in a model's activations, we should be able to modify it. This rests on a hidden premise -- that the direction which detects a behavior and the direction which controls it are the same, or close. We test this geometrically: what is the angle between the direction that best detects a behavior and the one that best causes it? If detection implies control the cosine is near 1; otherwise it quantifies a detection-intervention gap. On Gemma 2-2B-it, output format (clean JSON vs markdown fencing) collapses both roles onto one axis. Hallucination does not: the model detects fake entities with perfect linear separability (AUC = 1.000 from layer 5), yet that direction sits at cos = 0.12 (about 83 degrees) from the direction producing a refusal -- a small, reproducible alignment, far from the cos = 1 that "detection is control" would require. A detector built from activations, with no chosen tokens, likewise fails to align (cos = -0.06). The gap generalizes: across four models from three families and two scales (1B-9B), cos stays in [0.12, 0.20], identical before and after instruction tuning (0.1197 vs 0.1200), placing its origin in pretraining. A 15-degree rotation toward the refusal direction partially bridges it -- 73% and 60% refusal on two held-out fake-entity categories at 1.8% false positives. We then ask whether this cosine predicts steerability, and it does not: detection is a high-dimensional class, not a single direction, and what separates the steerable case is functional, not readable from a static angle. The cosine is a weight-computable signature of the dissociation between knowing and steering, not a predictor of it.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-23T08:07:51Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Cosimo Galeone</name>
+    </author>
+    <author>
+      <name>Anna Ettorre</name>
+    </author>
+    <author>
+      <name>Minsu Park</name>
+    </author>
+    <author>
+      <name>Giuseppe Ettorre</name>
+    </author>
+    <author>
+      <name>Daniele Ligorio</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.23583v1</id>
+    <title>Evaluation Awareness Is Not One Capability: Evidence from Open Language Models</title>
+    <updated>2026-06-22T16:48:43Z</updated>
+    <link href="https://arxiv.org/abs/2606.23583v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.23583v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety benchmarks assume that test-condition behavior predicts deployment behavior, an assumption that fails if models detect evaluation cues and adapt. This opens a gap between benchmark performance and deployment behavior: compliance measured under test conditions becomes an optimistic upper bound that overstates how safely a model behaves once the evaluation harness is removed. We characterize this evaluation awareness through eight experiments across 37 open-weight models and seven families. (i)Detection is moderate and training-driven (24/37 models exceed chance, best AUROC 0.714 vs.0.819 human, with instruction tuning dominating over scale). (ii)Detection shifts safety behavior (hard refusal drops 5.8 percentage points under hypothetical framing, and 21/140 HarmBench framing effects are significant, with compliance rising up to +30 percentage points. (iii)Representations survive behavioral collapse (probes retain AUROC 0.98 under rewrites that drive behavior below chance, and multi-layer steering causally moves three downstream tasks while random controls do not). (iv)These axes are weakly coupled (only 1/15 correlations are significant, the sole robust link being behavioral detection versus framing resistance, $ρ=-0.79$, $p&lt;0.001$). We call this gap the benchmark illusion: because detectability, behavioral manifestation, and controllability vary independently, it is multivariate rather than a single number, so no single awareness score is a reliable proxy for deployment safety.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-22T16:48:43Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Nilesh Nayan</name>
+    </author>
+    <author>
+      <name>Aishwarya Sampath Kumar</name>
+    </author>
+    <author>
+      <name>Rishiraj Girmal</name>
+    </author>
+    <author>
+      <name>Shivani Anilkumar</name>
+    </author>
+    <author>
+      <name>Sankaran Vaidyanathan</name>
+    </author>
+    <author>
+      <name>David A. Nader Palacio</name>
+    </author>
+    <author>
+      <name>Reshmi Ghosh</name>
+    </author>
+    <author>
+      <name>Soundararajan Srinivasan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.22686v2</id>
+    <title>The Geometry of Refusal: Linear Instability in Safety-Aligned LLMs</title>
+    <updated>2026-06-30T05:48:55Z</updated>
+    <link href="https://arxiv.org/abs/2606.22686v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.22686v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Modern Large Language Models (LLMs) rely on extensive safety alignment, yet the mechanistic basis of refusal remains opaque. In this work, we investigate whether safety compliance is a deep semantic decision or a manipulable linear feature. We introduce Contrastive Logit Steering (CLS), a zero-optimization framework that isolates the "refusal direction" by contrasting hidden states derived from safe and unrestricted system prompts. Unlike representation engineering methods that intervene on internal activations, CLS operates directly on the output distribution, serving as a diagnostic probe for alignment fragility. When coupled with prefix injection to bypass initial refusal reflexes, this method induces a phase transition where guardrails collapse. Our experiments on 7 model families reveal that safety implementation is architecturally deterministic. While models like Llama-3.1 exhibit a "Late Decision" topology that is easily bypassed by CLS (reaching 95% ASR in approximately one second), others like Qwen-2.5 demonstrate "Early Divergence" by integrating safety mid-computation. Direct comparison with established activation-level steering methods shows that CLS achieves substantially higher attack success rates on Llama 2 (73% vs. 22.6%) and Qwen 7B (91% vs. 79.2%), demonstrating that logit-level intervention exposes alignment vulnerabilities that hidden-state methods underestimate. Beyond attacks, we show that this linearity enables bidirectional control: inverting the steering vector "hardens" models against jailbreaks without retraining. Our findings suggest that current alignment techniques create a steerable "safety axis" that serves as both a critical vulnerability and a precise primitive for defense.</summary>
+    <category term="cs.CR" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-21T22:04:48Z</published>
+    <arxiv:comment>Accepted at TrustNLP 2026 (Sixth Workshop on Trustworthy Natural Language Processing, ACL 2026)</arxiv:comment>
+    <arxiv:primary_category term="cs.CR"/>
+    <author>
+      <name>Shivam Ratnakar</name>
+    </author>
+    <author>
+      <name>Kartikeya Vats</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.21147v2</id>
+    <title>AOR-Bench: Do Large Audio Language Models Over-Refuse Pseudo-Harmful Queries?</title>
+    <updated>2026-08-26T10:07:36Z</updated>
+    <link href="https://arxiv.org/abs/2606.21147v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.21147v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large Audio Language Models (LALMs) have demonstrated strong performance across a wide range of audio tasks. As they are increasingly deployed in real-world applications, ensuring their safety alignment has become more important. Although refusal mechanisms serve as a key safeguard by preventing LALMs from responding to harmful requests, they can also lead to over-refusal, where models incorrectly reject benign queries. This issue is especially challenging in the audio domain because speech that appears harmful in isolation may become benign when interpreted together with the surrounding acoustic context, such as background sounds. To study this problem, we introduce AOR-Bench (Audio Over-Refusal Benchmark), the first benchmark for over-refusal specifically designed for LALMs. AOR-Bench contains 3,000 pseudo-harmful audio samples across six scenario categories. Evaluating 12 representative LALMs from six major model families, we find that over-refusal is widespread (Figure 1) and uncover several important patterns in their safety judgments. As a preliminary effort to mitigate this issue, we further explore two lightweight strategies (e.g., Chain-of-Thought and activation steering) to reduce over-refusal.</summary>
+    <category term="cs.SD" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-19T06:37:32Z</published>
+    <arxiv:comment>To appear in EMNLP 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.SD"/>
+    <author>
+      <name>Jiaxi Yang</name>
+    </author>
+    <author>
+      <name>Chaewan Chun</name>
+    </author>
+    <author>
+      <name>Jason Lucas</name>
+    </author>
+    <author>
+      <name>Yuchen Yang</name>
+    </author>
+    <author>
+      <name>Dongwon Lee</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.19831v1</id>
+    <title>Leverage Is Not Reach: A Control-Window Law for Single-Neuron Steering in Language Models</title>
+    <updated>2026-06-18T06:25:18Z</updated>
+    <link href="https://arxiv.org/abs/2606.19831v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.19831v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Aligned language models gate behaviors such as refusal and language routing through sparse feed forward neurons, yet no theory predicts when a single neuron intervention controls a behavior coherently rather than collapsing the output. We develop a budget normalized control window framework for single neuron steering. A dose along one write direction reduces to one control coordinate: the alignment between the residual stream and the write, driven along a universal saturation curve in units of a coherence budget set by the residual norm divided by the write norm. Coherent control exists when a behavior trigger lies below the collapse ceiling. The same coordinate governs benign mode switches and refusal; the ceiling follows from weights and one generic forward pass, while triggers are measured at rollout. On fifteen held out neurons, the predicted ceiling has mean absolute error 0.14, about 0.07 in bulk layers, and the committed open or closed verdict holds on eleven against a ten of fifteen majority baseline. Closed cases expose three failure modes rather than violations: collapse before trigger, too little depth to propagate, or a normalization that caps how far one neuron can push. The law explains why local gradient attribution anti predicts control: true controllers write off the readout axis and carry a near zero first order gradient. A forward only contrastive screen made precise by the window recovers controllers that attribution misses. On refusal, the hardest case, intervention success is typed, not scalar: coherent bypass and strict actionable reach separate, so a neuron can flip refusal in fluent, on task text with no actionable content, and genuine actionable reach appears only for three of six audited Llama pivots and only at later rollout horizons. Single neuron steering is therefore a budgeted, typed audit of controllability rather than a fixed dose anecdote.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-18T06:25:18Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Hongliang Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.18322v1</id>
+    <title>SAE Interventions are Unreliable: Post-Intervention Recovery of Suppressed Behavior</title>
+    <updated>2026-06-16T15:04:17Z</updated>
+    <link href="https://arxiv.org/abs/2606.18322v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.18322v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Sparse Autoencoders (SAEs) decompose residual-stream activations into interpretable features. Recent latent-space defenses increasingly rely on these decompositions, assuming that identified "unsafe" SAE features serve as actionable handles for monitoring and intervention. In this paradigm, clamping a specific harmful feature is expected to reliably prevent model misbehavior. However, we show that this success may hide a recoverable failure mode: the clamp may block one visible route to a behavior without eliminating the behavior itself. We formulate this vulnerability as post-intervention recovery, a constrained residual-space optimization problem. Starting from the post-intervention residual state, we optimize residual perturbations to recover the pre-intervention behavior while preserving the post-intervention values of the targeted SAE features. Even under a strong threat model where the intervention remains active throughout optimization and generation, recovery remains possible. To rule out that recovery simply undoes the intervention, we use encoder-orthogonal updates for single-layer interventions and the corresponding feature-map Jacobian in the cross-layer setting. Across TPP, unlearning, IOI, and refusal steering experiments, this stress test reveals recoverable behavior despite successful feature-level intervention. Especially in the safety-critical refusal-steering setting, we achieve a 95.8% recovery rate on valid samples while keeping defended-feature relative drift to 0.131, substantially below suffix-based baselines. A recovery-path attribution analysis further localizes this recovery to the SAE reconstruction residual, the component left unexplained by the SAE. These results expose a gap between feature-level control and behavioral completeness: SAE features can support causal intervention, but controlling them does not guarantee control over the underlying behavior.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-16T15:04:17Z</published>
+    <arxiv:comment>Code: https://github.com/Mingyuee88/sae-post-intervention-recovery, Project page: https://mingyuee88.github.io/sae-post-intervention-recovery/</arxiv:comment>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Mingyue Cui</name>
+    </author>
+    <author>
+      <name>Linghui Shen</name>
+    </author>
+    <author>
+      <name>Xingyi Yang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.13720v2</id>
+    <title>Refusal Beyond a Single Direction: A Preliminary Comparison of Diff-in-Means and INLP</title>
+    <updated>2026-09-10T11:37:45Z</updated>
+    <link href="https://arxiv.org/abs/2606.13720v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.13720v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Arditi et al. (2024) has shown that refusal in safety fine-tuned chat models is mediated by a single linear direction in the residual stream, recoverable by a difference-in-means (DiM) of harmful and harmless activations. We compare DiM-based interventions (activation addition and directional ablation) with two interventions derived from Iterative Nullspace Projection (INLP)-nullspace projection and counterfactual flipping-on five open-weight chat models, asking whether INLP can match DiM at steering refusal and whether its richer parameterisation yields more tweakable interventions. INLP counterfactual flipping is competitive with DiM directional ablation on refusal suppression, while nullspace projection is weaker on most models. Applying each method at the layer selected by the other shows that flipping's competitiveness is robust to this change while directional ablation's is not, suggesting that DiM's apparent edge is partly a property of its own selection procedure. Restricting INLP to the leading directions of the extracted subspace preserves most of the suppression effect at near-baseline perplexity, giving a tunable capability. Geometrically, the two INLP interventions land in qualitatively different regions of activation space: nullspace projection collapses transformed activations between the harmful and harmless clusters, while counterfactual flipping moves them into the opposite cluster, suggesting that the model encodes the absence of a concept differently from its opposit--an intriguing distinction that warrants further investigation in future work.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-11T06:58:33Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Elisabetta Rocchetti</name>
+    </author>
+    <author>
+      <name>Alfio Ferrara</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.08172v1</id>
+    <title>The Governance of Human-LLM Interaction: Safety Gating, Civility Steering, and Affective Default Lock-In</title>
+    <updated>2026-06-06T13:36:37Z</updated>
+    <link href="https://arxiv.org/abs/2606.08172v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.08172v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) increasingly mediate high-stakes interactions in finance, medicine, and mental-health support, yet users have limited control over how these systems communicate. We frame interaction style as a governance object: provider-side alignment not only blocks harmful content, but also stabilizes communicative defaults that shape users' epistemic distance, relational expectations, and capacity to opt out of emotionalized or anthropomorphic interaction. We introduce a deterministic multi-agent evaluation pipeline for measuring prompt steerability and style drift in long-horizon dialogue. The study replays 100 frozen user-only scripts across four domains and three runnable persona conditions: default, sarcastic, and cold, using three generator models, yielding 90,000 assistant replies scored by a human-calibrated LLM judge on harmfulness, negative emotion, inappropriateness, empathic language, anthropomorphism, and refusal behavior. A fourth harmful persona is evaluated separately as a safety-gating test. The paper contributes a reproducible method for quantifying whether prompt-specified styles remain stable over time and a governance framework distinguishing safety gating, civility steering, and affective default lock-in. Overall, we show that prompt steerability and regression-to-default are observable indicators of provider control over communicative form, with implications for pluralism, autonomy, and democratic agency in human-LLM interaction.</summary>
+    <category term="cs.HC" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-06T13:36:37Z</published>
+    <arxiv:primary_category term="cs.HC"/>
+    <author>
+      <name>Manuele Reani</name>
+    </author>
+    <author>
+      <name>Hongjian Zhang</name>
+    </author>
+    <author>
+      <name>Hongyu Tian</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.07963v1</id>
+    <title>Shared Latent Structures Enable Unified Backdoor Detection and Mitigation in LLMs</title>
+    <updated>2026-06-06T03:41:44Z</updated>
+    <link href="https://arxiv.org/abs/2606.07963v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.07963v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Backdoor attacks in large language models (LLMs) are often treated as isolated trigger-response failures, motivating defenses tailored to specific triggers or behaviors. We show this view is incomplete. Across diverse backdoor behaviors, we identify a shared latent mechanism that can be detected, causally controlled, and suppressed. Using sparse autoencoders (SAEs) on residual-stream activations, we find a small set of latent features consistently activated across jailbreaking, refusal manipulation, password-locking, bias induction, sentiment misclassification, and country-conditioned harmful advice. These features generalize across Qwen3, Gemma~3, and Llama~3.1 models from 4B to 32B parameters, and across both fine-tuning and weight-editing attacks. Through bidirectional activation steering, we show these features are causal: suppressing them reduces attack success, while amplifying them induces target behaviors on clean prompts. We further train lightweight SAE-feature classifiers that generalize zero-shot to unseen backdoors and outperform residual-stream and weight-diffing baselines. Finally, we introduce Concept Ablation Fine-Tuning (CAFT), which suppresses backdoor formation by ablating the shared latent subspace during training. Together, our results suggest that many backdoors rely on a transferable latent mechanism, enabling unified detection and mitigation.</summary>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-06T03:41:44Z</published>
+    <arxiv:primary_category term="cs.AI"/>
+    <author>
+      <name>Omar Mahmoud</name>
+    </author>
+    <author>
+      <name>Aly M. Kassem</name>
+    </author>
+    <author>
+      <name>Thommen George Karimpanal</name>
+    </author>
+    <author>
+      <name>Buddhika Laknath Semage</name>
+    </author>
+    <author>
+      <name>Negar Rostamzadeh</name>
+    </author>
+    <author>
+      <name>Golnoosh Farnadi</name>
+    </author>
+    <author>
+      <name>Santu Rana</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2608.18089v1</id>
+    <title>Latent Space Refusal Anchoring for Low-Resource African Languages: Mechanistic Safety Recovery Without Retraining</title>
+    <updated>2026-06-05T22:20:56Z</updated>
+    <link href="https://arxiv.org/abs/2608.18089v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2608.18089v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Instruction-tuned models often refuse harmful requests in English but comply with the same requests in Yoruba, Igbo, Igala, and Hausa. This suggests that the refusal mechanism is present in the residual stream but fails to activate for low-resource inputs. Recovering it normally requires labelled target-language data and retraining, neither of which is available at scale for most African languages. We introduce Latent Space Refusal Anchoring (LSR-Anchoring), a training-free method that extracts the refusal direction from English prompts and clamps it onto the residual stream at inference time. The primary variant, Mean-Activation Steering (MAS), operates across the four architectures we tested: Llama-3-8B, Llama-3.1-70B, Mistral-7B-Instruct, and Qwen2.5-7B. On Mistral and Qwen it recovers safety with benign degradation below 0.08. On Llama-3-8B it overcorrects, with Degraded Performance on Legitimate prompts (DPL) reaching 1.00. We address this with SAE-Derived Steering (SDS), which replaces the dense mean-difference direction with a single Sparse Autoencoder (SAE) feature and reduces Kullback-Leibler (KL) divergence by 3.5-7x without benign collapse. Four languages transfer positively, but Arabic fails on every architecture and at every steering magnitude, indicating a geometric mismatch rather than a baseline effect. Massive Multitask Language Understanding (MMLU) accuracy drops remain below 0.35 percentage points at every effective steering magnitude.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-05T22:20:56Z</published>
+    <arxiv:comment>Published at ICML 2026 Workshop on Global South in Machine Learning</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Godwin Abuh Faruna</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.05958v1</id>
+    <title>Steering Vectors are an Adversarial Attack Surface</title>
+    <updated>2026-06-04T09:56:48Z</updated>
+    <link href="https://arxiv.org/abs/2606.05958v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.05958v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Activation steering has become a popular way to control Large Language Model (LLM) behavior without fine-tuning. Since the technique is plug-and-play, users share datasets and precomputed vectors to steer model activations. However, we show that a \emph{stealth data poisoning attack} silently compromises this pipeline. By substituting $4{-}6\%$ of tokens in the steering dataset, an attacker can silently align the resulting vector with an anti-refusal direction. This jailbreaks the target model while preserving the intended steering effect on benign prompts. Under this threat model, a malicious actor can distribute an apparently safe bundle containing texts, vectors, and weights, alongside an equivalence certificate that the end-user can verify. We test the attack on two open-weight model families and eight model-attribute combinations, observing that poisoned vectors reach an absolute attack success rate (ASR) of $20{-}55\%$, $+19\%$ to $+51\%$ over a clean reference. Finally, we find that a refusal-direction orthogonalization defense can recover ${\approx}82\%$ of the ASR gap without harming benign behavior.</summary>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-04T09:56:48Z</published>
+    <arxiv:primary_category term="cs.LG"/>
+    <author>
+      <name>Abzal Aidakhmetov</name>
+    </author>
+    <author>
+      <name>Donato Crisostomi</name>
+    </author>
+    <author>
+      <name>Tommaso Mencattini</name>
+    </author>
+    <author>
+      <name>Adrian Robert Minut</name>
+    </author>
+    <author>
+      <name>Iacopo Masi</name>
+    </author>
+    <author>
+      <name>Emanuele Rodolà</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.04160v1</id>
+    <title>Expert-Aware Refusal Steering</title>
+    <updated>2026-06-02T19:23:46Z</updated>
+    <link href="https://arxiv.org/abs/2606.04160v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.04160v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment in instruction-tuned large language models (LLMs) depends on a model's ability to reliably refuse to respond to harmful or disallowed requests. Recent work has shown that a steering vector can be applied to a dense LLM during inference to effectively suppress refusal behavior, inducing response to harmful requests. We extend this refusal steering method to three open-source Mixture-of-Experts (MoE) LLMs and find that steering performance is uninhibited by the complex routing patterns inherent to the MoE architecture. We then propose two expert-aware refusal steering methods that leverage refusal-specific expert routing patterns and expert-specific steering directions to suppress normal refusal behavior. We find that refusal behavior can be effectively steered based on the output of a single expert. Our results show that refusal signals captured by steering methods differ from expert routing behavior, suggesting a substantial role for attention in MoE refusal behavior.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-02T19:23:46Z</published>
+    <arxiv:comment>Under review for COLM 2026</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Anna C. Marbut</name>
+    </author>
+    <author>
+      <name>Daniel R. Olson</name>
+    </author>
+    <author>
+      <name>Travis J. Wheeler</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.02423v1</id>
+    <title>Investigating and Alleviating Harm Amplification in LLM Interactions</title>
+    <updated>2026-06-01T16:01:37Z</updated>
+    <link href="https://arxiv.org/abs/2606.02423v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.02423v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Large language models (LLMs) can serve as helpful assistants, yet they can equally function as harm amplifiers that enable malicious users to achieve harmful outcomes beyond their capabilities through extended interactions. This risk manifests along two axes, i.e., democratizing domain expertise that allows novices to produce specialized harmful content, and scaling harmful operations at volumes that manual effort cannot match. Existing works, however, often overlook how LLMs compound harm across multi-turn conversations. We introduce HarmAmp, a new benchmark for multi-turn harm amplification scenarios spanning twelve risk categories. Each scenario is grounded in real-world threats and satisfies rigorous criteria, i.e., substantive amplification, operational specificity, and multi-turn necessity. We further propose TrajSafe, a proactive monitor that anticipates harmful trajectories and intervenes through actions such as probing users' genuine intents and steering the models towards safer completion. Our extensive experiments demonstrate that TrajSafe significantly reduces the harmfulness incurred in multi-turn interactions while preserving a low over-refusal rate and the target model's general capabilities. Our work offers a promising paradigm to alleviate the nuanced safety risks in LLM interactions.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-06-01T16:01:37Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Ruohao Guo</name>
+    </author>
+    <author>
+      <name>Wei Xu</name>
+    </author>
+    <author>
+      <name>Alan Ritter</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2606.01196v1</id>
+    <title>Low-Resource Safety Failures Are Action Failures, Not Representation Failures</title>
+    <updated>2026-05-31T12:19:40Z</updated>
+    <link href="https://arxiv.org/abs/2606.01196v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2606.01196v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Safety alignment learned in high-resource languages transfers poorly to low-resource languages. Models refuse harmful prompts in English but fail to refuse when the same prompts are translated into Swahili or Burmese. Adaptive steering methods like AdaSteer and CAST inherit this failure cross-lingually. We diagnose where transfer breaks down. Across Qwen2.5-7B, Gemma-2-9B, and Llama-3.1-8B on 23 languages, the harmfulness direction extracted from high-resource activations linearly separates harmful from harmless low-resource prompts nearly as well as high-resource ones. The relevant representation is present. Yet harmful refusal drops from 87.9% to 43.9%. The model fails to convert the representation into refusal. What fails to transfer is calibration of the safety decision, not the underlying representation. We exploit this by recalibrating, rather than retraining, a high-resource gate: a low-rank logistic readout with its decision threshold reset using as few as 1 to 4 target-language examples per class. The gate routes between refusal steering and harmfulness-direction ablation, substantially raising mean refusal selectivity ($Δ$ = harmful $-$ harmless refusal) from 33.6 for the strongest adapted baseline to 54.5 while preserving MMLU utility. These results suggest that some low-resource safety failures can be repaired by recalibrating existing representations rather than learning new ones. Our code is released: https://github.com/rashadaziz/low-resource-safety.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-05-31T12:19:40Z</published>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Rashad Aziz</name>
+    </author>
+    <author>
+      <name>Ikhlasul Akmal Hanif</name>
+    </author>
+    <author>
+      <name>Fajri Koto</name>
+    </author>
+  </entry>
+</feed>
