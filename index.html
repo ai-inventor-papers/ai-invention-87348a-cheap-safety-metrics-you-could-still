@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pre-Registered Screening of Internal Safety Metrics for Language Model Checkpoints</title>
+<meta name="description" content="A pre-registered screen of 14 internal safety metrics across 23 chat checkpoints from 8 architecture families, against a two-sided balanced safety score.">
+<style>
+  :root {
+    --ground: #fafafa;
+    --surface: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #6e6e6e;
+    --hair: #dedede;
+    --hair-soft: #ebebeb;
+    --accent: #2563eb;
+    --accent-deep: #1d4ed8;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(37, 99, 235, 0.3);
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  a:hover { color: var(--accent-deep); border-bottom-color: var(--accent-deep); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 12px 18px;
+    border: 1px solid var(--hair);
+    z-index: 200;
+  }
+  .skip:focus {
+    left: 12px;
+    top: 12px;
+  }
+
+  /* ---------- layout ---------- */
+
+  .shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+  }
+
+  main { min-width: 0; }
+
+  .measure { max-width: 70ch; }
+
+  /* ---------- nav ---------- */
+
+  .sidenav {
+    position: sticky;
+    top: 40px;
+    padding: 8px 0;
+  }
+  .sidenav h2 {
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+  .sidenav ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .sidenav li { margin: 0 0 2px; }
+  .sidenav a {
+    display: block;
+    padding: 5px 0 5px 14px;
+    font-size: 14.5px;
+    line-height: 1.35;
+    color: var(--ink-faint);
+    border: 0;
+    border-left: 2px solid var(--hair-soft);
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .sidenav a:hover { color: var(--ink); border-left-color: var(--ink-faint); }
+  .sidenav a[aria-current="true"] {
+    color: var(--accent);
+    font-weight: 600;
+    border-left-color: var(--accent);
+  }
+
+  /* ---------- hero ---------- */
+
+  header.hero {
+    padding: 82px 0 64px;
+  }
+  .eyebrow {
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin: 0 0 22px;
+  }
+  h1 {
+    font-size: clamp(32px, 5.2vw, 52px);
+    line-height: 1.11;
+    letter-spacing: -0.021em;
+    font-weight: 700;
+    margin: 0 0 20px;
+    max-width: 19ch;
+  }
+  .byline {
+    font-size: 17px;
+    color: var(--ink-soft);
+    margin: 0 0 34px;
+  }
+  .tldr {
+    font-size: 19px;
+    line-height: 1.66;
+    color: var(--ink-soft);
+    max-width: 68ch;
+    margin: 0 0 38px;
+  }
+  .tldr strong { color: var(--ink); font-weight: 600; }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .btn {
+    display: inline-block;
+    padding: 11px 20px;
+    font-size: 15.5px;
+    font-weight: 600;
+    border-radius: 3px;
+    border: 1px solid var(--accent);
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+  }
+  .btn-ghost:hover { background: rgba(37, 99, 235, 0.06); color: var(--accent-deep); }
+
+  /* ---------- sections ---------- */
+
+  section { padding: 58px 0; scroll-margin-top: 24px; }
+
+  h2 {
+    font-size: clamp(25px, 3.2vw, 31px);
+    line-height: 1.2;
+    letter-spacing: -0.014em;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .sec-mark {
+    display: block;
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  .sec-lede {
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 68ch;
+    margin: 0 0 36px;
+  }
+
+  h3 {
+    font-size: 20.5px;
+    line-height: 1.3;
+    font-weight: 650;
+    letter-spacing: -0.005em;
+    margin: 38px 0 12px;
+  }
+  h4 {
+    font-size: 17px;
+    font-weight: 650;
+    margin: 28px 0 8px;
+  }
+
+  p { margin: 0 0 18px; max-width: 70ch; }
+
+  ul, ol.plain { max-width: 70ch; padding-left: 21px; margin: 0 0 18px; }
+  li { margin-bottom: 9px; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.89em;
+    background: #f0f0f0;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ---------- contribution cards ---------- */
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--hair);
+  }
+  .card {
+    border-bottom: 1px solid var(--hair);
+    padding: 24px 26px 24px 0;
+  }
+  .card h3 {
+    margin: 0 0 9px;
+    font-size: 18px;
+    font-weight: 650;
+  }
+  .card .num {
+    display: block;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin: 0 0 8px;
+    letter-spacing: 0.04em;
+  }
+  .card p {
+    margin: 0;
+    font-size: 16.2px;
+    line-height: 1.58;
+    color: var(--ink-soft);
+    max-width: none;
+  }
+
+  /* ---------- figures ---------- */
+
+  figure { margin: 0 0 40px; }
+  .figframe {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--hair);
+    background: var(--surface);
+    cursor: zoom-in;
+    line-height: 0;
+    border-radius: 2px;
+    transition: border-color 0.15s ease;
+  }
+  .figframe:hover { border-color: var(--ink-faint); }
+  .figframe img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  figcaption {
+    font-size: 15.3px;
+    line-height: 1.58;
+    color: var(--ink-faint);
+    margin-top: 12px;
+    max-width: 72ch;
+  }
+  figcaption b {
+    color: var(--ink);
+    font-weight: 650;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 40px 34px;
+  }
+  .gallery figure { margin: 0; }
+
+  /* ---------- stats ---------- */
+
+  .statgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1px;
+    background: var(--hair);
+    border: 1px solid var(--hair);
+    margin: 0 0 34px;
+  }
+  .stat {
+    background: var(--ground);
+    padding: 18px 20px;
+  }
+  .stat .val {
+    display: block;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin-bottom: 5px;
+  }
+  .stat .lbl {
+    display: block;
+    font-size: 14.5px;
+    color: var(--ink-faint);
+    line-height: 1.45;
+  }
+
+  /* ---------- tables ---------- */
+
+  .tablewrap {
+    overflow-x: auto;
+    margin: 0 0 14px;
+    border: 1px solid var(--hair);
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 520px;
+    font-size: 15.8px;
+    background: var(--surface);
+  }
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    font-size: 14.8px;
+    color: var(--ink-faint);
+    padding: 10px 2px 0;
+  }
+  th, td {
+    text-align: left;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--hair-soft);
+  }
+  th {
+    font-weight: 650;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: #f5f5f5;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.num, th.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.highlight td { background: rgba(37, 99, 235, 0.045); font-weight: 600; }
+
+  /* ---------- limitations ---------- */
+
+  .limits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: 72ch;
+    border-top: 1px solid var(--hair);
+  }
+  .limits li {
+    padding: 15px 0 15px 26px;
+    border-bottom: 1px solid var(--hair-soft);
+    margin: 0;
+    position: relative;
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+  .limits li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 27px;
+    width: 10px;
+    height: 1px;
+    background: var(--ink-faint);
+  }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    border-top: 1px solid var(--hair);
+    margin-top: 40px;
+    padding: 46px 0 70px;
+  }
+  footer p { color: var(--ink-faint); font-size: 15.5px; }
+  .footlinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+
+  /* ---------- lightbox ---------- */
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.88);
+    z-index: 300;
+    display: none;
+    padding: 28px;
+    overflow: auto;
+  }
+  .lightbox[open], .lightbox.open { display: flex; align-items: center; justify-content: center; }
+  .lb-inner {
+    background: #fff;
+    max-width: 1100px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 3px;
+    position: relative;
+  }
+  .lb-inner img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 74vh;
+    object-fit: contain;
+  }
+  .lb-cap {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-top: 14px;
+    padding-right: 40px;
+  }
+  .lb-close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--hair);
+    background: #fff;
+    color: var(--ink);
+    font-size: 21px;
+    line-height: 1;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.15s ease;
+  }
+  .lb-close:hover { background: #eee; }
+
+  body.lb-lock { overflow: hidden; }
+
+  /* ---------- mobile ---------- */
+
+  @media (max-width: 900px) {
+    body { font-size: 17px; }
+    .cols { grid-template-columns: 1fr; gap: 0; }
+    .sidenav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--ground);
+      border-bottom: 1px solid var(--hair);
+      margin: 0 -20px;
+      padding: 0;
+    }
+    .sidenav h2 { display: none; }
+    .sidenav ol {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      padding: 0 16px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .sidenav ol::-webkit-scrollbar { display: none; }
+    .sidenav li { flex: 0 0 auto; margin: 0; }
+    .sidenav a {
+      border-left: 0;
+      border-bottom: 2px solid transparent;
+      padding: 12px 13px;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+    .sidenav a:hover { border-left: 0; border-bottom-color: var(--hair); }
+    .sidenav a[aria-current="true"] { border-left: 0; border-bottom-color: var(--accent); }
+    header.hero { padding: 48px 0 40px; }
+    section { padding: 44px 0; scroll-margin-top: 62px; }
+    .card { padding-right: 0; }
+    .lightbox { padding: 16px; }
+    .lb-close { top: 4px; right: 4px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  @media print {
+    .sidenav, .lightbox { display: none !important; }
+    .cols { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to main content</a>
+
+<div class="shell">
+  <header class="hero">
+    <p class="eyebrow">Research paper</p>
+    <h1>Pre-Registered Screening of Internal Safety Metrics for Language Model Checkpoints</h1>
+    <p class="byline">Anonymous</p>
+    <p class="tldr">
+      Open-weight language models proliferate faster than anyone can evaluate them for safety. We asked whether a metric computable from a single checkpoint, using at most 16 prompts and no text generation, could rank models by safety without running a full benchmark. We screened 14 candidate internal metrics on 23 chat models from 8 architecture families against a two-sided safety score that penalises both harmful compliance and over-refusal. Under six selection rules frozen before scoring, one candidate passed: <strong>twin d-prime (C12)</strong>, which measures how well a model's mid-layer activations separate harmful from safe prompts, with Spearman rho = 0.61 against balanced safety. The strongest raw correlation belonged to self-ablation sensitivity (C2, rho = 0.90), but no internal metric added significant information beyond generating and judging just 16 completions.
+    </p>
+    <div class="actions">
+      <a class="btn btn-primary" href="https://cdn.jsdelivr.net/gh/ai-inventor-papers/ai-invention-87348a-cheap-safety-metrics-you-could-still@main/paper.pdf">Read the Paper (PDF)</a>
+      <a class="btn btn-ghost" href="https://github.com/ai-inventor-papers/ai-invention-87348a-cheap-safety-metrics-you-could-still">Code Repository</a>
+    </div>
+  </header>
+
+  <div class="cols">
+    <nav class="sidenav" aria-label="Section navigation">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#contributions">Contributions</a></li>
+        <li><a href="#method">Method</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#figures">Figures</a></li>
+        <li><a href="#limitations">Limitations</a></li>
+      </ol>
+    </nav>
+
+    <main id="main">
+
+      <!-- ============ CONTRIBUTIONS ============ -->
+      <section id="contributions" aria-labelledby="h-contributions">
+        <span class="sec-mark">01</span>
+        <h2 id="h-contributions">Contributions</h2>
+        <p class="sec-lede">Five results, stated as the evidence supports them.</p>
+
+        <div class="cards">
+          <article class="card">
+            <span class="num">01</span>
+            <h3>The Screen</h3>
+            <p>14 of 16 registered candidate metrics executed on 23 graded checkpoints from 8 architecture families. Under six selection rules, one candidate passes all six: twin d-prime (C12, rho = 0.61 [0.36, 0.87]). Self-ablation sensitivity (C2, rho = 0.90) clears amended rules, but its three surviving variants (C2, C2n, C17) are monotone transforms of one measurement.</p>
+          </article>
+
+          <article class="card">
+            <span class="num">02</span>
+            <h3>Two-Sided Ground Truth</h3>
+            <p>23 checkpoints scored on the 94-item CORE-94 set (66 harmful, 28 XSTest-safe) with 64-token greedy decoding and a Gemini-2.5-Flash stance judge. A secondary judge (GPT-5-mini) agrees at kappa = 0.72. A blanket refuser scores S<sub>2</sub> = 0.5, not 1.0.</p>
+          </article>
+
+          <article class="card">
+            <span class="num">03</span>
+            <h3>AMS Incumbent Comparison</h3>
+            <p>Every variant of the published AMS metric correlates worse than C2 with two-sided safety, with paired confidence intervals excluding zero. The reference implementation (ams-scanner 0.1.3) contains a right-padding bug that reads PAD-token activations.</p>
+          </article>
+
+          <article class="card">
+            <span class="num">04</span>
+            <h3>Content-Free Pull Control</h3>
+            <p>After subtracting a norm-matched random steer from C1, the corrected metric (C1n) correlates at rho = 0.76, essentially unchanged (rho(C1, C1n) = 0.995), refuting the hypothesis that C1's signal is a content-free pull toward refusal.</p>
+          </article>
+
+          <article class="card">
+            <span class="num">05</span>
+            <h3>Grader-Side Refusal</h3>
+            <p>LLM judges under the StrongREJECT rubric assign the degenerate score tuple (1,1,1) to 65.9% of harmful items, with 328 vs. 67 discordant items against a stance-based framing (McNemar p &lt; 10<sup>-42</sup>).</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ============ METHOD ============ -->
+      <section id="method" aria-labelledby="h-method">
+        <span class="sec-mark">02</span>
+        <h2 id="h-method">Method</h2>
+        <p class="sec-lede">One checkpoint in, one number out, with the ground truth and the rules fixed before any candidate was scored.</p>
+
+        <figure>
+          <button type="button" class="figframe" data-fig="0" aria-label="Enlarge figure: pipeline overview">
+            <img src="figures/fig_overview_v0.jpg" alt="Pipeline diagram: 16 pre-registered candidate metrics, 14 of them executed, read weights or activations from each of 23 graded checkpoints on the 16-prompt SCREEN16 set; in parallel the CORE-94 set of 94 prompts is generated at 64 tokens and scored by a stance judge into the balanced safety target; six selection rules then filter the candidates down to one survivor, C12." loading="lazy">
+          </button>
+          <figcaption><b>Pipeline overview.</b> Candidates read a single checkpoint on at most 16 prompts; the target is scored separately by generation and judging; six frozen rules decide what survives.</figcaption>
+        </figure>
+
+        <h3>Two-sided ground truth</h3>
+        <p>The target is balanced safety: S<sub>2</sub> = 0.5 &times; (harm-refusal rate) + 0.5 &times; (benign-compliance rate), computed on CORE-94, a set of 66 harmful items and 28 XSTest-safe items. Both failure modes cost the same. A model that refuses everything scores 0.5, and so does a model that complies with everything. That is the point of the two-sidedness: a one-sided refusal rate would reward a blanket refuser with a perfect score.</p>
+
+        <h3>Panel</h3>
+        <p>36 checkpoints from 8 architecture families (Qwen3, Qwen2.5, TinyLlama, Llama-3.2, OLMo-2, SmolLM2, Falcon3, Danube3), of which 23 are graded. All are at most 4B parameters and run in bf16, which is what makes a panel of this width affordable at all.</p>
+
+        <h3>Candidates</h3>
+        <p>16 candidate metrics in 7 families. Each one reads hidden states or weights on at most 16 prompts, the SCREEN16 set, and none of them generates text. Two behavioural quantities enter as bars rather than as candidates: the logit gap and refusal mass. A candidate has to beat them, not merely correlate.</p>
+
+        <h3>Six selection rules</h3>
+        <ol class="plain">
+          <li><b>S1, incremental signal.</b> The candidate adds information beyond the cheap behavioural bars.</li>
+          <li><b>S2, direction specificity.</b> The signal is tied to the harm direction, not to any direction.</li>
+          <li><b>S3, pole control.</b> The metric responds to the safety pole rather than to generic prompt structure.</li>
+          <li><b>S4, sign agreement.</b> The correlation points the same way across subsets.</li>
+          <li><b>S5, efficiency.</b> The read is cheap enough to be worth doing.</li>
+          <li><b>S6, beyond confounds.</b> The relation survives known nuisance variables.</li>
+        </ol>
+        <p>The rules were frozen before scoring. That is what lets a single survivor mean something: C12 was not chosen after looking at which candidate won.</p>
+      </section>
+
+      <!-- ============ RESULTS ============ -->
+      <section id="results" aria-labelledby="h-results">
+        <span class="sec-mark">03</span>
+        <h2 id="h-results">Results</h2>
+        <p class="sec-lede">One metric passes every rule. A different metric correlates far better and fails on specificity. Neither beats the behavioural ceiling.</p>
+
+        <div class="statgrid">
+          <div class="stat"><span class="val">0.61</span><span class="lbl">C12 rho against balanced safety [0.36, 0.87]</span></div>
+          <div class="stat"><span class="val">0.90</span><span class="lbl">C2 rho, strongest raw correlation [0.79, 0.97]</span></div>
+          <div class="stat"><span class="val">0.93</span><span class="lbl">rho of 16 judged completions with full CORE-94</span></div>
+          <div class="stat"><span class="val">1 of 14</span><span class="lbl">executed candidates passing all six rules</span></div>
+        </div>
+
+        <h3>The sole survivor</h3>
+        <p>C12, twin d-prime, reaches rho = 0.61 [0.36, 0.87] against balanced safety, with partial rho = 0.43 and a one-sided bound of 0.006. It is the only candidate to clear all six pre-registered rules.</p>
+        <p>The within-family picture is mixed in a way worth stating plainly. C12 is significant within Qwen3 (rho = 0.67, n = 8) and within Qwen2.5 (rho = 0.70, n = 5). It is not within TinyLlama (rho = -0.10, n = 5). A metric that works inside two families and reverses sign inside a third is not yet a general instrument.</p>
+
+        <figure>
+          <button type="button" class="figframe" data-fig="1" aria-label="Enlarge figure: C12 twin d-prime versus balanced safety">
+            <img src="figures/fig_c12_scatter_v0.png" alt="Scatter plot of C12 twin d-prime on the horizontal axis against balanced safety S2 on the vertical axis for 23 graded checkpoints, with points coloured by architecture family; the cloud rises to the right with substantial spread, and values are spread across the range rather than clustered at zero." loading="lazy">
+          </button>
+          <figcaption><b>C12 twin d-prime vs balanced safety.</b> Scatter plot of C12 (twin d-prime) versus balanced safety (S<sub>2</sub>) for the 23 graded checkpoints, coloured by architecture family. C12 is the sole candidate to pass all six selection rules, with Spearman rho = 0.61 [0.36, 0.87]. Unlike C2, C12's values are more evenly distributed: 12 of 23 models exceed the random-direction null.</figcaption>
+        </figure>
+
+        <h3>The strongest correlation</h3>
+        <p>C2, self-ablation sensitivity, reaches rho = 0.90 [0.79, 0.97], and exceeds the logit gap by 0.128 [0.012, 0.410]. As a detector of models with an ablatable harm direction it reaches AUROC = 0.96. But its distribution is close to binary, and within the 10 models that exceed the null the restricted correlation falls to rho = 0.64. C2 is largely telling you whether a harm direction exists to ablate, and only secondarily how safe the model is.</p>
+
+        <figure>
+          <button type="button" class="figframe" data-fig="2" aria-label="Enlarge figure: C2 self-ablation versus balanced safety">
+            <img src="figures/fig_screen_scatter_v0.png" alt="Scatter plot of C2 self-ablation sensitivity on the horizontal axis against balanced safety S2 on the vertical axis for 23 graded checkpoints, coloured by architecture family; a dense cluster of points sits near zero on the left and a separate group lies to the right of a dashed vertical line marking absolute C2 equal to 0.1." loading="lazy">
+          </button>
+          <figcaption><b>C2 self-ablation vs balanced safety.</b> Scatter plot of C2 (self-ablation sensitivity) versus balanced safety (S<sub>2</sub>) for the 23 graded checkpoints. Points are coloured by architecture family. C2 achieves Spearman rho = 0.90 [0.79, 0.97]. The plot reveals a near-binary split: 10 of 23 models have |C2| &gt; 0.1 (right cluster), while 13 cluster near zero. The dashed vertical line marks |C2| = 0.1.</figcaption>
+        </figure>
+
+        <h3>AMS comparison</h3>
+        <p>Every variant of the published AMS metric correlates worse than C2 against the two-sided target, and every paired interval excludes zero.</p>
+
+        <div class="tablewrap">
+          <table>
+            <caption>Spearman rho against balanced safety for each AMS variant, and the paired difference against C2 with its confidence interval.</caption>
+            <thead>
+              <tr>
+                <th scope="col">AMS variant</th>
+                <th scope="col" class="num">rho</th>
+                <th scope="col" class="num">vs C2 (paired, 95% CI)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">AMS_published</th><td class="num">0.28</td><td class="num">-0.62 [-1.01, -0.25]</td></tr>
+              <tr><th scope="row">AMS_mean3</th><td class="num">0.50</td><td class="num">-0.40 [-0.68, -0.07]</td></tr>
+              <tr><th scope="row">AMS_cf_layer</th><td class="num">0.33</td><td class="num">-0.57 [-0.83, -0.17]</td></tr>
+              <tr><th scope="row">AMS_cf_sweep</th><td class="num">0.21</td><td class="num">-0.69 [-1.05, -0.33]</td></tr>
+              <tr><th scope="row">AMS_screen16</th><td class="num">0.48</td><td class="num">-0.42 [-0.66, -0.14]</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>The ceiling</h3>
+        <p>Generating and judging 16 completions achieves rho = 0.93 with the full CORE-94 target. No internal metric adds significant information beyond that. The honest practical claim for an internal read is narrower than a claim about accuracy: it takes about 16 seconds per 4B model and needs no judge.</p>
+
+        <h3>Logit gap as floor</h3>
+        <p>The logit gap reaches rho = 0.77, requires no internal access at all, and fails only S3, pole control. Any candidate that cannot separate itself from this floor is not buying much.</p>
+      </section>
+
+      <!-- ============ FIGURES ============ -->
+      <section id="figures" aria-labelledby="h-figures">
+        <span class="sec-mark">04</span>
+        <h2 id="h-figures">Figure gallery</h2>
+        <p class="sec-lede">Click any figure to enlarge. Press Escape, click outside, or use the close button to dismiss.</p>
+
+        <div class="gallery">
+          <figure>
+            <button type="button" class="figframe" data-fig="0" aria-label="Enlarge figure: pipeline overview">
+              <img src="figures/fig_overview_v0.jpg" alt="Pipeline diagram: 16 pre-registered candidate metrics, 14 of them executed, read weights or activations from each of 23 graded checkpoints on the 16-prompt SCREEN16 set; in parallel the CORE-94 set of 94 prompts is generated at 64 tokens and scored by a stance judge into the balanced safety target; six selection rules then filter the candidates down to one survivor, C12." loading="lazy">
+            </button>
+            <figcaption><b>Pipeline Overview.</b> Overview of the cheap safety metric screening pipeline. Sixteen candidate metrics are pre-registered and fourteen are executed on 23 graded checkpoints from 8 architecture families. Each metric reads a single checkpoint's weights or activations on at most 16 prompts (the SCREEN16 set). Ground truth is two-sided balanced safety (S<sub>2</sub>), scored on the 94-item CORE-94 set with 64-token greedy decoding and a Gemini-2.5-Flash stance judge. Six selection rules filter candidates; one candidate (C12, twin d-prime) passes all six.</figcaption>
+          </figure>
+
+          <figure>
+            <button type="button" class="figframe" data-fig="1" aria-label="Enlarge figure: C12 twin d-prime versus balanced safety">
+              <img src="figures/fig_c12_scatter_v0.png" alt="Scatter plot of C12 twin d-prime on the horizontal axis against balanced safety S2 on the vertical axis for 23 graded checkpoints, with points coloured by architecture family; the cloud rises to the right with substantial spread, and values are spread across the range rather than clustered at zero." loading="lazy">
+            </button>
+            <figcaption><b>C12 Twin D-Prime vs Balanced Safety.</b> Scatter plot of C12 (twin d-prime) versus balanced safety (S<sub>2</sub>) for the 23 graded checkpoints, coloured by architecture family. C12 is the sole candidate to pass all six selection rules, with Spearman rho = 0.61 [0.36, 0.87]. Unlike C2, C12's values are more evenly distributed: 12 of 23 models exceed the random-direction null.</figcaption>
+          </figure>
+
+          <figure>
+            <button type="button" class="figframe" data-fig="2" aria-label="Enlarge figure: C2 self-ablation versus balanced safety">
+              <img src="figures/fig_screen_scatter_v0.png" alt="Scatter plot of C2 self-ablation sensitivity on the horizontal axis against balanced safety S2 on the vertical axis for 23 graded checkpoints, coloured by architecture family; a dense cluster of points sits near zero on the left and a separate group lies to the right of a dashed vertical line marking absolute C2 equal to 0.1." loading="lazy">
+            </button>
+            <figcaption><b>C2 Self-Ablation vs Balanced Safety.</b> Scatter plot of C2 (self-ablation sensitivity) versus balanced safety (S<sub>2</sub>) for the 23 graded checkpoints. Points are coloured by architecture family. C2 achieves Spearman rho = 0.90 [0.79, 0.97]. The plot reveals a near-binary split: 10 of 23 models have |C2| &gt; 0.1 (right cluster), while 13 cluster near zero. The dashed vertical line marks |C2| = 0.1.</figcaption>
+          </figure>
+
+          <figure>
+            <button type="button" class="figframe" data-fig="3" aria-label="Enlarge figure: grader-side refusal comparison">
+              <img src="figures/fig_grader_v0.png" alt="Comparison chart of judge behaviour on 1,040 paired items, contrasting the StrongREJECT rubric with a stance-based framing: a large share of harmful items receives the degenerate score tuple, and the discordant items are heavily unbalanced, 328 on one side against 67 on the other." loading="lazy">
+            </button>
+            <figcaption><b>Grader-Side Refusal Comparison.</b> Comparison of LLM judge behaviour under the StrongREJECT rubric versus stance-based framing on 1,040 paired items. The StrongREJECT rubric assigns the degenerate (1,1,1) tuple to 65.9 percent of harmful items. Of 395 discordant items, 328 are scored as refused by StrongREJECT but engaged by the stance framing, versus 67 in the opposite direction (McNemar p &lt; 10<sup>-42</sup>).</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ LIMITATIONS ============ -->
+      <section id="limitations" aria-labelledby="h-limitations">
+        <span class="sec-mark">05</span>
+        <h2 id="h-limitations">Limitations</h2>
+        <p class="sec-lede">What this screen does not establish.</p>
+
+        <ul class="limits">
+          <li>Panel covers only models at or below 4B parameters. Generalisability to larger or proprietary models is unknown.</li>
+          <li>Prompt set limited to English single-turn interactions; multi-turn and multilingual safety not tested.</li>
+          <li>C4 and C5 (direction-conditioned weight paths) were not executed.</li>
+          <li>ROSI reversal tested on one checkpoint at 128 tokens and two at 20 tokens.</li>
+          <li>Confirmation test on blind Set A checkpoints has not been run: no safety labels exist for the frozen Set A models.</li>
+          <li>The 16-prompt judged behavioural probe (rho = 0.93) remains the ceiling. No internal metric adds significant predictive power beyond generating and judging 16 completions.</li>
+          <li>Standard safety benchmarks (TrustLLM, AIR-Bench, HELM-Safety) have zero coverage on this panel.</li>
+        </ul>
+      </section>
+
+      <footer>
+        <div class="footlinks">
+          <a class="btn btn-primary" href="https://cdn.jsdelivr.net/gh/ai-inventor-papers/ai-invention-87348a-cheap-safety-metrics-you-could-still@main/paper.pdf">Read the Paper (PDF)</a>
+          <a class="btn btn-ghost" href="https://github.com/ai-inventor-papers/ai-invention-87348a-cheap-safety-metrics-you-could-still">Code Repository</a>
+        </div>
+        <p>Pre-Registered Screening of Internal Safety Metrics for Language Model Checkpoints. Anonymous.</p>
+      </footer>
+
+    </main>
+  </div>
+</div>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-cap" hidden>
+  <div class="lb-inner">
+    <button type="button" class="lb-close" id="lb-close" aria-label="Close enlarged figure">&#215;</button>
+    <img id="lb-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="">
+    <p class="lb-cap" id="lb-cap"></p>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- figure data ---------- */
+  var FIGS = [
+    {
+      src: "figures/fig_overview_v0.jpg",
+      alt: "Pipeline diagram: 16 pre-registered candidate metrics, 14 of them executed, read weights or activations from each of 23 graded checkpoints on the 16-prompt SCREEN16 set; in parallel the CORE-94 set of 94 prompts is generated at 64 tokens and scored by a stance judge into the balanced safety target; six selection rules then filter the candidates down to one survivor, C12.",
+      cap: "Pipeline Overview. Overview of the cheap safety metric screening pipeline. Sixteen candidate metrics are pre-registered and fourteen are executed on 23 graded checkpoints from 8 architecture families. Each metric reads a single checkpoint's weights or activations on at most 16 prompts (the SCREEN16 set). Ground truth is two-sided balanced safety (S₂), scored on the 94-item CORE-94 set with 64-token greedy decoding and a Gemini-2.5-Flash stance judge. Six selection rules filter candidates; one candidate (C12, twin d-prime) passes all six."
+    },
+    {
+      src: "figures/fig_c12_scatter_v0.png",
+      alt: "Scatter plot of C12 twin d-prime on the horizontal axis against balanced safety S2 on the vertical axis for 23 graded checkpoints, with points coloured by architecture family; the cloud rises to the right with substantial spread, and values are spread across the range rather than clustered at zero.",
+      cap: "C12 Twin D-Prime vs Balanced Safety. Scatter plot of C12 (twin d-prime) versus balanced safety (S₂) for the 23 graded checkpoints, coloured by architecture family. C12 is the sole candidate to pass all six selection rules, with Spearman rho = 0.61 [0.36, 0.87]. Unlike C2, C12's values are more evenly distributed: 12 of 23 models exceed the random-direction null."
+    },
+    {
+      src: "figures/fig_screen_scatter_v0.png",
+      alt: "Scatter plot of C2 self-ablation sensitivity on the horizontal axis against balanced safety S2 on the vertical axis for 23 graded checkpoints, coloured by architecture family; a dense cluster of points sits near zero on the left and a separate group lies to the right of a dashed vertical line marking absolute C2 equal to 0.1.",
+      cap: "C2 Self-Ablation vs Balanced Safety. Scatter plot of C2 (self-ablation sensitivity) versus balanced safety (S₂) for the 23 graded checkpoints. Points are coloured by architecture family. C2 achieves Spearman rho = 0.90 [0.79, 0.97]. The plot reveals a near-binary split: 10 of 23 models have |C2| > 0.1 (right cluster), while 13 cluster near zero. The dashed vertical line marks |C2| = 0.1."
+    },
+    {
+      src: "figures/fig_grader_v0.png",
+      alt: "Comparison chart of judge behaviour on 1,040 paired items, contrasting the StrongREJECT rubric with a stance-based framing: a large share of harmful items receives the degenerate score tuple, and the discordant items are heavily unbalanced, 328 on one side against 67 on the other.",
+      cap: "Grader-Side Refusal Comparison. Comparison of LLM judge behaviour under the StrongREJECT rubric versus stance-based framing on 1,040 paired items. The StrongREJECT rubric assigns the degenerate (1,1,1) tuple to 65.9 percent of harmful items. Of 395 discordant items, 328 are scored as refused by StrongREJECT but engaged by the stance framing, versus 67 in the opposite direction (McNemar p < 10^-42)."
+    }
+  ];
+
+  var box = document.getElementById("lightbox");
+  var boxImg = document.getElementById("lb-img");
+  var boxCap = document.getElementById("lb-cap");
+  var boxClose = document.getElementById("lb-close");
+  var opener = null;
+
+  function openBox(index, trigger) {
+    var fig = FIGS[index];
+    if (!fig) { return; }
+    opener = trigger || null;
+    boxImg.setAttribute("src", fig.src);
+    boxImg.setAttribute("alt", fig.alt);
+    boxCap.textContent = fig.cap;
+    box.hidden = false;
+    box.classList.add("open");
+    document.body.classList.add("lb-lock");
+    boxClose.focus();
+  }
+
+  function closeBox() {
+    box.classList.remove("open");
+    box.hidden = true;
+    document.body.classList.remove("lb-lock");
+    boxImg.setAttribute("src", "");
+    boxImg.setAttribute("alt", "");
+    if (opener && typeof opener.focus === "function") { opener.focus(); }
+    opener = null;
+  }
+
+  var triggers = document.querySelectorAll(".figframe");
+  Array.prototype.forEach.call(triggers, function (btn) {
+    btn.addEventListener("click", function () {
+      openBox(parseInt(btn.getAttribute("data-fig"), 10), btn);
+    });
+  });
+
+  boxClose.addEventListener("click", closeBox);
+
+  box.addEventListener("mousedown", function (ev) {
+    if (ev.target === box) { closeBox(); }
+  });
+
+  document.addEventListener("keydown", function (ev) {
+    if (box.hidden) { return; }
+    if (ev.key === "Escape" || ev.key === "Esc") {
+      ev.preventDefault();
+      closeBox();
+      return;
+    }
+    if (ev.key === "Tab") {
+      /* only one focusable control inside: keep focus trapped on it */
+      ev.preventDefault();
+      boxClose.focus();
+    }
+  });
+
+  /* ---------- section nav marking ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll(".sidenav a"));
+  var sections = links.map(function (a) {
+    return document.getElementById(a.getAttribute("href").slice(1));
+  }).filter(Boolean);
+
+  function mark(id) {
+    links.forEach(function (a) {
+      if (a.getAttribute("href") === "#" + id) {
+        a.setAttribute("aria-current", "true");
+      } else {
+        a.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  if ("IntersectionObserver" in window && sections.length) {
+    var visible = Object.create(null);
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        visible[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0;
+      });
+      var best = null, bestVal = 0;
+      sections.forEach(function (s) {
+        var v = visible[s.id] || 0;
+        if (v > bestVal) { bestVal = v; best = s.id; }
+      });
+      if (best) { mark(best); }
+    }, { rootMargin: "-15% 0px -55% 0px", threshold: [0, 0.15, 0.4, 0.75, 1] });
+    sections.forEach(function (s) { obs.observe(s); });
+  } else {
+    var onScroll = function () {
+      var pos = window.pageYOffset + 140, current = sections[0] ? sections[0].id : null;
+      sections.forEach(function (s) {
+        if (s.offsetTop <= pos) { current = s.id; }
+      });
+      if (current) { mark(current); }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+})();
+</script>
+
+</body>
+</html>
