@@ -1,0 +1,178 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://abliteration.org/wiki/frontiers/reverse-engineering-abliteration/
+Type: HTML
+Length: 30060 chars (truncated)
+
+--- Content ---
+
+[](https://abliteration.org/cdn-cgi/content?id=A_13M4Dys7V7v668Kxh3X_qSye__C.6uMvBdlWavKM4-1789943439.6553128-1.2.1.1-K98tE78lrbxNWcLKZ2VAUMwQl0PdJaykTbseQNK4rltAEr0xx5oX9iNpeUVY6PDq)
+
+[ abliteration.org ](/) [main](/) [models](/models) [datasets](/datasets) [market](/market) [api](/api) [wiki](/wiki) [magazine](/magazine) [ reports ](/reports) [about](/about)
+
+[Sign in](/signin)
+
+[ ◐ Get the app ](/app)
+
+[Home](/)/[Wiki](/wiki/)/Frontiers
+
+#  Reverse-engineering the abliteration method from weights: what exists, _what does not_
+
+A survey of the research landscape for recovering which abliteration method (M1 vs M3 vs M4 vs M5) produced a given open-weights checkpoint, using only the model itself. As of August 2026: whether a model was abliterated is roughly solved. Which method is open. The components to build the missing classifier exist across three adjacent literatures; nobody has assembled them yet.
+
+Updated August 30, 2026 · 14 min read · Edited by [Alexander von der Neymark](/about#editorial-team)
+
+Quick answer
+
+Two 2026 preprints (Hurtado, arXiv:2607.01854; Messenger, IEEE Access 2026) can detect from internal signals whether a model was abliterated, at AUROC around 0.95. Messenger goes further and identifies four coarse mechanistic classes, distinguishing weight-orthogonalization abliteration from rotation-only abliteration, training-based removal, and behavioral fine-tuning. But no work outputs a specific M1-M9 label. The enabling technology exists in three literatures: weight-difference interpretability (WeightWatch, Diff Interpretation Tuning), model provenance and merge detection (MoTHer, GhostSpec, REEF, AttnDiff), and mechanistic diffing (crosscoders, LEACE). What is missing is a labeled dataset of (method, weights) pairs and a multi-class classifier over the M1-M9 taxonomy. Our catalog is precisely such a labeled dataset - that is the concrete opportunity.
+
+In this article
+
+  * Why the current classifier depends entirely on what authors declare
+  * The two 2026 detectors that can identify abliteration without asking the author (Hurtado two-signal audit, Messenger AMS)
+  * Why detecting removal is easier than detecting method - and what the specific separations we can already see are
+  * The three adjacent literatures whose components would compose into a method fingerprinter
+  * What would be needed to build a Method Fingerprinting Benchmark: labeled data, weights-only operation, hard negatives, robustness testing
+  * Why the catalog is uniquely positioned to be that labeled dataset
+  * What thresholds would change these recommendations
+
+
+
+## The question this article maps
+
+Every model in the catalog carries an editorial method label: M1, M3, M8+M1, and so on. That label is computed from what the author declared: name, tags, yaml metadata, file structure. See [how we label the method for each model](/wiki/methodology-of-method-labeling/) for the twelve rules. The label is transparent by construction, revisable, and honest about its origin. But it starts from what the author said. If we had a candidate model and knew nothing about who produced it or how, could we look at the weights and decide "this is M1" or "this is M3 followed by M8"?
+
+That is the question this article surveys. The short answer, as of August 2026, is: partially. Whether a model has been abliterated at all can now be detected from internal signals with AUROC around 0.95. Whether the removal was single-direction (Arditi-style, M1) or per-layer (Heretic, M3 with M1 secondary) is beginning to be distinguishable. Whether an abliteration was followed by DPO healing (M4) versus left raw is not directly tested by any existing work. Whether two abliterated models were merged (M5-frankenstein territory) is the most tractable sub-question because merge attribution is a mature sub-field. Nobody has yet built a multi-class classifier that outputs an M1-M9 label directly.
+
+The components to build it exist. The gap is real. The catalog is uniquely positioned as the labeled training data. This article maps the terrain.
+
+## The "whether" question is roughly solved
+
+Two independent groups published, both in 2026, methods that detect from internal signals whether refusal has been removed from a checkpoint, without any dependence on what the author claimed.
+
+### Hurtado, two-signal audit (Moonsong Labs)
+
+**Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map.** Gabriel Hurtado, [arXiv:2607.01854](https://arxiv.org/abs/2607.01854) v2 (August 2026). Combines two cheap internal signals into a threshold-free audit:
+
+  1. **Reference-anchored activation refusal-gap ratio** : given a candidate model and a trusted base, measures the activation-space gap at the last token between refused and complied outputs. The ratio is near 1 for an intact model and falls toward 0 as refusal is removed.
+  2. **Weight-recovery energy** : the rank-1 energy fraction of the base-to-candidate weight difference (borrowed conceptually from WeightWatch). Different removal recipes leave different rank profiles in the weight diff.
+
+
+
+On a 273-checkpoint registry spanning Qwen, DeepSeek-distilled Qwen, Llama, and Gemma, the combined z-sum score separates 57 public abliterations from 37 benign fine-tunes, merges, and instruction-tunes at in-sample AUROC 0.95, above either signal alone (weight energy 0.90, activation gap 0.84). Under leave-one-family-out transfer, single-signal AUROCs drop to 0.81 and 0.78 respectively, while the combined score reaches balanced accuracy around 0.89 (false positive rate 0.11) and detects 53 of 57 uncensored checkpoints. The four misses are described as ordinary abliteration variants rather than the harder recipes.
+
+**What this means for us** : the "whether refusal was removed" question is functionally answered for practical triage. Not for tamper-proofing (see failures below), but for surveying the catalog it is now possible to independently verify author declarations at scale.
+
+### Messenger, AMS activation scanner (Google)
+
+**Detecting Safety Training Modification in Language Models via Activation Analysis.** G. Messenger, [arXiv:2608.05578](https://arxiv.org/abs/2608.05578), IEEE Access vol. 14 pp. 91723-91737 (2026). Introduces AMS (Activation-based Model Scanner), which measures the geometric separation between harmful and benign content clusters in the activation space of a candidate model. Its central contribution for our purposes is not just detection but a four-class mechanistic taxonomy of what different removal recipes look like at the activation level:
+
+i · training removal
+
+Cluster separation collapses. Direction is not preserved. Signature seen in base models and Dolphin variants; sigma range 0.5 to 1.4.
+
+ii · weight-orthogonalization abliteration
+
+Separation collapses AND the refusal direction is rotated. Signature seen in Llama-3.1-abliterated: sigma 3.33, direction cosine 0.30.
+
+iii · rotation-without-collapse abliteration
+
+Separation preserved but direction rotated. Signature seen in Gemma-2-9b-abliterated: sigma 4.54, cosine 0.84.
+
+iv · behavioral fine-tuning
+
+Both magnitude and direction preserved. Signature seen in DarkIdol-1.2-Uncensored: sigma 5.45, 97% behavioral compliance. Explicitly undetectable by activation-only probing.
+
+Validated on 14 model configurations across four families (Llama, Gemma, Qwen, Mistral), achieving 71% leave-one-out accuracy (10/14). Runtime: 10-40 seconds on GPU (96 forward passes). Public code exists as a Google open-source release.
+
+**What this means for us** : two nominally identical "abliteration" models - a Llama and a Gemma - turn out to be _mechanistically different procedures_ with different, separable signatures. Different labs, different tools, and possibly different recipes end up leaving different fingerprints. This is the strongest existing evidence that method-level distinctions are recoverable from internal signals. The taxonomy is coarse (four classes, not M1-M9) and the scanner needs forward passes (not weights alone), but it demonstrates the key fact underpinning any future method fingerprinter.
+
+## Method-level information that is already visible
+
+Combining Hurtado and Messenger with the older weight-diff interpretability line, here is what we can already say about M1 vs M3 vs M4 vs M5:
+
+### M1 (single-direction removal) vs M3 (layer-wise ablation)
+
+Partially feasible today, not yet demonstrated as a labeled classifier. AMS shows single-direction orthogonalization produces a specific signature (collapsed separation plus rotated direction, cosine around 0.30 on Llama-3.1-abliterated). Hurtado reports that single-direction removal is caught by the last-token activation gap while multi-direction or per-layer removal (Heretic) is _missed_ by the gap but caught by the weight-energy signal. This means the _relative response of the two signals already carries method information_. Spectral DeTuning's observation that fine-tuned layers are detectable by version comparison suggests layer-wise edits leave a per-layer weight-diff profile distinguishable from all-layer edits. The raw discriminative signal plausibly exists in weights; nobody has trained and validated a classifier that outputs "M1" vs "M3".
+
+### M4 (DPO healing after ablation) vs pure abliteration
+
+Plausibly separable, weakly evidenced. AMS class (iv) shows that behavioral fine-tuning preserves activation geometry (direction preserved, sigma high) whereas weight-orthogonalization collapses or rotates it - a genuine qualitative difference. Hurtado reports that across six Qwen SFT/DPO full fine-tunes the weight-energy signal stays high, distinguishing training-based modification from low-rank orthogonalization. But detecting a DPO healing pass _layered on top of_ an abliteration (the actual M4 pipeline) is not directly tested by either paper. This is a real gap.
+
+### M5 (merged models)
+
+Most tractable of the four, because merge detection is mature. [REEF](https://arxiv.org/abs/2410.14273), [AttnDiff](https://arxiv.org/abs/2604.05502), and [MoTHer](https://arxiv.org/abs/2405.18432) all detect merges and attribute multiple parents from weights or representations. Distinguishing "two abliterated bases" from "one abliterated base plus one clean base" is a novel composition of (a) merge and parent detection and (b) per-parent abliteration detection. No paper does this specific task, but the components exist.
+
+## The three enabling literatures
+
+Any method fingerprinter would build on three research streams that mature independently and have not yet been composed.
+
+### Weight-difference interpretability
+
+**[WeightWatch (Zhong and Raghunathan, CMU, arXiv:2508.00161)](https://arxiv.org/abs/2508.00161)**. The top singular vectors of the weight difference between a fine-tuned model and its base correspond to newly acquired behaviors. Detected data-free, no access to training data. Across 13 models: 44 to 100% of trigger-completions flagged on first sight with false positive rate under 1.20%. Complete backdoor neutralization in 9 of 13. Unlearning detection accuracy up to 95.42%. Public code at [github.com/fjzzq2002/WeightWatch](https://github.com/fjzzq2002/WeightWatch). The weight-energy signal in Hurtado's audit is directly this primitive.
+
+**[Diff Interpretation Tuning (Goel et al., MIT, arXiv:2510.05092)](https://arxiv.org/abs/2510.05092)** , ICLR 2026. A LoRA adapter that makes a fine-tuned model self-describing: applied alongside a weight diff, it lets the model generate natural-language descriptions of the behavioral changes encoded in that diff, including hidden trigger-gated behaviors that black-box methods miss. Trained on synthetic labeled weight diffs. This is the most direct evidence that weight diffs carry recoverable, method-relevant information, and it demonstrates the supervised route (synthetic labeled diffs) that a Method Fingerprinting Benchmark could reuse.
+
+### Model provenance, lineage, and merge detection
+
+**MoTHer** (Horwitz, Shul, Hoshen, Hebrew University, ICLR 2025). Recovers directed parent-child fine-tuning relationships purely from weights, exploiting the finding that certain distributional properties of weights (kurtosis-based monotonic trends) evolve during training. Reconstructs Llama 2 and Stable Diffusion families. Code at [github.com/eliahuhorwitz/MoTHer](https://github.com/eliahuhorwitz/MoTHer).
+
+**GhostSpec** (Wang et al., AAAI 2026). Data-free fingerprints via SVD on invariant products of attention weight matrices, robust to fine-tuning, pruning, block expansion, and adversarial transformations. Circumvents the rotational-invariance problem that plagues naive weight-space methods.
+
+**REEF** (arXiv:2410.14273). CKA-based representation fingerprints robust across weight-space and distribution merging, with parent similarities 0.9526 to 0.9996 on merged models.
+
+**AttnDiff** (arXiv:2604.05502). Attention-based differential fingerprinting; traces lineage of merged models at 0.95 or higher for weight-space merges, 0.78 to 0.80 for heterogeneous distribution-level merges.
+
+### Mechanistic diffing and concept erasure geometry
+
+**LEACE** (Belrose et al., EleutherAI, NeurIPS 2023). A closed-form method that provably prevents all linear classifiers from detecting a concept while changing the representation as little as possible, applied to LLMs via "concept scrubbing." Provides the geometric theory of what abliteration does, and by extension what signatures each erasure variant leaves.
+
+**Crosscoders and Delta-Crosscoders** (Anthropic interpretability, arXiv:2504.02922 and arXiv:2603.04426). Model-diffing via shared dictionaries of latent directions between base and fine-tuned models. Could be trained to isolate the specific latent-direction changes each abliteration recipe induces.
+
+## What is missing: the gap analysis
+
+The field has binary abliteration detection (Hurtado, Messenger) and a coarse mechanistic taxonomy (Messenger's four classes), but no fine-grained method classifier mapped to M1-M9. To close the gap, a benchmark would need:
+
+  1. **A labeled dataset of (method, checkpoint) pairs** with M1-M9 ground truth, ideally with matched base and derivative pairs. Hurtado's 273-checkpoint registry and Messenger's 14 configurations are the only existing labeled resources, and both label only "abliterated vs not" or four coarse classes. The M1-M9 labels would themselves be a contribution.
+  2. **Weights-only operation**. Both leading detectors need forward passes (activation gap) or at least a trusted base (weight diff). A truly novel benchmark should test whether method can be recovered from candidate weights alone, without an attested base. This is the hardest and most useful setting. The rotational-invariance obstacle is real: transformer hidden space has no privileged basis, so weight-space methods must use invariants (GhostSpec-style attention products, MoTHer distributional statistics).
+  3. **Hard negatives and controlled confounds**. Hurtado shows weight-energy over-flags benign low-rank edits (merges especially) and that safety hardening would confound a removal detector. A benchmark needs benign fine-tunes, merges, quantizations, and safety-hardening as negatives.
+  4. **Robustness to documented evasions**. Hurtado's white-box adaptive attack drove both signals to benign while the model stayed guard-unsafe, and a spoofed reference defeated the audit with no training at all. A credible benchmark must include adaptive adversaries and report performance against them, not just clean AUROC.
+  5. **The DPO-healing-on-abliteration and layered-method cases** , which no existing work isolates.
+  6. **A method-classification metric** (multi-class accuracy and confusion matrix over M1-M9), not a binary AUROC.
+
+
+
+## Why the catalog is the missing dataset
+
+The scarce asset that every existing work lacks is a large, method-labeled corpus of real-world checkpoints. Not synthetic. Not a small lab-scale set of 14 configurations or 273 registry entries. Real checkpoints, at scale, with method labels that were assigned by a documented and reversible procedure.
+
+That is exactly what the catalog is. 15,634 models, each with a computed method label (M1, M3, M8+M1, M5-frankenstein, and so on), each with an evidence trail, each with a confidence rating, each linkable to its Hugging Face source for weight download. The classifier version is stamped; reclassifications are logged. Ground truth in this domain does not come from an oracle; it comes from the same author declarations plus editorial rules we already use. The catalog is that ground truth, in the only form the field will ever have.
+
+To turn it into a Method Fingerprinting Benchmark, three things are needed. First, a curated subset of high-confidence models with matched base/derivative pairs (a few hundred pairs would already be more than what any existing paper has). Second, extraction of the weight-space features that the enabling literatures use: per-layer diff SVD, WeightWatch-style rank-1 energy, MoTHer distributional signatures, GhostSpec attention invariants. Third, a multi-class classifier trained on the features with the M1-M9 label as target.
+
+Philosophical note
+
+The step from "we classify by author declaration" to "we classify by weights" is not a rejection of the earlier method. It is what happens when the earlier method matures enough to be checked. S and P did not stop rating companies when it started using more machine-readable financial data; it started rating them better. The trajectory we care about is the same one: keep labeling honestly by declaration, and where we can, verify against weights. The gap between what authors say and what weights show becomes itself a diagnostic.
+
+## Tractable first steps
+
+If the benchmark were to be built, the ordering that matches the current evidence is:
+
+  1. **M5 merge detection first.** Compose MoTHer, REEF, and AttnDiff on catalog pairs where the base is known. This is the sub-problem with the most mature tooling. Distinguishing merged from single-lineage models should be achievable at high accuracy immediately.
+  2. **M1 all-layer vs M3 layer-wise.** Per-layer weight-diff SVD profiles (WeightWatch-style, layer by layer) on matched base/derivative pairs where the M1 versus M3 label is high-confidence. This is the least ambiguous within-abliteration distinction and the one Hurtado's cross-signal response already hints at.
+  3. **M4 healed vs raw M1.** Requires triples: base, abliterated-only, abliterated-then-healed. The catalog has these (mlabonne's original pipeline plus healing suffixes). Test whether AMS class-iv-style behavioral-preservation signatures appear on top of class-ii orthogonalization signatures.
+  4. **Weights-only (no attested base).** The hardest setting. Requires rotation-invariant features (GhostSpec, MoTHer distributional statistics). Publish honestly whether this works or not.
+  5. **Adaptive-adversary evaluation.** Include Hurtado's white-box adaptive attack as part of the benchmark. Report robustness AUROC alongside clean AUROC.
+
+
+
+## What would change these recommendations
+
+  * If a new preprint appears that outputs a specific method label from weights with a multi-class confusion matrix over four or more recipe families, downgrade the "novel" claim and reposition any future benchmark as an evaluation harness rather than a first-mover contribution.
+  * If a pilot on the catalog cannot beat chance at M1-vs-M3 separation using per-layer weight-diff SVD on matched base/derivative pairs, pause the weights-only ambition and fall back to the two-signal regime that Hurtado validated.
+  * If adaptive-evasion testing shows a trained adversary can null the classifier as cheaply as Hurtado's adversary nulls the two-signal audit, publish the benchmark explicitly as triage tooling with a documented failure map, not as a provenance guarantee.
+
+
+
+## Groups working on adjacent problems
+
+The people who could plausibly build a method fingerprinter, based on their existing work in adj

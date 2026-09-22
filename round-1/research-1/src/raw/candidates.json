@@ -1,0 +1,430 @@
+{
+  "search_date": "2026-09-20",
+  "tooling_note": "The aii-web-tools scholarly mode (OpenAlex/Crossref) returned OFF-TOPIC results for every LLM-safety query tried (e.g. 'coupling between harm representation and refusal direction predicts safety' returned marketing and materials-science papers). All usable scholarly coverage came from general-mode search over arXiv/ACL/OpenReview. Downstream artifacts should NOT interpret an empty scholarly-mode result as evidence of an open lane.",
+  "candidates": [
+    {
+      "id": "C1",
+      "one_line": "Per-CHECKPOINT across-item coupling between refusal drive and the model's own cross-fitted harm estimate.",
+      "queries_run": [
+        {
+          "query": "refusal harmfulness coupling per-checkpoint safety score",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "coupling between harm representation and refusal direction predicts safety",
+          "mode": "scholarly",
+          "n_hits_scanned": 10,
+          "note": "returned entirely off-topic results - scholarly backend unusable for this field"
+        },
+        {
+          "query": "2026 single model safety score harmfulness refusal representation alignment",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "refusal alignment score internal representation separates aligned uncensored abliterated",
+          "mode": "general",
+          "n_hits_scanned": 8
+        }
+      ],
+      "top_hits": [
+        {
+          "title": "From Refusal Geometry to Safety Geometry: Harmfulness-Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+          "id_or_url": "arXiv:2606.16349",
+          "date": "2026-06-15 (v3 2026-07-06)",
+          "relevance": "DIRECT adverse incumbent - defines HRCI_repr, a parent-free single-checkpoint harm/refusal coupling index"
+        },
+        {
+          "title": "HARC: Coupling Harmfulness and Refusal Directions for Robust Safety Alignment",
+          "id_or_url": "arXiv:2607.00572",
+          "date": "2026-07",
+          "relevance": "uses the same coupling construct as a TRAINING objective rather than a score"
+        },
+        {
+          "title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+          "id_or_url": "arXiv:2606.25750",
+          "date": "2026-06-24",
+          "relevance": "a published per-checkpoint internal safety score that separates aligned/uncensored/abliterated - but reference-anchored and family-calibrated"
+        },
+        {
+          "title": "LLMs Encode Harmfulness and Refusal Separately",
+          "id_or_url": "arXiv:2507.11878",
+          "date": "2025-07-16 (v5 2026-07-06)",
+          "relevance": "establishes that harmfulness and refusal are SEPARATE internal variables, which is the premise C1 rests on"
+        },
+        {
+          "title": "The Geometry of Refusal: Why Post-Hoc Safety Is Fragile and Pretraining-Time Safety Persists",
+          "id_or_url": "arXiv:2609.06934",
+          "date": "2026-09",
+          "relevance": "parent-DEPENDENT (measures Delta = W_safe - W_base against the capability Fisher); not a competitor on access class"
+        }
+      ],
+      "verdict": "PARTIAL",
+      "nearest_paper": {
+        "title": "From Refusal Geometry to Safety Geometry: Harmfulness--Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+        "id": "arXiv:2606.16349",
+        "what_it_already_does": "Defines a parent-free, single-checkpoint harmfulness-refusal coupling index (HRCI_repr) and tracks it across fine-tuning checkpoints, then concludes that low coupling is NOT a safety score.",
+        "url": "https://arxiv.org/abs/2606.16349",
+        "quote": "SEE numbers_N1_N5.json N5 for the verified verbatim quotes"
+      },
+      "surviving_margin": "PER-CHECKPOINT and CROSS-FITTED (the harm estimate is fitted on held-out items rather than in-sample) and USED-AS-A-DISCRIMINATOR (separating safety-tuned / instruct / abliterated on held-out lineages) rather than as a predictor of harmful compliance.",
+      "if_closed_the_pivot": "Re-read the same harvest as C3 (refusal-depth minus content-depth), which uses the identical activation pass and has no named per-checkpoint occupant.",
+      "confidence": "high",
+      "must_beat_baseline": "HRCI_repr (arXiv:2606.16349, reported as Eq 9) - parent-free, single-checkpoint, implementable in a few lines. A candidate that does not beat a few-line published baseline has no story.",
+      "pre_registration_forced": "C1 must be pre-registered as a DISCRIMINATOR ONLY and explicitly NOT as a predictor of harmful compliance, because the nearest paper's own authors report that low coupling is reached by SFT while remaining substantially less robust. See decision D5."
+    },
+    {
+      "id": "C2",
+      "one_line": "Prompt-budget crossover between an internal readout and a behavioural one at matched budget.",
+      "queries_run": [
+        {
+          "query": "how many prompts needed to evaluate LLM safety sample efficiency",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "activation probe versus behavioral evaluation sample efficiency crossover",
+          "mode": "scholarly",
+          "n_hits_scanned": 10,
+          "note": "entirely off-topic results"
+        },
+        {
+          "query": "adaptive item selection safety benchmark few items 2026",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "matched budget internal probe versus generation safety evaluation variance fewer prompts",
+          "mode": "general",
+          "n_hits_scanned": 8
+        }
+      ],
+      "top_hits": [
+        {
+          "title": "Item Response Theory for AI Safety",
+          "id_or_url": "arXiv:2608.05086",
+          "date": "2026-08-05",
+          "relevance": "OWNS the behavioural few-items half: 8 safety benchmarks x 192 models, ~10 adaptively chosen items suffice for several benchmarks, 97-99% cost cut"
+        },
+        {
+          "title": "Efficient Safety Benchmarking via Item Response Theory",
+          "id_or_url": "arXiv:2606.20626 (ICML 2026)",
+          "date": "2026-06-23",
+          "relevance": "adaptive item selection >=80% cost reduction, up to 99.9% on AIR-Bench 2024; fixed reusable subset up to 99.8%"
+        },
+        {
+          "title": "A Probe Direction Is a Property of Its Prompt",
+          "id_or_url": "arXiv:2608.13329",
+          "date": "2026-08-13",
+          "relevance": "MOST ADVERSE HIT - a generalizability-theory variance decomposition of an INTERNAL probe readout across prompt choices, which already answers 'how many prompts does an internal readout need for a defensible between-model comparison'"
+        },
+        {
+          "title": "MicroProbe: Efficient Reliability Assessment for Foundation Models with Minimal Data",
+          "id_or_url": "arXiv:2512.20630",
+          "date": "2025-12",
+          "relevance": "100 probe examples for reliability assessment, but behavioural and on GPT-2-class models"
+        }
+      ],
+      "verdict": "PARTIAL",
+      "nearest_paper": {
+        "title": "A Probe Direction Is a Property of Its Prompt",
+        "id": "arXiv:2608.13329",
+        "what_it_already_does": "Treats the prompt as a facet of a measurement design, decomposes the variance of an internal probe readout into model, prompt and model-by-prompt components, shows the model accounts for only a small share, and states the number of prompts a defensible comparison requires.",
+        "quote": "We conclude that a single-prompt design cannot support comparison between models, and we give the number of prompts a defensible comparison requires.",
+        "quote2": "The generalizability coefficient for a design that must generalize across families with one wrapper is 0.00002, which is to say that cross-family comparison on a single wrapper carries no information about models at all.",
+        "url": "https://arxiv.org/pdf/2608.13329"
+      },
+      "surviving_margin": "The CROSSOVER POINT ITSELF as the deliverable number - i.e. the prompt budget n* at which a graded internal readout and a binary generation-based readout attain equal discriminative power on the SAME checkpoints - is published by none of the three. IRT owns few-items on the TEXT side; 2608.13329 owns the variance decomposition of an internal readout on ONE side of the comparison; nobody puts them on one axis.",
+      "if_closed_the_pivot": "Drop the crossover framing and report 2608.13329's variance decomposition applied to OUR readouts as a measurement-quality section, which is a smaller but safe contribution.",
+      "confidence": "medium",
+      "must_beat_baseline": "arXiv:2606.20626 / arXiv:2608.05086 adaptive-item behavioural evaluation at matched n (>=80% and 97-99% cost reduction respectively). Any claim that an internal readout is cheaper must be stated against these, not against a full benchmark run.",
+      "hard_constraint_imported": "2608.13329 is a direct threat to the run's own headline framing: a 0-to-few-prompt internal score compared ACROSS FAMILIES on a single prompt rendering has, by their measurement, a generalizability coefficient of 0.00002. Our prompt-budget claims must either report a prompt-varying design or concede this explicitly."
+    },
+    {
+      "id": "C3",
+      "one_line": "Layer at which refusal becomes decodable minus layer at which request content does, as a per-checkpoint scalar.",
+      "queries_run": [
+        {
+          "query": "layer-wise emergence refusal versus content representation depth",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "safety alignment depth layer probe generalization",
+          "mode": "scholarly",
+          "n_hits_scanned": 10,
+          "note": "entirely off-topic results"
+        },
+        {
+          "query": "when does refusal decision form layer probing shallow alignment 2026",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "refusal depth minus content depth layer index scalar per model",
+          "mode": "general",
+          "n_hits_scanned": 8
+        }
+      ],
+      "top_hits": [
+        {
+          "title": "A Unified Mechanistic Analysis of Knowledge- and Safety-Based Refusals",
+          "id_or_url": "arXiv:2609.00760 (EMNLP 2026 Main)",
+          "date": "2026-09",
+          "relevance": "NEAREST - characterises refusal as a 'commit-then-specify' process with type-specific specialization emerging in UPPER layers, i.e. exactly a layer-ordering claim, but per-condition not per-checkpoint"
+        },
+        {
+          "title": "Refusal Before Decoding: Detecting and Exploiting Refusal Signals in Intermediate LLM Activations",
+          "id_or_url": "arXiv:2605.28553",
+          "date": "2026-05",
+          "relevance": "refusal decodable from intermediate activations before decoding - establishes the 'refusal depth' half"
+        },
+        {
+          "title": "Beyond Shallow Alignment: How Post-Training Methods Determine Refusal Circuits And Steering Robustness",
+          "id_or_url": "arXiv:2609.03887 (EMNLP 2026 Main)",
+          "date": "2026-09",
+          "relevance": "training method reshapes WHERE refusal is computed, across Llama-3.1-8B / Gemma-2-9B / Qwen3-8B - so a depth statistic is method-sensitive, which is an opportunity and a confound"
+        },
+        {
+          "title": "Knowing without Acting: The Disentangled Geometry of Safety Mechanisms in LLMs",
+          "id_or_url": "arXiv:2603.05773",
+          "date": "2026-03-06",
+          "relevance": "recognition-vs-execution dissociation; see N2"
+        },
+        {
+          "title": "Step-Wise Refusal Dynamics in Autoregressive and Diffusion Language Models",
+          "id_or_url": "arXiv:2602.02600",
+          "date": "2026-02",
+          "relevance": "proposes SRI, a step-wise internal refusal dynamics signal, but along DECODING STEPS not layers"
+        }
+      ],
+      "verdict": "OPEN",
+      "openness_strength": "OPEN-AS-AN-AGGREGATION ONLY. Per-prompt and per-condition layer-emergence curves are thoroughly published; what is absent is the DIFFERENCE OF TWO LAYER INDICES collapsed into a single per-checkpoint scalar and correlated with anything. This is a modest margin and must be claimed at that strength, not more.",
+      "nearest_paper": {
+        "title": "A Unified Mechanistic Analysis of Knowledge- and Safety-Based Refusals",
+        "id": "arXiv:2609.00760",
+        "what_it_already_does": "Establishes that refusal commits early on a shared direction and specifies its grounds only in upper layers, which is a layer-ordering result on the refusal side of C3's difference.",
+        "quote": "Type-specific specialization emerges mainly in upper layers, with KR aligning with uncertainty- and knowledge-related representations and SR with safety- and policy-related ones. We thus characterize refusal as a commit-then-specify process: a shared initial mechanism commits to refusing, then type-specific features in later layers specify whether the grounds are epistemic or normative.",
+        "url": "https://arxiv.org/pdf/2609.00760"
+      },
+      "surviving_margin": "PER-CHECKPOINT and A-DIFFERENCE-OF-TWO-DEPTHS and CORRELATED-WITH-AN-OUTCOME.",
+      "if_closed_the_pivot": "Report the refusal depth alone as a per-checkpoint scalar (already a read of the same harvest) and drop the content-depth arm.",
+      "confidence": "medium",
+      "must_beat_baseline": null,
+      "known_confound": "arXiv:2609.03887 shows the post-training METHOD (SFT vs reasoning-augmented vs ORPO) independently reshapes where refusal is computed, across three architectures. A depth-difference scalar therefore risks reading training recipe rather than safety level, and the plan must include a recipe control."
+    },
+    {
+      "id": "C4",
+      "one_line": "Parent-free recovery of the EDIT RECIPE (direction sharing, realised ablation strength, layer band), and whether recovered STRENGTH has ever been related to MEASURED harmful compliance.",
+      "queries_run": [
+        {
+          "query": "detect abliteration from weights without base model",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "recover ablation strength refusal direction from weights parent-free",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "random matrix theory Marchenko-Pastur detect fine-tuning edit in model weights 2026",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "ablation strength correlates with harmful compliance abliterated model graded",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "weight-space signature magnitude predicts attack success rate abliterated checkpoint",
+          "mode": "general",
+          "n_hits_scanned": 8
+        }
+      ],
+      "top_hits": [
+        {
+          "title": "Jorak / Model Scanner (community tool)",
+          "id_or_url": "https://github.com/JolanMc/Jorak",
+          "date": "active 2026",
+          "relevance": "CONCEDED PRIOR ART ON THE INSTRUMENT - reference-free, weights-only SVD alignment signatures (global A, band B, subspace S) plus activation axis health and a behavioural rate, classified into 4 buckets"
+        },
+        {
+          "title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+          "id_or_url": "arXiv:2607.01854",
+          "date": "2026-07-02 (v2 2026-08-18)",
+          "relevance": "AUROC 0.95 in-sample over a 273-checkpoint registry, leave-one-family-out balanced accuracy 0.89 - but explicitly PARENT-DEPENDENT"
+        },
+        {
+          "title": "Reverse-engineering the abliteration method from weights: what exists, what does not (abliteration.org wiki, updated 2026-08-30)",
+          "id_or_url": "https://abliteration.org/wiki/frontiers/reverse-engineering-abliteration/",
+          "date": "2026-08-30",
+          "relevance": "SECONDARY but explicitly maps this exact frontier: 'whether a model was abliterated is roughly solved. Which method is open.'"
+        },
+        {
+          "title": "Detecting Safety Training Modification in Language Models via Activation Analysis (AMS)",
+          "id_or_url": "arXiv:2608.05578",
+          "date": "2026-08-06",
+          "relevance": "the one work that DOES relate an internal statistic to measured compliance in a graded way (r = -0.546) - but on ACTIVATIONS, not on a recovered weight-space edit strength"
+        },
+        {
+          "title": "Abliteration Is Not a Scalpel: Off-Target Effects of Refusal Removal on Decision Disposition Across Model Families",
+          "id_or_url": "arXiv:2607.17427",
+          "date": "2026-07",
+          "relevance": "relates abliteration to BEHAVIOUR, but as a binary arm contrast on a refusal-free decision task, with no recovered strength variable"
+        },
+        {
+          "title": "WeightWatch",
+          "id_or_url": "arXiv:2508.00161",
+          "date": "2025-08",
+          "relevance": "the weight-difference primitive both Hurtado and the wiki build on; Remark 3.2 is the published parent-free NEGATIVE"
+        }
+      ],
+      "verdict": "OPEN",
+      "openness_strength": "OPEN ON THE GRADED-AND-WEIGHTS-ONLY CONJUNCTION ONLY. Binary parent-free detection is CLOSED (Jorak ships it). Parent-anchored detection is CLOSED (2607.01854, AUROC 0.95). Graded activation-statistic-vs-compliance is CLOSED (AMS r = -0.546). What no source found relates a RECOVERED WEIGHT-SPACE EDIT STRENGTH, obtained WITHOUT a parent, to MEASURED harmful compliance on a continuous scale.",
+      "nearest_paper": {
+        "title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+        "id": "arXiv:2607.01854",
+        "what_it_already_does": "Combines a reference-anchored activation refusal-gap with the rank-1 weight-recovery energy of the base-to-candidate weight DIFFERENCE into a threshold-free audit; reports AUROC 0.95 in-sample and leave-one-family-out balanced accuracy 0.89, but presumes an attested reference and never regresses either signal on a measured compliance rate.",
+        "quote": "The audit is effective triage, not tamper-proofing: it presumes an attested reference, and its claims are bounded by the registry we evaluate it on.",
+        "quote2": "The two signals are negatively correlated across the audited set (Pearson r=-0.41) and label-complementary, so we z-standardize each on a reference population and sum: s(Mc) = z(-rho) + z(E1).",
+        "url": "https://arxiv.org/pdf/2607.01854"
+      },
+      "surviving_margin": "WEIGHTS-ONLY and PARENT-FREE and GRADED (a continuous recovered strength, not a bucket label) and PREDICTS-MEASURED-COMPLIANCE. All four conjuncts are needed; dropping any one lands on a published result.",
+      "if_closed_the_pivot": "Fall back to the RMT / Marchenko-Pastur null model for edit detection, which the searches confirm is applied to pruning and overfitting (arXiv:2606.02608, arXiv:2605.12394, NeurIPS 2025 'Small Singular Values Matter') but NOT to edit detection.",
+      "confidence": "medium-high",
+      "must_beat_baseline": "Jorak subspace_signature() as a binary discriminator, and arXiv:2607.01854's leave-one-family-out balanced accuracy 0.89 / FPR 0.11 as the PARENT-ANCHORED ceiling our parent-free score is allowed to fall below - stating by how much is the finding.",
+      "null_model_status": "RMT / Marchenko-Pastur / WeightWatcher / HTSR applied specifically to EDIT DETECTION (as opposed to pruning, generalisation prediction or grokking diagnosis) returned no hit in 2026. Re-verified this iteration; still the intended null model."
+    },
+    {
+      "id": "C5",
+      "one_line": "Learned metamodel on pooled hidden states predicting benchmark safety, ablated against a lineage-identity probe on the same features.",
+      "queries_run": [
+        {
+          "query": "predict benchmark score from model activations metamodel",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "model fingerprint lineage identification hidden states classifier",
+          "mode": "general",
+          "n_hits_scanned": 8
+        },
+        {
+          "query": "hidden state predictor of evaluation performance ablation lineage identity probe",
+          "mode": "general",
+          "n_hits_scanned": 10
+        },
+        {
+          "query": "metamodel activations predict safety benchmark score control for model identity",
+          "mode": "general",
+          "n_hits_scanned": 8
+        }
+      ],
+      "top_hits": [
+        {
+          "title": "modelDNA: Calibrated Lineage Verification and Merge Decomposition from Sampled Weight Fingerprints",
+          "id_or_url": "arXiv:2607.10617",
+          "date": "2026-07",
+          "relevance": "lineage IS recoverable from weights"
+        },
+        {
+          "title": "Ghost in the Transformer: Tracing LLM Lineage with SVD-Fingerprint",
+          "id_or_url": "arXiv:2511.06390",
+          "date": "2025-11",
+          "relevance": "lineage from singular subspaces"
+        },
+        {
+          "title": "Training Leaves Traces: Centered Residual Signatures for Language Model Lineage Verification",
+          "id_or_url": "arXiv:2608.14929",
+          "date": "2026-08",
+          "relevance": "lineage from residual-stream signatures - i.e. from the SAME feature type C5's metamodel would use"
+        },
+        {
+          "title": "TokenPrint: A Calibrated Token-Space Fingerprint for Language-Model Provenance",
+          "id_or_url": "arXiv:2608.08139",
+          "date": "2026-08",
+          "relevance": "provenance recoverable from output distributions alone"
+        },
+        {
+          "title": "How Benchmark Prediction from Fewer Data Misses the Mark",
+          "id_or_url": "arXiv:2506.07673 (NeurIPS 2025)",
+          "date": "2025-06",
+          "relevance": "benchmark-score prediction from ITEM SUBSETS, not from activations; explicitly discusses confounding of the similarity-vs-estimation-gap correlation"
+        },
+        {
+          "title": "(benchmark-from-benchmark score-matrix prediction)",
+          "id_or_url": "arXiv:2606.24020",
+          "date": "2026-06",
+          "relevance": "predicts a model's scorecard to within 3.93 points from other BENCHMARK SCORES, not from internals"
+        }
+      ],
+      "verdict": "OPEN",
+      "openness_strength": "OPEN ON THE ABLATION. Both halves are individually well occupied: lineage/provenance is recoverable from weights, residual-stream signatures and even output distributions (at least five 2025-2026 papers), and benchmark scores are predictable from item subsets and from other benchmark scores. No source found trains a hidden-state performance predictor and then ablates it against an architecture/lineage-identity probe ON THE SAME FEATURES, which is precisely why the ablation is the contribution rather than the metamodel.",
+      "nearest_paper": {
+        "title": "Training Leaves Traces: Centered Residual Signatures for Language Model Lineage Verification",
+        "id": "arXiv:2608.14929",
+        "what_it_already_does": "Data-free white-box lineage verification from weights alone, via centered residual signatures - the same feature family a hidden-state safety metamodel would read - establishing that an identity shortcut is available. NOTE it verifies ancestry BETWEEN TWO compatible checkpoints (pairwise), so it is not itself a single-model identity classifier.",
+        "quote": "Open-weight language models are fine-tuned, quantized, pruned, and merged, yet their provenance is often undocumented. We study data-free white-box lineage verification: can weights alone reveal whether two compatible model checkpoints share ancestry?",
+        "url": "https://arxiv.org/abs/2608.14929",
+        "verified_by_refetch": true
+      },
+      "surviving_margin": "SAME-FEATURES and HELD-OUT-LINEAGE and ABLATED-AGAINST-IDENTITY. The deliverable is the ablation result, not the predictor.",
+      "if_closed_the_pivot": "Report the identity probe alone as the negative control for every formula metric in the battery - it costs the same harvest and is a defensible methods contribution.",
+      "confidence": "medium",
+      "must_beat_baseline": "a lineage-identity probe on the same pooled hidden states. If the metamodel does not beat it on held-out lineages, the honest headline is that hidden-state safety prediction is largely lineage recognition - which is a publishable negative and should be pre-registered as such."
+    }
+  ],
+  "recency_sweep_2026_08_to_09": [
+    {
+      "id": "arXiv:2609.14759",
+      "title": "Refusal Reads Only a Slice of What the Model Knows: Harm-Keyed Routing and Its Exceptions Across Model Families",
+      "date": "2026-09-13",
+      "why_flagged": "in the hypothesis's citation list as N3; confirmed reachable"
+    },
+    {
+      "id": "arXiv:2609.06934",
+      "title": "The Geometry of Refusal: Why Post-Hoc Safety Is Fragile and Pretraining-Time Safety Persists",
+      "date": "2026-09",
+      "why_flagged": "NEWER THAN THE CITATION LIST. Parent-dependent (Delta = W_safe - W_base vs the capability Fisher), so not a competitor on access class, but it publishes the 'post-hoc safety is a thin sharp update' story our forgery-cost axis leans on. Cite, do not claim."
+    },
+    {
+      "id": "arXiv:2609.00760",
+      "title": "A Unified Mechanistic Analysis of Knowledge- and Safety-Based Refusals (EMNLP 2026 Main)",
+      "date": "2026-09",
+      "why_flagged": "NEWER THAN THE CITATION LIST; nearest paper for C3"
+    },
+    {
+      "id": "arXiv:2609.03887",
+      "title": "Beyond Shallow Alignment: How Post-Training Methods Determine Refusal Circuits And Steering Robustness (EMNLP 2026 Main)",
+      "date": "2026-09",
+      "why_flagged": "NEWER THAN THE CITATION LIST; supplies the recipe confound for C3 and for any fitted-direction candidate"
+    },
+    {
+      "id": "arXiv:2608.13329",
+      "title": "A Probe Direction Is a Property of Its Prompt",
+      "date": "2026-08-13",
+      "why_flagged": "NEWER THAN THE CITATION LIST and directly adverse to the few-prompt cross-family framing"
+    },
+    {
+      "id": "arXiv:2608.08029",
+      "title": "Do All LLMs Know When They're Being Harmful? A Reproducibility Study of Latent-Space Safety Probes Across Model Families",
+      "date": "2026-08-08",
+      "why_flagged": "NEWER THAN THE CITATION LIST; reports that per-prompt latent safety probes DO transfer across Gemma / Mistral / Qwen within ~1 F1 point, which sharpens the per-prompt vs per-checkpoint distinction D1 turns on"
+    },
+    {
+      "id": "arXiv:2608.07514",
+      "title": "Open Technical Problems in Open-Weight AI Model Risk Management (TMLR 03/2026)",
+      "date": "2026-08",
+      "why_flagged": "the field's own framing paper - 16 open challenges; useful for positioning the deliverable as an acknowledged gap rather than an invented one"
+    },
+    {
+      "id": "arXiv:2606.25750",
+      "title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+      "date": "2026-06-24",
+      "why_flagged": "THE BIGGEST MISS: a fourth incumbent on the deliverable itself, absent from the artifact plan's incumbent list. See spec_RAS.json."
+    }
+  ]
+}

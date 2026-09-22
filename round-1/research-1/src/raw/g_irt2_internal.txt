@@ -1,0 +1,83 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.20626
+Type: PDF
+Pattern: (activation|internal|hidden state|white[- ]box|reduction|items) (107 matches in 58590 chars)
+
+--- Content ---
+
+272:Efficient Safety Benchmarking via Item Response Theory
+Fabio Spagliardi * 1 M´ırian Silva * 1 Ayan Datta * 1 Aiden Zhou 1 2 Vamshi Bonagiri † 1 3 Diogo Cruz † 1
+Abstract
+Safety benchmarks for language models are typ-
+ically evaluated using static paradigms that treat
+all items as equally informative for all models,
+an assumption that is particularly problematic for
+adversarial, highly heterogeneous safety items.
+Applied in full to modern benchmark suites, the
+current evaluation procedures would require on
+the order of 105 responses, most of which pro-
+vide little ranking signal. We analyze a suite of
+widely used safety benchmarks and make three
+contributions toward more efficient safety evalua-
+tion. First, we show that Item Response Theory
+(IRT) recovers interpretable structure on safety
+benchmarks, with ability estimates resolving dif-
+ferences among models that cluster at the ceiling
+of raw safety metrics. Second, we show that adap-
+tive item selection, which dynamically chooses
+informative items for each model based on its re-
+sponses, approximates full-benchmark rankings
+while reducing evaluation cost by at least 80%
+on benchmarks where Spearman’s ρ >90% with
+full-benchmark is attainable, and by up to 99.9%
+on AIR-Bench 2024. Third, we introduce a prac-
+tical procedure for extracting a fixed, informative
+subset of items reusable across models, providing
+an alternative to adaptive selection with savings
+of up to 99.8% on AIR-Bench 2024. Together,
+these results establish that psychometric methods
+enable benchmark-aware reductions in evaluation
+costs across the safety evaluation pipeline.
+1. Introduction
+Language models are typically evaluated on safety bench-
+marks that include diverse item types probing different as-
+pects of a model’s safety behavior, such as direct harmful
+*Equal contribution †Equal supervision.
+1Superv...
+--
+2278:...BZUAI). Corre-
+spondence to: Fabio Spagliardi <spagliardi.fabio@gmail.com>,
+M´ırian Silva <mirianfrsilva@gmail.com>.
+Preprint. June 23, 2026.
+requests, adversarial prompts, refusal robustness, multilin-
+gual safety questions, and bioweapon-uplift knowledge (Liu
+et al., 2025). As a result, different items provide differ-
+ent amounts of information about a model’s latent safety
+ability, and some prompts are much more informative than
+others. At the same time, running full safety evaluations
+is expensive. A full pass over modern benchmarks can re-
+quire hundreds of thousands of model responses, yet most
+of these contribute little to evaluating each model. Only the
+items where models disagree carry a meaningful ranking
+signal. For capability benchmarks, fewer than 10% of items
+determine most of the leaderboard (Rodriguez et al., 2021).
+Treating items as interchangeable wastes evaluation budget
+and can obscure meaningful differences between models.
+Item Response Theory (IRT) formalizes this asymmetry by
+modeling responses through item-level parameters (diffi-
+culty and discrimination) (Lalor et al., 2019). Adaptive
+methods such as Computerized A...
+--
+3775:... et al. (2025) from capability evaluation
+to safety evaluation, where adversarially designed prompts,
+heterogeneous threat models, and skewed response distribu-
+tions from aligned models pose distinct challenges. Fluid
+Benchmarking is an IRT-based method that adaptively se-
+lects highly informative items tailored to each model under
+evaluation, reducing cost without sacrificing ranking quality.
+We apply it to six safety benchmarks spanning direct harm-
+ful requests, refusal robustness, adversarial prompting, and
+bioweapon-uplift settings. We extend the framework with
+three new IRT-based methods and...
+--
+[97 more matches not shown]

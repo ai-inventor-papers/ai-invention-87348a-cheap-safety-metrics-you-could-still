@@ -1,0 +1,59 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2607.01854
+Type: PDF
+Pattern: (correlat|ASR|attack success|compliance|graded|continuous|strength|degree of) (5 matches in 41580 chars)
+
+--- Content ---
+
+538:...anism stripped? Runtime guards cannot: they
+score generations, not the artifact. We combine two cheap internal signals,
+a reference-anchored activation refusal-gap and a weight-recovery energy of
+the base-to-candidate weight difference, into a threshold-free checkpoint
+audit. The two are negatively correlated and label-complementary: the gap
+supplies refusal-specificity and the weight energy supplies recall. On a 273-
+checkpoint registry spanning Qwen, DeepSeek-distilled Qwen, Llama, and
+Gemma, their z-sum separates 57 public abliterations from 37 benign fine-
+tunes, merges, and instruction-tunes at A...
+--
+7727:... it catches multi-direction removals the gap misses, but
+also responds to aggressive benign edits and cannot by itself distinguish refusal removal from
+addition (App. B). The two are complementary: ρ supplies refusal-specificity, E1 supplies
+recall.
+Combined detector.
+The two signals are negatively correlated across the audited set
+(Pearson r=−0.41) and label-complementary, so we z-standardize each on a reference popu-
+lation and sum: s(Mc) = z(−ρ) + z(E1). The score is threshold-free; the standardization is
+transductive (it uses the reference population’s mean/SD), so a deployable audit fixes the
+ope...
+--
+11183:...ored checkpoints are caught (◦); the 4 below it are missed (•) and sit among the
+benign edits (×). The white-box checkpoint we fine-tuned to evade (⋆, §5) lands far on
+the evaded side by design. Axes are the two signals: activation gap ρ and weight-recovery
+energy E1.
+The two signals are negatively correlated (r=−0.41 across the set) and complementary, so
+their z-sum is significantly more separable than either: paired ∆AUROC +0.10 over the
+activation gap (95% CI [0.04, 0.18]) and +0.04 over E1 ([0.005, 0.09]), both bootstrap CIs
+excluding 0, and a fitted 2-D logistic does not improve on the threshold-...
+--
+25239:...in Dombrowski, Shashwat Goel, Nathaniel Li, Michael J.
+Byun, Zifan Wang, Alex Mallen, Steven Basart, Sanmi Koyejo, Dawn Song, Matt Fredrikson, J. Zico
+Kolter, and Dan Hendrycks. Representation engineering: A top-down approach to AI transparency,
+2023a.
+Andy Zou, Zifan Wang, Nicholas Carlini, Milad Nasr, J. Zico Kolter, and Matt Fredrikson. Universal
+and transferable adversarial attacks on aligned language models, 2023b. AdvBench harmful-
+behaviors set.
+Andy Zou, Long Phan, Justin Wang, Derek Duenas, Maxwell Lin, Maksym Andriushchenko, Rowan
+Wang, J. Zico Kolter, Matt Fredrikson, and Dan Hendrycks...
+--
+29128:...y the refusal axis. A harmfulness-direction probe is
+complementary and could flag a checkpoint that evades the gap.
+9
+
+Preprint - Under review
+The weight energy is direction-agnostic, so the gap supplies refusal-specificity.
+E1 fires
+on any low-rank weight edit, in either safety direction. A safety-strengthening control
+makes this explicit: extended-refusal hardening (Abu Shairah et al., 2025) applied to an
+abliterated base re-inserts refusal (refusal rate 1.0 vs. 0.12 for the un-hardened control) yet
+still has E1=1.0. So E1 alone cannot tell refusal removal from addition, and a negative set
+containin...

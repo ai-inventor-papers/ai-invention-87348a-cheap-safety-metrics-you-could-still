@@ -1,0 +1,54 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2511.14195
+Type: PDF
+Pattern: (prompts|trajectories|sequences).{0,30}(total|each|per model|constructed|collected) (2 matches in 75259 chars)
+
+--- Content ---
+
+13046:...apture the model’s
+unconstrained internal response to harmful infor-
+mation.
+To enhance cross-model comparability and re-
+duce dimensionality, we partition Transformer lay-
+ers into groups G ∈{lower, middle, upper} and
+average within each group to obtain group-level
+representations h(A,G).
+3.2
+Stage 1: Trajectory Extraction and
+Standardization
+For a model M and condition A, we construct prob-
+ing sequences. At each time step t, we extract the
+3
+
+Benign Manifold
+Figure 2: Illustration of latent representation trajecto-
+ries relative to the benign manifold. Solid curves denote
+a normally aligned model, while dashed curves indi-
+cate a jailbroken model. Red represents explicit refusal,
+yellow/orange denotes jailbreak behavior, and green cor-
+responds to benign dialogue.
+hidden states of the last token across a...
+--
+48834:...ime decom-
+position used in the efficiency comparison between
+the traditional online red-teaming pipeline and our
+JSS-only evaluation pipeline.
+All measurements are conducted under matched
+task scale and sample size to ensure a fair compari-
+son.
+D.1
+Evaluation Pipelines and Model Roles
+We compare two evaluation pipelines:
+JSS-only pipeline (Ours).
+Our method operates
+on offline multi-turn attack trajectories. For each
+example, we perform a single forward pass on the
+subject model Ms to extract hidden representations.
+No online generation, attack synthesis, or evaluator
+inference is required.
+Traditional red-teaming pipeline (Baseline).
+The baseline follows a standard online red-teaming
+workflow implemented using PyRIT with Ollama
+backends, involving three model roles:
+• Mr: red-team attack generator,
+• Ms: sub...

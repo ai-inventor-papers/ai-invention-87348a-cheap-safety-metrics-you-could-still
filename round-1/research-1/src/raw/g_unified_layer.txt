@@ -1,0 +1,97 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2609.00760
+Type: PDF
+Pattern: (layer|upper layers|emerge|commit[- ]then[- ]specify|per[- ]model|scalar) (123 matches in 102126 chars)
+
+--- Content ---
+
+977:...systematic study on a
+new dataset of 213 contrastive quadruples that
+jointly probe both refusal types. We find that
+KR and SR are governed by overlapping yet
+distinguishable mechanisms. Both share a re-
+fusal direction, yet the overlap is asymmet-
+ric: SR signals transfer more strongly to KR
+than the reverse. Type-specific specialization
+emerges mainly in upper layers, with KR align-
+ing with uncertainty- and knowledge-related
+representations and SR with safety- and policy-
+related ones. We thus characterize refusal as
+a commit-then-specify process: a shared ini-
+tial mechanism commits to refusing, then type-
+specific features in later layers specify whether
+the grounds are epistemic or normative.
+1
+Introduction
+Large language models (LLMs) are increasingly de-
+ployed in real-world settings where knowing when
+to refuse a user’s query is as important as knowing
+how to answer it. For instance, a request may (1)
+lie beyond the model’s knowledge (e.g., unverifi-
+able facts, fict...
+--
+5173:...are governed by overlapping yet
+distinguishable mechanisms. The two share a re-
+fusal direction—the representational shift from con-
+trol to refusal conditions—revealing a common ba-
+sis (RQ1). However, this overlap is asymmetric:
+SR signals transfer more strongly to KR than KR
+signals to SR (RQ2). Finally, type-specific special-
+ization emerges prominently in the upper layers,
+with KR aligning with uncertainty- and knowledge-
+related representations and SR with safety- and
+policy-related ones (RQ3).
+In summary, refusal in LLMs is a layered phe-
+nomenon: a shared initial mechanism that produces
+refusal, refined by type-specific features in later lay-
+ers, which together explain the surface similarity of
+refusals and the divergent paths that produce them.
+2
+Related Work
+Knowledge- and safety-based refusals.
+Prior
+work on LLM refusal has mostly evolved along
+two independent...
+--
+15932:... models and their refusal-
+tuned variants, denoted by an asterisk, ∗) on the 213
+matched quadruples from the previous section. Hid-
+den states are extracted at the final prompt-token
+position; implementation details are in Appendix C.
+0
+0.25
+0.5
+0.75
+1
+0.85
+0.90
+0.95
+1.00
+Cosine similarity
+Controls more similar
+0
+0.25
+0.5
+0.75
+1
+Relative layer depth
+−0.03
+−0.02
+−0.01
+0.00
+Δsim
+Negative at all layers
+Sim(KR, SR)
+Sim(KC, SC)
+Mean Δsim
+Figure 3: Per-layer pairwise cosine similarity (mean ±
+std). Top: control pairs are consistently more similar
+than refusal pairs. Bottom: ∆sim = sim(KR, SR) −
+sim(KC, SC) is negative at every layer, ruling out
+shared templates as a confound.
+We address RQ1–RQ3 in §4.1–4.3 and then test the
+identified directions behaviorally (§4.4).
+4.1
+RQ1: Shared Refusal D...
+--
+[113 more matches not shown]

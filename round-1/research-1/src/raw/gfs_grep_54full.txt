@@ -1,0 +1,275 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Pattern: Diagnostic: GFS Identifies (1 matches in 63065 chars)
+
+--- Content ---
+
+24530:...nign instructions.
+Mistral is the exception, matching the early-layer
+prompt-format artifact noted in the chat-template
+robustness set. The prompts closest to the deci-
+sion boundary vary by model rather than forming
+a fixed set of ambiguous prompts. This pattern
+supports a model-specific safety axis, not a trivial
+prompt-category classifier.
+5.2
+Causal Map: The Geometry Changes
+Refusal Behavior
+Removing selected directions weakens refusal in
+the models where a decrease can be measured.
+Table 3 shows post-ablation harmful-refusal rates
+for the direction-ablation set. Four models have
+baseline refusal rates away from both extremes. In
+5
+
+boundary safety : general
+              8  :  0
+Llama-3.1-8B  (peak L30)
+boundary safety : general
+              8  :  0
+Qwen-2.5-7B  (peak L19)
+4
+3
+2
+1
+0
+1
+2
+3
+4
+cPCA-PC1 projection (z-scored)
+boundary safety : general
+              7  :  1
+Mistral-7B-v0.3  (peak L1)
+4
+3
+2
+1
+0
+1
+2
+3
+4
+cPCA-PC1 projection (z-scored)
+boundary safety : general
+              3  :  5
+Gemma-2-9B  (peak L20)
+general-band
+safety-band
+boundary (8 nearest to midpoint)
+Figure 1: cPCA-PC1 projection of prompts at each core model’s peak layer. Red marks the safety band, blue marks
+the general-instruction band, and open black rings mark prompts closest to the decision boundary.
+each of these four models, removing at least one
+recovered or reference direction lowers harmful-
+request refusal with non-overlapping Wilson 95%
+CIs. These four models span RLHF+SFT, SFT,
+and DPO alignment recipes. The remaining two
+models, both from the core model set, serve as
+refusal-floor and refusal-ceiling controls.
+The refusal-changing direction differs across
+models. Removing PCA-PC1 produces the largest
+drop for Llama. Removing the Arditi direction pro-
+duces the largest drop for Qwen and SOLAR. On
+Mistral-7B-Instruct-v0.2, PCA-PC1, cPCA-PC1,
+and the Arditi direction all reduce refusal. The
+common pattern is therefore not one universal di-
+rection shared by every model. Instead, each model
+with refusal left to reduce has at least one direction
+in the low-rank safety subspace whose removal
+weakens refusal.
+The controls show that ablation does not al-
+ways reduce refusal. The floor and ceiling rows
+leave too little room for a signed causal claim. Ta-
+ble 7 reports a PCA-PC4 control in which refusal
+increases rather than decreases. This non-leading
+PCA direction supports direction specificity be-
+cause removing a direction does not simply make
+generation worse.
+5.3
+Recurrence: The Geometry Recurs Across
+Model Families
+Different
+model
+families
+preserve
+similar
+prompt-to-prompt activation structure. Table 4
+shows high peak-layer CKA across the four core
+families, with all inter-family pairs far above the
+prompt-shuffle null. No shuffled run reaches the
+observed CKA on any inter-family pair (p<0.001).
+Cross-family recurrence does not mean that ev-
+ery model peaks at the same depth. The depth-
+normalized d-profile correlations are mixed, in-
+cluding both negative and positive model pairs.
+Together, the CKA and depth-profile results sup-
+port a narrow claim. The low-rank safety subspace
+appears across families, but its strongest layer is
+model-specific. We do not claim that the safety
+subspace universally lives in the last third of the
+network. As a caveat, CKA on high-dimensional
+activations remains sensitive to tokenization and
+norm structure (Ding et al., 2021). The prompt-
+shuffle null controls prompt order, but not tokeniza-
+tion or norm structure.
+5.4
+Diagnostic: GFS Identifies the Model
+That Retains Refusal After LoRA
+GFS ranks models before LoRA and separates
+the DPO-only group.
+Table 8 ranks the raw-
+prompt GFS ranking set and places the four
+DPO-only models in ranks 1–4. Low-GFS out-
+liers have cPCA directions that already lie close
+6
+
+Causally interpretable
+Refusal floor / ceiling†
+Direction
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.2
+SOLAR-10.7B
+Mistral-7B-v0.3
+Gemma-2-9B
+Baseline
+0.14
+0.86
+0.31
+0.22
+0.04
+0.96
+PCA-PC1
+0.02⋆
+0.84
+0.08⋆
+0.17
+0.00
+0.93
+cPCA-PC1
+0.17
+0.86
+0.09⋆
+0.11
+0.05
+0.96
+Arditi
+0.14
+0.68⋆
+0.13⋆
+0.06⋆
+0.02
+0.92
+Random control
+0.14
+0.86
+0.28
+0.21
+0.05
+0.96
+Table 3: Post-ablation harmful-refusal rate (AdvBench prompts) when the indicated peak-layer direction is projected
+out during generation. Bold entries with ⋆have post-ablation Wilson 95% CIs below the baseline CI. † refusal
+floor/ceiling. Full Wilson confidence intervals are reported in Table 7.
+CKA
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.3
+Gemma-2-9B
+Llama-3.1-8B
+1.000
+0.881
+0.738
+0.676
+Qwen-2.5-7B
+—
+1.000
+0.803
+0.764
+Mistral-7B-v0.3
+—
+—
+1.000
+0.681
+Gemma-2-9B
+—
+—
+—
+1.000
+Table 4: Peak-layer linear CKA between instruct-model
+activations from the core model set. Bold marks the
+highest pair and underline marks the second-highest
+pair. Null comparisons are discussed in §5.3.
+to the canonical refusal direction. Because GFS
+downweights such directions, models with simi-
+lar harmful/benign separation can receive different
+GFS values. The score is high when the safety split
+is strong, appears late, and is not concentrated in
+the known refusal axis. The next paragraphs test
+whether this ranking also identifies the initially safe
+model that retains the most refusal after the largest
+benign-LoRA update.
+LoRA fragility is widespread, with one consis-
+tent exception. Figure 2 shows the LoRA traces
+for the core model set, and Table 9 reports the
+strongly aligned hold-out models added to the
+LoRA fragility set. Benign LoRA fine-tuning
+rapidly increases harmful compliance in nearly ev-
+ery tested aligned model. At the largest LoRA size,
+every non-Gemma model reaches full harmful com-
+pliance, whereas Gemma-2-9B remains below full
+harmful compliance. Replicated runs preserve this
+separation. Gemma remains below full compliance,
+while every non-Gemma run reaches full compli-
+ance. Thus the LoRA fragility reported by prior
+work (Qi et al., 2024; Lermen et al., 2024; Wei
+et al., 2024) reproduces across alignment recipes,
+but Gemma remains a consistent exception at the
+largest fine-tuning size.
+The hold-out models show that the Gemma
+result is not limited to the core set. Table 9 lists
+the full LoRA fragility set, including the strongly
+aligned hold-out models. These hold-out models
+have low harmful compliance before LoRA (≤0.1)
+and higher GFS than Gemma-2-9B. After benign
+base
+5
+10
+25
+50
+100
+200
+LoRA fine-tuning samples  n
+0.00
+0.25
+0.50
+0.75
+1.00
+Harmful compliance (50 held-out)
+Llama
+Qwen
+Mistral
+Gemma
+Figure 2: Harmful compliance after increasing-size be-
+nign LoRA updates. The full LoRA fragility set is
+listed in Table 9. Replicated-run details are reported in
+Appendix B.3.
+Model
+|cos(PCAk∗, Arditi)|
+|cos(cPCA1, Arditi)|
+Llama-3.1-8B
+0.295 (PCA-PC3)
+0.16
+Qwen-2.5-7B
+0.333 (PCA-PC1)
+0.26
+Mistral-7B-v0.3
+0.291 (PCA-PC9)
+0.10
+Gemma-2-9B
+0.636 (PCA-PC1)
+0.33
+Table 5: PCA-PC index where the Arditi direction has
+the highest cosine for each model (left column), and the
+layer-averaged |cos(cPCA1, Arditi)| (right column).
+LoRA fine-tuning, all hold-out models r...

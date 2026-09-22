@@ -1,0 +1,138 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.13329
+Type: PDF
+Pattern: wrappers\s+(are|is|would be)\s+(needed|required)|number\s+of\s+wrappers|k\s*=\s*[0-9]+\s+wrappers|[0-9]+\s+wrappers (15 matches in 71880 chars)
+
+--- Content ---
+
+13821:...
+max
+ℓ
+|AUROCℓ−0.5|
+eval_oversight
+vs deploy_agent
+(a) most positive,  r = +0.94
+0.5
+1.5
+3
+7
+eval_oversight
+vs deploy_api
+(b) flattest,  r = −0.02
+0.5
+1.5
+3
+7
+eval_oversight
+vs deploy_a
+(c) most negative,  r = −0.82
+parameters (B)
+Figure 1: Choosing the contrastive wrapper chooses the conclusion. The same statistic on the same four models
+under three of our 36 wrappers (accent), with a least-squares line on log10 parameters (dashed). Each point is a
+single deterministic evaluation of one direction over the whole scoring set, so no interval is drawn; the spread
+that matters is the one across wrappers, which is what the three panels are. All three share the evaluation framing
+eval oversight and differ only in the deployment...
+--
+21555:...× the item-by-model component, so as the item sample grows without bound Eρ2
+approaches only 0.021 while as the wrapper sample grows it approaches 0.541. The same fact is
+5
+
+0
+10
+20
+30
+40
+50
+60
+levels of that facet averaged over
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Eρ2
+averaging over wrappers
+over items instead
+current practice
+(a) which facet buys reliability
+0
+250
+500
+700
+wrappers needed for Eρ2 = 0.80
+OLMo-2
+Qwen3
+Qwen3 (think)
+Qwen2.5
+10
+248
+588
+never reaches 0.80
+(b) how many, on each ladder
+Figure 3: Averaging over wrappers buys reliability and averaging over items does not. Eρ2 from Equation (1) as
+the levels of one facet grow with the other held at the design’s value, the difference following from the wrapper-
+by-model component being 13.4× the item-by-model component. Both curves are deterministic functions of the
+estimated components, so the uncertainty is that of the components themselves and is discussed in Section 11
+rather than drawn here.
+visible without fitting anything: Kendall’s W for the rank ordering of the four models across 36
+wrappers is 0.066 (p = 0.069 by permutation), against a median of 0.740 for reference designs of
+the same shape drawn to have a real object effect. The published spread across these four models is
+0.102 in AUROC units; the spread of their wrapper-averaged scores is 0.023.
+The design must be analysed as crossed, since our 36 wrappers are a 6 × 6 crossing rather than
+36 exchangeable draws and a flat analysis attributes to the wrapper facet variance belonging to the
+two arms and their interaction. The coefficient for the full design is 0.257 crossed against 0.629
+flat, optimistic by more than a factor of two, with the bias derived in Section B; every component
+containing the evaluation ar...
+--
+34075:...1
+models
+Relative
+depth
+0.02–1.00
+Bootstrap argmax spans 26% of
+the layer stack at the median, up
+to 83%
+Not identified
+The statistic at Qwen2.5-7B,
+top of the ladder
+0.190
+Below the label-permuted floor
+of its own estimator under both
+renderings
+Not identified
+Sign of the relationship be-
+tween statistic and scale
+Positive and nega-
+tive respectively
+21 of 36 wrappers positive, 15
+negative, r from −0.988 to
++0.939
+Wrapper effect
+Table 1: Published claims against corrected values. The two corrections are different nulls: the Manek (2026)
+rows use the label-permuted direction floor of Section 9, the Chaudhary et al. (2025) row a layer-selection floor
+asking what maximising over 4.0–44.5 effectively independent layers buys....
+--
+35120:...me observation; anomalously high scores on small checkpoints, so
+the observation does not by itself distinguish them, and we do not read it as support for either. It does
+discriminate under one more measurement, because contamination is a property of a checkpoint and
+should therefore show up under any wrapper, whereas a wrapper effect should not. Across our 36
+wrappers the small models out-score the large ones in 18 (50%), with the contrast running −0.151 to
++0.061; the smallest model tops the ladder under 11 wrappers and the largest under 14. The pattern
+that motivated the exclusion is thus present under exactly half the framings and absent under the other
+half, which is enough to show that observing it does not identify its cause, and not enough to attribute
+it to the wrapper. Contamination remains a real hazard, and Manek (2026) reports a diagnostic on
+this scoring se...
+--
+37369:...he published figure and scoring them with the axes corrected does not, and the sign of
+the published scale relationship depends on which is intended. We report this as an observation about
+released files, take no position on which orientation was meant, and have contacted the authors.
+11
+LIMITATIONS AND CONCLUSION
+The primary design is one model family: all 36 wrappers crossed on the four Qwen2.5 models,
+so Eρ2 = 0.018 and k ≈9 rest on three degrees of freedom. The geometry is not exposed to
+this, being measured over 10 models in four families under both pooling conventions. We then ran
+the crossing this paper named as the experiment that would settle the coefficients, on Qwen3 and
+OLMo-2 (Section M). Every qualitative cl...
+--
+[7 more matches not shown]

@@ -1,0 +1,149 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Length: 63065 chars (truncated) (offset: 32000)
+
+--- Content ---
+
+s studied here, that geometry is low-rank,
+changes refusal when selected directions are re-
+moved, recurs across families, and identifies which
+initially safe model retains the most refusal after
+LoRA. These results support GFS as a practical
+pre-deployment diagnostic for fragile refusal be-
+havior. Its quantitative forecasting power should
+be validated on larger held-out model sets, and we
+therefore release the pre-attack activation pipeline
+while withholding attack-ready artifacts as detailed
+in our Ethics Statement.
+Limitations
+Scale. Our full model pool covers 3B–32B open-
+weight models, with the direction-ablation set in
+8
+
+the 7–10.7B range. Whether the same low-rank
+safety-subspace description holds at 70B+ or in
+mixture-of-experts models is open. We conjecture
+that the subspace becomes more distributed (higher
+GFS) with scale, but the scale conjecture remains
+untested here.
+Language and task coverage. All prompts are
+English. Safety-critical multilingual behavior is
+known to differ, and our conclusions should not
+be extrapolated to non-English inputs without re-
+running the pipeline.
+Alignment-recipe coverage. The representation
+pipeline spans six alignment recipes (RLHF+SFT,
+DPO, ORPO, RLAIF, C-RLFT, SFT), and the
+direction-ablation set covers three of the six
+recipes (RLHF+SFT, SFT, DPO). Constitutional
+AI and online-RLAIF-trained models at the 70B+
+scale remain to be tested.
+Subspace-overlap quantification is scalar. We
+report |cos(vcPCA
+ℓ
+, vArditi
+ℓ
+)| as a single scalar align-
+ment between two unit vectors. Reporting full
+principal-angle spectra and Grassmann distances
+between the cPCA subspace and the Arditi direc-
+tion across 2–10-dimensional safety subspaces is a
+planned extension.
+Future predictive validation of GFS. The
+weight-sensitivity check in Appendix B.3, the three-
+seed Gemma replication in the same appendix,
+and the three-model held-out validation in Ta-
+ble 9 together show robustness to the GFS weight-
+ing scheme, separation between Gemma and non-
+Gemma seed populations, and preservation of the
+GFS–LoRA-recovery co-occurrence in the LoRA
+fragility set. The GFS–LoRA hypothesis is cur-
+rently scoped to the models in the LoRA fragility
+set and, more narrowly, to the initially safe cases
+within the LoRA fragility set. Cross-regime gener-
+alization to weakly-aligned models and quantitative
+forecasting on a separate alignment-method set are
+natural next steps.
+Ethics Statement
+Dual-use. The direction-ablation primitive we use
+to causally test the safety axis is, by construction,
+also a jailbreak primitive, and the LoRA fragility
+curve makes attack cost explicit. We take the dual-
+use risk seriously and make the disclosure choices
+below.
+We release the pre-attack activation GFS
+pipeline, the aggregate off-diagonal CKA values in
+Table 4, and the model-level GFS values reported
+in this paper.
+We do not release four attack-ready artifacts.
+The withheld set consists of (i) layer-level ablation
+hooks and the code path that applies them during
+generation, (ii) model-specific peak-layer indices
+for direction ablation at a granularity usable as at-
+tack coordinates, (iii) LoRA adapter weights from
+the fragility curve, including the n=200 Gemma
+adapter that partially recovers, and (iv) the Arditi-
+direction extraction script specialized to the four
+model families. The withheld code paths, coordi-
+nates, adapter weights, and extraction script are the
+operational attack primitives. Withholding these
+artifacts is the minimum responsible choice, and
+we make the disclosure boundary explicit rather
+than implicit.
+Adversary-side threat model. An attacker with
+access to the released pre-attack activation diagnos-
+tic can, within approximately one GPU-day on a
+7–9B checkpoint, re-derive a candidate peak layer
+(by recomputing layer-wise Cohen’s d on public
+safety/general prompts) and a candidate refusal
+direction (by recomputing the Arditi difference-in-
+means from public data), then re-implement orthog-
+onal ablation. Withholding the attack-ready arti-
+facts therefore raises cost by requiring compute and
+engineering time for the hook, but does not make at-
+tack intractable. Published prior work (Arditi et al.
+2024; Lermen et al. 2024) is already sufficient to
+reconstruct a functional pipeline. We also note a
+second-order risk. GFS itself, if publicly scored
+across an open-weight leaderboard, could be mis-
+used to rank checkpoints by “easiest to jailbreak”.
+We therefore limit model-level GFS reporting to
+the raw-prompt GFS ranking set analyzed here,
+coarsen peak-depth information in the appendix,
+and do not ship a GFS scoring service. We flag
+both the reconstruction risk and the leaderboard-
+misuse risk for community discussion.
+Defender utility. GFS is designed for defen-
+sive use. The score can flag under-aligned check-
+points before release, help prioritize where to place
+safety fine-tuning or interpretability probes along
+the layer stack, and triage red-teaming budget. Con-
+centrated subspaces call for targeted safety ed-
+its, while signals spread across many layers call
+for multi-layer interventions. We report an over-
+refusal–adjacent diagnostic in the appendix so that
+GFS is not weaponized as a pressure to over-refuse.
+We encourage downstream users to read GFS as a
+descriptive, defender-side summary, not an attack
+roadmap.
+9
+
+Human subjects. No human subjects were in-
+volved. All prompts are from publicly released
+safety benchmarks under their original licenses
+(AdvBench, HarmBench, BeaverTails, Alpaca,
+OASST).
+References
+Abubakar Abid, Martin J. Zhang, Vivek K. Bagaria, and
+James Zou. 2018. Exploring patterns enriched in a
+dataset with contrastive principal component analysis.
+Nature Communications, 9(1):2134.
+Guillaume Alain and Yoshua Bengio. 2017. Under-
+standing intermediate layers using linear classifier
+probes. In ICLR Workshop.
+Marti J. Anderson. 2001.
+A new method for non-
+parametric multivariate analysis of variance. Austral
+Ecology, 26(1):32–46.
+Andy Arditi, Oscar Obe

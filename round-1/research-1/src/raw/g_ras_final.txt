@@ -1,0 +1,81 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.25750
+Type: PDF
+Pattern: RAS\(M\)|clip|100 ×|100 \*|max\(0 (4 matches in 34437 chars)
+
+--- Content ---
+
+13764:...
+increase for architecture a, so γa > 1 applies a
+stronger RAS penalty. Conversely, if αa < αglobal,
+the same refusal drop is associated with a smaller
+ASR increase, so γa < 1 applies a weaker penalty.
+The aligned drop is:
+daligned(M) = γa ˜d(M).
+Finally, RAS maps the aligned drop to a 0–100
+scale:
+RAS(M) =
+100
+1 + exp(β(daligned(M) −c)),
+where c = 0.75 is the sigmoid center and β =
+5.0 controls the sigmoid steepness. A larger RAS
+indicates stronger refusal alignment and therefore
+higher estimated safety.
+Stage 5: Target model scoring.
+With the family-
+specific calibration fixed, we score each targe...
+--
+19573:...ne/Meta-Llama-3.1-8B-Instruct-abliterated
+-0.155
+-0.181
+0.933
+aifeifei798/DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncensored
+-0.115
+-0.165
+0.936
+Orenguteng/Llama-3.1-8B-Lexi-Uncensored-V2
+0.064
+-0.057
+0.939
+Table 1: Raw SafeVec scores and ASR for Llama reference and calibration models.
+Figure 4: RAS and 100 × (1 −ASR) for Llama.
+official google/gemma-3-4b-it reference model,
+but also achieves a lower ASR. This suggests that
+some models may improve output-level safety
+through mechanisms not fully captured by a
+single reference refusal direction.
+We still use
+google/gemma-3-4b-it as the reference model
+be...
+--
+33353:... 8: Cosine similarity between Gemma models and
+the refusal direction on jailbreak prompts.
+Figure 9: Cosine similarity between Qwen models and
+the refusal direction on unsafe prompts.
+Figure 10: Cosine similarity between Qwen models and
+the refusal direction on jailbreak prompts.
+Figure 11: RAS and 100 × (1 −ASR) for Gemma target
+models.
+Figure 12: RAS and 100 × (1 −ASR) for Qwen target
+models.
+
+A.3
+Supplementary Tables
+Gemma model
+Unsafe score
+Jailbreak score
+ASR
+google/gemma-3-4b-it
+0.037
+-0.019
+0.230
+Viesar/gemma-3-4b-opus-reasoning-distill
+-0.026
+-0.043
+0.076
+ZySec-AI/gemma-3-4b-document-writer
+0.022
+-0.028
+0.339
+mlabonne/gemma-3-4b-it-abliterated
+-0.0...

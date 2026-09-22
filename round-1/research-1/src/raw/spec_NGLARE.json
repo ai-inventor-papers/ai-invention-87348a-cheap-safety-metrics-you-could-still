@@ -1,0 +1,172 @@
+{
+  "id": "NGLARE",
+  "arxiv": "2511.14195",
+  "title": "N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator",
+  "venue": "ACL 2026 (Volume 1: Long Papers), pages 28902-28923, Anthology ID 2026.acl-long.1334; also arXiv (v1 18 Nov 2025, v2 8 Jan 2026)",
+  "urls": {
+    "abs": "https://arxiv.org/abs/2511.14195",
+    "html": "https://arxiv.org/html/2511.14195v2",
+    "pdf": "https://arxiv.org/pdf/2511.14195",
+    "code": null,
+    "other": ["https://aclanthology.org/2026.acl-long.1334/", "https://aclanthology.org/2026.acl-long.1334.pdf"]
+  },
+  "reachability": {"abs": 200, "html": null, "pdf": 200, "fetch_truncated_at_kb": null},
+  "statistic": {
+    "name": "Jensen-Shannon Separability (JSS), built on Angular-Probabilistic Trajectories (APT)",
+    "formula_prose": "For each model M and each of 4 probing conditions A in {B,J,R,P} (see prompt_set below), collect a hidden-state trajectory over dialogue turns, partition transformer layers into 3 groups G in {lower, middle, upper} and average within each group to get group-level representations h(A,G). Fit a 'benign manifold' from the Benign(B) condition's representations via whitened PCA (a low-dimensional linear manifold). At each turn/step t, compute the trajectory tangent direction tau_t = normalized(h_{t+1}-h_t) (Eq 19) and the outward normal n(G) of the benign manifold (collinear with the residual/deviation vector from the manifold). The geometric turning angle theta_t = arccos( tau_t^T n(G)(h_t) / (||tau_t|| ||n(G)(h_t)||) ) in [0,pi] (Eq 4/Eq 20) measures whether the trajectory is moving toward or away from the benign manifold. Standardize each trajectory's progress onto an arc-length-standardised axis s in 0..1 and discretize into I slices {s_i}. Within slice s_i and group G, collect angle sets Theta^{(G)}(s_i) = {theta_t | s_t in slice i} (Eq 5) for two conditions (e.g., J vs B, or J vs R), and compute their Jensen-Shannon divergence JS_i^{(G)}(A,B) = JS(D(Theta_A^{(G)}(s_i)), D(Theta_B^{(G)}(s_i))) (Eq 6). Aggregate over ALL slices and ALL layer groups to define JSS(A,B) = (1/|G|) * sum_G [ (1/I) * sum_{i=1}^{I} JS_i^{(G)}(A,B) ]  -- this is EQUATION 7, CONFIRMED verbatim and CONFIRMED as equation number 7. Two derived per-model proxy scores are then built from JSS-over-progress-axis curves JSS_s(.,.): JB/PB Ratio = [sum_{s in 0..1} JSS_s(J,B)] / [sum_{s in 0..1} JSS_s(P,B)]  (Eq 8); and JR Min/Max = [min_{s in 0..1} JSS_s(J,R)] / [max_{s in 0..1} JSS_s(J,R)]  -- this is EQUATION 9, CONFIRMED verbatim and CONFIRMED as equation number 9, matching the prior-recon form exactly.",
+    "inputs_read": "Only the SUBJECT model's own hidden states across the 4 probing conditions -- no separate reference/base model is used; the 'benign manifold' reference is built from that SAME model's own Benign(B)-condition activations, not from a different (e.g. pre-alignment) checkpoint.",
+    "matrices_or_layers": "All transformer layers, partitioned into 3 groups: lower, middle, upper (equal/contiguous partition of the layer stack; the paper states 'we partition Transformer layers into groups G in {lower, middle, upper} and average within each group' but does not give the exact layer-index boundary rule, e.g. exact thirds vs uneven split, beyond 'lower/middle/upper').",
+    "token_positions": "Per-turn hidden states across a multi-turn dialogue trajectory (one representation per conversational turn/time-step t, not a single final-token snapshot); the trajectory is standardized onto a progress axis s in 0..1 before slicing.",
+    "pooling": "Average pooling WITHIN each of the 3 layer groups (group-level representation h(A,G) = average of per-layer activations inside that group) -- no pooling across time steps (the trajectory itself, turn-by-turn, is the unit of analysis).",
+    "normalisation": "Whitened PCA is used to fit the benign manifold (whitening normalises the benign representation covariance before finding the low-dimensional manifold); trajectories are also standardized onto a common arc-length/progress axis s in 0..1 so trajectories of different lengths (turn counts) are comparable across conditions/models.",
+    "direction_fitted": "Two directions per step: the trajectory tangent tau_t (local, data-driven, no fitting beyond the difference of consecutive hidden states) and the benign-manifold outward normal n(G) (fitted once per model+layer-group from the whitened-PCA benign manifold).",
+    "fitted_from": "The benign manifold (and hence n(G)) is fit from the SAME subject model's own Benign(B)-condition trajectories -- i.e., self-referential, not from a separate base/parent model.",
+    "cross_fitted": "UNSTATED-IN-SOURCE whether the benign manifold used to score a given trajectory is fit on a held-out subset of Benign(B) trajectories vs. the same trajectories being scored; the extracted text does not specify a train/score split for the manifold-fitting step itself (distinct from the n/dataset/model robustness checks in Table 2, which ARE explicit resampling checks).",
+    "prompt_set": "Four probing/dialogue conditions per model: Benign (B) - 'standard task instructions conforming to natural distributions, used to fit the benign reference manifold'; Jailbreak (J) - 'adversarial sequences designed to induce harmful outputs'; Ideal Refusal (R) - 'identical to J in user content (retaining harmful intent) but forcing the assistant response to a policy-compliant refusal template'; Plain Query (P) - 'direct presentation of harmful intent (without disguise) to capture the model's unconstrained internal response to harmful information'. Evaluated with over 40 models and 20+ red-teaming strategies/testing protocols with over 7000 test cases (per Section 4.1.1); jailbreak robustness checks additionally use four named multi-turn attack datasets (tom-gibbs, XGuard-Train, SafeMTData, MTSARed).",
+    "n_prompts": null,
+    "generation_required": false,
+    "threshold_rule": "UNSTATED-IN-SOURCE (JSS and its derived ratios -- JB/PB, JR Min/Max -- are reported and correlated/ranked against red-teaming scores; no fixed pass/fail threshold on JSS itself is given in the extracted text).",
+    "free_hyperparameters": [
+      "Number of slices I on the progress axis s in 0..1",
+      "Exact lower/middle/upper layer-group boundary rule",
+      "Whitened-PCA target dimensionality for the benign manifold",
+      "Which histogram/kernel-density estimator D(.) is used to turn a set of angles Theta into a distribution before computing JS divergence"
+    ]
+  },
+  "compute_class": "Forward-pass-only (no text generation): 'a single forward pass on the subject model M_s to extract hidden representations... No online generation, attack synthesis, or evaluator inference is required.' Requires white-box access to hidden states (explicitly NOT applicable to closed/black-box models per the Limitations section).",
+  "model_panel": {
+    "n_models": 40,
+    "families": ["Llama (2, 3, 3.1, 3.2)", "Qwen (2.5, 3)", "Gemma (2, 3)", "Mistral", "Deepseek (incl. deepseek-llama8b, deepseek-qwen1.5b distilled variants)", "Phi-3", "Granite", "Nemotron", "SynLogic"],
+    "list": [
+      "Llama-3.2-3B-Instruct", "Qwen/Qwen2.5-7B-Instruct", "mistralai/Mistral-7B-Instruct-v0.3", "meta-llama/Llama-2-13b-chat-hf", "meta-llama/Llama-2-7b-chat-hf", "meta-llama/Meta-Llama-3-70B-Instruct", "meta-llama/Meta-Llama-3-8B-Instruct", "microsoft/Phi-3-mini-128k-instruct", "microsoft/Phi-3-mini-4k-instruct", "nvidia/Nemotron-Mini-4B-Instruct", "google/gemma-3-7b-it", "granite-3.0-8b-instruct", "Llama3-8B", "gemma3-4b", "gemma2-9b", "qwen3-8b", "deepseek-llama8b", "synlogic-7b", "deepseek-qwen1.5b", "Qwen3-4B (base/RL-aligned/safety-removed variants, used in Fig.1 illustration)"
+    ],
+    "note_on_list_completeness": "20 of 40+ models located by name in an Appendix model-ID mapping table (Table 6, 'Model ID Mapping with Alphabetical Labels' + a second alphabetical-letter table). Full 40+ list not exhaustively extracted within time budget (LOW PRIORITY item)."
+  },
+  "reported_numbers": [
+    {
+      "quantity": "Eq. 7 -- JSS(A,B) definition",
+      "value": "JSS(A,B) = (1/|G|) * sum_G ( (1/I) * sum_{i=1}^{I} JS_i^{(G)}(A,B) )",
+      "protocol": "Aggregation of per-slice, per-layer-group Jensen-Shannon divergences of geometric turning-angle distributions",
+      "n": "I slices x |G|=3 layer groups, per model per condition-pair",
+      "unit_of_resampling": "N/A (definitional equation)",
+      "quote": "To obtain a model-level separability measure, we aggregate JSDs across all slices and layer groups to define the Jensen-Shannon Separability (JSS): JSS(A, B) = 1/|G| Σ_G ( 1/I Σ_{i=1}^{I} JS_i^{(G)}(A, B) ). (7)",
+      "locator": "Section 3.4 'Stage 3: Slicing and JSS Metrics Calculation', Eq. 7",
+      "url": "https://arxiv.org/pdf/2511.14195",
+      "verified_by_refetch": true
+    },
+    {
+      "quantity": "Eq. 9 -- JR Min/Max definition",
+      "value": "JR Min/Max = min_{s in 0..1} JSS_s(J,R) / max_{s in 0..1} JSS_s(J,R)",
+      "protocol": "Ratio of the minimum to maximum value of the JSS(J,R)-over-progress-axis curve",
+      "n": "per model",
+      "unit_of_resampling": "N/A (definitional equation)",
+      "quote": "JR Min/Max = min_{s∈0..1} JSS_s(J, R) / max_{s∈0..1} JSS_s(J, R). (9) A higher value of JR Min/Max indicates that Jailbreak–Ideal Refusal separability remains stable across the entire trajectory, whereas a low value reflects late-stage collapse of refusal and successful jailbreak intrusion.",
+      "locator": "Section 4.1.1, Eq. 9 (immediately follows Eq. 8, the JB/PB Ratio)",
+      "url": "https://arxiv.org/pdf/2511.14195",
+      "verified_by_refetch": true
+    },
+    {
+      "quantity": "Token/runtime cost reduction",
+      "value": "less than 1% of the token AND runtime cost of traditional (3-model: attacker/subject/evaluator) red-teaming",
+      "protocol": "Cost model formulas Eq 21-24 (Appendix D): traditional cost = N * T_r_bar * (L_r_bar+L_s_bar+L_e_bar) generated tokens plus 3-model runtime; N-GLARE cost = N * T_offline_bar token-equivalent units (one subject-model forward pass per turn) plus only subject-model forward-pass runtime.",
+      "n": "measured on the PyRIT mixed-strategy baseline at red-teaming depths T=1,5,10 (Appendix Figure 12/Table 1)",
+      "unit_of_resampling": "per red-teaming session/depth",
+      "quote": "Experiments on over 40 models and 20 red teaming strategies demonstrate that the JSS metric exhibits high consistency with Red Teaming safety rankings at less than 1% token and runtime cost.",
+      "locator": "Abstract; restated in Introduction as 'while using less than 1% of the token and runtime cost' and formalised in Appendix D.2-D.3, Eq 21-24",
+      "url": "https://arxiv.org/pdf/2511.14195",
+      "verified_by_refetch": true
+    },
+    {
+      "quantity": "Token efficiency multiplier vs. best single baseline",
+      "value": "117.5x",
+      "protocol": "Efficiency-vs-best-baseline bar chart comparing JSS-only to Mixed(PyRIT), AutoDAN, PAIR, GPTFuzzer, Cipher, DAN, DevMode, MultiLing, ArtPrompt",
+      "n": "9 red-teaming baselines compared",
+      "unit_of_resampling": "N/A (single reported multiplier)",
+      "quote": "Figure 1: JSS exhibits clear separability across safety states while achieving orders-of-magnitude higher token efficiency than red-teaming baselines. ... 117.5x Token Efficiency",
+      "locator": "Figure 1 (Introduction)",
+      "url": "https://arxiv.org/pdf/2511.14195",
+      "verified_by_refetch": true
+    },
+    {
+      "quantity": "Numeric Kendall-tau / Spearman rank-correlation values (robustness/sensitivity check, Table 2) -- SEE kendall_tau top-level key for the distinction from the headline JSS-vs-Red-Teaming figure-only claim",
+      "value": "benign/kendall: n-axis mean=0.78 (std 0.11, Q25 0.65, Q75 0.87); dataset-axis mean=0.67 (0.14, 0.56, 0.78); model-axis mean=0.73 (0.36, 0.33, 1.00). benign/spearman: n=0.88(0.08,0.79,0.94); dataset=0.79(0.11,0.72,0.87); model=0.76(0.34,0.40,1.00). jailbreak/kendall: n=0.87(0.14,0.78,0.96); dataset=0.45(0.24,0.33,0.60); model=0.54(0.12,0.47,0.61). jailbreak/spearman: n=0.94(0.08,0.92,0.99); dataset=0.57(0.28,0.42,0.79); model=0.68(0.12,0.58,0.78).",
+      "protocol": "Section 4.3 'Model Sensitivity and Systemic Stability Experiments': rank-correlation (Kendall and Spearman) of the JSS-induced model ordering when perturbing (i) sample size n, (ii) which jailbreak/benign dataset is used, (iii) which subset of models is compared -- reported as Mean/Std/Q25/Q75 across those perturbations, NOT as the single JSS-proxy-vs-Red-Teaming headline correlation.",
+      "n": "matrix of perturbations across n / dataset / model axes; exact count of comparisons unstated in extracted text",
+      "unit_of_resampling": "per perturbation-axis entry (each cell of a pairwise heatmap in Appendix Fig. 13)",
+      "quote": "Table 2: Summary of rank correlation statistics for JSS-based safety ordering. The Matrix Dim column indicates the axis along which rankings are compared: n denotes varying sample sizes, dataset denotes different jailbreak or benign data sources, and model denotes comparisons across model variants.",
+      "locator": "Section 4.3, Table 2 (arXiv v2 pdf offset ~29118-29400 chars; identical table also found in ACL camera-ready PDF)",
+      "url": "https://arxiv.org/pdf/2511.14195 (cross-checked at https://aclanthology.org/2026.acl-long.1334.pdf)",
+      "verified_by_refetch": true
+    }
+  ],
+  "held_out_protocol": {
+    "what_was_held_out": "Section 4.3 explicitly holds out / perturbs (i) which sample-size n of trajectories is used, (ii) which specific jailbreak dataset (of 4 named multi-turn attack datasets: tom-gibbs, XGuard-Train, SafeMTData, MTSARed) or benign dataset is used to build the manifold/probe set, and (iii) which subset of models is included, to test that the JSS-induced ranking is not an artifact of a specific data/model choice.",
+    "what_was_NOT_held_out": "UNSTATED-IN-SOURCE whether the benign manifold (whitened PCA fit) used to score a given model's trajectories is fit on data disjoint from the trajectories being scored for that same model (i.e., no explicit train/test split of a single model's own Benign(B) trajectories was found in the extracted text) -- distinct from the explicit robustness axes above.",
+    "quote": "If our method is indeed capturing an intrinsic property of the model's alignment dynamics—rather than dataset-specific artifacts—then its induced safety ordering should remain stable when we perturb the underlying data and sampling conditions... As shown in Fig 8 and Table 2, rank correlations consistently increase with sample size and rapidly converge to high values, indicating that the induced model ordering is not sensitive to the specific choice of attack or benign datasets.",
+    "locator": "Section 4.3 'Model Sensitivity and Systemic Stability Experiments'"
+  },
+  "parent_free": true,
+  "parent_free_evidence": "N-GLARE does not use or require a separate base/reference/parent model. The benign manifold that anchors the geometric turning angle is fit from the SAME subject model's own Benign(B)-condition activations: 'we construct a benign manifold using representations collected under benign conditions (B) as a reference for normal generation.' The only 'other model' mentioned anywhere near this construction is in a motivating illustration (Fig. 1) comparing 'RL-aligned, base, and safety-removed versions of Qwen3-4B' as three separate SUBJECT models each independently scored -- not a reference/parent used inside any single model's JSS computation. It is also explicitly non-generative / forward-pass-only: 'Our method operates on offline multi-turn attack trajectories. For each example, we perform a single forward pass on the subject model M_s to extract hidden representations. No online generation, attack synthesis, or evaluator inference is required.'",
+  "reimplementation": {
+    "verdict": "PARTIALLY REIMPLEMENTABLE from the paper's prose. The core geometric machinery (Eq 4-9, Eq 19-20) is precisely specified enough to code (tangent vector, outward normal via whitened-PCA benign manifold, arccos turning angle, per-slice JSD, JSS aggregation, the two derived ratios). BLOCKING GAPS: (a) no public code was found, (b) the exact construction of the 4 probing-condition DIALOGUES (how Jailbreak/Plain-Query/Ideal-Refusal prompts are built/sourced, and how many turns/prompts constitute one 'trajectory') is not given a concrete n or dataset list in the sections extracted, (c) the exact lower/middle/upper layer-group boundaries and the number of progress-axis slices I are unstated, (d) the specific red-teaming baselines' aggregate 'Hybrid' score construction (needed to reproduce the correlation claim) is only summarized ('overall average across all tested red-teaming tasks') with task-wise detail relegated to Appendix Tables 7-8 which list raw per-model, per-attack-type numbers rather than a documented aggregation formula.",
+    "missing_details": [
+      "No public code repository found (2 targeted searches, see code_search)",
+      "Number and construction of Jailbreak/PlainQuery/IdealRefusal/Benign trajectories per model (exact prompt count, turn count) not stated as a single number in the extracted running text",
+      "Exact lower/middle/upper layer-group index boundaries",
+      "Number of slices I used for the standardized progress axis",
+      "Whitened-PCA target dimensionality for the benign manifold",
+      "Precise 'Hybrid' red-teaming aggregate-score formula beyond 'overall average across all tested red-teaming tasks'"
+    ],
+    "defaults_we_must_choose": [
+      {"choice": "Number of progress-axis slices I", "suggested_default": "I=10 (decile slices of s in 0..1)", "sensitivity_check": "Re-run JSS aggregation with I in {5,10,20} and check the JB/PB and JR Min/Max derived rankings are stable, mirroring the paper's own n/dataset/model sensitivity analysis in Table 2."},
+      {"choice": "Layer-group boundaries", "suggested_default": "Equal thirds of the layer stack (e.g. layers 1..L/3 = lower, L/3+1..2L/3 = middle, 2L/3+1..L = upper)", "sensitivity_check": "Compare against an alternative boundary (e.g. first/last quartile as lower/upper, remaining half as middle) and check JSS ranking correlation with red-teaming stays high."}
+    ],
+    "estimated_effort": "1-2 weeks: the geometric/statistical core (whitened-PCA manifold, tangent/normal, turning angle, JSD aggregation) is roughly 1-3 days of implementation once probing-condition dialogue data is in hand; assembling the 4-condition dialogue dataset across 40+ models and reproducing/approximating a 20-strategy red-teaming 'Hybrid' ground-truth score for correlation validation is the larger remaining effort (likely 1+ week), especially absent public code.",
+    "blocking_dependency": "No public code/data release found; a re-implementer must independently construct the 4 dialogue-condition prompt sets (Benign/Jailbreak/PlainQuery/IdealRefusal) and a red-teaming 'Hybrid' ground-truth baseline across many models before any correlation claim can be checked."
+  },
+  "code_search": {
+    "queries": [
+      "N-GLARE github code angular probabilistic trajectory jailbreak",
+      "N-GLARE non-generative safety evaluator implementation repository"
+    ],
+    "found": false,
+    "url": null
+  },
+  "all_greps_run": [
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "JSS|Jensen-Shannon|Equation \\(7\\)|Equation \\(9\\)|\\(7\\)|\\(9\\)", "n_matches": 96},
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "(Kendall|tau|\\\\tau|τ)", "n_matches": 17},
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "(<1%|less than 1|token cost|runtime cost|token budget)", "n_matches": 10},
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "(Baseline|PlainQuery|Jailbreak|Ideal Refusal|dialogue famil)", "n_matches": 55},
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "lower.{0,15}middle.{0,15}upper|layer group|equally.{0,20}(divid|split)|three group|group of layers|\\bG\\b.{0,10}group", "n_matches": 3},
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "(base model|reference model|parent|generation required|forward pass|without generat|offline multi-turn dataset|number of (probing|prompts))", "n_matches": 9},
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "40 models|over 40|20 red|red.teaming strategies|red team", "n_matches": 21},
+    {"url": "https://arxiv.org/pdf/2511.14195", "pattern": "Table 7|Table 8|Table 9|Table 10", "n_matches": 7},
+    {"url": "https://aclanthology.org/2026.acl-long.1334.pdf", "pattern": "(Kendall|tau|\\\\tau|τ)", "n_matches": 17}
+  ],
+  "notes": "Both Eq 7 and Eq 9 CONFIRMED verbatim and CONFIRMED as equation numbers 7 and 9 respectively, matching prior recon exactly. Dialogue-condition naming precisely: Benign(B), Jailbreak(J), Ideal Refusal(R), Plain Query(P) -- prior recon's 'Baseline' label corresponds to the paper's 'Benign (B)' condition; the word 'Baseline' DOES appear elsewhere in the paper (e.g. Fig 3 axis label 'Baseline / Jailbreak / Refusal', and 'JB/PB Ratio... indicates that Jailbreak trajectories are more strongly separated from the Baseline than PlainQuery') used interchangeably with 'Benign (B)' for the same condition. Panel size '40+ models, 20+ red-teaming strategies, 7000+ test cases' CONFIRMED verbatim in Section 4.1.1 and abstract. Non-generative / forward-pass-only and parent-free (no separate reference model) BOTH CONFIRMED.",
+  "kendall_tau": {
+    "verdict": "NO single numeric Kendall's tau value is printed anywhere in the running text for the paper's HEADLINE claim (tau(r_jss-proxy, r_Hybrid), the JSS-proxy-vs-red-teaming ranking agreement across the full 40+ model panel) -- that claim is presented ONLY visually, via Figure 4 (scatter/consistency plot) and Figure 5 (a heatmap over Number-of-Models(n) x Number-of-Metrics(k), colorbar 0.2-1.0, labeled 'Kendall's Tau'), with accompanying prose stating only 'tau remains consistently high, with p-values far below conventional significance thresholds(< 0.05)'. HOWEVER, a DIFFERENT (related but distinct) numeric Kendall's-tau IS printed in running text/table: Table 2 (Section 4.3, 'Model Sensitivity and Systemic Stability Experiments') reports Kendall and Spearman rank-correlation Mean/Std/Q25/Q75 for the STABILITY of the JSS-induced ordering itself under perturbation of sample-size n, dataset choice, and model subset (e.g. jailbreak/kendall/n: mean 0.87, std 0.14, Q25 0.78, Q75 0.96) -- this is a robustness/sensitivity statistic, NOT the JSS-proxy-vs-red-teaming headline correlation number. This same Table 2 (same values) is present in BOTH the arXiv v2 PDF and the ACL 2026 camera-ready PDF (2026.acl-long.1334.pdf), so the ACL version of record does not add a missing headline tau either.",
+    "value": null,
+    "locator": "Headline (no number): Figure 4 and Figure 5, Section 4.1.1. Numeric-but-different-quantity: Table 2, Section 4.3, present identically in both arXiv v2 and ACL camera-ready PDFs.",
+    "regexes_tried": [
+      "(Kendall|tau|\\\\tau|τ) -- run against arXiv v2 PDF (17 matches) and ACL camera-ready PDF (17 matches, identical text)",
+      "τ\\s*=\\s*0\\.[0-9]+ (0 matches)",
+      "tau\\s*=\\s*0\\.[0-9]+ (0 matches)",
+      "Kendall.{0,30}0\\.[0-9]+ (0 matches)",
+      "0\\.[0-9]+.{0,20}(Kendall|tau|τ) (0 matches)"
+    ],
+    "urls_tried": ["https://arxiv.org/pdf/2511.14195", "https://aclanthology.org/2026.acl-long.1334.pdf"]
+  },
+  "equations": {
+    "eq7": {
+      "number_confirmed": true,
+      "form": "JSS(A,B) = (1/|G|) * sum_G [ (1/I) * sum_{i=1}^{I} JS_i^{(G)}(A,B) ]",
+      "quote": "To obtain a model-level separability measure, we aggregate JSDs across all slices and layer groups to define the Jensen-Shannon Separability (JSS): JSS(A, B) = 1/|G| Σ_G ( 1/I Σ_{i=1}^{I} JS_i^{(G)}(A, B) ). (7)"
+    },
+    "eq9": {
+      "number_confirmed": true,
+      "form": "JR Min/Max = min_{s in 0..1} JSS_s(J,R) / max_{s in 0..1} JSS_s(J,R)",
+      "quote": "JR Min/Max = min_{s∈0..1} JSS_s(J, R) / max_{s∈0..1} JSS_s(J, R). (9)"
+    }
+  }
+}

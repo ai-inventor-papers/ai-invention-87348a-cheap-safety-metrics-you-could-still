@@ -1,0 +1,76 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2511.14195
+Type: PDF
+Length: 75259 chars (truncated) (offset: 29400)
+
+--- Content ---
+
+8
+0.92
+0.99
+dataset
+0.57
+0.28
+0.42
+0.79
+model
+0.68
+0.12
+0.58
+0.78
+Table 2: Summary of rank correlation statistics for JSS-
+based safety ordering. The Matrix Dim column indicates
+the axis along which rankings are compared: n denotes
+varying sample sizes, dataset denotes different jailbreak
+or benign data sources, and model denotes comparisons
+across model variants. Statistics are reported as mean,
+standard deviation, and interquartile range (Q25–Q75).
+A detailed pair-wise heatmap is at Appendix Fig 13.
+Lower correlations mainly arise under heteroge-
+neous datasets or small sample sizes—particularly
+for jailbreak data—where weak or localized sepa-
+rability amplifies noise, but these effects vanish as
+rankings converge at moderate to large n.
+5
+Conclusion
+This paper presents N-GLARE, a non-generative,
+representation-based framework for LLM safety
+evaluation that captures safety state through latent
+trajectory geometry rather than outputs. By mod-
+eling a benign manifold and using JSS to measure
+deviations of jailbreak and refusal trajectories, N-
+GLARE produces model-level safety rankings con-
+sistent with large-scale red-teaming across over 40
+models, while reducing cost by more than two or-
+ders of magnitude. It further reveals fine-grained
+safety dynamics, demonstrating latent trajectory
+analysis as a scalable tool for continuous safety
+diagnostics.
+6
+Limitations
+While N-GLARE demonstrates strong empirical
+effectiveness, several limitations remain. First, al-
+though our evaluation covers over 40 models with
+diverse sizes and alignment settings, it does not
+exhaustively represent all architectures, training
+paradigms, or deployment variants. Second, N-
+GLARE requires access to internal hidden represen-
+tations, which limits its direct applicability to fully
+black-box models that expose only text outputs.
+8
+
+In addition, the geometric abstraction underlying
+N-GLARE—modeling benign behavior as a low-
+dimensional manifold and inferring safety from tra-
+jectory separability—may oversimplify more com-
+plex latent structures in large models. Finally, al-
+though the framework avoids output generation, it
+still depends on the design of probing conditions,
+whose coverage and quality can influence the re-
+sulting safety indicators.
+The limitations above also point to several
+promising directions for future research. Model
+coverage can be naturally expanded as new ar-
+chitectures and checkpoints become available, en-
+abling broader validation of representation-based
+s

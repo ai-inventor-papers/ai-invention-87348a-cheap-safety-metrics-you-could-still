@@ -1,0 +1,99 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2602.02600
+Type: PDF
+Pattern: (layer|depth|refusal|content|index|difference) (185 matches in 101529 chars)
+
+--- Content ---
+
+10:Step-Wise Refusal Dynamics in Autoregressive and Diffusion Language
+Models
+Eliron Rahimi1,2, Elad Hirshel3, Rom Himelstein1, Amit Levi1
+Avi Mendelson1, Chaim Baskin2, 4
+1Department of Computer Science, Technion – Israel Institute of Technology
+2INSIGHT Lab, School of Electrical and Computer Engineering, Ben-Gurion University of the Negev, Israel
+3Computer...
+--
+795:...rahimi@campus.technion.ac.il
+Abstract
+Diffusion language models (DLMs) have re-
+cently emerged as a competitive alternative to
+autoregressive (AR) models, offering parallel
+decoding, competitive generation quality, and
+initial evidence of improved jailbreak robust-
+ness. Despite this progress, the role of sam-
+pling mechanisms in shaping refusal behavior
+remains poorly understood. To address this gap,
+we present a comprehensive study of step-wise
+refusal dynamics. We show that diffusion re-
+masking can promote recovery from harmful
+intermediate generations, provide evidence that
+this behavior is tied to the sampling mechanism,
+and demonstrate that switching from AR to dif-
+fusion sampling improves jailbreak robustness,
+including under fixed model weights. To cap-
+ture generation dynamics not observable at the
+text level, we propose the Step-Wise Refusal
+Internal Dynamics (SRI) signal. Consistent
+with our text-level findings, SRI shows that re-
+covery fails primarily under AR sampling, with
+these failures often appearing anomalous rela-
+tive to harmless generations in the SRI space.
+Based on this observation, we show that SRI
+enables a simple jailbreak detector that does
+not modify inference and generalizes to un-
+seen attacks by training only on benign SRI
+signals. Our evaluation shows that this detector
+matches or outperforms existing jailbreak de-
+tection baselines while adding negligible over-
+head.
+Website.
+Content warning. This paper contains examples
+of harmful language used solely for research and
+analysis purposes.
+Accepted to the EMNLP 2026 Main Conference.
+Figure 1: Recovery from harmful intermediate content
+during diffusion generation in LLaDA. Harmful tokens
+produced at intermediate steps are iteratively revised
+across diffusion steps, enabling recovery to a safe final
+output without committing to a fixed prefix.
+1
+Introduction
+Generative artificial intelligence has advanced
+rapidly, driven primarily by large language mod-
+els (LLMs) (Open...
+--
+3505:...ges tied to diffu-
+arXiv:2602.02600v4  [cs.LG]  6 Sep 2026
+
+Figure 2: Example of anomalous behavior in the SRI
+space that is not visible at the text level for Qwen, an
+AR model. The SRI signal for a harmful generation
+is shown alongside reference SRI signals for harmless
+and refused responses, with the dashed line denoting the
+text-level refusal signal.
+sion sampling (Nie et al., 2025; Ye et al., 2025;
+Yu et al., 2025; Zhou et al., 2025a), with LLaDA-
+2 (Bie et al., 2025) extending these results to the
+100B-parameter regime.
+At the same time, LLM safety has become a crit-
+ical research challenge (Shi et al., 2024). Prior
+work has extensively studied jailbreak attacks, re-
+fusal ...
+--
+4399:..., 2025; Li et al., 2026). While
+prior work provides initial evidence of improved
+robustness to jailbreak attacks (Zhang et al., 2025),
+it remains unclear whether this robustness arises
+from the sampling mechanism or from other fac-
+tors, such as internal learned representations.
+In this work, we present a comprehensive study
+of step-wise refusal dynamics. We show that diffu-
+sion remasking can promote recovery from harmful
+intermediate generations (Figure 1), provide evi-
+dence that this behavior is tied to the sampling
+mechanism, and demonstrate that switching from
+AR to diffusion sampling improves jailbreak ro-
+bustness, including under fixed model weights. To
+capture recovery...
+--
+[177 more matches not shown]

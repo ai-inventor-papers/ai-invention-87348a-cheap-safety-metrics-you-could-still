@@ -1,0 +1,255 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2511.14195
+Type: PDF
+Pattern: 40 models|over 40|20 red|red.teaming strategies|red team (21 matches in 75259 chars)
+
+--- Content ---
+
+562:...y of California, Riverside, 2Fudan University, 3South China University of Technology
+Zheyu Lin: 1298lzy@gmail.com
+Jirui Yang: yangjr23@m.fudan.edu.cn
+Yukui Qiu: 202162311356@mail.scut.edu.cn
+Hengqi Guo: hqguo22@m.fudan.edu.cn
+Yubing Bao: ybbao23@m.fudan.edu.cn
+Yao Guan: yguan25@m.fudan.edu.cn
+Abstract
+Evaluating the safety robustness of LLMs is
+critical for their deployment. However, main-
+stream Red Teaming methods rely on on-
+line generation and black-box output analy-
+sis.
+These approaches are not only costly
+but also suffer from feedback latency, mak-
+ing them unsuitable for agile diagnostics af-
+ter training a new model. To address this, we
+propose N-GLARE (A Non-Generative, La-
+tent Representation-Efficient LLM Safety Eval-
+uator).
+N-GLARE operates entirely on the
+model’s latent representations, bypassing the
+need for full text generation. It characterizes
+hidden layer dynamics by analyzing the APT
+(Angular-Probabilistic Trajectory) of latent rep-
+resentations and introducing the JSS (Jensen-
+Shannon Separability) metric. Experiments on
+over 40 models and 20 red teaming strategies
+demonstrate that the JSS metric exhibits high
+consistency with Red Teaming safety rankings
+at less than 1% token and runtime cost.
+1
+Introduction
+Large Language Models must be aligned to ensure
+their behavior consistently follows human values
+and safety norms, rather than merely maximizing
+task performance (Das et al., 2025; Dong et al.,
+2024). Without such alignment, models may gener-
+ate harmful, biased, or unsafe outputs when facing
+adversarial prompts or complex contexts (Wei et al.,
+2023; Russinovich et al., 2025; Yang et al., 2025).
+Evaluating model safety is a foundational step
+toward achieving such alignment. The dominant
+paradigm in both industry and academia is cur-
+rently Red Teaming (Lin et al., 2025), which simu-
+lates adversarial user behavior by designing diverse,
+subtle attack prompts to probe the model and elicit
+unsafe outputs. While this online, behavior-based
+testing has proved effective for discovering vulnera-
+bilities, it suffers from two fundamental limitations.
+First, it is highly resource-intensive: test cover-
+age depends on the scale and diversity of attack
+prompts, which require continual human and com-
+putational investment as new attack vectors emerge.
+Second, Red Teaming is essentially a black-box
+methodology. It only observes input–output be-
+havior and provides little insight into the model’s
+internal safety state. A refusal that looks safe at
+the surface level may simply be triggered by brittle
+pattern matching, rather than reflecting a robust
+internal representation of harmfulness.
+To move beyond purely behavioral stress testing,
+recent work analyzes LLMs ...
+--
+5318:...bility (JSS), which compares the slice-wise dis-
+tributions of these turning angles across conditions,
+and aggregates them into model-level safety indi-
+cators, introducing other JSS-based safety scores.
+The core intuition is that: internal trajectory
+separability can serve as a proxy for the under-
+lying safety state of the model, potentially repro-
+ducing the discriminative power of large-scale
+Red Teaming at a fraction of the cost.
+Figure 1 supports the core intuition: when com-
+paring multiple variants of the same base model
+(e.g., RL-aligned, base, and safety-removed ver-
+sions of Qwen3-4B), we observe that better-aligned
+variants exhibit more pronounced geometric sepa-
+ration between different trajectories in latent space.
+Experiments on over 40 models and 20 red-
+teaming strategies demonstrate that N-GLARE
+faithfully reproduces the safety rankings induced
+by traditional Red Teaming while using less than
+1% of the token and runtime cost, making it suit-
+able for agile diagnostics after training new models
+or updating safety mechanisms.
+Our main contributions are summarized as fol-
+lows:
+• A non-generative, latent-space safety eval-
+uator. We propose N-GLARE, a framework
+that entirely bypasses online text generation
+and external output evaluators. To our knowl-
+edge, this ...
+--
+6853:...
+tation space, construct a benign manifold
+via whitened PCA, and define a introduce
+Angular-Probabilistic Trajectories (APT) de-
+viation measure. Building on this, we propose
+Jensen–Shannon Separability (JSS) and JSS-
+related normalized safety score as statistically
+robust, cross-model comparable indicators.
+• Extensive empirical validation and effi-
+ciency gains.
+Across more than 40 mod-
+els and 20 red-teaming strategies, we show
+that JSS-based rankings are highly consistent
+with those derived from traditional Red Team-
+ing, while reducing token and runtime cost
+to below 1%. We further demonstrate that N-
+GLARE supports fine-grained analyses such
+as early-stage safety dynamics and compari-
+son of alignment interventions across check-
+points, providing a practical tool for real-time
+safety diagnostics.
+2
+Technical Background
+2.1
+LLM Security and Red Teaming
+Red teaming evaluates LLM safety by simulat-
+ing attacker strategies to proactively identify and
+probe model vulnerabilities.Existing Red Teaming
+approaches can be broadly categorized into two
+types. The first focuses on content safety in single-
+turn interactions, such as leveraging algorithms
+like Monte Carlo Tree Search (MCTS) and evo-
+lutionary algorithms to optimize attack prompts
+(Sadasivan et al., 2024), or generating jailbreak
+templates through the mutation of seed prompts (Yu
+et al., 2023). The second category addresses secu-
+r...
+--
+27390:..., and timing formulation
+in Appendix D when we conduct the experiment on
+mixed strategy (PyRIT (Munoz et al., 2024)). The
+results support our method’s advantages as well in
+Appendix Figure 12.
+In table 1 we can see that across all red-teaming
+intensities and evaluation settings, the JSS-only
+7
+
+20
+40
+60
+80
+100
+0.8
+0.9
+1.0
+Jailbreak Data Stability
+Gibbs Harmful Dataset
+XGuard-Train
+SafeMTData
+MTSA Red Team
+0
+200
+400
+600
+800
+1000
+1200
+1400
+0.6
+0.7
+0.8
+0.9
+1.0
+Benign Data Stability
+LMSYS
+OASST1
+OpenHermes
+UltraChat
+Sample Size (n)
+Spearman Correlation
+Figure 8: Rank correlation stability of JSS-based safety
+ordering under varying sample sizes for jailbreak and
+benign data. Appendix Fig 11 has more information
+about this.
+pipeline consistently achieves orders-of-magnitude
+reductions in both token cons...
+--
+30552:...Conclusion
+This paper presents N-GLARE, a non-generative,
+representation-based framework for LLM safety
+evaluation that captures safety state through latent
+trajectory geometry rather than outputs. By mod-
+eling a benign manifold and using JSS to measure
+deviations of jailbreak and refusal trajectories, N-
+GLARE produces model-level safety rankings con-
+sistent with large-scale red-teaming across over 40
+models, while reducing cost by more than two or-
+ders of magnitude. It further reveals fine-grained
+safety dynamics, demonstrating latent trajectory
+analysis as a scalable tool for continuous safety
+diagnostics.
+6
+Limitations
+While N-GLARE demonstrates strong empirical
+effectiveness, several limitations remain. First, al-
+though our evaluation covers over 40 models with
+diverse sizes and alignment settings, it does not
+exhaustively represent all architectures, training
+paradigms, or deployment variants. Second, N-
+GLARE requires access to internal hidden represen-
+tations, which limits its direct applicability to fully
+black-box models that expose only text outputs.
+8
+
+In addition, the geometric abstraction underlying
+N-GLARE—modeling benign behavior...
+--
+35180:...g Huang. 2025b. Revisiting
+jailbreaking for large language models: A represen-
+tation engineering perspective. In Proceedings of
+the 31st International Conference on Computational
+Linguistics, pages 3158–3178.
+Lizhi Lin, Honglin Mu, Zenan Zhai, Minghan Wang,
+Yuxia Wang, Renxi Wang, Junjie Gao, Yixuan Zhang,
+Wanxiang Che, Timothy Baldwin, and 1 others. 2025.
+Against the achilles’ heel: A survey on red teaming
+for generative models. Journal of Artificial Intelli-
+gence Research, 82:687–775.
+Samuel Marks and Max Tegmark. 2023. The geometry
+of truth: Emergent linear structure in large language
+model representations of true/false datasets. arXiv
+preprint arXiv:2310.06824.
+Gary D. Lopez Munoz, Amanda J. Minnich, Roman
+Lutz, Richard Lundeen, Raja Sekhar Rao Dheekonda,
+Nina Chikanov, Bolor-Erdene Jagdagdorj, Martin
+Pouliot, Shiven Chawla, Whitney Maxwell, Blake
+Bullwinkel, Katherine Pratt, Joris de Gruyter, Char-
+lotte Siska, Pete Bryan, Tori Westerhoff, Chang
+Kawaguchi, Christian Seifert, Ram Shankar Siva Ku-
+mar, and Yonatan Zunger. 2024. Pyrit: A framework
+for security risk identification and red teaming in
+generative ai systems. Preprint, arXiv:2410.02828.
+Salman Rahman, Liwei Jiang, James Shiffer, Genglin
+Liu, Sheriff Issaka, Md Rizwan Parvez, Hamid
+Palangi, Kai-Wei Chang, Yejin Choi, and Saadia
+9
+
+Gabriel. 2025. X-teaming: Multi-turn jailbreaks and
+defenses with adaptive multi-agents. arXiv preprint
+arXiv:2504.13203.
+Qibing Ren, Hao Li, Dongrui Liu, Zhanxu Xie, Xiaoya
+Lu, Yu Qiao, Lei Sha, ...
+--
+[1 more matches not shown]

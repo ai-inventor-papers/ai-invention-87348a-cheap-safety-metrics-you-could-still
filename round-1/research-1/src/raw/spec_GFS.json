@@ -1,0 +1,165 @@
+{
+  "id": "SKINDEEP_GFS",
+  "arxiv": "2606.22676",
+  "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+  "venue": "arXiv preprint (submitted 21 Jun 2026; cs.AI). No venue/proceedings acceptance found in the fetched metadata.",
+  "urls": {
+    "abs": "https://arxiv.org/abs/2606.22676",
+    "html": "https://arxiv.org/html/2606.22676v1",
+    "pdf": "https://arxiv.org/pdf/2606.22676",
+    "code": "https://github.com/js-lee-AI/skin-deep",
+    "other": ["https://raw.githubusercontent.com/js-lee-AI/skin-deep/main/README.md"]
+  },
+  "reachability": {"abs": 200, "html": null, "pdf": 200, "fetch_truncated_at_kb": null},
+  "statistic": {
+    "name": "Geometric Fragility Score (GFS)",
+    "formula_prose": "For an aligned model M with base counterpart M0 (same architecture, L layers, hidden size d), extract residual-stream activations h_l(x) and h0_l(x) at the FINAL TOKEN POSITION for every prompt in a matched harmful-request set D_safe and benign set D_gen. Build centered activation matrices H_inst_l and H_base_l per layer l from D_safe ∪ D_gen and their covariances Sigma_inst_l, Sigma_base_l. Step 1 (subspace search): at each layer run CONTRASTIVE PCA against the base model: v_cPCA_l = argmax_{||v||=1} v^T (Sigma_inst_l - alpha*Sigma_base_l) v  [Eq 1], alpha fixed at 100 at every layer (chosen by sweeping alpha in {1,10,20,50,100,200,500,1000} and picking the value with best held-out harmful-vs-benign linear-probe accuracy on a 20% split, 5-fold logistic regression). Step 2: compute Cohen's d (d_l) for the harmful/benign separation along v_l on that layer. Step 3: compute the 'Arditi' reference refusal direction v_Arditi_l (difference-in-means direction between harmful and harmless mean activations, per Arditi et al. 2024) at the same layer, and take |cos(v_l, v_Arditi_l)|. Step 4 (aggregate): GFS(M) = sum_{l=1}^{L} w_l * |d_l| * (1 - |cos(v_l, v_Arditi_l)|)  [Eq 3], with a LINEAR DEPTH WEIGHT w_l ∝ l/L (later layers weighted more). A high GFS = safety geometry that is strong (large |d_l|), late (high w_l), and NOT concentrated on the known Arditi refusal axis (low |cos|).",
+    "inputs_read": "Paired checkpoints: the aligned instruct model M AND its 'version-matched' base model M0 (per the public code's extract_hidden_states.py --instruct_model / --base_model flags). Two matched prompt sets: D_safe (harmful-request prompts) and D_gen (benign instructions), matched in size and token length.",
+    "matrices_or_layers": "All L transformer layers of the model (per-layer cPCA direction, per-layer Cohen's d, per-layer cosine-to-Arditi); GFS sums over all layers with a linear depth weight w_l ∝ l/L.",
+    "token_positions": "Final token position of each prompt's residual stream, for the primary ('raw-prompt GFS ranking') pipeline. A separate 'chat-template robustness' variant instead formats with apply_chat_template and extracts at the final ATTENDED token. A token-position ablation (Appendix, Table 10) additionally reports first-token and mean-pooled variants on 5 models: first-token peak |d| collapses to <=0.27; mean-pool retains a coherent late-layer signal (peak |d| 1.98-4.63).",
+    "pooling": "None beyond taking the single final-token (or final-attended-token) hidden state per prompt; no multi-token pooling in the primary pipeline (mean-pooling is only an ablation check, not the reported GFS pipeline).",
+    "normalisation": "Unit-norm constraint on the cPCA direction (||v||=1, Eq 1); a separate 'unit-norm PCA' control is run to show harmful/benign separation is not explained by activation-norm differences. GFS itself uses raw Cohen's d (not further re-normalised) times a linear depth weight and the (1-|cos|) downweighting factor.",
+    "direction_fitted": "v_cPCA_l (per layer, per model) via contrastive PCA of the instruct model's activation covariance against alpha times the base model's activation covariance; and v_Arditi_l (per layer, per model) via Arditi et al.'s difference-of-means harmful-vs-harmless direction.",
+    "fitted_from": "D_safe ∪ D_gen prompts, passed through BOTH the instruct model and its base model (needed to form Sigma_inst_l and Sigma_base_l for the contrastive step).",
+    "cross_fitted": "Not cross-fitted / not split-sample by default for the headline GFS number; a SEPARATE held-out split-sample check (20% held-out probe split; Appendix B.1) is used only to validate the subspace-separation claim (Table 1, d_test), not to compute GFS itself.",
+    "prompt_set": "500 harmful-request prompts (AdvBench 200 + HarmBench 200 + BeaverTails 100) and 500 benign instructions (Alpaca 250 + OASST 250), matched by token count -- used for cPCA, CKA, and GFS.",
+    "n_prompts": 1000,
+    "generation_required": false,
+    "threshold_rule": "UNSTATED-IN-SOURCE (paper reports GFS as a continuous ranking score, not a binarized pass/fail threshold; models are ranked and the lowest-GFS core model, Gemma-2-9B, is flagged post hoc as an outlier that also retains refusal after LoRA -- no fixed cutoff value is given).",
+    "free_hyperparameters": [
+      "alpha in contrastive PCA (fixed at 100 for all layers/models after a sweep over {1,10,20,50,100,200,500,1000})",
+      "layer depth-weight functional form w_l ∝ l/L (linear; paper reports robustness checks to 'the GFS weighting scheme' in Appendix B.3 but the alternative schemes tested are not detailed in the extracted text)",
+      "which layer counts as l* (peak layer) for the companion direction-ablation experiment (largest Cohen's d layer)",
+      "D_safe / D_gen composition and size (500/500) is fixed by the authors but is itself a free choice for a re-implementer"
+    ]
+  },
+  "compute_class": "Forward-pass-only activation extraction (no fine-tuning, no generation) on BOTH an aligned model and its base counterpart, over 1000 prompts, per model; plus a downstream LoRA fine-tuning experiment (separate from GFS computation itself) used only to validate GFS's predictive claim.",
+  "model_panel": {
+    "n_models": 21,
+    "families": ["Llama", "Qwen", "Mistral", "Gemma", "SOLAR", "Yi", "openchat", "Hermes/Nous-Hermes (Mistral-based)", "Starling", "Tulu"],
+    "list": [
+      "Llama-3.1-8B-Instruct (core model set)",
+      "Qwen-2.5-7B-Instruct (core model set)",
+      "Mistral-7B-v0.3-Instruct (core model set)",
+      "Gemma-2-9B-it (core model set)",
+      "Mistral-7B-Instruct-v0.2 (chat-template robustness set)",
+      "Mistral-7B-Instruct-v0.3 (chat-template robustness set)",
+      "Yi-1.5-9B-Chat (chat-template robustness set)",
+      "openchat-3.5-1210 (chat-template robustness set)",
+      "Hermes-2-Pro-Mistral-7B (chat-template robustness set)",
+      "SOLAR-10.7B-Instruct (chat-template robustness set)",
+      "Starling-LM-7B-alpha (chat-template robustness set)",
+      "Nous-Hermes-2-Mistral-7B-DPO (chat-template robustness set)",
+      "Tulu-3-8B-DPO (LoRA fragility hold-out)",
+      "Qwen-2.5-3B (LoRA fragility hold-out)",
+      "Qwen-2.5-14B (LoRA fragility hold-out)"
+    ],
+    "note_on_list_completeness": "Only 15 of the 21 models in the 'full model pool' were located by name in the extracted PDF text within the time budget (core model set = 4, chat-template robustness set = 8, LoRA fragility hold-out set = 3). The remaining ~6 models (needed to reach 21 and to cover all 6 alignment recipes, e.g. an explicit RLAIF/C-RLFT-only or ORPO-only entry beyond those already listed) were not found in the sections grepped; likely candidates are in a full model-pool appendix table not reached by the greps run. This is LOW PRIORITY per instructions and was not pursued further."
+  },
+  "reported_numbers": [
+    {
+      "quantity": "GFS Eq. 3 (headline diagnostic formula)",
+      "value": "GFS(M) = sum_{l=1}^{L} w_l * |d_l| * (1 - |cos(v_l, v_Arditi_l)|)",
+      "protocol": "Computed once per model from raw-prompt, final-token activations on 500 harmful + 500 benign prompts, using cPCA directions fit against that model's base checkpoint.",
+      "n": "1000 prompts per model; 4 core models given full GFS values in the main text (raw-prompt GFS ranking set)",
+      "unit_of_resampling": "per-model scalar; no resampling/CI reported for GFS itself",
+      "quote": "GFS(M) = ∑_{l=1}^{L} w_l · |d_l| · (1 − |cos(v_l, v^Arditi_l)|), (3) ... GFS aggregates the layer-wise measurements into one diagnostic computed before those interventions are run.",
+      "locator": "Section 3.2 'Diagnostic summary', Eq. 3",
+      "url": "https://arxiv.org/pdf/2606.22676",
+      "verified_by_refetch": true
+    },
+    {
+      "quantity": "cPCA subspace separation, core model set",
+      "value": "peak |d| >= 1.8 for all 4 core models; probe accuracy >= 0.90; held-out split-sample d_test >= 2.71",
+      "protocol": "Contrastive PCA peak-layer direction; linear probe with 5-fold CV; 20% held-out split-sample re-estimate",
+      "n": "4 core models (Llama-3.1-8B, Qwen-2.5-7B, Mistral-7B-v0.3, Gemma-2-9B), 1000 prompts each",
+      "unit_of_resampling": "per-model",
+      "quote": "Table 1 shows that, on the core model set, the peak-layer cPCA direction separates harmful-request prompts from benign instructions with |d| ≥ 1.8 and linear-probe accuracy at least 0.90. Held-out split-sample estimates remain large (d_test ≥ 2.71)",
+      "locator": "Section 5.1, Table 1",
+      "url": "https://arxiv.org/pdf/2606.22676",
+      "verified_by_refetch": true
+    },
+    {
+      "quantity": "GFS-LoRA retention 'predictive' finding (item 4's headline number)",
+      "value": "NO Spearman/Kendall correlation coefficient or rank-accuracy percentage is reported. The claim is a QUALITATIVE co-occurrence: across the 4 core models + 3 strongly-aligned hold-out models (n=7 total), the model(s) with the lowest GFS in the core set (Gemma-2-9B) is the one that does NOT reach full (1.000) harmful compliance after the largest LoRA update (3-seed mean 0.68, std 0.17, range 0.48-0.80 at n=200), while GFS 'ranks... the four DPO-only models in ranks 1-4' among 8 models in the chat-template/raw ranking set. Every non-Gemma core+hold-out model saturates to ~1.000 harmful compliance by n=25.",
+      "protocol": "Rank-8 LoRA fine-tuning on benign Alpaca subsets of size n in {5,10,25,50,75,100,150,200}; harmful compliance measured on 50 held-out harmful prompts, judged by rule-based harm-string match plus Llama-Guard.",
+      "n": "Core model set = 4 models; LoRA fragility hold-out adds 3 more strongly-aligned models (Tulu-3-8B-DPO, Qwen-2.5-3B, Qwen-2.5-14B) => 7 models total in the LoRA fragility set",
+      "unit_of_resampling": "per-model, 3 replicated seeds reported for Gemma",
+      "quote": "GFS ranks models before LoRA and separates the DPO-only group. Table 8 ranks the raw-prompt GFS ranking set and places the four DPO-only models in ranks 1–4... At the largest LoRA size, every non-Gemma model reaches full harmful compliance, whereas Gemma-2-9B remains below full harmful compliance... Its quantitative forecasting power should be validated on larger held-out model sets... The GFS–LoRA hypothesis is currently scoped to the models in the LoRA fragility set and, more narrowly, to the initially safe cases within the LoRA fragility set.",
+      "locator": "Section 5.4 'Diagnostic: GFS Identifies the Model That Retains Refusal After LoRA'; Limitations, 'Future predictive validation of GFS'",
+      "url": "https://arxiv.org/pdf/2606.22676",
+      "verified_by_refetch": true
+    },
+    {
+      "quantity": "Cross-family recurrence (CKA)",
+      "value": "Peak-layer linear CKA across 4 core families ranges 0.676-0.881 (all inter-family pairs), all above a prompt-shuffle null (p<0.001)",
+      "protocol": "Linear CKA between activation matrices at each core model's peak layer, on the same 1000 prompts; prompt-shuffle null with 1000 permutations",
+      "n": "4 core models, pairwise (6 pairs)",
+      "unit_of_resampling": "per model-pair",
+      "quote": "Table 4 shows high peak-layer CKA across the four core families, with all inter-family pairs far above the prompt-shuffle null. No shuffled run reaches the observed CKA on any inter-family pair (p<0.001).",
+      "locator": "Section 5.3, Table 4",
+      "url": "https://arxiv.org/pdf/2606.22676",
+      "verified_by_refetch": true
+    }
+  ],
+  "held_out_protocol": {
+    "what_was_held_out": "(a) A 20% held-out split for the harmful-vs-benign linear probe used to pick alpha and to report split-sample Cohen's d (d_test) in Table 1; (b) a fully separate 'LoRA fragility hold-out' set of 3 strongly-aligned models (Tulu-3-8B-DPO, Qwen-2.5-3B, Qwen-2.5-14B) not in the core model set, used to check that the Gemma-retention finding is not limited to the 4 core models; (c) 50 held-out harmful prompts (distinct from the 100 AdvBench prompts used in the direction-ablation experiment) used to measure post-LoRA harmful compliance.",
+    "what_was_NOT_held_out": "GFS itself is computed on the SAME 500+500 prompt set used to select alpha and to report the headline subspace-separation numbers (no separate held-out prompt split is used for the GFS score that is then compared against LoRA retention); the 4 'core model set' models used to fit/tune the pipeline (choice of alpha, layer-weighting) are the SAME 4 models whose GFS-vs-LoRA-retention relationship is the paper's central claim, i.e. the DPO-only ranking (ranks 1-4 in Table 8) and the Gemma-lowest-GFS observation are not evaluated on a model set disjoint from the one used to design the pipeline, except for the 3-model 'hold-out' addition.",
+    "quote": "The GFS–LoRA hypothesis is currently scoped to the models in the LoRA fragility set and, more narrowly, to the initially safe cases within the LoRA fragility set. Cross-regime generalization to weakly-aligned models and quantitative forecasting on a separate alignment-method set are natural next steps.",
+    "locator": "Limitations section, 'Future predictive validation of GFS'"
+  },
+  "parent_free": false,
+  "parent_free_evidence": "GFS is explicitly NOT parent-free and NOT reference-free. Eq. 1 defines the cPCA direction as a contrast between the aligned model's activation covariance and alpha times the BASE model's activation covariance: 'Let M be an aligned causal transformer and M0 its base counterpart... We form centered activation matrices H_inst_l and H_base_l from D_safe ∪ D_gen, with covariance matrices Sigma_inst_l and Sigma_base_l... v_cPCA_l = argmax v^T(Sigma_inst_l - alpha*Sigma_base_l)v (1)'. The public reference implementation (github.com/js-lee-AI/skin-deep) confirms this operationally: extract_hidden_states.py takes both --instruct_model and --base_model arguments and its README states it extracts 'activations from an aligned model and its version-matched base model'. GFS ALSO requires two prompt sets, D_safe (harmful-request) and D_gen (benign), and additionally requires computing a reference 'Arditi' refusal direction (a difference-of-means direction over harmful vs. harmless activations) used in the (1-|cos(.,.)|) term of Eq. 3 -- so GFS needs BOTH a base/reference model AND labeled safe+harmful prompt sets, contradicting any framing of it as parent-free or reference-free.",
+  "inputs_required": {
+    "needs_reference_model": true,
+    "needs_safe_prompt_set": true,
+    "needs_harmful_prompts": true,
+    "quote": "Setup. Let M be an aligned causal transformer and M0 its base counterpart, both with L layers and hidden size d... We use a safety set D_safe of harmful-request prompts that an aligned model should refuse and a general set D_gen of benign instructions, matched in size and token length."
+  },
+  "reimplementation": {
+    "verdict": "REIMPLEMENTABLE with moderate effort, but NOT from the paper's prose alone for two under-specified pieces: (1) the exact linear-depth-weight normalisation constant/form of w_l ∝ l/L (proportionality constant unstated -- likely w_l = l/L or l/sum(l) but not pinned down in text) and (2) the exact prompt-to-Cohen's-d pipeline hyperparameters beyond alpha (e.g. exact Cohen's d formula variant, whether pooled or per-class std). Public code (github.com/js-lee-AI/skin-deep, MIT license) resolves most of this: it fixes last-token/all-layer raw-prompt extraction as the default GFS path, fixes the alpha=100 cPCA setting, and implements Cohen's d / cPCA / MMD / PERMANOVA / BH-FDR in common_utils.py, but the code's default example --models flag only covers the 4 core models (llama, qwen, mistral, gemma), not the full 21-model pool, and the LoRA fine-tuning / attack-side scripts are explicitly withheld from the release for dual-use reasons.",
+    "missing_details": [
+      "Exact functional form/normalisation of the linear depth weight w_l (only 'w_l ∝ l/L' given, no constant)",
+      "Full 21-model list and per-model alignment-recipe label beyond the 15 models located in-text",
+      "LoRA fine-tuning code and hyperparameters beyond rank=8, n in {5,...,200}, Alpaca data (learning rate, epochs/steps, LoRA alpha, target modules are not in the extracted text and are explicitly withheld from the public repo as 'attack-ready artifacts')",
+      "Exact D_safe/D_gen JSONL construction beyond source-dataset composition (500/500 split, AdvBench200+HarmBench200+BeaverTails100 vs Alpaca250+OASST250)",
+      "Peak-layer index l* selection procedure beyond 'largest Cohen's d' (withheld from the public repo at 'attack-coordinate granularity')"
+    ],
+    "defaults_we_must_choose": [
+      {"choice": "w_l functional form", "suggested_default": "w_l = l / L (unnormalised, i.e. sum_l w_l = (L+1)/2)", "sensitivity_check": "Re-run GFS ranking with w_l = l/sum(1..L) (normalised to sum to 1) and check the core-model ranking is unchanged; paper reports an unspecified 'GFS weighting scheme' robustness check in Appendix B.3 that was not reached in this extraction."},
+      {"choice": "LoRA hyperparameters (lr, steps/epochs, target modules)", "suggested_default": "Standard Hu et al. 2022 LoRA defaults: rank=8, alpha=16, lr=2e-4, all-attention target modules, 3 epochs over the n-example subset", "sensitivity_check": "Confirm non-Gemma models still saturate to ~1.0 harmful compliance by n=25 under the chosen defaults, matching the paper's reported trajectory."}
+    ],
+    "estimated_effort": "2-4 days for a from-scratch reimplementation using the public repo as scaffolding (activation extraction + cPCA + GFS scoring is a few hundred lines and already released); the LoRA-retention validation loop is the larger remaining lift since it is explicitly NOT released.",
+    "blocking_dependency": "Access to gated base+instruct checkpoint PAIRS for every model in the panel (e.g. Llama-3.1-8B and Llama-3.1-8B-Instruct, Gemma-2-9B and Gemma-2-9B-it) since GFS requires the base counterpart, not just the instruct model."
+  },
+  "code_search": {
+    "queries": [
+      "skin-deep geometric fragility score github js-lee-AI",
+      "Skin-Deep GFS alignment fragility LLM code repository"
+    ],
+    "found": true,
+    "url": "https://github.com/js-lee-AI/skin-deep"
+  },
+  "all_greps_run": [
+    {"url": "https://arxiv.org/pdf/2606.22676", "pattern": "(base model|reference|M_?0|D_?safe|aligned counterpart|without.{0,40}(parent|base)|requires)", "n_matches": 23},
+    {"url": "https://arxiv.org/pdf/2606.22676", "pattern": "(LoRA|rank|retention|retain|fine[- ]tun|Spearman|Kendall|rho|correlat|predict)", "n_matches": 147},
+    {"url": "https://arxiv.org/pdf/2606.22676", "pattern": "(principal component|PCA|refusal direction|top-?k|layer|pool|normali[sz]e|centroid|cosine)", "n_matches": "not printed in output header (378 lines returned)"},
+    {"url": "https://arxiv.org/pdf/2606.22676", "pattern": "GFS\\s*=|GFS\\s*\\(|Geometric Fragility Score|Equation 3|\\(3\\)|\\(4\\)|\\(5\\)", "n_matches": 2},
+    {"url": "https://arxiv.org/pdf/2606.22676", "pattern": "Diagnostic Utility|5\\.4|steps|epochs|learning rate|Alpaca|benign fine-tun|examples \\(|rank\\s*=\\s*\\d|alpha\\s*=\\s*\\d|LoRA rank", "n_matches": 8},
+    {"url": "https://arxiv.org/pdf/2606.22676", "pattern": "Diagnostic: GFS Identifies", "n_matches": 1},
+    {"url": "https://arxiv.org/pdf/2606.22676", "pattern": "Full model pool|Table 6|full model pool|Appendix.{0,10}Model", "n_matches": 4}
+  ],
+  "notes": "Compute-class panel confirmed at 21 instruct models / 6 alignment recipes / 3B-32B (abstract + Section 4.1) but only 15 individual model names were located by name inside the time budget (this is explicitly a LOW-PRIORITY item per instructions). CRITICAL FINDING: GFS is NOT parent-free -- it structurally requires a base/reference model M0 for the contrastive-PCA step (Eq 1), which is the opposite of a 'parent-free' or 'reference-free' diagnostic; the public GitHub code operationally confirms this (extract_hidden_states.py needs both --instruct_model and --base_model). No numeric Spearman/Kendall correlation is reported for the GFS-vs-LoRA-retention claim; it is a qualitative co-occurrence claim on a very small model set (n=7), and the paper itself flags this as future work ('Its quantitative forecasting power should be validated on larger held-out model sets'). NAME COLLISION FLAGGED: see top-level 'name_collisions' key.",
+  "name_collisions": [
+    {
+      "near_id": "2606.22686",
+      "title": "The Geometry of Refusal: Linear Instability in Safety-Aligned LLMs",
+      "authors": "Shivam Ratnakar, Kartikeya Vats",
+      "venue": "TrustNLP 2026 (Sixth Workshop on Trustworthy Natural Language Processing, co-located with ACL 2026)",
+      "confirmed_distinct": true,
+      "how_it_differs_from_skin_deep": "Different authors, different institution, different mechanism, and a different empirical goal: 2606.22686 introduces Contrastive Logit Steering (CLS), a zero-optimization OUTPUT-DISTRIBUTION (logit-level) attack/diagnostic that isolates a refusal direction by contrasting safe-vs-unrestricted SYSTEM PROMPTS (not base-vs-instruct activation covariances), and reports per-family attack-success-rate (ASR) numbers (e.g. 95% ASR on Llama-3.1 via prefix injection; 73% vs 22.6% CLS-vs-activation-steering on Llama-2; 91% vs 79.2% on Qwen-7B) plus a defensive 'inverted steering vector hardens models' result. It is an ATTACK/steering paper on 7 model families, not a pre-deployment fragility SCORE, and it makes NO claim about predicting post-LoRA refusal retention -- so it does not directly compete with Skin-Deep's GFS-predicts-LoRA-retention contribution, though both papers sit in the same 'refusal is a low-rank/linear direction' line of work and both were submitted 21 Jun 2026.",
+      "competes_with_retention_claim": false,
+      "url": "https://arxiv.org/abs/2606.22686"
+    }
+  ]
+}

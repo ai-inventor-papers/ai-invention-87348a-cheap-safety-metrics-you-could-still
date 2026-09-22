@@ -1,0 +1,367 @@
+{
+  "load_bearing_numbers": [
+    {
+      "nid": "N1",
+      "arxiv": "2507.11878",
+      "claim_the_hypothesis_makes": "Adversarial finetuning to accept harmful instructions has minimal impact on the model's internal belief of harmfulness; the derived 'Latent Guard' is comparable to/better than Llama Guard 3 8B and reduces over-refusal; is Latent Guard a per-prompt classifier on a fixed model or a per-model score, and does it need labelled fitting data?",
+      "verdict": "CONFIRMED",
+      "occurrences": [
+        {
+          "quote": "We also find that adversarially finetuning models to accept harmful instructions has minimal impact on the model's internal belief of harmfulness.",
+          "context": "Abstract, immediately following the description of jailbreak methods reducing refusal signals without suppressing internal harmfulness belief.",
+          "locator": "char offset ~1135 in extracted PDF text (Abstract)",
+          "url": "https://arxiv.org/pdf/2507.11878",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "For instance, our Latent Guard achieves performance comparable to or better than Llama Guard 3 8B, a dedicated finetuned safeguard model, across different jailbreak methods.",
+          "context": "Abstract, describing the practical safety application built from the harmfulness representation.",
+          "locator": "char offset ~1135 in extracted PDF text (Abstract)",
+          "url": "https://arxiv.org/pdf/2507.11878",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Table 3 shows the result. We find that our Latent Guard model achieves performance comparable to or better than Llama Guard 3, a dedicated finetuned model. The latent guard performs especially well on all three LLMs in detecting jailbreak prompts with persuasion and refused harmless instructions. For example, on the Qwen2 model, Latent Guard has an accuracy of 75% in detecting harmful persuasion prompts, while the Llama Guard 3 only has an accuracy of 17.8%.",
+          "context": "Section 5.1, discussing Table 3 (classification accuracy % of Latent Guard vs Llama Guard 3 on Adv-suffix/Persuasion/Template/Refused-HL/Accepted-HF test cases for LLAMA2-CHAT-7B, LLAMA3-INSTRUCT-8B, QWEN2-INSTRUCT-7B).",
+          "locator": "char offset ~36810-41977 (Section 5, Table 3 + surrounding prose)",
+          "url": "https://arxiv.org/pdf/2507.11878",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "practical safety application: The model's latent harmfulness representation can serve as an intrinsic safeguard (Latent Guard) for detecting unsafe inputs and reducing over-refusals that is robust to finetuning attacks.",
+          "context": "Abstract, statement of the over-refusal reduction claim.",
+          "locator": "char offset ~1135 in extracted PDF text (Abstract)",
+          "url": "https://arxiv.org/pdf/2507.11878",
+          "verified_by_refetch": true
+        }
+      ],
+      "sub_findings": {
+        "latent_guard_granularity": "PER-PROMPT classifier evaluated on a FIXED model. Verbatim: 'For an incoming instruction, the Latent Guard model computes the belief of harmfulness ∆harmful following Equation 3. If ∆harmful is negative, the instruction will be classified as harmless, and vice versa.' This scores individual incoming instructions (per-prompt), not a per-checkpoint/per-model aggregate score.",
+        "requires_labelled_data": "YES. Verbatim: 'We sample 100 harmful and 100 harmless examples from the training set (see details in Appendix B) to compute the centroid of clusters.' So the classifier is fit per base model from 100+100=200 labelled (harmful/harmless) examples to build the ∆harmful centroids/direction; the per-prompt score is then a cosine-similarity-to-centroid comparison. Section 5 also notes examples from Advbench/JBB/SorryBench are added to the harmful pool 'to construct µl,tinst_harmful for the latent guard model.'",
+        "fixed_model_dependence": "The direction/centroids are specific to each base LLM (LLAMA2-CHAT-7B, LLAMA3-INSTRUCT-8B, QWEN2-INSTRUCT-7B each get their own Latent Guard fit); the classifier is then applied per-prompt on that fixed model's activations."
+      },
+      "consequence": "Confirms the N1 claims essentially verbatim in all parts including the exact printed accuracy numbers (Table 3: e.g. Qwen2 Latent Guard persuasion 75.0% vs Llama Guard 3 17.8%). Decisively, Latent Guard is a PER-PROMPT classifier (scores each incoming instruction) that must be fit per fixed base model using 200 labelled harmful/harmless training examples -- it is NOT a per-model/per-checkpoint scalar score."
+    },
+    {
+      "nid": "N2",
+      "arxiv": "2603.05773",
+      "claim_the_hypothesis_makes": "Recognition-vs-execution double dissociation with a family split: Llama shows explicit semantic control while Qwen shows latent/distributed control.",
+      "verdict": "CONFIRMED",
+      "occurrences": [
+        {
+          "quote": "we uncover a critical architectural divergence, contrasting the Explicit Semantic Control of Llama3.1 with the Latent Distributed Control of Qwen2.5.",
+          "context": "Abstract, final sentence before code/dataset link.",
+          "locator": "char offset ~1323 (Abstract)",
+          "url": "https://arxiv.org/pdf/2603.05773",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "We demonstrate a causal double dissociation (inducing \"Knowing without Acting\") and uncover a fundamental architectural divergence: Llama3.1 relies on Explicit Semantic Control, whereas Qwen2.5 employs a robust Latent Distributed Control.",
+          "context": "End of Introduction, bulleted contributions list.",
+          "locator": "char offset ~7068",
+          "url": "https://arxiv.org/pdf/2603.05773",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "A sharp architectural divergence appears with Qwen2.5, which provides compelling evidence for Latent Distributed Control. Unlike its counterparts, Qwen's projection is dominated by structural artifacts (e.g., *sizeof) with only sporadic refusal anchors like :NO. This validates that while explicit models rely on lexicalized refusal, Qwen's safety mechanism operates within a distributed subspace that is not linearly mapped to the vocabulary.",
+          "context": "Section 4.2, analysis of Execution Axis (vR) heatmaps on JailbreakBench.",
+          "locator": "char offset ~21684",
+          "url": "https://arxiv.org/pdf/2603.05773",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "positing that safety computation operates on two distinct subspaces: a Recognition Axis (vH, \"Knowing\") and an Execution Axis (vR, \"Acting\").",
+          "context": "Abstract, defining the Disentangled Safety Hypothesis (DSH).",
+          "locator": "char offset ~942 (Abstract)",
+          "url": "https://arxiv.org/pdf/2603.05773",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "we advocate for a shift towards Geometric Alignment—moving beyond superficial suppression to architectures that intrinsically couple detection with refusal.",
+          "context": "Conclusion, restating the Llama-vs-Qwen divergence just before this sentence: 'Revealing the divergence between Llama's Explicit Semantic Control and Qwen's Latent Distributed Control...'",
+          "locator": "char offset ~39103 (Conclusion)",
+          "url": "https://arxiv.org/pdf/2603.05773",
+          "verified_by_refetch": true
+        }
+      ],
+      "sub_findings": {},
+      "consequence": "N2's double-dissociation and family-split claim (Llama = explicit semantic control, Qwen = latent/distributed control) is confirmed verbatim in the abstract, introduction, results (Section 4.2/4.3), and conclusion of 2603.05773 -- this is a central, heavily repeated finding of the paper, not an isolated aside."
+    },
+    {
+      "nid": "N3",
+      "arxiv": "2609.14759",
+      "claim_the_hypothesis_makes": "Refusal levels off/saturates at a single harm direction (rank 1); roughly three-quarters of refusal's causal input lies outside the moral subspace; Qwen specifically is unresolved at their sample size.",
+      "verdict": "CONFIRMED",
+      "occurrences": [
+        {
+          "quote": "as the basis widens, moral judgment keeps reading more of it, while refusal levels off at the level of a single harm direction, and about three-quarters of refusal's causal input lies outside the moral subspace altogether.",
+          "context": "Abstract, describing the central causal result from the OLMo-3 nested interchange rank sweep.",
+          "locator": "char offset ~1261-1625 (Abstract)",
+          "url": "https://arxiv.org/pdf/2609.14759",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "The picture is not uniform across families. Llama reads broad moral content; Qwen reads beyond the single harm cue but is unresolved at our sample size; GPT-OSS reads harm, and its refusals can be argued in either direction by its own reasoning trace.",
+          "context": "Abstract, immediately following the rank-1/three-quarters sentence; the four-model-family summary.",
+          "locator": "char offset ~1625 (Abstract)",
+          "url": "https://arxiv.org/pdf/2609.14759",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "A nested interchange rank sweep on OLMo resolves what refusal reads: as the moral basis expands, judgment coupling climbs while refusal coupling levels off at the rank-1 harm level.",
+          "context": "Section-level summary paragraph (methodology/results overview) restating the rank-1 saturation result.",
+          "locator": "char offset ~5427",
+          "url": "https://arxiv.org/pdf/2609.14759",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "About 76% of refusal's causal twin-difference i...[continues, truncated by grep window]",
+          "context": "Body text (Section on the nested rank sweep) restating the ~three-quarters/76% figure numerically; consistent with the abstract's 'about three-quarters'.",
+          "locator": "char offset ~30984",
+          "url": "https://arxiv.org/pdf/2609.14759",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Qwen, the fourth row, had no read-axis measurement until this run; its interchange cell reads refusal transfer 0.54 at rank 16 against a harm-rank-1 level of 0.38, so Qwen's refusal reads beyond the single harm cue, but its gap to judgment (0.12) is not resolved against the 0.10 plateau tolerance at 19 twins. The pre-registered verdict is indeterminate: harm-saturating is excluded (0.6% of bootstrap resamples), and broad is the plurality alternative (44%).",
+          "context": "Body text (four-model panel discussion), explicit statement that Qwen is unresolved/indeterminate at the study's sample size (n=19 twins).",
+          "locator": "char offset ~45568",
+          "url": "https://arxiv.org/pdf/2609.14759",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Qwen2.5-7B\nBeyond the harm-rank-1 level\n(refusal 0.54 [0.42, 0.69] vs harm 0.38; gap to judgment 0.12 [−0.04, 0.25] unresolved at n = 19: indeterminate)",
+          "context": "Appendix summary table (four-model panel: OLMo-3-7B, Qwen2.5-7B, Llama-3.1-8B, GPT-OSS-20B) giving the same Qwen indeterminate verdict in tabular form.",
+          "locator": "char offset ~42850",
+          "url": "https://arxiv.org/pdf/2609.14759",
+          "verified_by_refetch": true
+        }
+      ],
+      "sub_findings": {
+        "rank1_saturation_figure": "Figure 4 quantifies: 'Rrefusal saturates at the harm rank-1 level (0.25; 95% CI bars over twins)' while 'Rjudgment climbs (reads the whole subspace)' up to 0.66 at rank 16 -- the double-dissociation-style pattern underlying the 'levels off' claim.",
+        "qwen_unresolved_detail": "Qwen's refusal-transfer point estimate (0.54) actually exceeds the harm-rank-1 level (0.38), suggesting Qwen reads MORE than just harm, but the gap to judgment (0.12, 95% CI crossing zero-ish) is not statistically resolved at n=19 twins against the pre-registered 0.10 plateau tolerance -- hence 'indeterminate' rather than confirmed broad-reading."
+      },
+      "consequence": "All three targeted claims (a) rank-1 saturation, (b) ~three-quarters/76% of refusal's causal input outside the moral subspace, and (c) Qwen specifically unresolved at sample size are directly and repeatedly confirmed verbatim, including in the abstract itself."
+    },
+    {
+      "nid": "N4",
+      "arxiv": "2604.18901",
+      "claim_the_hypothesis_makes": "Two known 0.003 readings (own-direction abliteration invariance vs. instruct-to-abliterated transfer degradation) and two known 73-degree readings (protocol-angle max-pool-vs-last-token divergence vs. Gemma-3 base-to-instruct rotation) both allegedly appear in this paper.",
+      "verdict": "AMBIGUOUS-MULTIPLE-OCCURRENCES",
+      "occurrences": [
+        {
+          "quote": "matches its instruction-tuned counterpart within ±0.003 AUROC in abliterated variants from which the refusal mechanism has been removed.",
+          "context": "Abstract; describes each abliterated variant's OWN fitted direction achieving AUROC within 0.003 of the instruction-tuned counterpart's own-fitted-direction AUROC (harm-knowledge invariance under abliteration). This is reading (a).",
+          "locator": "char offset ~936 (Abstract)",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "AUROC differences between abliterated variants and their instruction-tuned counterparts are within ±0.003, indicating that the recognition signal at content-token positions survives the removal of the refusal direction from model weights [Arditi et al., 2024].",
+          "context": "Findings list item 2, restating reading (a) at the top of the paper.",
+          "locator": "char offset ~5709",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Abliterated variants, from which the refusal direction has been removed via the weight-orthogonalisation procedure of Arditi et al. [2024], match their instruction-tuned counterparts within ±0.003 AUROC.",
+          "context": "Section 3.2 'Detection persists through alignment interventions', own-direction-per-variant comparison, immediately preceding the separate 'Cross-variant direction transfer' paragraph. This is reading (a) again.",
+          "locator": "char offset ~17527",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "AUROC differences between abliterated variants and their instruction-tuned counterparts are within ±0.003 across four families: removing the refusal direction from model weights leaves an input-side recognition signal intact at content-token positions.",
+          "context": "Discussion section, restating reading (a) once more in relation to Zhao et al. [2025] (the harm/refusal dissociation paper).",
+          "locator": "char offset ~29602",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Across all four families, instruct-to-abliterated transfer is substantially cleaner than base-to-instruct (angles 11◦ to 42◦, AUROC degradation ≤0.003). Full 3 × 3 transfer matrices including the asymmetric Gemma-3 case are reported in Appendix K.",
+          "context": "Section 3.2, same paragraph as the base-to-instruct/Gemma-3 discussion (right after the Table 1 description). This is reading (b): the instruct->abliterated cross-variant TRANSFER degradation at direction angles 11-42 degrees, distinct from the own-direction invariance of reading (a).",
+          "locator": "char offset ~17968",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "two pooling choices applied to the same chat-templated activations at the same residual-stream layer (max-pool over content tokens versus last-token at the post-instruction position) recover harm directions 73◦ apart, and projecting one out leaves detection under either max-pool extraction essentially intact.",
+          "context": "Abstract, describing the protocol-dependence of the recovered harm direction. This is reading (a) for the 73-degree number: the max-pool vs last-token-post-instruction protocol divergence.",
+          "locator": "char offset ~1661 (Abstract)",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "the directions recovered at content-token positions and at the post-instruction position (wlt/chat_LDA, the construction Arditi et al. [2024] use to identify the refusal direction) lie 73◦ ± 7◦ apart in the same residual-stream layer; projecting wlt/chat_LDA out leaves the mean-difference vector under max-pool extraction with ≥89% of its norm intact.",
+          "context": "Findings list item 3, restating reading (a) with the exact '73° ± 7°' figure requested in the task.",
+          "locator": "char offset ~6323",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Gemma-3 is the exception: alignment rotates the harm direction by 73◦, base-to-instruct AUROC drops by 0.057, and TPR collapses from 0.751 to 0.175.",
+          "context": "Section 3.2, describing the Gemma-3 base-to-instruct rotation anomaly (also repeated near-verbatim in Section 3.3/Discussion at char offset ~30870). This is reading (b) for the 73-degree number, matching the task's delta-AUROC -0.057 and TPR 0.751->0.175 exactly.",
+          "locator": "char offset ~17968 and ~30870",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "At Lmp/raw, the θ two-class direction lies at 73.4◦ ± 12.3◦ from wmp/raw_LDA.",
+          "context": "Section 3.3, a THIRD distinct occurrence of '73' -- the angle between the angular (θ two-class) detection strategy's direction and the mean-difference/LDA direction, aggregated across all 12 models (Table 9: mean 73.4°, std 12.3°, min 57.3°, max 88.4°). This is NOT one of the two target readings; it is a separate geometric comparison and must not be conflated with either.",
+          "locator": "char offset ~20030 and Table 9 at ~59524",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Gemma-3\n73◦\n74◦\n26◦\n0.922 (−0.057)\n0.175 (−0.576)\n0.900 (−0.077)\n0.100 (−0.612)",
+          "context": "Table 1 (Cross-variant direction transfer summary): Gemma-3 row gives B↔I=73°, B↔A=74°, I↔A=26° -- confirming the Gemma-3 73° figure is specifically the base-to-instruct (B↔I) angle, consistent with reading (b).",
+          "locator": "char offset ~18985 (Table 1)",
+          "url": "https://arxiv.org/pdf/2604.18901",
+          "verified_by_refetch": true
+        }
+      ],
+      "sub_findings": {
+        "0.003_reading_a": "SUPPORTED -- own-fitted-direction abliteration invariance: '±0.003 AUROC' between each variant's own-fitted-direction instruct vs abliterated performance (Abstract, Findings#2, Section 3.2 first paragraph, Discussion).",
+        "0.003_reading_b": "SUPPORTED -- instruct-to-abliterated cross-variant TRANSFER degradation '≤0.003' at direction angles '11° to 42°' (Section 3.2, second paragraph on cross-variant transfer, right after Table 1). This is a DIFFERENT quantity (transfer using one variant's direction on another) from reading (a) (each variant's own direction), even though both use the digits '0.003' and sit in the same subsection.",
+        "73_reading_a": "SUPPORTED -- protocol angle: max-pool-over-content vs last-token-post-instruction directions recover '73° ± 7°' apart at the same layer (Abstract + Findings item 3).",
+        "73_reading_b": "SUPPORTED -- Gemma-3's base-to-instruct rotation of '73°' co-occurring with ΔAUROC −0.057 and TPR 0.751→0.175 (Section 3.2 + Table 1's B↔I=73° cell + Discussion restatement).",
+        "note_on_third_73": "A third, genuinely distinct '73' occurrence exists (73.4°±12.3° between wLDA and the angular θ two-class strategy, Table 9) that is neither of the two target readings -- illustrating exactly the multi-occurrence risk the task warned about. It is unrelated to either alignment-rotation or extraction-protocol framing and should not be cited as evidence for either reading (a) or (b)."
+      },
+      "consequence": "Both '0.003' readings and both '73°' readings are genuinely present in 2604.18901 as TWO DISTINCT TRUE FINDINGS EACH (not a single ambiguous/misattributed number): (0.003) own-direction abliteration invariance vs. instruct→abliterated transfer degradation; (73°) max-pool/last-token extraction-protocol divergence vs. Gemma-3's anomalous base-to-instruct rotation. A downstream paper citing either reading of either number is on verbatim solid ground, but must be careful to attribute the CORRECT one of the two co-existing readings and not conflate them (and must not additionally cite the unrelated third 73.4° occurrence as if it were one of the two)."
+    },
+    {
+      "nid": "N5",
+      "arxiv": "2606.16349",
+      "claim_the_hypothesis_makes": "HRCI_repr is Eq 9 = half |cos| inner product of harm/refusal directions plus half mean squared canonical correlation; SFT also reaches low coupling while remaining substantially less robust; authors state low coupling is not a safety score; various printed numbers; metric properties (parent-free? single-checkpoint? prompts needed? labelled data needed?).",
+      "verdict": "CONFIRMED",
+      "occurrences": [
+        {
+          "quote": "We summarize H/R coupling using three normalized quantities. The first is directional alignment, Ccos(t) = h⊤t rt / ‖‖. (7) ... We use the average squared canonical correlation, Csub(t) = 1/k Σ_{i=1}^{k} cos2 θi, (8) ... Our primary direct representational coupling index is HRCIrepr(t) = 1/2 Ccos(t) + 1/2 Csub(t). (9)",
+          "context": "Section 3.3 'Harmfulness–refusal coupling', the formal definition of the metric.",
+          "locator": "char offset ~18516",
+          "url": "https://arxiv.org/pdf/2606.16349",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Thus low coupling is not a safety score.",
+          "context": "Section 4.3 'RQ3: Is lower coupling a general signature of safety?', immediately after describing the SFT trajectory's high-ASR-despite-low-coupling pattern.",
+          "locator": "char offset ~29223",
+          "url": "https://arxiv.org/pdf/2606.16349",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "The SFT trajectory rules out a simple monotonic interpretation. SFT reaches full-HRCI values close to late R2D2 by step 50, but it remains high-ASR throughout the five-anchor window. Its direct-coupling change is also much smaller: HRCIrepr moves from 0.0217 at reference to 0.0190 at step 500.",
+          "context": "Section 4.3, the SFT-as-counterexample finding.",
+          "locator": "char offset ~29223",
+          "url": "https://arxiv.org/pdf/2606.16349",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Direct representational coupling is relatively higher at the early R2D2 anchors: HRCIrepr is 0.0784 at step 50, while fixed-source ASR remains 0 and XSTest refusal is saturated at 1.00. Benign helpfulness is also 0, so this early state is robust-looking but not useful. By step 500, HRCIrepr has fallen to 0.0205, a 73.9% drop from step 50. At the same checkpoint, fixed-source ASR has reopened to 0.2500, XSTest refusal has fallen to 0.2280, and benign helpfulness has recovered to 1.1167 on a 0–2 scale.",
+          "context": "Section 4.2/4.3, main R2D2 regime-transition result (also restated in the Abstract at char offset ~690 and Introduction at ~5949).",
+          "locator": "char offset ~28510",
+          "url": "https://arxiv.org/pdf/2606.16349",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "For each checkpoint, the protocol extracts a harmfulness carrier and a refusal carrier, compares their direct activation-space overlap, and separately reports their layer locations.",
+          "context": "Introduction, describing the dual safety-geometry protocol applied per checkpoint across the Mistral SFT/R2D2 trajectories.",
+          "locator": "char offset ~3752",
+          "url": "https://arxiv.org/pdf/2606.16349",
+          "verified_by_refetch": true
+        },
+        {
+          "quote": "Second, we extract harmfulness carriers from harmful-versus-benign contrasts and refusal carriers from refusal-versus-compliance contrasts.",
+          "context": "Section 3 'Dual Safety-Geometry Protocol', step 2 of the five-step protocol.",
+          "locator": "char offset ~11667",
+          "url": "https://arxiv.org/pdf/2606.16349",
+          "verified_by_refetch": true
+        }
+      ],
+      "sub_findings": {
+        "equation_number_confirmed": "Eq 9 is CONFIRMED as HRCIrepr(t) = 1/2 Ccos(t) + 1/2 Csub(t), where Ccos (Eq 7) is 'directional alignment' (an inner-product-based cosine term between harm carrier h_t and refusal carrier r_t; the PDF-to-text extraction garbled the norm/absolute-value bar symbols in the numerator/denominator, so the exact presence of absolute-value bars could not be independently confirmed from the extracted text, though 'directional alignment' is consistent with |cos|) and Csub (Eq 8) is explicitly 'the average squared canonical correlation' over the first k principal angles between the harm subspace Ht and refusal subspace Rt -- matching the prior recon's description almost exactly ('mean squared canonical correlation' ~= 'average squared canonical correlation').",
+        "sft_low_coupling_less_robust": "CONFIRMED verbatim: SFT reaches full-HRCI values close to late R2D2 by step 50 but 'remains high-ASR throughout the five-anchor window' -- i.e., low coupling without the robustness that R2D2 achieves at the same coupling level.",
+        "not_a_safety_score_quote": "CONFIRMED verbatim: 'Thus low coupling is not a safety score.'",
+        "number_0.0784_at_step50": "CONFIRMED -- 'HRCIrepr is 0.0784 at step 50'",
+        "number_0.0205_at_step500": "CONFIRMED -- 'HRCIrepr has fallen to 0.0205'",
+        "number_neg73.9pct": "CONFIRMED -- 'a 73.9% drop from step 50'",
+        "number_ASR_0_to_0.25": "CONFIRMED -- 'fixed-source ASR remains 0' at step 50; 'fixed-source ASR has reopened to 0.2500' at step 500",
+        "number_XSTest_1.00_to_0.228": "CONFIRMED -- 'XSTest refusal is saturated at 1.00' at step 50; 'XSTest refusal has fallen to 0.2280' at step 500",
+        "number_SFT_control_0.0217_to_0.0190": "CONFIRMED -- 'HRCIrepr moves from 0.0217 at reference to 0.0190 at step 500'",
+        "parent_free_single_checkpoint": "NOT PARENT-FREE / NOT SINGLE-CHECKPOINT-UNIVERSAL in the sense the term is used elsewhere in this project's memory: the term 'parent-free' does not appear anywhere in this PDF (0 grep matches). Instead, the protocol explicitly RE-EXTRACTS a fresh harmfulness carrier and refusal carrier AT EACH CHECKPOINT ('For each checkpoint, the protocol extracts a harmfulness carrier and a refusal carrier...') and tracks HRCIrepr(t) as a function of training step t across a whole SFT/R2D2 trajectory (steps 50 through 500 and beyond, plus a dense 100-checkpoint-per-regime extension in RQ4). So HRCIrepr is a per-checkpoint metric computed freshly at every checkpoint of a training trajectory, not a single fixed pre-computed direction re-used at one snapshot.",
+        "prompts_needed_and_labelling": "Requires LABELLED contrastive prompt sets: harmful-versus-benign prompts to build the harmfulness carrier, and refusal-versus-compliance prompts to build the refusal carrier ('we extract harmfulness carriers from harmful-versus-benign contrasts and refusal carriers from refusal-versus-compliance contrasts'). The exact prompt COUNT per carrier was not located in the excerpts retrieved by these greps (searches for explicit sample-size language such as 'n = ... prompts' near the carrier-extraction methodology did not surface a specific number in Section 3); this should be treated as NOT-FOUND-IN-EXCERPTS rather than assumed absent, since a full linear read of Section 3.1/3.2 (probe-set construction) was not performed beyond the grepped windows."
+      },
+      "consequence": "All (a)-(d) targets are CONFIRMED verbatim including every specific number requested. For (e): HRCIrepr is a per-checkpoint (not single-snapshot/parent-free) diagnostic recomputed at every training checkpoint from freshly extracted, LABELLED harmful/benign and refusal/compliance contrastive prompt sets; the exact number of prompts used per carrier was not found in the retrieved excerpts and would need a further targeted read of the methodology (Section 3.1) to pin down."
+    }
+  ],
+  "aux_2603_27412": {
+    "finding": "CONFIRMED. LatentBiopsy (2603.27412) evaluates Qwen3.5-0.8B and Qwen2.5-0.5B base/instruct/abliterated triplets and reports that abliterated variants match instruction-tuned counterparts within at most 0.015 AUROC, supporting a geometric dissociation between harmful-intent representation and the refusal mechanism that survives abliteration.",
+    "occurrences": [
+      {
+        "quote": "First, geometry survives refusal ablation: both abliterated variants achieve AUROC at most 0.015 below their instruction-tuned counterparts, establishing a geometric dissociation between harmful-intent representation and the downstream generative refusal mechanism.",
+        "context": "Abstract, first of three empirical findings.",
+        "locator": "char offset ~1324",
+        "url": "https://arxiv.org/pdf/2603.27412",
+        "verified_by_refetch": true
+      },
+      {
+        "quote": "Geometry survives refusal ablation in both tested model families. Abliterated variants of both Qwen3.5-0.8B and Qwen2.5-0.5B achieve AUROC h/b = 1.000 and AUROC h/n within 0.015 of their instruction-tuned counterparts, establishing a geometric dissociation between harmful-intent representation and the refusal mechanism across two independent model families.",
+        "context": "Contributions list, item 2.",
+        "locator": "char offset ~5138",
+        "url": "https://arxiv.org/pdf/2603.27412",
+        "verified_by_refetch": true
+      },
+      {
+        "quote": "We evaluate two complete model triplets from the Qwen3.5-0.8B and Qwen2.5-0.5B families: base, instruction-tuned, and abliterated (refusal direction surgically removed via orthogonalisation). Across all six variants, LatentBiopsy achieves AUROC ≥0.937 for harmful-vs-normative detection and AUROC =1.000 for discriminating harmful from benign-aggressive prompts (XSTest), with sub-millisecond per-query overhead.",
+        "context": "Abstract, describing the exact Qwen base/instruct/abliterated triplet evaluation setup.",
+        "locator": "char offset ~901",
+        "url": "https://arxiv.org/pdf/2603.27412",
+        "verified_by_refetch": true
+      },
+      {
+        "quote": "the gap is 0.015 AUROC h/n for Qwen3.5-0.8B and 0.017 for Qwen2.5-0.5B, with base scoring higher in both cases.",
+        "context": "Section 5.3 'Comparison across model variants', giving the per-family exact base-vs-instruct gap (note: this particular sentence is about base-vs-instruct, a related but distinct comparison from the abliterated-vs-instruct headline claim).",
+        "locator": "char offset ~18830",
+        "url": "https://arxiv.org/pdf/2603.27412",
+        "verified_by_refetch": true
+      },
+      {
+        "quote": "In Qwen3.5-0.8B, the abliterated model (AUROC h/n = 0.9517) lies 0.002 above the chat model (0.9497), well within any plausible noise floor. In Qwen2.5-0.5B, the gap is 0.005 (best layer 10 vs. 20), a margin smaller than the base-to-...",
+        "context": "Section 5.3, the exact abliterated-vs-instruct numeric gaps underlying the '0.015 at most' headline bound (0.002 for Qwen3.5-0.8B, 0.005 for Qwen2.5-0.5B, both well within the 0.015 ceiling).",
+        "locator": "char offset ~18830",
+        "url": "https://arxiv.org/pdf/2603.27412",
+        "verified_by_refetch": true
+      }
+    ]
+  },
+  "all_greps_run": [
+    {"url": "https://arxiv.org/pdf/2507.11878", "pattern": "(minimal impact|internal belief)", "n_matches": 13},
+    {"url": "https://arxiv.org/pdf/2507.11878", "pattern": "(Latent Guard|Llama ?Guard ?3)", "n_matches": 57},
+    {"url": "https://arxiv.org/pdf/2507.11878", "pattern": "(over[- ]refus)", "n_matches": 7},
+    {"url": "https://arxiv.org/pdf/2603.05773", "pattern": "(double dissociation)", "n_matches": 4},
+    {"url": "https://arxiv.org/pdf/2603.05773", "pattern": "((Qwen|Llama)[\\s\\S]{0,300}(latent|distributed|explicit semantic))", "n_matches": 15},
+    {"url": "https://arxiv.org/pdf/2603.05773", "pattern": "(recognition|execution)", "n_matches": 51},
+    {"url": "https://arxiv.org/pdf/2609.14759", "pattern": "(levels? off|saturat)", "n_matches": 16},
+    {"url": "https://arxiv.org/pdf/2609.14759", "pattern": "(moral subspace)", "n_matches": 56},
+    {"url": "https://arxiv.org/pdf/2609.14759", "pattern": "(unresolved|underpowered)", "n_matches": 3},
+    {"url": "https://arxiv.org/pdf/2609.14759", "pattern": "(three[- ]quarters|75\\s?%|0\\.7[0-9])", "n_matches": 60},
+    {"url": "https://arxiv.org/pdf/2609.14759", "pattern": "(rank[- ]1|rank 1|single direction)", "n_matches": 47},
+    {"url": "https://arxiv.org/pdf/2609.14759", "pattern": "(Qwen)", "n_matches": 39},
+    {"url": "https://arxiv.org/pdf/2604.18901", "pattern": "0\\.003", "n_matches": 31},
+    {"url": "https://arxiv.org/pdf/2604.18901", "pattern": "73", "n_matches": 39},
+    {"url": "https://arxiv.org/pdf/2603.27412", "pattern": "0\\.015", "n_matches": 3},
+    {"url": "https://arxiv.org/pdf/2603.27412", "pattern": "(abliterat)", "n_matches": 59},
+    {"url": "https://arxiv.org/pdf/2603.27412", "pattern": "(Qwen)", "n_matches": 117},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "HRCI", "n_matches": 50},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "(not a safety score)", "n_matches": 1},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "(SFT|supervised fine[- ]tun)", "n_matches": 60},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "0\\.0784", "n_matches": 3},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "0\\.0205", "n_matches": 3},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "73\\.9", "n_matches": 1},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "XSTest", "n_matches": 30},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "(canonical correlation)", "n_matches": 1},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "(parent[- ]free|single[- ]checkpoint|single checkpoint|no parent|without.{0,20}parent)", "n_matches": 0},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "(harmful prompts|harmless prompts|labell?ed|n\\s*=\\s*[0-9]+ prompts|contrastive pairs)", "n_matches": 2},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "(carrier|difference[- ]of[- ]means|mean[- ]difference|Arditi|per checkpoint|per-checkpoint|refit)", "n_matches": 58},
+    {"url": "https://arxiv.org/pdf/2606.16349", "pattern": "(we (sample|use|extract)|training set|held-out set|AdvBench|training pairs|[0-9]+ (harmful|harmless|contrastive) )", "n_matches": 5}
+  ]
+}

@@ -1,0 +1,78 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2607.01854
+Type: PDF
+Pattern: (trusted base|reference|without a base|parent|attested) (42 matches in 41580 chars)
+
+--- Content ---
+
+360:...? A Two-Signal Audit
+and Its Failure Map
+Gabriel Hurtado
+Moonsong Labs
+Abstract
+Can a platform tell, before deployment, whether an open-weight checkpoint
+has had its refusal mechanism stripped? Runtime guards cannot: they
+score generations, not the artifact. We combine two cheap internal signals,
+a reference-anchored activation refusal-gap and a weight-recovery energy of
+the base-to-candidate weight difference, into a threshold-free checkpoint
+audit. The two are negatively correlated and label-complementary: the gap
+supplies refusal-specificity and the weight energy supplies recall. On a 273-
+checkpoin...
+--
+1094:...nign fine-
+tunes, merges, and instruction-tunes at AUROC 0.95, significantly above
+either signal alone (0.84, 0.90), and a Youden-calibrated threshold transfers
+to held-out families at balanced accuracy 0.89 (FPR 0.11), missing only 4
+of 57. We then map two failures, in order of severity: a spoofed reference
+evades both axes with no training (∆W=0, ρ=1 by construction), and a
+white-box owner trains a checkpoint past the threshold while it stays guard-
+unsafe and coherent. The audit is effective triage, not tamper-proofing: it
+presumes an attested reference, and its claims are bounded by the registry
+we evaluate it on.
+1
+Introduction
+Open-weight models advertised as uncensored or abliterated appear within days of major base
+releases, produced by orthogonalizing the residual stream against a refusal direction (Arditi
+et al., 2024; Labonne, 2024) or new...
+--
+2420:...s already proposed for adjacent tasks (acti-
+vation separation (Messenger, 2026), weight-difference monitoring (Zhong & Raghunathan,
+2025)) into an effective checkpoint audit, then map where it nonetheless fails.
+Contributions.
+1. An effective checkpoint-triage detector.
+Standardizing and summing a reference-
+anchored activation refusal-gap and the WeightWatch weight-recovery energy gives a
+threshold-free score at AUROC 0.95, significantly above either signal alone, that trans-
+fers across unseen families (leave-one-family-out balanced accuracy 0.89). The signals
+are complementary: the gap is refusal-specific but misses multi-direction removal; the
+weight energy catches it but over-flags benign low-rank edits (§4).
+2. A failure map. The detector is still not tamper-proof: a spoofed reference defeats it with
+no training, and a white-box owner trains a checkpoint past it while it stays guard-unsafe
+(§5).
+3. A public registry with benign-edit negatives. A 273-checkpoint registry (abliterations
+across four families plus benign fine-tunes, merges, and instruction-tunes as hard nega-
+tives) ...
+--
+3870:...y signals and, more importantly, chart where
+even the combination fails.
+AMS (Messenger, 2026) flags collapse of harmful/benign activation separation; we bench-
+mark its Tier-1 absolute-σ scan; its Tier-2 mode compares a candidate against a trusted
+baseline. Our activation axis differs in scoring a reference-anchored ratio of the harmful-
+minus-benign gap (not a fingerprint-integrity match). Empirically, Tier-1 absolute thresh-
+olding misses an abliterated Qwen2.5-1.5B sibling that Tier-2 reference-verification catches:
+reference-anchoring, not absolute thresholding, surfaces the edit. WeightWatch (Zhong
+& Raghunathan, 2025) monitors the top singular directions of the base–candidate weight
+difference. Jain et al. (2024) show safety fine-tuning is a low-rank, null-space MLP edit, so a
+low-rank weight delta signals safety edi...
+--
+5581:... and weight-level tamper-resistance (Tamirisa et al.,
+2024).
+Concurrent work uses the same refusal-vector primitive for provenance fingerprinting
+(Xu & Sheng, 2026) and detects abliteration as a direction-agnostic deviation in activation-
+geometry fingerprint (Coslett, 2026); we differ in scoring a reference-anchored gap ratio
+to detect refusal removal rather than lineage or structural drift, fusing it with the weight
+axis, and demonstrating the detection-aware evasion that both leave as an open question
+(Coslett, 2026; Xu & Sheng, 2026). These recipes are widespread (Young, 2025); a simple
+refusal-har...
+--
+[32 more matches not shown]

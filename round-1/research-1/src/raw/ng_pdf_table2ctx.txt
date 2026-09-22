@@ -1,0 +1,164 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2511.14195
+Type: PDF
+Length: 75259 chars (truncated) (offset: 27500)
+
+--- Content ---
+
+traChat
+Sample Size (n)
+Spearman Correlation
+Figure 8: Rank correlation stability of JSS-based safety
+ordering under varying sample sizes for jailbreak and
+benign data. Appendix Fig 11 has more information
+about this.
+pipeline consistently achieves orders-of-magnitude
+reductions in both token consumption. This effi-
+ciency gain stems from eliminating iterative genera-
+tion and multi-model interaction, thereby removing
+the primary scalability bottleneck of traditional red-
+teaming.
+4.3
+Model Sensitivity and Systemic Stability
+Experiments
+If our method is indeed capturing an intrinsic prop-
+erty of the model’s alignment dynamics—rather
+than dataset-specific artifacts—then its induced
+safety ordering should remain stable when we per-
+turb the underlying data and sampling conditions.
+The goal of this section is therefore to test the sys-
+temic stability of our JSS-based safety scale. Con-
+cretely, we ask: (i) whether the relative JSS differ-
+ences between models remain consistent when we
+vary which jailbreak trajectories are used under dif-
+ferent attack datasets and how many sample size n
+trajectories are included; and (ii) whether the same
+stability holds when we perturb the benign refer-
+ence distribution, by changing the source corpus
+and the number of benign samples used to estimate
+the natural manifold.
+As shown in Fig 8 and Table 2, rank correla-
+tions consistently increase with sample size and
+rapidly converge to high values, indicating that the
+induced model ordering is not sensitive to the spe-
+cific choice of attack or benign datasets.
+Source
+Metric
+Matrix Dim
+Mean
+Std
+Q25
+Q75
+benign
+kendall
+n
+0.78
+0.11
+0.65
+0.87
+dataset
+0.67
+0.14
+0.56
+0.78
+model
+0.73
+0.36
+0.33
+1.00
+spearman
+n
+0.88
+0.08
+0.79
+0.94
+dataset
+0.79
+0.11
+0.72
+0.87
+model
+0.76
+0.34
+0.40
+1.00
+jailbreak
+kendall
+n
+0.87
+0.14
+0.78
+0.96
+dataset
+0.45
+0.24
+0.33
+0.60
+model
+0.54
+0.12
+0.47
+0.61
+spearman
+n
+0.94
+0.08
+0.92
+0.99
+dataset
+0.57
+0.28
+0.42
+0.79
+model
+0.68
+0.12
+0.58
+0.78
+Table 2: Summary of rank correlation statistics for JSS-
+based safety ordering. The Matrix Dim column indicates
+the axis along which rankings are compared: n denotes
+varying sample sizes, dataset denotes different jailbreak
+or benign data sources, and model denotes comparisons
+across model variants. Statistics are reported as mean,
+standard deviation, and interquartile range (Q25–Q75).
+A detailed pair-wise heatmap is at Appendix Fig 13.
+Lower correlations mainly arise under heteroge-
+neous datasets or small sample sizes—particularly
+for jailbreak data—where weak or localized sepa-
+rability amplifies noise, but these effects vanish as
+rankings converge at moderate to large n.
+5
+Conclusion
+This paper presents N-GLARE, a non-generative,
+representation-based framework for LLM safety
+evaluation that captures safety state through latent
+trajectory geometry rather than outputs. By mod-
+eling a benign manifold and using JSS to measure
+deviations of jailbreak and refusal trajectories, N-
+GLARE produces model-level safety rankings con-
+sistent with large-scale red-teaming across over 40
+models, while reducing cost by more than two or-
+ders of magnitude. It further reveals fine-grained
+safety dynamics, demonstrating latent trajectory
+analysis as a scalable tool for continuous safety
+diagnostics.
+6
+Limitations
+While N-GLARE demonstrates strong empirical
+effectiveness, several limitations remain. First, al-
+though our evaluation covers over 40 models with
+diverse sizes and alignment settings, it does not
+exhaustively represent all architectures, training
+paradigms, or deployment variants. Second, N-
+GLARE requires access to internal hidden represen-
+tations, which limits its direct applicability to fully
+black-box models that expose only text outputs.
+8
+
+In addition, the geometric abstraction underlying
+N-GLARE—modeling benign behavior as a low-
+dimensional manifold and inferring safety from tra-
+jectory separability—may oversimplify more com-
+plex latent structures in large models. Finally, al-
+though the frame

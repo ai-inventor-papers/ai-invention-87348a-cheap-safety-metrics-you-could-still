@@ -1,0 +1,207 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.24020
+Type: PDF
+Pattern: (activation|hidden state|metamodel|predict.{0,40}score|lineage|identity) (71 matches in 177671 chars)
+
+--- Content ---
+
+1550:...er the rest of a model’s public scorecard to within 3.93 points. For a tighter evaluation
+budget, a cheaper set {GPQA-D, MMLU-Pro, Aider Polyglot, MATH-500, AIME 2026} can predict a model’s evals
+to within 4.55. Finally, we identify what affects prediction reliability and combine these factors with predictor
+disagreement to quantify when predictions can be trusted. We release the score matrix, the code for reproducing all
+of our experiments on Github.
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9 10
+0
+10
+20
+30
+Absolute error
+Benchmark median
+5
+2
+GPT-5.5
+BrowseComp
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9 10
+Benchmark median
+5
+2
+Claude Opus 4.7
+HLE
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9 10
+# Known benchmarks
+0
+10
+20
+30
+Absolute error
+Benchmark median
+5
+2
+Phi-4 Reasoning Plus
+GPQA Diamond
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9 10
+# Known benchmarks
+Benchmark median
+5
+2
+DeepSeek V4 Pro
+Terminal-Bench 2.0
+(a) Accuracy of predicting one (model, benchmark) score.
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+# Top benchmarks
+2
+4
+6
+8
+10
+Median Absolute Error
+Benchmark median
+GPQA Diamond
+HLE
+Codeforces
+MMLU-Pro
+ARC-AGI-1
+Terminal-Bench
+MATH-500
+HLE Text
+AIME 2025
+GDPval
+GPQA Diamond
+MMLU-Pro
+Aider Polyglot
+MATH-500
+AIME 2026
+AIME 2025
+Bullshit-Bench
+Arena-Hard Auto
+²-bench
+IFBench
+Overall score prediction
+Random benchmark set
+Most predictive benchmarks
+Low-cost benchmarks
+(b) Reporting overall score-prediction error.
+Figure 1: BENCHPRESS predicts unseen benchmark scores from known benchmark scores. Left: For each of four
+model–benchmark examples, we randomly reveal k scores from the same model and hide the rest. The y-axis shows
+the absolute error for the highlighted target score. Error drops sharply after only a few scores from the same model
+are revealed. Right: A complementary setting that mimics how a practitioner would run BENCHPRESS in practice. A
+fixed set of k benchmarks is chosen as the probe set, and every model is evaluated on whichever probe scores it has
+observed; BENCHPRESS predicts the rest of each model’s scores, and we report pooled error across all evaluated
+cells. With only five benchmark probes selected on the current matrix, pooled MedAE drops to 3.93 score points (4.55
+when restricted to a lower inference cost list; see Section 5.1). See Section A.1 for the detailed experiment setting.
+Emails: {zengyuchen, dimitriosp}@microsoft.com
+1
+arXi...
+--
+8069:...ile a separate line of work has documented low-dimensional structure in model–
+benchmark score matrices (Burnell et al., 2023a; Ili´c and Gignac, 2024; Ruan et al., 2024; Burnham, 2025). Our
+contribution connects these two lines in the general prediction setting: given any new model and any subset of its
+observed benchmark scores, can we predict its remaining scores without further assumptions? We collect scores
+from public sources, canonicalize near-duplicate model variants and benchmark configurations, and filter out
+models and benchmarks with insufficient observations to obtain an 84 × 133 matrix with 2,604 observed entries
+(23.3% of all model–benchmark cells). Two independent diagnostics on thi...
+--
+13214:...-up (Perlitz et al., 2024b) formalized best practices for evaluating
+whether benchmarks agree with one another. Ni et al. (2024) constructed MixEval, a single compact benchmark from
+web-query-matched items that achieves 0.96 Chatbot Arena correlation. These approaches select or design a fixed
+evaluation suite a priori. BENCHPRESS instead predicts missing scores from whatever benchmarks happen to be
+available, requiring no fixed probe set: a practitioner can feed in MMLU (Hendrycks et al., 2021) and GPQA (Rein
+et al., 2024) today, or LiveCodeBench and AIME tomorrow, without reconfiguration.
+Item-level subset selection.
+A complementary line of work reduces cost within individual benchmarks by se...
+--
+14910:...ire instance-level pass/fail data across
+many models to calibrate item selection; Scales++ is a notable exception. BENCHPRESS requires only aggregate scores
+and predicts across benchmarks, a complementary approach that could be combined with item-level methods for
+end-to-end savings.
+Score prediction.
+Closest to our work are methods that predict aggregate benchmark scores directly. The nearest
+methodological predecessor is Schram et al. (2023), who applied Bayesian matrix factorisation to cross-lingual NLP
+performance, though in a different domain (languages × tasks, not LLMs × benchmarks); on LLM scores specifically,
+Zhang et al. (2024) applied collaborative filtering, Polo et al. (2025) used latent ski...
+--
+16004:...ty measures from a fixed block of standard benchmarks to fit target-specific predictors. Both
+assume a pre-specified input panel observed across historical models or agents; we compare directly against the
+latter in Section C.4, while Atari-5 does not transfer because such a panel is essentially never fully observed in our
+matrix. Others predict from outside the score matrix entirely: Park et al. (2025) use LLMs to predict scores from text
+descriptions alone, with no execution (we revisit this comparison empirically in Section 4.3), and Koh et al. (2026)
+train a small proxy model to transfer reasoning performance to larger models, whereas BENCHPRESS needs no model
+access at all. BENCHPRESS instead performs general score prediction on an uncontrolled public matri...
+--
+29139:...s effective on independently built HELM and EEE matrices.
+3.3
+Rank-2 Geometry
+Evidence for effective rank-2.
+If model capabilities lie in a low-dimensional space, the score matrix should be
+predictable from a low-rank completion. The operational question is therefore not only whether observed scores
+can be compressed, but which rank best predicts held-out benchmark scores. We establish rank 2 through two
+lines of evidence: (i) rank-2 matrix completion minimizes held-out prediction error in raw-score and logit-score
+7
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+Rank
+10
+12
+MedAPE (%)
+Raw space
+Logit space
+Figure 4: Held-out MedAPE vs. rank for raw- and
+logit-space Soft-Impute matrix completion. Both
+curves bottom out at rank 2....
+--
+[61 more matches not shown]

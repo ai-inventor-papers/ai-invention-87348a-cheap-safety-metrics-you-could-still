@@ -1,0 +1,209 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Pattern: Diagnostic Utility|5\.4|steps|epochs|learning rate|Alpaca|benign fine-tun|examples \(|rank\s*=\s*\d|alpha\s*=\s*\d|LoRA rank (8 matches in 63065 chars)
+
+--- Content ---
+
+6131:...rongest harmful/general split appears at dif-
+ferent layers, so the result is not explained by
+every model peaking at the same network depth.
+This supports recurrence of the safety geometry
+across families rather than a shared layer sched-
+ule (§5.3).
+• Diagnostic. The layer-wise geometry can be
+compressed into GFS before the tested interven-
+tions are run. In the LoRA experiment, GFS
+identifies the initially safe model that later retains
+the most refusal under the small-scale LoRA pro-
+tocol (§5.4).
+2
+Related Work
+Behavioral evidence for alignment fragility. Em-
+pirical studies show that aligned models can lose
+harmful-request refusal under inference-time or
+weight-level interventions. Inference-time attacks
+such as adversarial suffixes (Zou et al., 2023b) and
+role-play jailbreaks (Wei et al., 2023) bypass re-
+fusal without changing model weights. Weight-
+level interventions can weaken refusal through fine-
+tuning on benign-looking samples (Qi et al., 2024;
+Yang et al., 2023), low-rank adapters trained on
+tens of examples (Lermen et al., 2024), or output-
+layer pruning (Wei et al., 2024). These studies
+measure fragility only after applying the attack or
+intervention (Qi et al., 2024; Wei et al., 2024).
+Representation geometry of refusal. Mecha-
+nistic and representation-level studies link refusal
+to low-dimensional activation directions. Arditi
+et al. (2024) shows that refusal in chat models
+is mediated by a single residual-stream direction
+computed as the difference between mean harmful
+and harmless activations (...
+--
+15805:...ess set, Table 7 lists the
+direction-ablation set, and Table 9 lists the LoRA
+fragility set. Appendix C.2 gives the rationale
+for excluding hybrid-reasoning models (the Qwen3
+series) from the GFS ranking.
+4.2
+Prompts and Activations
+For cPCA, CKA, and GFS, we use 500 harmful-
+request prompts and 500 benign instructions. The
+harmful-request set combines AdvBench 200,
+HarmBench 200, and BeaverTails 100 (Zou et al.,
+2023b; Mazeika et al., 2024; Ji et al., 2023). The
+benign-instruction set combines Alpaca 250 and
+OASST 250. The two prompt sets are matched by
+token count.
+For the raw-prompt GFS ranking set, prompts
+are passed directly to the model and activations
+are extracted at the final token.
+For the chat-
+template robustness set, prompts are first for-
+matted with apply_chat_template, and activa-
+tions are extracted at the final attended token. The
+chat-template robustness set covers SFT, DPO,
+C-RLFT, and RLAIF recipes. We keep only mod-
+els whose Llama-Guard-3-8B (Inan et al., 2023;
+Llama T...
+--
+16913:...e or almost all harmful prompts.
+For cPCA, we set α=100 at every layer.
+We
+chose
+this
+value
+by
+sweeping
+α
+∈
+{1, 10, 20, 50, 100, 200, 500, 1000} and selecting
+the value with the best held-out harmful-vs.-benign
+probe accuracy on a 20% split. Linear probes use
+logistic regression with 5-fold cross-validation.
+4.3
+Behavioral Protocols
+For each model, direction ablation is applied at the
+layer with the largest Cohen’s d. Harmful-request
+refusal is measured on 100 AdvBench prompts. Re-
+fusal on 100 Alpaca prompts is used as the benign-
+prompt control. The ablation compares PCA-PC1,
+cPCA-PC1, the Arditi direction, and a random di-
+rection. Table 7 reports an additional PCA-PC4
+check for direction specificity.
+LoRA fine-tuning uses rank-8 adapters on harm-
+less Alpaca subsets (Hu et al., 2022). We vary the
+4
+
+subset size n over 5, 10, 25, 50, 75, 100, 150, and
+200 examples. After fine-tuning, harmful compli-
+ance is measured on 50 held-out harmful prompts
+and judged with a rule-based harm-string match
+plus Llama-Guard.
+4.4
+Statistical Reporting
+PERMANOVA uses 1000 permutations, so the
+smallest attainable p-value is 0.0099. RBF-kernel
+MMD provides a second full-space test.
+PER-
+MANOVA p-values are corrected with Benjamini–
+Hochberg FDR at q<0.05. For uncertai...
+--
+24526:... and positive model pairs.
+Together, the CKA and depth-profile results sup-
+port a narrow claim. The low-rank safety subspace
+appears across families, but its strongest layer is
+model-specific. We do not claim that the safety
+subspace universally lives in the last third of the
+network. As a caveat, CKA on high-dimensional
+activations remains sensitive to tokenization and
+norm structure (Ding et al., 2021). The prompt-
+shuffle null controls prompt order, but not tokeniza-
+tion or norm structure.
+5.4
+Diagnostic: GFS Identifies the Model
+That Retains Refusal After LoRA
+GFS ranks models before LoRA and separates
+the DPO-only group.
+Table 8 ranks the raw-
+prompt GFS ranking set and places the four
+DPO-only models in ranks 1–4. Low-GFS out-
+liers have cPCA directions that already lie close
+6
+
+Causally interpretable
+Refusal floor / ceiling†
+Direction
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.2
+SOLAR-10.7B
+Mistral-7B-v0.3
+Gemma-2-9B
+Baseline
+0.14
+0.86
+0.31
+0.22
+0.04
+0.96
+PCA-PC1
+0.02⋆
+0.84
+0.08⋆
+0.1...
+--
+34418:...9 together show robustness to the GFS weight-
+ing scheme, separation between Gemma and non-
+Gemma seed populations, and preservation of the
+GFS–LoRA-recovery co-occurrence in the LoRA
+fragility set. The GFS–LoRA hypothesis is cur-
+rently scoped to the models in the LoRA fragility
+set and, more narrowly, to the initially safe cases
+within the LoRA fragility set. Cross-regime gener-
+alization to weakly-aligned models and quantitative
+forecasting on a separate alignment-method set are
+natural next steps.
+Ethics Statement
+Dual-use. The direction-ablation primitive we use
+to causally test the safety axis is, by construction,
+also a jailbreak primitive, and the LoRA fragility
+curve makes attack cost explicit. We take the dual-
+use risk seriously and make the disclosure choices
+below.
+We release the pre-attack activation GFS
+pipeline, the aggregate off-diagonal CKA values in
+Table 4, and the model-level GFS values reported
+in this paper.
+We do not release four attack-ready artifacts.
+The withheld ...
+--
+37508:...ed safety ed-
+its, while signals spread across many layers call
+for multi-layer interventions. We report an over-
+refusal–adjacent diagnostic in the appendix so that
+GFS is not weaponized as a pressure to over-refuse.
+We encourage downstream users to read GFS as a
+descriptive, defender-side summary, not an attack
+roadmap.
+9
+
+Human subjects. No human subjects were in-
+volved. All prompts are from publicly released
+safety benchmarks under their original licenses
+(AdvBench, HarmBench, BeaverTails, Alpaca,
+OASST).
+References
+Abubakar Abid, Martin J. Zhang, Vivek K. Bagaria, and
+James Zou. 2018. Exploring patterns enriched in a
+dataset with contrastive principal component analysis.
+Nature Communications, 9(1):2134.
+Guillaume Alain and Yoshua Bengio. 2017. Under-
+standing intermediate layers using linear classifier
+probes. In ICLR Workshop.
+Marti J. Anderson. 2001.
+A new method for non-
+parametric multivariate analysis of variance. Austral
+Ecology, 26(1):32–46.
+Andy Arditi, Oscar Obeso, Aaquib Sye...

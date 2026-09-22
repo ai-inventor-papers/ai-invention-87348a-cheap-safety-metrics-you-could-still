@@ -1,0 +1,324 @@
+{
+  "checked_utc": "2026-09-20T00:00:00Z",
+  "verdicts": [
+    {
+      "id": "C3",
+      "original_verdict": "OPEN",
+      "adversarial_verdict": "STILL-OPEN",
+      "strongest_counterexample": {
+        "title": "LLMs Encode Harmfulness and Refusal Separately",
+        "id_or_url": "arXiv:2507.11878 (NeurIPS 2025)",
+        "date": "2025-07-16 (v1), NeurIPS 2025 camera-ready",
+        "quote": "This suggests that the harmfulness direction represents the concept of harmfulness that LLMs can internally reason about before generating their responses, while the refusal direction may reflect more explicit, surface-level refusal signals.",
+        "locator": "proceedings.neurips.cc/paper_files/paper/2025/file/cd18539787d90e1d682d557c2c71b534-Paper-Conference.pdf, p.4-5 (Section 3.1) and NeurIPS body text near the projection-score figure (layers 0-31 plotted with sl(hl) curves for 'refused harmful' / 'accepted harmful' etc.)",
+        "satisfies_conjuncts": [
+          "Shows, per-model, that a harmfulness/belief signal becomes linearly decodable at an earlier layer than the explicit refusal signal (qualitative layer-curve comparison, same primitives C3 needs)",
+          "Uses the same two ingredients (a refusal-decodability curve and a harmfulness/content-decodability curve across layers) that a layer-index-difference statistic would be built from"
+        ],
+        "fails_conjuncts": [
+          "Never collapses either curve to a single 'onset layer index' scalar",
+          "Never computes a DIFFERENCE of two such indices",
+          "Never turns it into a PER-CHECKPOINT scalar compared/correlated across multiple models or checkpoints (analysis is qualitative and per-model, mainly Llama3/Qwen2)",
+          "Does not correlate the (nonexistent) scalar with any downstream outcome (ASR, robustness, etc.)"
+        ]
+      },
+      "other_near_misses": [
+        {
+          "title": "Geometry-Lite: Interpretable Safety Probing via Layer-Wise Margin Geometry",
+          "id_or_url": "arXiv:2605.20241",
+          "why_not_disqualifying": "Decomposes multi-layer safety margin profiles into 'boundary position / layer-to-layer change / structural shape' axes across 9 backbones, but these axes are all about a SINGLE safety-margin signal's shape, not a difference between a refusal-onset layer and a separate content/harm-onset layer; no cross-signal layer-index subtraction."
+        },
+        {
+          "title": "Safety Alignment Depth in Large Language Models: A Markov Chain Perspective",
+          "id_or_url": "arXiv:2502.00669 (NeurIPS 2025)",
+          "why_not_disqualifying": "'Safety depth' here is an OUTPUT TOKEN POSITION where a refusal is inserted during training-data augmentation (a Markov-chain theory construct), not a hidden-layer index at which refusal/harm becomes linearly decodable; no probing, no second curve, no difference, no cross-checkpoint correlation."
+        },
+        {
+          "title": "Exploring Concept Depth: How Large Language Models Acquire Knowledge and Concepts at Different Layers",
+          "id_or_url": "arXiv:2404.07066 (COLING 2025)",
+          "why_not_disqualifying": "Defines a per-concept 'Concept Depth' via layer-wise linear probes across model families/sizes, i.e. the general machinery C3 would reuse, but it is applied to fact/emotion/inference concept categories, never specifically to refusal-vs-harmfulness, and never produces a DIFFERENCE-of-two-depths scalar correlated with an outcome."
+        },
+        {
+          "title": "Perturbation Probing: LLM Safety Is a Thin, Steerable Layer (CSA research note on Unit 42 work)",
+          "id_or_url": "https://labs.cloudsecurityalliance.org/research/csa-research-note-llm-safety-perturbation-probing-20260831-c/",
+          "why_not_disqualifying": "Locates safety in a 'thin template layer' via causal FFN-neuron interventions, a circuit-localization claim, not a linear-probe onset-layer difference; no scalar layer-index arithmetic, no cross-checkpoint correlation."
+        }
+      ],
+      "queries_run": [
+        {
+          "query": "safety layer index minus content layer index model-level metric",
+          "relevant_hit": true
+        },
+        {
+          "query": "refusal onset layer minus harmfulness decodable layer difference across models",
+          "relevant_hit": true
+        },
+        {
+          "query": "alignment depth metric layer at which safety becomes linearly decodable",
+          "relevant_hit": true
+        },
+        {
+          "query": "shallow safety alignment depth quantified layer number",
+          "relevant_hit": true
+        },
+        {
+          "query": "probing depth as a model-level statistic concept emergence layer",
+          "relevant_hit": true
+        },
+        {
+          "query": "depth fraction relative depth probing layer safety alignment",
+          "relevant_hit": true
+        },
+        {
+          "query": "critical layer safety refusal emergence 2026",
+          "relevant_hit": true
+        },
+        {
+          "query": "concept emergence depth model-level metric interpretability layer difference",
+          "relevant_hit": true
+        },
+        {
+          "query": "\"safety depth\" score correlate jailbreak model per checkpoint layer index",
+          "relevant_hit": false
+        },
+        {
+          "query": "layer at which harmfulness is linearly decodable minus layer refusal decodable",
+          "relevant_hit": false
+        },
+        {
+          "query": "safety onset lag interpretability metric across model checkpoints",
+          "relevant_hit": false
+        },
+        {
+          "query": "gap between when model knows content is harmful and when it refuses layer",
+          "relevant_hit": false
+        },
+        {
+          "query": "2026 layer gap between harmfulness recognition and refusal decision predicts jailbreak susceptibility",
+          "relevant_hit": true
+        },
+        {
+          "query": "model-level scalar layer index difference probing across many models regression outcome",
+          "relevant_hit": true
+        },
+        {
+          "query": "\"Encode Harmfulness and Refusal Separately\" site:arxiv.org",
+          "relevant_hit": true
+        }
+      ],
+      "confidence": "medium",
+      "recommended_margin_rewording": "Narrow the OPEN claim: both required curves (refusal-decodability-by-layer and harm/content-decodability-by-layer) already coexist in the same paper (2507.11878) and on the same models, and that paper already states harmfulness precedes refusal. The only remaining novel step is (a) collapsing each curve to a single onset-layer index, (b) subtracting them into one scalar per checkpoint, and (c) correlating that scalar, across MANY checkpoints/models, with an external outcome. State the contribution explicitly as 'the cross-checkpoint correlational statistic', not as 'discovering that harm precedes refusal', since that qualitative fact is already published."
+    },
+    {
+      "id": "C4",
+      "original_verdict": "OPEN",
+      "adversarial_verdict": "STILL-OPEN",
+      "strongest_counterexample": {
+        "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+        "id_or_url": "arXiv:2606.22676",
+        "date": "2026-06 (v1)",
+        "quote": "Algorithm 1 Skin-Deep diagnostic computation\n1: Input. Aligned model M, base model M0",
+        "locator": "arxiv.org/html/2606.22676v1, Appendix A, Algorithm 1 header",
+        "satisfies_conjuncts": [
+          "Produces a continuous, weight/representation-derived 'alignment fragility' geometric score per model",
+          "Is positioned in the same problem space (low-rank safety subspace, cross-family generalization) as a recovered edit-strength statistic"
+        ],
+        "fails_conjuncts": [
+          "Explicitly REQUIRES the base/parent model M0 as an algorithm input -- this is exactly the parent-dependent case the claim excludes (same failure mode as WeightWatch 2508.00161)",
+          "Does not report a correlation of its score against a measured harmful-compliance/ASR outcome on a continuous scale (paper reports CKA/rank-correlation of subspace geometry across model families, not ASR regression)"
+        ]
+      },
+      "other_near_misses": [
+        {
+          "title": "abliteration.org wiki: 'Reverse-engineering the abliteration method from weights: what exists, what does not'",
+          "id_or_url": "https://abliteration.org/wiki/frontiers/reverse-engineering-abliteration/",
+          "why_not_disqualifying": "This is a field survey/wiki, not a peer-reviewed result, and it EXPLICITLY FLAGS the exact gap as unmet: 'Both leading detectors need forward passes (activation gap) or at least a trusted base (weight diff). A truly novel benchmark should test whether method can be recovered from candidate weights alone, without an attested base. This is the hardest and most useful setting.' This is corroborating evidence FOR the OPEN verdict, not a counterexample."
+        },
+        {
+          "title": "Abliteration Resistance and Jailbreak Resistance Are Orthogonal Defense Dimensions",
+          "id_or_url": "https://failurefirst.org/research/reports/74-abliteration-jailbreak-orthogonality/ (Report 74, 2026-03-11)",
+          "why_not_disqualifying": "Correlates a BEHAVIORAL 'abliteration resistance' (fraction of known, executed abliteration attempts that fail to drop refusal below 20%, using the OBLITERATUS telemetry dataset where the abliteration technique and base model are known/applied by the experimenters) against jailbreak refusal rate across 16 models (Spearman rho = -0.003, n=16). This is behavior-vs-behavior, not a WEIGHTS-ONLY, REFERENCE-FREE, RECOVERED edit-strength statistic vs compliance; the abliteration 'dose' is not recovered post-hoc from an unknown checkpoint's weights without the base."
+        },
+        {
+          "title": "Comparative Analysis of LLM Abliteration Methods: A Cross-Architecture Evaluation",
+          "id_or_url": "arXiv:2512.13655 (v2 2026-01-08)",
+          "why_not_disqualifying": "Compares 4 abliteration tools (Heretic, DECCP, ErisForge, FailSpy) across 16 models on capability metrics (GSM8K delta, KL divergence); measures capability collapse, not harmful-compliance/ASR, and does not attempt reference-free recovery of edit strength from an unknown checkpoint's weights alone."
+        },
+        {
+          "title": "One Pass to Break Them All: Empirical Analysis of Activation-Space Abliteration on LLM Safety Alignment (Alice Research)",
+          "id_or_url": "https://go.alice.io/hubfs/alice-abliteration-report-april2026.pdf",
+          "why_not_disqualifying": "Grepped for correlation/dose/strength-vs-ASR language and without-base language; zero matches in the fetched text, i.e. no evidence it performs the reference-free graded-strength-vs-compliance regression; operates in activation space with attacker knowledge of the technique, not blind weight recovery."
+        }
+      ],
+      "queries_run": [
+        {
+          "query": "how much was the refusal direction removed weights predicts attack success rate",
+          "relevant_hit": true
+        },
+        {
+          "query": "orthogonalization magnitude weights correlates harmful compliance rate abliterated model",
+          "relevant_hit": true
+        },
+        {
+          "query": "residual refusal direction norm predicts jailbreak success reference-free weights",
+          "relevant_hit": false
+        },
+        {
+          "query": "quantify degree of abliteration dose response ASR weights only",
+          "relevant_hit": true
+        },
+        {
+          "query": "Heretic abliteration tool ablation strength score jailbreak rate",
+          "relevant_hit": true
+        },
+        {
+          "query": "singular value gap predicts attack success rate model weights safety",
+          "relevant_hit": true
+        },
+        {
+          "query": "weights-only safety score no base model needed correlates ASR 2026",
+          "relevant_hit": true
+        },
+        {
+          "query": "reference-free detection of abliteration graded severity harmful compliance",
+          "relevant_hit": true
+        },
+        {
+          "query": "2026 partial abliteration dial continuous strength jailbreak rate weight edit magnitude",
+          "relevant_hit": true
+        },
+        {
+          "query": "model diffing weight space anomaly score predicts jailbreak vulnerability without base model",
+          "relevant_hit": false
+        },
+        {
+          "query": "GhostSpec MoTHer rotation invariant weight-space abliteration detector graded",
+          "relevant_hit": false
+        },
+        {
+          "query": "\"projection weight\" magnitude removed refusal direction correlates compliance rate continuous",
+          "relevant_hit": false
+        }
+      ],
+      "confidence": "medium",
+      "recommended_margin_rewording": "Keep OPEN but tighten the wording to name the near-misses explicitly: state that (i) parent-dependent graded diagnostics exist (Skin-Deep 2606.22676, WeightWatch 2508.00161), (ii) reference-free but LABEL-only detectors exist (Jorak, the AUROC-0.95 2607.01854 two-signal audit which itself 'presumes an attested reference' for its stronger signal), and (iii) behavioral abliteration-dose-vs-jailbreak correlations exist but use KNOWN executed abliteration runs rather than blind weight recovery (Failure-First Report 74). The specific unclaimed cell is: blind graded weight-space recovery (no parent, no execution log) regressed against continuous harmful-compliance/ASR. A domain wiki (abliteration.org) independently flags this exact cell as the hardest open problem, which raises confidence the gap is real but also means the framing is 'known open problem in a practitioner community', not undiscovered territory -- cite it to preempt a reviewer finding it first."
+    },
+    {
+      "id": "C5",
+      "original_verdict": "OPEN",
+      "adversarial_verdict": "STILL-OPEN",
+      "strongest_counterexample": {
+        "title": "Linear Probes Detect Task Format, Not Reasoning Mode in Language Model Hidden States",
+        "id_or_url": "arXiv:2606.02907 (TrustNLP @ ACL 2026)",
+        "date": "2026-06-01 (v1), 2026-06-03 (v2)",
+        "quote": "At layer 32 of 40, linear probes achieve 100% cross-validated accuracy with well-separated geometry (intrinsic dimensionalities: 20.6, 28.5, 33.6; convex hull contamination <=1.5%). However, this separation is entirely driven by format confounds. Residualizing source identity, option count, and response length reduces accuracy to chance.",
+        "locator": "arxiv.org/abs/2606.02907 abstract; method detailed in arxiv.org/html/2606.02907v1 (Sahoo, Jain, Chadha, Chaudhary)",
+        "satisfies_conjuncts": [
+          "Trains a linear probe on LLM hidden states/activations to predict a target property (reasoning type)",
+          "Explicitly builds and tests confound probes on the SAME features (source identity, option count, response length) and shows the original probe's accuracy collapses once these are residualized out -- i.e. runs exactly the 'is the probe just recognizing a nuisance identity variable' ablation the claim requires",
+          "Concludes the original high accuracy was an artifact of a recognizable identity-like confound, not of the target construct"
+        ],
+        "fails_conjuncts": [
+          "The predicted target is REASONING MODE (deductive/inductive/abductive), not a BENCHMARK SCORE",
+          "The confound it ablates against is TASK-FORMAT / SOURCE-DATASET identity within one model (Qwen3-14B), not ARCHITECTURE- or LINEAGE-IDENTITY across a population of different models/checkpoints",
+          "Single-model study; no cross-model or cross-lineage generalization claim is at stake, so it does not touch the specific 'predicts a benchmark score across many models, only by recognizing model family' framing of C5"
+        ]
+      },
+      "other_near_misses": [
+        {
+          "title": "Predicting Neural Network Accuracy from Weights",
+          "id_or_url": "arXiv:2002.11448 (ICML 2020, Unterthiner et al.)",
+          "why_not_disqualifying": "The foundational weight-space accuracy-prediction paper; addresses a RELATED confound concern via cross-architecture and cross-dataset domain-shift TRANSFER tests (train predictor on one architecture/dataset, test on another) to argue the signal is not architecture-specific, and separately discusses seed-based 'leakage' between train/test splits. But this is a generalization/transfer test, not an explicit identity-classifier probe built on the SAME features and used to show the accuracy-predictor's signal is explained by/reducible to that identity probe. No lineage-fingerprint ablation is run."
+        },
+        {
+          "title": "Learning Model Representations Using Publicly Available Model Hubs",
+          "id_or_url": "arXiv:2510.02096",
+          "why_not_disqualifying": "Learns general-purpose model representations from public hub metadata/weights for downstream property prediction; grepped for architecture/family/lineage co-occurring with confound/leak/control/held-out/shortcut language -- zero matches, i.e. no evidence of an identity-probe ablation methodology in this paper."
+        },
+        {
+          "title": "Establishing Trustworthy LLM Evaluation via Shortcut Neuron Analysis",
+          "id_or_url": "arXiv:2506.04142 (ACL 2025)",
+          "why_not_disqualifying": "Identifies 'shortcut neurons' inside a model that cause benchmark-contamination overestimation and patches them, achieving rho>0.95 vs MixEval after patching. This is a within-model contamination-shortcut diagnosis, not a cross-model architecture/lineage-identity probe built on the same activation features as a benchmark-score predictor."
+        },
+        {
+          "title": "Can a Crow Hatch a Falcon? Lineage Matters in Predicting Large Language Model Performance",
+          "id_or_url": "arXiv:2504.19811",
+          "why_not_disqualifying": "Uses explicit HF-metadata parent-child lineage graphs (Lineage-Regularized Matrix Factorization) as a helpful SIGNAL to improve benchmark-score prediction across 2,934 models; lineage is added as a feature to help prediction, not used as a confound probe to show an activation-based predictor is merely recognizing lineage. Opposite framing from C5's ablation-as-critique."
+        },
+        {
+          "title": "Logits are predictive of network type",
+          "id_or_url": "arXiv:2211.02272",
+          "why_not_disqualifying": "Shows black-box OUTPUT logits (not hidden states/weights) can classify which architecture produced them; a lineage/architecture-fingerprinting result in its own right (same family as 2607.10617 etc. already excluded), not an ablation of a benchmark-score predictor against an identity probe."
+        },
+        {
+          "title": "Designing and Interpreting Probes with Control Tasks (Hewitt & Liang, EMNLP 2019)",
+          "id_or_url": "https://aclanthology.org/D19-1275.pdf",
+          "why_not_disqualifying": "The canonical control-task methodology C5's ablation instantiates - the METHOD's ancestor, not an instance of C5's claim; it concerns linguistic probes on token representations, not model-level performance prediction."
+        },
+        {
+          "title": "The Impact of Model Zoo Size and Composition on Weight Space Learning",
+          "id_or_url": "arXiv:2504.10141",
+          "why_not_disqualifying": "Nearest thing in the adjacent weight-space-learning literature: asks whether weight-space property predictors generalise beyond their training population, but varies zoo composition rather than ablating an explicit identity probe on the same features, and studies image models."
+        },
+        {
+          "title": "Predicting Neural Network Accuracy from Weights",
+          "id_or_url": "arXiv:2002.11448",
+          "why_not_disqualifying": "Founding result that accuracy is predictable from weights, on small CNN zoos; no identity-confound ablation, predates the concern."
+        }
+      ],
+      "queries_run": [
+        {
+          "query": "metamodel predicts benchmark accuracy from hidden states ablate model identity confound",
+          "relevant_hit": true
+        },
+        {
+          "query": "does the probe learn the model or the property weight space benchmark prediction",
+          "relevant_hit": true
+        },
+        {
+          "query": "model zoo representation learning predicts accuracy controlling for architecture identity",
+          "relevant_hit": true
+        },
+        {
+          "query": "hypernetwork predicts model performance from weights confound lineage family",
+          "relevant_hit": true
+        },
+        {
+          "query": "weight space learning predicts accuracy CNN model zoo shortcut architecture",
+          "relevant_hit": true
+        },
+        {
+          "query": "predicting downstream benchmark score from activations shortcut model family leakage",
+          "relevant_hit": true
+        },
+        {
+          "query": "2026 benchmark score prediction from hidden states ablation architecture fingerprint control",
+          "relevant_hit": true
+        },
+        {
+          "query": "INR model zoo property prediction confound identity probe",
+          "relevant_hit": true
+        },
+        {
+          "query": "\"model identity\" confounds black box weight model zoo property prediction openreview",
+          "relevant_hit": false
+        },
+        {
+          "query": "benchmark score predictor hidden states baseline model family classifier ablation same features 2026",
+          "relevant_hit": false
+        },
+        {
+          "query": "weight space property prediction paper controls for architecture as nuisance variable",
+          "relevant_hit": true
+        },
+        {
+          "query": "2026 does model performance predictor from weights merely recognize architecture family test",
+          "relevant_hit": true
+        }
+      ],
+      "confidence": "medium",
+      "recommended_margin_rewording": "DOWNGRADE the novelty framing while KEEPING the OPEN verdict. The ablation as a METHOD is established prior art (Hewitt & Liang control tasks 2019; arXiv:2606.02907 residualises source identity and drives a 100%-accurate hidden-state probe to chance). What is unclaimed is its APPLICATION on the per-MODEL / per-LINEAGE axis to a safety-benchmark predictor. C5's contribution is therefore 'we ran the established control on the model-level axis, where nobody had', NOT 'we invented the control'. Claim it at that strength: it is still worth doing - arguably more so, because a well-known control that nobody has applied here is exactly the kind of gap a reviewer respects - but a paper that presents the ablation itself as novel will be marked down.",
+      "independently_replicated_by": "The coordinator ran a separate 6-query attack on C5 while the delegated pass was still running, and independently arrived at the SAME strongest counterexample (arXiv:2606.02907). Two independent searches converging on the same nearest paper raises confidence that the C5 margin is correctly located."
+    }
+  ]
+}

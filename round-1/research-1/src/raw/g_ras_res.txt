@@ -1,0 +1,187 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.25750
+Type: PDF
+Pattern: (Table [0-9]|same model family|cross-family|we evaluate|models.{0,30}(Llama|Qwen|Gemma).{0,60}(3B|7B|8B)|ASR of|Spearman|rank correlation) (8 matches in 34437 chars)
+
+--- Content ---
+
+4170:...rasting hidden
+states induced by safe and unsafe prompts. It then
+selects a stable layer window where unsafe prompts
+exhibit alignment with the refusal direction and
+where calibration models with different safety lev-
+arXiv:2606.25750v1  [cs.CR]  24 Jun 2026
+
+els show consistent separation. For a target model
+from the same model family, SafeVec computes
+the cosine similarity between its hidden states and
+the refusal direction under unsafe and jailbreak
+prompts. These similarities are calibrated into RAS
+(Refusal Alignment Score), a 0–100 safety score.
+Conceptually,
+RAS
+complements
+existing
+output-level evaluations. Traditional output-level
+evaluatio...
+--
+4894:...puts, whereas RAS
+measures whether the model internally aligns with
+a refusal representation when processing unsafe
+inputs. Thus, RAS is not intended to replace behav-
+ioral evaluation frameworks; rather, it provides a
+representation-level safety metric that can be used
+for comparison of safety-aligned model variants.
+We evaluate RAS on three major model fami-
+lies: Llama, Gemma, and Qwen. The results support
+four findings. First, safe and unsafe models ex-
+hibit clear separation in refusal-direction alignment
+under both unsafe and jailbreak prompts. Second,
+RAS correlates strongly with output-level safety be-
+havior, as models with high RAS g...
+--
+19475:...
+0.281
+ValiantLabs/Llama3.1-8B-Fireplace2
+0.088
+0.010
+0.358
+Rupesh2/Llama-3.1-8B-Uncensored
+-0.074
+-0.131
+0.633
+mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated
+-0.155
+-0.181
+0.933
+aifeifei798/DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncensored
+-0.115
+-0.165
+0.936
+Orenguteng/Llama-3.1-8B-Lexi-Uncensored-V2
+0.064
+-0.057
+0.939
+Table 1: Raw SafeVec scores and ASR for Llama reference and calibration models.
+Figure 4: RAS and 100 × (1 −ASR) for Llama.
+official google/gemma-3-4b-it reference model,
+but also achieves a lower ASR. This suggests that
+some models may improve output-level safety
+through mechanisms not fully captured by a
+single reference re...
+--
+20768:...e
+unsafe and jailbreak alignment, and calibrate RAS.
+Raw scores are not directly comparable across fam-
+ilies, but calibrated RAS consistently ranks aligned
+models above unsafe variants. This shows refusal
+alignment is not a single-family artifact, though
+family-specific calibration remains necessary.
+RQ4: Efficiency.
+Table 2 compares RAS scor-
+ing time with judge-based scoring time. During
+target scoring, RAS requires only forward passes
+through the target model, while judge-based evalu-
+ation requires response generation and additional
+judgment. On average, RAS is 216.88× faster in
+our setting.
+Model
+RAS time (s)
+Judge time (s)
+Speedup
+Llama-3.1-8B-Instruct
+14.13
+572.47
+40.52×
+Gemma-3-4b-it
+13.29
+6309.68
+474.85×
+Qwen2.5-7B-Instruct
+14.97
+2025.26
+135.25×
+Average
+14.13
+2969.14
+210.13×
+Table 2: RAS versus judge-based scoring time.
+4.3
+Discussion
+RAS should be interpreted as a representation-level
+safety metric rather than a complete replacement
+for behavioral evaluation. A high RAS means that
+the target model’s hidden states remain aligned
+with the reference refusal direction under unsafe
+and jailbreak prom...
+--
+22985:...much faster than
+judge-based evaluation. These findings suggest re-
+fusal alignment is an efficient representation-level
+signal for LLM safety assessment.
+
+Limitations
+RAS requires white-box access to hidden states
+and therefore cannot be directly applied to closed
+APIs. It is also calibrated within model families,
+so cross-family comparison depends on the qual-
+ity of calibration models. Finally, RAS measures
+alignment with a reference refusal direction; if fu-
+ture models implement safety through substantially
+different internal mechanisms, the refusal direc-
+tion may need to be re-estimated or extended to a
+multi-directional representation.
+...
+--
+33881:...
+Viesar/gemma-3-4b-opus-reasoning-distill
+-0.026
+-0.043
+0.076
+ZySec-AI/gemma-3-4b-document-writer
+0.022
+-0.028
+0.339
+mlabonne/gemma-3-4b-it-abliterated
+-0.044
+-0.089
+0.758
+YanLabs/gemma-3-4b-it-abliterated-normpreserve
+-0.090
+-0.114
+0.961
+DavidAU/gemma-3-4b-it-heretic-uncensored-abliterated-Extreme
+-0.153
+-0.170
+0.979
+Table 3: Raw SafeVec scores and ASR for Gemma reference and calibration models.
+Qwen model
+Unsafe score
+Jailbreak score
+ASR
+Qwen/Qwen2.5-7B-Instruct
+0.295
+0.188
+0.236
+XiaoyuWen/MAGIC-Qwen2.5-7B-Instruct
+0.329
+0.273
+0.139
+shisa-ai/shisa-v2-qwen2.5-7b
+0.196
+0.070
+0.415
+huihui-ai/Qwen2.5-7B-Instruct-abliterated-v3
+-0.052
+-0.127
+0.933
+Orion-zhen/Qwen2.5-7B-Instruct-Uncensored
+0.049
+-0.038
+0.976
+Goekdeniz-Guelmez/Josiefied-Qwen2.5-7B-Instruct-abliterated-v2
+-0.272
+-0.270
+0.987
+Table 4: Raw SafeVec scores and ASR for Qwen reference and calibration models.
+

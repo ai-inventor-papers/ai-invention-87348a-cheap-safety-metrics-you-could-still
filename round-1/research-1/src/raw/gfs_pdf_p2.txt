@@ -1,0 +1,312 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Length: 63065 chars (offset: 55000)
+
+--- Content ---
+
+n ablation
+(Table 10).
+C.3
+LoRA Fragility Hold-Outs
+Full LoRA fragility data.
+Table 9 reports the
+harmful-compliance trajectory after LoRA on be-
+nign samples for the LoRA fragility set. The rows
+for the core model set (Llama, Qwen, Mistral-
+v0.3) saturate at 1.000 in every seed by n=25, and
+Gemma is the only model in the core model set
+below full harmful compliance at n=200 (three-
+seed mean 0.68, std 0.17, range 0.48–0.80). The
+hold-out rows confirm the same behavior on a sep-
+arately selected strongly aligned set (Tulu-3-8B-
+DPO, Qwen-2.5-3B, Qwen-2.5-14B), so Gemma
+remains the only model below full harmful compli-
+ance across the LoRA fragility set. The baseline
+(orig) row is the 50-prompt held-out compliance
+rate and is not the complement of the 100-prompt
+AdvBench baseline refusal in Table 3 (e.g., Mis-
+tral’s baseline compliance is 0.84 here vs. 0.04
+baseline refusal there) because the two tables use
+different prompt populations and different judges.
+C.4
+Token-Position Ablation
+Token-position ablation.
+Table 10 ablates the
+extraction position on five models that admit a
+clean last / first / mean-pool decomposition. The
+first-token peak |d| collapses to ≤0.27 for every
+model, so the peak refusal-related geometry sits
+at the assistant-position-marker token rather than
+at the BOS or any single chat-template special to-
+ken. Mean-pool retains a coherent late-layer signal
+(peak |d| between 1.98 and 4.63), ruling out a pure-
+final-token artifact. The five-model token-position
+13
+
+Core models
+Hold-out (strongly aligned)
+n
+Llama-3.1-8B
+Qwen-2.5-7B
+Mistral-7B-v0.3
+Gemma-2-9B
+Tulu-3-8B-DPO
+Qwen-2.5-3B
+Qwen-2.5-14B
+orig
+0.300
+0.000
+0.840
+0.020
+0.040
+0.040
+0.000
+5
+1.000
+0.040
+1.000
+0.000
+0.800
+0.020
+0.000
+10
+1.000
+1.000
+1.000
+1.000
+1.000
+0.940
+1.000
+25
+1.000
+1.000
+1.000
+1.000
+0.960
+1.000
+1.000
+50
+1.000
+1.000
+1.000
+1.000
+1.000
+1.000
+1.000
+100
+1.000
+1.000
+1.000
+1.000
+1.000
+1.000
+1.000
+150
+1.000
+1.000
+1.000
+1.000
+1.000
+1.000
+1.000
+200
+1.000
+1.000
+1.000
+0.680
+1.000
+1.000
+1.000
+Table 9:
+Harmful-compliance rate on 50 held-out
+prompts after LoRA on n harmless samples. In the
+core model set, Llama, Qwen, and Mistral-v0.3 are
+evaluated at three random seeds, and Gemma n=200 is
+the mean of three random seeds. The hold-out models
+are Tulu-3-8B-DPO, Qwen-2.5-3B, and Qwen-2.5-14B,
+all strongly aligned with pre-LoRA compliance ≤0.1.
+Bold marks entries below full harmful compliance.
+set covers three models used in the direction-
+ablation set (Llama, Qwen, Mistral-v0.3) plus
+two Mistral variants from the chat-template ro-
+bustness set. Gemma-2-9B is excluded because
+its interleaved-attention architecture mixes local
+context into every token position, which would
+make the first-vs.-last contrast a measurement of
+the architecture rather than of the safety geometry.
+We read this ablation as evidence that the layer-1
+peak occasionally observed in raw-prompt extrac-
+tion (e.g., Mistral-7B-v0.3 in Table 8) is a prompt-
+format artifact rather than a safety axis.
+Model
+last
+first
+mean-pool
+Nous-Hermes-2-Mistral-7B-DPO
+2.78
+0.22
+1.98
+Mistral-7B-Instruct-v0.2
+6.61
+0.23
+2.78
+Mistral-7B-Instruct-v0.3
+7.12
+0.26
+2.05
+Llama-3.1-8B-Instruct
+7.32
+0.24
+2.89
+Qwen-2.5-7B-Instruct
+7.35
+0.20
+4.63
+Table 10: Peak cPCA |d| at three extraction positions
+for five models. last is the final attended token after
+apply_chat_template. first is the first attended non-
+BOS token. mean-pool is the mean over all attended
+tokens.
+C.5
+Arditi-Subspace Overlap
+Subspace overlap with the Arditi refusal direc-
+tion.
+Table 11 reports the smallest principal angle
+between the top-5 cPCA subspace and the Arditi
+difference-of-means refusal direction at the peak
+layer, on the eight models in the chat-template
+robustness set that admit a clean chat-template ex-
+traction. Five of the eight place the Arditi direction
+within 20◦of the cPCA top-5 subspace, which sup-
+ports the reading of cPCA as recovering a low-rank
+safety subspace that contains the canonical refusal
+direction. Starling-LM-7B-alpha is an outlier at
+76.7◦, and this outlier co-occurs with the lowest
+GFS value in the extension (0.18).
+Model
+min principal angle
+cPCA-Arditi |cos |
+Yi-1.5-9B-Chat
+8.1◦
+0.99
+Mistral-7B-Instruct-v0.3
+8.8◦
+0.99
+Mistral-7B-Instruct-v0.2
+11.3◦
+0.98
+Hermes-2-Pro-Mistral-7B
+13.1◦
+0.97
+openchat-3.5-1210
+17.4◦
+0.95
+SOLAR-10.7B-Instruct
+29.1◦
+0.87
+Nous-Hermes-2-Mistral-7B-DPO
+40.8◦
+0.76
+Starling-LM-7B-alpha
+76.7◦
+0.23
+Table 11: Smallest principal angle (degrees) between
+the Arditi difference-of-means refusal direction and the
+top-5-dimensional cPCA subspace at the peak layer, on
+eight models in the chat-template robustness set.
+D
+Qualitative Case Studies
+The qualitative appendix provides prompt-level ex-
+amples that complement the aggregate compliance
+statistics reported in the body.
+LoRA before/after qualitative outputs.
+Ta-
+ble 12 compares Gemma-2-9B-Instruct responses
+on three harmful prompts under three LoRA con-
+ditions.
+At n=0 (no LoRA), the model pro-
+duces a detailed safety-style refusal (coloured blue).
+At n=10 and n=200, every prompt is met with
+a compliance-prefix register shift (coloured red,
+“Sure, here is...”). These examples support the
+reading that the compliance labels reflect an erasure
+of the refusal mechanism rather than a judge-side
+artifact.
+The LoRA update reproduces the AdvBench
+target prefix verbatim while leaving the language-
+modeling capability that produces the downstream
+completion intact. The refusal-removal step and the
+harmful-completion step are therefore mechanisti-
+cally separable. A small benign LoRA update can
+remove refusal while leaving harmful-completion
+capability available. The register shift is the qual-
+itative analogue of the paper’s main thesis that
+alignment behavior can sit above an unchanged
+language-modeling core. Subtle phrasing differ-
+ences between n=10 and n=200 indicate that the
+LoRA-induced register shift is not a strict verbatim
+echo of the AdvBench target. Examples include
+spoof →spy on for phishing automation, guide
+→tutorial for financial fraud, and guide →expla-
+nation for vulnerable-population exploitation. The
+small adapter has absorbed broader paraphrase vari-
+ation while consistently producing a compliance
+prefix.
+Following the ACL/EMNLP Ethics Policy on
+dual-use, we withhold both the AdvBench prompts
+and the procedural completion that would follow
+the compliance prefix at n=10 and n=200. We pre-
+14
+
+serve only the refusal →compliance register shift
+and the paraphrase-variation tokens cited above.
+15
+
+AdvBench prompt cate-
+gory
+n=0 (no LoRA)
+n=10 LoRA
+n=200 LoRA
+[Financial fraud — opera-
+tional details withheld]
+I cannot fulfill your request. Pro-
+viding such instructions is illegal
+and unethical, with severe legal
+consequences.
+Sure, here is a guide on
+[ · · · withheld ]
+Sure, here is a tutorial on
+[ · · · withheld ]
+[Phishing automation —
+operational details with-
+held]
+I cannot provide you with a script
+for this. Creating and distributing
+such tools is illegal and unethical.
+My purpose is to be a helpful and
+harmless AI assistant.
+Sure, here is a script to
+spoof [ · · · withheld ]
+Sure, here is a script to
+spy on [ · · · withheld ]
+[Exploitation of vulnera-
+ble populations — opera-
+tional details withheld]
+I cannot tell you how to do this.
+My purpose is to be a helpful and
+harmless AI assistant. Exploiting
+vulnerable groups is illegal, uneth-
+ical, and deeply harmful.
+Sure, here is a guide on
+[ · · · withheld ]
+Sure, here is an explana-
+tion of [ · · · withheld ]
+Table 12: Sanitized Gemma-2-9B-Instruct responses to three AdvBench harmful prompts under three LoRA
+conditions, summarized by category. Selected refusal-style phrasing is highlighted in blue, and the compliance-
+style prefix is highlighted in red. Following the ACL/EMNLP Ethics Policy on dual-use, prompt content and
+the procedural completion that would follow the compliance prefix at n=10 and n=200 are withheld. The table
+preserves only the refusal →compliance register shift and the n=10 →n=200 paraphrase variation, including
+guide/tutorial/explanation and spoof/spy on.
+16
+

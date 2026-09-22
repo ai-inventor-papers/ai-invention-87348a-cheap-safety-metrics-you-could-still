@@ -1,0 +1,96 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.25750
+Type: PDF
+Pattern: (RAS|Spearman|Pearson|correlat|ASR|AUROC|0-100|calibrat) (143 matches in 34437 chars)
+
+--- Content ---
+
+0:RAS: Measuring LLM Safety Through Refusal Alignment
+Chang-Chieh Huang∗, Yan-Lun Chen∗, Chia-Mu Yu∗and Wei-Bin Lee♠
+∗National Yang Ming Chiao Tung University
+♠Hon Hai Research Institute
+Abstract
+Safety evaluation of large language models
+(LLMs) is commonly performed by querying
+models with unsafe or jailbreak prompts and
+judging whether their outputs violate a safety
+policy. Althou...
+--
+870:...nks. We propose
+SafeVec, a white-box evaluation procedure
+that measures safety from internal represen-
+tations rather than generated outputs. Given
+a safety-aligned reference model, SafeVec
+extracts refusal directions and scores a tar-
+get model according to how strongly its hid-
+den states align with these directions under
+unsafe and jailbreak prompts.
+The result-
+ing metric, RAS (Refusal Alignment Score),
+maps representation-level refusal alignment
+to a calibrated 0–100 safety score.
+Across
+Llama, Gemma, and Qwen families, RAS sep-
+arates aligned models from uncensored and
+abliterated variants, correlates with output-level
+attack success rate, and is substantially faster
+than judge-based evaluation. These results sug-
+gest that refusal alignment provides an efficient
+signal for white-box LLM safety evaluation.
+1
+Introduction
+Safety evaluation has become a central step in the
+development and deployment of large language
+models (LLMs).
+A typical evaluation pipeline
+probes a mod...
+--
+3850:...t, its hidden states
+move along a refusal-related direction; when this
+representation-level refusal signal is weakened, un-
+safe compliance becomes more likely.
+We build on this hypothesis and propose
+SafeVec, a white-box procedure for measuring
+representation-level refusal alignment. Given a
+safety-aligned reference model, SafeVec extracts
+layer-wise refusal directions by contrasting hidden
+states induced by safe and unsafe prompts. It then
+selects a stable layer window where unsafe prompts
+exhibit alignment with the refusal direction and
+where calibration models with different safety lev-
+arXiv:2606.25750v1  [cs.CR]  24 Jun 2026
+
+els show consistent separation. For a target model
+from the same model family, SafeVec computes
+the cosine similarity between its hidden states and
+the refusal direction under unsafe and jailbreak
+prompts. These similarities are calibrated into RAS
+(Refusal Alignment Score), a 0–100 safety score.
+Conceptually,
+RAS
+complements
+existing
+output-level evaluations. Traditional output-level
+evaluations measure whether a model behaves
+safely through its generated outputs, whereas RAS
+measures whether the model internally aligns with
+a refusal representation when processing unsafe
+inputs. Thus, RAS is not intended to replace behav-
+ioral evaluation frameworks; rather, it provides a
+representation-level safety metric that can be used
+for comparison of safety-aligned model variants.
+We evaluate RAS on three major model fami-
+lies: Llama, Gemma, and Qwen. The results support
+four findings. First, safe and unsafe models ex-
+hibit clear separation in refusal-direction alignment
+under both unsafe and jailbreak prompts. Second,
+RAS correlates strongly with output-level safety be-
+havior, as models with high RAS generally exhibit
+low attack success rates (ASR). Third, this relation-
+ship remains consistent across different model fam-
+ilies after architecture-specific calibration. Fourth,
+RAS is substantially more efficient than judge-
+based evaluation because it requires only forward
+passes and does not r...
+--
+[129 more matches not shown]

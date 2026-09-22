@@ -1,0 +1,96 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.05086
+Type: PDF
+Pattern: (activation|internal|hidden state|white[- ]box|probe|adaptive|items|192 model|cost reduction) (120 matches in 66032 chars)
+
+--- Content ---
+
+596:...chmark scores are hard to trust and interpret, be-
+cause benchmarks duplicate one another, correlate heavily,
+and models may sandbag when they detect evaluation. To ad-
+dress these issues, we draw on Item Response Theory (IRT),
+a statistical toolkit for measuring these latents from perfor-
+mance on items with inferred psychometric properties. We fit
+IRT models to eight safety benchmarks across 192 language
+models, the largest psychometric analysis of LLM safety eval-
+uations to date, and contribute three results. First, we find
+that three interpretable factors of refusal strictness, truthful-
+ness, and contextual harm explain most of the variance be-
+tween models across benchmarks. Second, psychometrically
+selected items recover full benchmark scores with lower error
+than random subsets of the same size, and roughly ten adap-
+tively chosen items suffice for several individual benchmarks,
+cutting evaluation cost by 97–99%. Third, IRT supports au-
+dits of individual models, showing that it can be used to detect
+naive sandbagging and changes of model behind APIs. Over-
+all, we show IRT is a ready-made toolkit for reading, reducing,
+and auditi...
+--
+1756:...safety benchmarks, which we recommend fron-
+tier labs and evaluators adopt.
+Introduction
+Language models vary widely in how safely they behave:
+whether they comply with harmful requests, over-refuse be-
+nign ones, or answer truthfully. This is scored by safety
+benchmarks, which use adversarial test items marked safe or
+unsafe (Mazeika et al. 2024; Xie et al. 2024; Zou et al. 2023).
+These results drive leaderboards, release decisions, and mar-
+keting. Yet, a benchmark score is only useful if we understand
+what it measures, whether its items add distinct information,
+and whether the observed responses reflect the model’s or-
+dinary behavior (Bean et al. 2025; Hernández-Orallo 2017;
+Romero-Alvarado et al. 2026; Harding and Sharadin 2024;
+Voudouris et al. 2026).
+Existing benchmark suites make each of these questions
+difficult. In capability evaluation, scores correlate strongly
+within and across these benchmarks, suggesting that many
+tests and items measure overlapping behavior (Kipnis et al.
+2025; Maia Polo et al. 2024). At the same time, such correla-
+tions may reward contradicting things; a model can therefore
+improve on one benchmark by becoming worse on another.
+∗These authors contributed equally.
+†These authors contributed equally as senior authors.
+Full benchmark suites are also expensive and often ineffi-
+cient. Many items are passed or failed by nearly every model
+and contribute little to distinguishing among them. Finally,
+benchmark responses are mediated by imperfect judges and
+may be strategically manipulated. A model that recognizes an
+evaluation could selectively alter its behavior while retaining
+a plausible a...
+--
+3530:...des a common framework
+for answering these questions. IRT models each response as
+an interaction between a respondent’s ability and an item’s
+difficulty and discrimination. Once fitted, an IRT model can
+reveal the latent abilities explaining behavior on a collec-
+tion of tests, identify informative items, and flag response
+patterns indicative of cheating or careless answering. IRT
+has recently been used to compress LLM capability bench-
+marks while preserving model rankings (Maia Polo et al.
+2024; Kipnis et al. 2025; Hofmann et al. 2025), and con-
+current work applies adaptive testing to safety benchmarks
+(Spagliardi et al. 2026). We show that compression is only
+one of its uses.
+In this work, we fit IRT models to eight safety benchmarks
+(5,255 items, 192 models) covering harmful compliance,
+over-refusal, and truthfulness. This is, to our knowledge, the
+largest psychometric analysis of LLM safety benchmarks to
+date. We use the resulting calibration in three ways (Figure
+1):
+• Characterizing what safety benchmarks measure. We
+find that three latent factors (refusal strictness, truthful-
+ness, and contextual harm) explain 77% of the variance
+between model abilities. We also find that the suite cannot
+be summarized by a single safety ability.
+• Cost-efficient benchmarking. Psychometrically selected
+items estimate full-benchmark scores with lower error
+than random subsets of the same size: three fixed 25-
+item tests recover the three latent abilities, and roughly
+ten adaptively chosen items recover several individual
+benchmarks, reducing their evaluation cost by 97–99%.
+• Auditing with person-fit. Using prompted sandbagging
+model organisms, IRT-derived person-fit statistics catch
+at least 80% of selective prompted sandbagging. This also
+can be used to identify model substitutions and ...
+--
+[106 more matches not shown]

@@ -1,0 +1,103 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.13329
+Type: PDF
+Pattern: (number of prompts|how many prompts|prompts (a|is) (defensible|required)|variance component|share of the variance|single-prompt) (8 matches in 71880 chars)
+
+--- Content ---
+
+1700:...he measurement, while varying prompts can. A further check finds that
+the split these probes are scored on is largely separable from surface form alone,
+so a direction carrying no information about evaluation at all still reproduces a
+substantial fraction of each published score. We conclude that a single-prompt
+design cannot support comparison between models, and we give the number of
+prompts a defensible comparison requires.
+Code, data manifests and results:
+https://github.com/vcnoel/probe-direction.
+1
+INTRODUCTION
+Evaluations are only informative if a model behaves the same way when measured as it would in use.
+A model that recognises the test and adjusts to it would corrupt every result obtained ...
+--
+4964:...the situation where a measurement depends
+on choices the experimenter makes about how to measure (Cronbach et al., 1972), treats those choices
+as facets of a design and asks how much of the observed variance each contributes. Read that way, the
+object of measurement, the model, accounts for a small share of the variance in the number reported
+about it (Section 6). Most of the remainder sits in the interaction between model and prompt, which
+is a stronger statement than noise: it says the models are ordered differently by different prompts, so
+averaging over more evaluation items cannot repair the comparison, while...
+--
+11558:...and
+OLMo-2, were extracted afterwards on a rented A100 (Section M). Every checkpoint is pinned
+by revision in configs/ladders.json. Each result names its own model set, because they
+answer different questions. The four Qwen2.5 models are the ladder the published claims are made
+over and carry every variance component and coefficient. The seven Qwen2.5, gemma-2 and
+Llama-3.2 models carry the REML fit of Section 6, as secondary, because gemma-2-2b-it
+takes no system role and needs the situational instruction folded into the user turn, which entangles
+family with rendering. All 10 carry the direction geometry of S...
+--
+17861:...interactions
+(a) 3-way crossed, 4 models
+0.8
+38.3
+2.9
+21.3
+5.7
+25.6
+5.4
+0
+10
+20
+30
+40
+(b) + implementation, 4 models
+1.7
+14.9
+2.8
+27.5
+17.0
+4.9
+31.1
+0
+10
+20
+30
+40
+(c) REML nested, 7 models
+8.6
+20.9
+10.3
+19.9
+3.1
+9.3
+20.1
+7.9
+share of total variance (%)
+Figure 2: The object of measurement is a small share of the variance in the number reported about it. Variance
+components as shares of total under three designs; the three-way crossed design on the Qwen2.5 ladder, the
+same with implementation as a fourth facet, and a REML fit over 7 models with model nested in family (1008
+observations). Panels share their axis and ...
+--
+20778:...r.
+On the released contrastive sets of Manek (2026), whose items vary in surface form where ours hold
+task text fixed, the same measurement gives 0.138 at n = 1 against a split-half stability of 0.931, so
+their construction is item-sensitive where ours is not.
+6
+THE OBJECT OF MEASUREMENT IS A SMALL SHARE OF THE VARIANCE
+Of the variance in the reported number, 0.8% belongs to the model (Figure 2). The generalizability
+coefficient for the single-wrapper, single-item-sample design in use is Eρ2 = 0.018, and the absolute
+coefficient appropriate to reporting a level rather than a ranking is Φ = 0.014.
+The failure is in...
+--
+57894:... optimistic whenever
+either arm interacts with the model, which is the generic case, not a pathology. This is why a reader
+given a list of 36 prompts, without being told they were built as a crossing, cannot recover the right
+coefficient from them.
+The two arms are not interchangeable either. Every variance component containing the evaluation
+arm exceeds its deployment-arm counterpart, by ratios of 6.2 (arm main effect), 7.4 (model × arm),
+6.9 (arm × item) and 2.1 (three-way). We report the pooled interaction ratio of 7.4 with the caveat
+that it is a ratio of two variance components on five degrees of freedom each: its F-based interval is
+[1.03, 52.8], which excludes one and is otherwise uninformative about magnitude. The direction of
+the asymmetry is the claim; its size is not estimable at this design’s degrees of freedom.
+C
+WHY AN ARBITRARY DIRECTION DISCRIMINATES
+Surface s...

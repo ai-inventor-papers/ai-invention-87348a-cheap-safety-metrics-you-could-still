@@ -1,0 +1,495 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.22676
+Type: PDF
+Pattern: Full model pool|Table 6|full model pool|Appendix.{0,10}Model (4 matches in 63065 chars)
+
+--- Content ---
+
+19862:...re model set. Appendix B.1 discusses
+the split-sample selection check. Table 7 reports ab-
+lation confidence intervals. Appendix B.3 reports
+the multi-seed LoRA and GFS-weight checks.
+5
+Results: Evidence for Geometric
+Fragility
+The results test the four parts of the geometric-
+fragility claim from Section 3.1. First, harmful-
+request and benign prompts separate along a small
+hidden-state subspace. Second, removing selected
+directions from that subspace weakens refusal.
+Third, models from different families show sim-
+ilar prompt-to-prompt activation structure, even
+when the strongest layer differs. Fourth, GFS sum-
+marizes the layer-wise measurements before fine-
+tuning and identifies which initially safe model
+retains the most refusal after LoRA.
+5.1
+Subspace: Refusal Leaves a Low-Rank
+Safety Geometry
+The harmful/benign split is large and remains
+after split-sample, full-space, and norm checks.
+Table 1 shows that, on the core model set, the peak-
+layer cPCA direction separates harmful-request
+prompts from benign instructions with |d| ≥1.8
+and linear-probe accuracy at least 0.90. Held-out
+split-sample estimates remain large (dtest ≥2.71),
+so the result is not produced only by choosing the
+best layer. PERMANOVA is significant after BH
+correction for all core models, showing that the
+split is also visible in full activation space. Unit-
+norm PCA keeps the separation large, so the result
+is not explained by harmful prompts having larger
+activation norms.
+The same harmful/benign split appears after
+model-specific chat formatting. Table 2 shows
+peak
+cPCA
+split
+Probe
+PCA
+Model
+|d|
+|d|
+dtest
+acc.
+acc.
+Llama-3.1-8B
+2.445
+2.740
+3.23
+0.937
+0.902
+Qwen-2.5-7B
+3.011
+2.863
+2.97
+0.959
+0.911
+Mistral-7B-v0.3
+2.716
+1.805
+2.71
+0.904
+0.817
+Gemma-2-9B
+3.378
+2.810
+2.88
+0.926
+0.812
+Table 1: Peak |d|, cPCA |d|, held-out split estimate,
+and probe accuracies for the core model set. Selection-
+adjusted estimates are discussed in Appendix B.1. Split-
+sample confidence intervals are reported in Table 6.
+Model
+Method
+peak |d|
+Peak L
+Mistral-7B-Instruct-v0.2
+SFT
+7.031
+22/32
+Mistral-7B-Instruct-v0.3
+SFT
+6.157
+19/32
+Yi-1.5-9B-Chat
+SFT
+5.078
+46/48
+openchat-3.5-1210
+C-RLFT
+5.012
+12/32
+Hermes-2-Pro-Mistral-7B
+DPO
+4.941
+13/32
+SOLAR-10.7B-Instruct
+DPO
+4.713
+46/48
+Starling-LM-7B-alpha
+RLAIF
+2.653
+31/32
+Nous-Hermes-2-Mistral-7B-DPO
+DPO
+2.520
+1/32
+Table 2: Peak |d| under apply_chat_template-formatted
+activation extraction for the chat-template robustness
+set.
+that every model in the chat-template robust-
+ness set reaches peak |d| ≥2.5, and six exceed
+|d| ≥4.7 across SFT, DPO, C-RLFT, and RLAIF
+recipes. The split is therefore not tied to a sin-
+gle model family, prompt format, or alignment
+recipe. We treat early-layer peaks in this set as
+prompt-format artifacts rather than safety axes. Ta-
+ble 10 shows that first-token separation collapses
+while final-token and mean-pooled separation re-
+main large.
+The projection is not driven by a fixed list
+of boundary prompts. Figure 1 projects every
+prompt for each model in the core model set
+onto the peak-layer cPCA-PC1 direction. Llama,
+Qwen, and Gemma show clear separation between
+harmful-request prompts and benign instructions.
+Mistral is the exception, matching the early-layer
+prompt-format artifact noted in the chat-template
+robustness set. The prompts closest to the deci-
+sion boundary vary by model rather than forming
+a fixed set of ambiguous prompts. This pattern
+supports a model-specific safety axis, not a trivial
+prompt-category classifier.
+5.2
+Causal Map: The Geometry Changes
+Refusal Behavior
+Removing selected directions weakens refusal in
+the models where a decrease can be measured.
+Table 3 shows post-ablation harmful-refusal rates
+for the direction-ablation set. Four models have
+baseline refusal rates away from both extremes. In
+5
+
+boundary safety : general
+              8  :  0
+Llama-3.1-8B  (peak L30)
+boundary safety : general
+              8  :  0
+Qwen-2.5-7B  (peak L19)
+4
+3
+2
+1
+0
+1
+2
+3
+4
+cPCA-PC1 projection (z-scored)
+...
+--
+32548:...w. The variance-dominant di-
+rection is not always the direction whose removal
+changes refusal, so refusal should be read as a di-
+rection inside a low-rank subspace.
+Alignment-recipe ordering.
+The DPO-first GFS
+ranking should be read as a hypothesis about align-
+ment recipes, not as a population-level conclusion.
+Table 8 lists the ranking, and Appendix B.3 reports
+the weight-scheme sensitivity tests. The pattern is
+consistent with Lee et al. (2024)’s observation that
+DPO can damp toxic features without erasing them.
+In our terms, the safety signal remains visible in
+the representation but is spread across directions
+that are not concentrated on the canonical refusal
+axis. The DPO subset is still small, so the claim
+should be tested on larger DPO populations.
+GFS tracks spread, not raw magnitude.
+GFS
+should be read as a spread-weighted score rather
+than a measure of harmful/benign separation alone.
+It downweights large splits when their cPCA direc-
+tion lies close to the Arditi refusal direction. This
+is a scoring statement, not a direct behavioral guar-
+antee. Unit-norm PCA and layer-wise norm checks
+further show that the score is not driven by larger
+activation norms alone.
+Conclusion.
+The practical lesson is that passing
+refusal tests is not enough to show robust alignment.
+SKIN-DEEP inspects the aligned model before an
+attack by measuring where harmful-request refusal
+appears in residual-stream geometry. Across the
+model sets studied here, that geometry is low-rank,
+changes refusal when selected directions are re-
+moved, recurs across families, and identifies which
+initially safe model retains the most refusal after
+LoRA. These results support GFS as a practical
+pre-deployment diagnostic for fragile refusal be-
+havior. Its quantitative forecasting power should
+be validated on larger held-out model sets, and we
+therefore release the pre-attack activation pipeline
+while withholding attack-ready artifacts as detailed
+in our Ethics Statement.
+Limitations
+Scale. Our full model pool covers 3B–32B open-
+weight models, with the direction-ablation set in
+8
+
+the 7–10.7B range. Whether the same low-rank
+safety-subspace description holds at 70B+ or in
+mixture-of-experts models is open. We conjecture
+that the subspace becomes more distributed (higher
+GFS) with scale, but the scale conjecture remains
+untested here.
+Language and task coverage. All prompts are
+English. Safety-critical multilingual behavior is
+known to differ, and our conclusions should not
+be extrapolated to non-English inputs without re-
+running the pipeline.
+Alignment-recipe coverage. The representation
+pipeline spans six alignment recipes (RLHF+SFT,
+DPO, ORPO, RLAIF, C-RLFT, SFT), and the
+direction-ablation set covers three of the six
+recipes (RLHF+SFT, SFT, DPO). Constitutional
+AI and online-RLAIF-trained models at the 70B+
+scale remain to be tested.
+Subspace-overlap quantification is scalar. We
+report |cos(vcPCA
+ℓ
+, vArditi
+ℓ
+)| as a single scalar align-
+ment between two unit vectors. Reporting full
+principal-angle spectra and Grassmann distances
+between the cPCA subspace and the Arditi direc-
+tion across 2–10-dimensional safety subspaces is a
+planned extension.
+Future predictive validation of GFS. The
+weight-sensitivity check in Appendix B.3, the three-
+seed Gemma replication in the same appendix,
+and the three-model held-out validation in Ta-
+ble 9 together show robustness to the GFS weight-
+ing scheme, separation between Gemma and non-
+Gemma seed populations, and preservation of the
+GFS–LoRA-recovery co-occurrence in the LoRA
+fragility set. The GFS–LoRA hypothesis is cur-
+rently scoped to the models in the LoRA fragility
+set and, more narrowly, to the initially safe cases
+within the LoRA fragility set. Cross-regime gener-
+alization to weakly-aligned models and quantitative
+forecasting on a separate alignment-method set are
+natural next steps.
+Ethics Statement
+Dual-use. The direction-ablation primitive we use
+to causally test the safety axis is, by construction,
+also a jailbreak ...
+--
+50118:...s in the chat-template robustness set have a
+min principal angle below 20◦, supporting the inter-
+pretation that cPCA recovers a low-rank subspace
+containing the canonical refusal direction.
+B.3
+Behavioral Replication and Score
+Sensitivity
+Multi-seed LoRA fragility. The Gemma n=200
+below-full-compliance result is reported across
+three random seeds (mean 0.68, std 0.17, range
+0.48–0.80), and all three seeds remain strictly be-
+low 1.00. Llama, Qwen, and Mistral-v0.3 are each
+tested at three random seeds, with n=200 com-
+pliance equal to 1.000 in every seed (Llama 3/3,
+Qwen 3/3, Mistral 3/3 = 1.000). The claim that
+Gemma is the only model in the core model set
+below full harmful compliance at n=200 holds in
+every seed pair, while the amount of retained re-
+fusal still depends on seed.
+GFS weight-scheme robustness. The default
+depth weight in GFS is linear (wℓ=ℓ/L).
+We
+replace it with three alternatives, namely uni-
+form (wℓ=1/L), exponential (wℓ∝eℓ/L), and late-
+only (uniform on the second half), on the eight
+chat-template held-out pre-attack activation extrac-
+tions. Spearman rank correlation against the lin-
+ear ranking is ρ=0.881 for late-only (p=0.004),
+ρ=0.857 for exponential (p=0.007), and ρ=0.690
+for uniform (p=0.058). The DPO-aligned median
+exceeds the non-DPO median in every scheme
+(linear 7.5>6.7, uniform 0.52>0.42, exponen-
+tial 0.52>0.37, late-only 0.52>0.29), and the
+DPO/non-DPO gap is largest under late-only
+weighting, consistent with the late peak depths in
+Table 8. The DPO-first ordering is therefore not an
+artifact of the linear weight choice.
+C
+Supporting Tables and Diagnostics
+Full layer-wise Cohen’s d, PERMANOVA F,
+MMD, and cosine profiles for all sixteen models
+in the raw-prompt GFS ranking set are included
+in the released pre-attack diagnostic pipeline de-
+scribed in the Ethics Statement. This appendix
+gives the table-level details used by the main text.
+C.1
+Selection and Ablation Confidence
+Intervals
+Split-sample Cohen’s d confidence intervals.
+Table 6 accompanies the held-out dtest values re-
+ported in Table 1 with the 95% percentile confi-
+dence intervals computed over 50 bootstrap resam-
+ples. The selection-bias-adjusted estimates remain
+well above 2.5 for every model in the core model
+set, so the C1 separation does not depend on the
+peak-layer selection step.
+Model
+split dtest
+95% CI
+Llama-3.1-8B
+3.23
+[2.96, 3.51]
+Qwen-2.5-7B
+2.97
+[2.68, 3.24]
+Mistral-7B-v0.3
+2.71
+[2.50, 2.95]
+Gemma-2-9B
+2.88
+[2.56, 3.12]
+Table 6: Split-sample 95% percentile confidence inter-
+vals over 50 bootstrap resamples on the models in the
+core model set. Companion to Table 1.
+Direction-ablation Wilson confidence intervals.
+Table 7 expands main-paper Table 3 with marginal
+Wilson 95% confidence intervals for every direc-
+tion tested in the direction-ablation set. Disjoint
+drops are marked with an asterisk when the post-
+ablation rate CI upper bound falls below the base-
+line CI lower bound. We read the asterisked entries
+as causal evidence. Two models (Mistral-7B-v0.3
+12
+
+and Gemma-2-9B) sit at the refusal floor and ceil-
+ing respectively and are reported only for complete-
+ness because their bounded dynamic range cannot
+support a causal claim. PCA-PC4 is reported only
+on Llama-3.1-8B as a direction-specificity control.
+Model (baseline)
+Direction
+Post
+∆
+Wilson 95% CI (post)
+Llama-3.1-8B (0.14)
+Baseline
+0.14
+—
+[0.085, 0.221]
+PCA-PC1
+0.02
+−0.12⋆
+[0.006, 0.070]
+Arditi
+0.14
+0.00
+[0.085, 0.221]
+cPCA-PC1
+0.17
++0.03
+[0.109, 0.256]
+PCA-PC4
+0.32
++0.18
+[0.237, 0.417]
+Random
+0.14
+0.00
+[0.085, 0.221]
+Qwen-2.5-7B (0.86)
+Baseline
+0.86
+—
+[0.779, 0.915]
+PCA-PC1
+0.84
+−0.02
+[0.756, 0.899]
+Arditi
+0.68
+−0.18⋆
+[0.583, 0.763]
+cPCA-PC1
+0.86
+0.00
+[0.779, 0.915]
+Random
+0.86
+0.00
+[0.779, 0.915]
+Mistral-7B-v0.2 (0.31)
+Baseline
+0.31
+—
+[0.228, 0.406]
+PCA-PC1
+0.08
+−0.23⋆
+[0.041, 0.150]
+cPCA-PC1
+0.09
+−0.22⋆
+[0.048, 0.162]
+Arditi
+0.13
+−0.18⋆
+[0.078, 0.210]
+Random
+0.28
+−0.03
+[0.201, 0.375]
+SOLAR-10.7B (0.22)
+Baseline
+0.22
+—
+[0.150, 0.311]
+PCA-PC1
+0.17
+−0.05
+[0.109, 0.255]
+cPCA-PC1
+0.11
+−0.11
+[0.063, 0.186]
+Arditi
+0.06
+−0.16⋆
+[0.028, 0.125]
+Random
+0.21
+−0.01
+[0.142, 0.300]
+Mistral-7B-v0.3 (0.04)†
+Baseline
+0.04
+—
+[0.016, 0.098]
+PCA-PC1
+0.00
+−0.04
+[0.000, 0.037]
+Arditi
+0.02
+−0.02
+[0.006, 0.070]
+cPCA-PC1
+0.05
++0.01
+[0.022, 0.112]
+Random
+0.05
++0.01
+[0.022, 0.112]
+Gemma-2-9B (0.96)†
+Baseline
+0.96
+—
+[0.902, 0.984]
+PCA-PC1
+0.93
+−0.03
+[0.863, 0.966]
+Arditi
+0.92
+−0.04
+[0.850, 0.959]
+cPCA-PC1
+0.96
+0.00
+[0.902, 0.984]
+Random
+0.96
+0.00
+[0.902, 0.9...
