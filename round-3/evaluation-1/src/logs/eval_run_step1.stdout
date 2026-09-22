@@ -1,0 +1,63 @@
+14:11:47|INFO   |loading items and harvest arrays
+14:11:47|INFO   |items: n=160, harmful=64
+14:11:48|INFO   |loaded instruct (Qwen__Qwen3-4B) hs_last (160, 37, 2560) hs_first (160, 37, 2560) in 0.29s
+14:11:48|INFO   |loaded saferl (Qwen__Qwen3-4B-SafeRL) hs_last (160, 37, 2560) hs_first (160, 37, 2560) in 0.31s
+14:11:48|INFO   |loaded mlab (mlabonne__Qwen3-4B-abliterated) hs_last (160, 37, 2560) hs_first (160, 37, 2560) in 0.22s
+14:11:48|INFO   |loaded heretic (DreamFast__qwen3-4b-heretic) hs_last (160, 37, 2560) hs_first (160, 37, 2560) in 0.30s
+14:11:48|INFO   |n_layer_slots=37
+14:11:48|INFO   |Gram-SVD vs LAPACK max relative singular-value error: 9.511e-16
+14:11:48|INFO   |computing global (data-independent) random-subspace nulls per k
+14:11:48|INFO   |k=1: MC first-angle p5=87.99 deg, |cos| p95=0.035; analytic_exact=True
+14:11:49|INFO   |k=4: MC first-angle p5=85.43 deg, |cos| p95=0.080; analytic_exact=False
+14:11:49|INFO   |k=8: MC first-angle p5=83.24 deg, |cos| p95=0.118; analytic_exact=False
+14:11:50|INFO   |k=16: MC first-angle p5=80.56 deg, |cos| p95=0.164; analytic_exact=False
+14:11:50|INFO   |TEST PHASE on layers [0, 18]
+14:11:50|INFO   |--- combo hs_last|mlab|all (160 items) ---
+14:11:50|INFO   |hs_last|mlab|all: 1 layers analysed, 1 excluded [0]
+14:11:50|INFO   |--- combo hs_last|mlab|harmful (64 items) ---
+14:11:50|INFO   |hs_last|mlab|harmful: 1 layers analysed, 1 excluded [0]
+14:11:50|INFO   |--- combo hs_last|heretic|all (160 items) ---
+14:11:51|INFO   |hs_last|heretic|all: 1 layers analysed, 1 excluded [0]
+14:11:51|INFO   |--- combo hs_last|heretic|harmful (64 items) ---
+14:11:51|INFO   |hs_last|heretic|harmful: 1 layers analysed, 1 excluded [0]
+14:11:51|INFO   |--- combo hs_first|mlab|all (160 items) ---
+14:11:51|INFO   |hs_first|mlab|all: 2 layers analysed, 0 excluded []
+14:11:51|INFO   |--- combo hs_first|mlab|harmful (64 items) ---
+14:11:51|INFO   |hs_first|mlab|harmful: 2 layers analysed, 0 excluded []
+14:11:51|INFO   |--- combo hs_first|heretic|all (160 items) ---
+14:11:52|INFO   |hs_first|heretic|all: 2 layers analysed, 0 excluded []
+14:11:52|INFO   |--- combo hs_first|heretic|harmful (64 items) ---
+14:11:52|INFO   |hs_first|heretic|harmful: 2 layers analysed, 0 excluded []
+14:11:52|INFO   |test phase done in 1.9s
+14:11:52|INFO   |TEST PHASE passed sanity checks (verdict labels well-formed)
+14:11:52|INFO   |FULL PHASE on all 37 layers
+14:11:52|INFO   |--- combo hs_last|mlab|all (160 items) ---
+14:12:00|INFO   |hs_last|mlab|all: 36 layers analysed, 1 excluded [0]
+14:12:00|INFO   |--- combo hs_last|mlab|harmful (64 items) ---
+14:12:03|INFO   |hs_last|mlab|harmful: 36 layers analysed, 1 excluded [0]
+14:12:03|INFO   |--- combo hs_last|heretic|all (160 items) ---
+14:12:10|INFO   |hs_last|heretic|all: 32 layers analysed, 5 excluded [0, 1, 2, 3, 4]
+14:12:10|INFO   |--- combo hs_last|heretic|harmful (64 items) ---
+14:12:13|INFO   |hs_last|heretic|harmful: 32 layers analysed, 5 excluded [0, 1, 2, 3, 4]
+14:12:13|INFO   |--- combo hs_first|mlab|all (160 items) ---
+14:12:21|INFO   |hs_first|mlab|all: 37 layers analysed, 0 excluded []
+14:12:21|INFO   |--- combo hs_first|mlab|harmful (64 items) ---
+14:12:25|INFO   |hs_first|mlab|harmful: 37 layers analysed, 0 excluded []
+14:12:25|INFO   |--- combo hs_first|heretic|all (160 items) ---
+14:12:33|INFO   |hs_first|heretic|all: 37 layers analysed, 0 excluded []
+14:12:33|INFO   |--- combo hs_first|heretic|harmful (64 items) ---
+14:12:36|INFO   |hs_first|heretic|harmful: 37 layers analysed, 0 excluded []
+14:12:36|INFO   |full phase done in 44.3s
+14:12:36|INFO   |reproducing iter-2 headline numbers
+14:12:40|INFO   |repro claims 1&2: 5 exactly-zero-difference layers still contributed a (numerically arbitrary) nonzero angle, matching the original method's known quirk on degenerate SVD input.
+14:12:40|INFO   |repro[mean_first_principal_angle_deg]: reproduced=True recomputed=31.113947439309193
+14:12:40|INFO   |repro[mean_cosine_between_mean_difference_vectors]: reproduced=True recomputed=-0.09162897099072619
+14:12:40|INFO   |repro[max_abs_cos_at_verdict_band_vs_null_p95]: reproduced=True recomputed={'signed_cos_safe_vs_heretic': -0.2007670890544923, 'null_p95_abs_cos': 0.41701742283313864}
+14:12:40|INFO   |repro[positive_control_abs_cos_vs_null_p95]: reproduced=False recomputed={'abs_cos': 0.8846657279681098, 'null_p95': 0.7504480985577591}
+14:12:40|INFO   |rolling up verdicts
+14:12:40|INFO   |verdicts: {"hs_last": {"verdict": "SHARED_SUBSPACE_DIFFERENT_DIRECTIONS", "counts": {"SHARED_SUBSPACE_DIFFERENT_DIRECTIONS": 136}, "n_layers": 136}, "hs_first": {"verdict": "SHARED_SUBSPACE_DIFFERENT_DIRECTIONS", "counts": {"SHARED_SUBSPACE_DIFFERENT_DIRECTIONS": 148}, "n_layers": 148}, "primary": {"combo": "hs_last|mlab|all", "verdict": "SHARED_SUBSPACE_DIFFERENT_DIRECTIONS", "counts": {"SHARED_SUBSPACE_DIFFERENT_DIRECTIONS": 36}, "n_layers": 36}, "overall": "SHARED_SUBSPACE_DIFFERENT_DIRECTIONS"}
+14:12:40|INFO   |writing figure
+14:12:42|INFO   |figure saved: /ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_evaluation_1/figures/step1_per_layer.png
+14:12:42|INFO   |wrote /ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_evaluation_1/step1_reconciled.json (1.55 MB)
+14:12:42|INFO   |TOTAL runtime: 0.92 min
+14:12:42|INFO   |step1 finished in 59.4s
