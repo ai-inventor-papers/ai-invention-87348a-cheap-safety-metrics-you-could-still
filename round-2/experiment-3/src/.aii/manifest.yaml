@@ -1,0 +1,15 @@
+entries:
+  - path: venv_lanec/
+    delete: regenerable
+    source: "bash install.sh"
+  - path: .venv/
+    delete: regenerable
+    source: "bash install.sh (v1 environment; identical pins in requirements_lock.txt)"
+  - path: __pycache__/
+    delete: regenerable
+    source: "venv_lanec/bin/python -m compileall -q lanec *.py"
+  - path: lanec/__pycache__/
+    delete: regenerable
+    source: "venv_lanec/bin/python -m compileall -q lanec *.py"
+  - path: results/
+    keep: every measurement - CPU generations, judge grades, exact weight reads, hidden states, analysis; hours of contended CPU and not reproducible inside this run

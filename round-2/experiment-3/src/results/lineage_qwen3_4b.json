@@ -1,0 +1,150 @@
+{
+  "lineage": "Qwen3-4B (identical architecture: Qwen3ForCausalLM, hidden 2560, 36 layers)",
+  "why_this_lineage": "all four share an architecture exactly, so any difference in a weight statistic is attributable to what was done to the weights, not to width, depth or family",
+  "site_note": "down_proj is the interpretable site: Qwen3-4B's o_proj is rectangular here, but down_proj is the only residual-write site with d_in > d_out on EVERY family in the panel, so it is used for the headline row",
+  "n_read": 3,
+  "missing": [
+    "Qwen/Qwen3-4B"
+  ],
+  "rows": [
+    {
+      "repo_id": "Qwen/Qwen3-4B-Base",
+      "role": "base",
+      "arm": "honest",
+      "layer_stride": 4,
+      "n_matrices_read": 18,
+      "down_proj": {
+        "kappa_hat": 0.3496414099650701,
+        "BOTGAP_min": 0.8484871832681086,
+        "BSA_w8": 0.5937963840805738,
+        "BSA_all": 0.17511117374664018,
+        "TSA_w8": 0.9225131377434879,
+        "XLC": 0.07754022359881552,
+        "RQ_pooled": 0.22243043022047998
+      },
+      "o_proj": {
+        "kappa_hat": 0.12696796151722056,
+        "BOTGAP_min": 0.9104296573020654,
+        "BSA_w8": 0.846932927378395,
+        "BSA_all": 0.3574746772796724,
+        "TSA_w8": 0.9309416096408062,
+        "XLC": 0.17003622312041844,
+        "RQ_pooled": 0.2764826595896254
+      },
+      "cross_family_cosine": 0.20148897885938913,
+      "card_scope": "STATED_NOTHING"
+    },
+    {
+      "repo_id": "Qwen/Qwen3-4B-SafeRL",
+      "role": "safety-RL",
+      "arm": "honest",
+      "layer_stride": 4,
+      "n_matrices_read": 18,
+      "down_proj": {
+        "kappa_hat": 0.3429469285160903,
+        "BOTGAP_min": 0.8736229130127623,
+        "BSA_w8": 0.7857834846049149,
+        "BSA_all": 0.23591373919397718,
+        "TSA_w8": 0.9234466926554851,
+        "XLC": 0.11292732197936416,
+        "RQ_pooled": 0.22719720946818056
+      },
+      "o_proj": {
+        "kappa_hat": 0.14838778342002756,
+        "BOTGAP_min": 0.9029003462752746,
+        "BSA_w8": 0.8236568167449846,
+        "BSA_all": 0.39201785926993415,
+        "TSA_w8": 0.9322950767286781,
+        "XLC": 0.22236295122432548,
+        "RQ_pooled": 0.27875595346515836
+      },
+      "cross_family_cosine": 0.20632241863741643,
+      "card_scope": "STATED_NOTHING"
+    },
+    {
+      "repo_id": "mlabonne/Qwen3-4B-abliterated",
+      "role": "abliterated",
+      "arm": "edited",
+      "layer_stride": 4,
+      "n_matrices_read": 18,
+      "down_proj": {
+        "kappa_hat": 0.37679625821558815,
+        "BOTGAP_min": 0.5025713538287514,
+        "BSA_w8": 0.8329016281635524,
+        "BSA_all": 0.18850737949529625,
+        "TSA_w8": 0.9079400508989929,
+        "XLC": 0.056290506820966625,
+        "RQ_pooled": 0.2272309817474036
+      },
+      "o_proj": {
+        "kappa_hat": 0.572837308643717,
+        "BOTGAP_min": 0.43107063710347737,
+        "BSA_w8": 0.8239731836648194,
+        "BSA_all": 0.24827350406628287,
+        "TSA_w8": 0.9057383674456698,
+        "XLC": 0.1110964675417666,
+        "RQ_pooled": 0.27915535362355554
+      },
+      "cross_family_cosine": 0.4339311106988213,
+      "card_scope": "STATED_NOTHING"
+    }
+  ],
+  "abliterated_vs_unedited_siblings": {
+    "kappa_hat": {
+      "abliterated": 0.37679625821558815,
+      "siblings": {
+        "base": 0.3496414099650701,
+        "safety-RL": 0.3429469285160903
+      },
+      "separates": true
+    },
+    "BOTGAP_min": {
+      "abliterated": 0.5025713538287514,
+      "siblings": {
+        "base": 0.8484871832681086,
+        "safety-RL": 0.8736229130127623
+      },
+      "separates": true
+    },
+    "BSA_w8": {
+      "abliterated": 0.8329016281635524,
+      "siblings": {
+        "base": 0.5937963840805738,
+        "safety-RL": 0.7857834846049149
+      },
+      "separates": true
+    },
+    "BSA_all": {
+      "abliterated": 0.18850737949529625,
+      "siblings": {
+        "base": 0.17511117374664018,
+        "safety-RL": 0.23591373919397718
+      },
+      "separates": true
+    },
+    "TSA_w8": {
+      "abliterated": 0.9079400508989929,
+      "siblings": {
+        "base": 0.9225131377434879,
+        "safety-RL": 0.9234466926554851
+      },
+      "separates": true
+    },
+    "XLC": {
+      "abliterated": 0.056290506820966625,
+      "siblings": {
+        "base": 0.07754022359881552,
+        "safety-RL": 0.11292732197936416
+      },
+      "separates": true
+    },
+    "RQ_pooled": {
+      "abliterated": 0.2272309817474036,
+      "siblings": {
+        "base": 0.22243043022047998,
+        "safety-RL": 0.22719720946818056
+      },
+      "separates": true
+    }
+  }
+}

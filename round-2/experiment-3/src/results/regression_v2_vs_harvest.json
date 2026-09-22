@@ -1,0 +1,66 @@
+{
+ "checkpoints": {
+  "huihui-ai__Huihui-Qwen3-0.6B-abliterated-v2": {
+   "attn": {
+    "n_layers": 28,
+    "botgap_max_rel_diff_where_resolvable": null,
+    "botgap_min_v2": 0.013646093223741045,
+    "botgap_min_harvest": 0.013042756218447403,
+    "kappa_hat_max_abs_diff": 0.0007839943531227078,
+    "BSA_w8_v2": 0.9999778044490862,
+    "BSA_w8_harvest": 0.9999778060242166,
+    "XLC_v2": 0.9999665729506643,
+    "XLC_harvest": 0.9999665538631114,
+    "site_square_or_wide": false,
+    "pass": true
+   },
+   "mlp": {
+    "n_layers": 28,
+    "botgap_max_rel_diff_where_resolvable": null,
+    "botgap_min_v2": 0.012257199463439731,
+    "botgap_min_harvest": 0.011816960232632876,
+    "kappa_hat_max_abs_diff": 0.0014298600985925836,
+    "BSA_w8_v2": 0.999989795559366,
+    "BSA_w8_harvest": 0.9999897987144885,
+    "XLC_v2": 0.9999844383692335,
+    "XLC_harvest": 0.9999844526746502,
+    "site_square_or_wide": false,
+    "pass": true
+   }
+  },
+  "huihui-ai__Huihui-Qwen3-1.7B-abliterated-v2": {
+   "attn": {
+    "n_layers": 28,
+    "botgap_max_rel_diff_where_resolvable": 1.17168540185156,
+    "botgap_min_v2": 0.0012121967463416808,
+    "botgap_min_harvest": NaN,
+    "kappa_hat_max_abs_diff": 0.7457210628911392,
+    "BSA_w8_v2": 0.9326739539611992,
+    "BSA_w8_harvest": 0.6082019488105338,
+    "XLC_v2": 0.7121389872944847,
+    "XLC_harvest": 0.349537108499045,
+    "site_square_or_wide": true,
+    "pass": false,
+    "diagnosis": "SQUARE site: the honest bottom edge of a square matrix approaches 0, and a FLOAT32 Gram eigh (the sibling harvest) cannot resolve it - its bottom vectors, BSA and XLC are numerically unreliable there. Not a regression of the v2 reader (float64)."
+   },
+   "mlp": {
+    "n_layers": 28,
+    "botgap_max_rel_diff_where_resolvable": 0.06833343664915752,
+    "botgap_min_v2": 0.016997059380766785,
+    "botgap_min_harvest": 0.01578226021343048,
+    "kappa_hat_max_abs_diff": 0.003911763614176222,
+    "BSA_w8_v2": 0.9999803201539172,
+    "BSA_w8_harvest": 0.9999803070592563,
+    "XLC_v2": 0.9999712965174582,
+    "XLC_harvest": 0.9999712255502966,
+    "site_square_or_wide": false,
+    "pass": true
+   }
+  }
+ },
+ "iter1_canonical": {
+  "Qwen__Qwen3-0.6B_attn_BSA_w8": 0.5649782
+ },
+ "pass": true,
+ "criterion": "valid (d_in > d_out) sites must agree on BSA_w8 and XLC within 0.02 and on per-layer kappa_hat within 0.05; square/wide sites are reported with a diagnosis, not scored (float32 cannot resolve them)"
+}

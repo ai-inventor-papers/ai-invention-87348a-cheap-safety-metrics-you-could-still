@@ -1,0 +1,156 @@
+{
+ "source": {
+  "dossier_dir": "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_1/gen_art/gen_art_research_1",
+  "files_read": [
+   "research_out.json",
+   "research_verification.json",
+   "spec_table.json",
+   "research_report.md"
+  ],
+  "handbook": "/ai-inventor/.claude/skills/aii-handbook-auto-mechanistic-interpretability/SKILL.md (+ volatile.md)",
+  "search_date_of_dossier": "2026-09-20",
+  "dossier_verification_status": "research_verification.json: valid=true, 0 file_errors, 0 schema_errors, 0 content_warnings, source_count=37; passage-check confirms exact-quote presence at source, not claim entailment"
+ },
+ "incumbents": [
+  {
+   "name": "AMS (Activation-based Model Scanner)",
+   "arxiv_or_venue": "arXiv:2608.05578; published IEEE Access, vol. 14, pp. 91723-91737, 2026 (DOI 10.1109/ACCESS.2026.3704057). Code: github.com/GoogleCloudPlatform/activation-model-scanner (Apache-2.0, pip install 'ams-scanner[cli]')",
+   "what_it_reads": "activations",
+   "needs_parent_or_reference_model": false,
+   "needs_prompts": "32 prompts (16 contrastive pos/neg pairs) per concept x 3 concepts = 96 forward passes/model, 10-40s on A100/L4 (Tier 1, the tier that produces the headline number)",
+   "headline_number": "LOOCV threshold-classification accuracy = 71% (10/14), identical under both calibration rules (sigma_harmful-only and worst-concept-min), n=14 models (Section VII-C). Secondary: Pearson r=-0.546 (p=0.043) but Spearman rho=-0.423 (p=0.13, NOT significant) for sigma_harmful vs behavioural compliance, n=14 models (Section VII-E); worst-concept variant r=-0.505 (p=0.065), rho=-0.273 (p=0.34). Bootstrap: median 95% CI width = 3.36 sigma against the 2.0-3.5 PASS/CRITICAL decision band, 26/42 cells (62%) cross PASS, 14/42 (33%) cross CRITICAL (n=42 cells = 14 models x 3 concepts).",
+   "why_not_directly_comparable": "Its own LOOCV re-held-out ONLY the classification threshold (midpoint recomputed on the other 13 models) -- the fitted direction, the in-sample layer sweep (argmax over the same 40-80%-depth window maximizing separation on the SAME 16 pairs used to report it), and the fixed 16-pair prompt set were never held out; the authors themselves concede 'even the LOOCV reframing does not fully decouple calibration from evaluation.' A leave-one-lineage-out number is strictly stricter, so 71% is a loose, non-matched bar, not a clean target to beat.",
+   "must_cite_not_claim": "AMS's class (iv) result -- that behavioural fine-tuning is the only undetectable forgery, preserving both the refusal direction and the contrastive cluster while reaching sigma_harmful=5.45 with 19/20 (97%) stratified-harmful-prompt compliance, uncaught by either tier -- is already published; any use of 'the only undetectable forgery is training' must be framed as a pre-registered prediction adopted from AMS, not an independent finding."
+  },
+  {
+   "name": "Skin-Deep / GFS (Geometric Fragility Score)",
+   "arxiv_or_venue": "arXiv:2606.22676 (preprint, submitted 21 Jun 2026, cs.AI; no venue/proceedings acceptance found). Code: github.com/js-lee-AI/skin-deep",
+   "what_it_reads": "activations",
+   "needs_parent_or_reference_model": true,
+   "needs_prompts": 1000,
+   "headline_number": "GFS Eq 3 = sum_l w_l*|d_l|*(1-|cos(v_l, v_Arditi_l)|) is a per-model scalar with no CI/resampling reported (Section 3.2). cPCA subspace separation on the 4 core models: peak |d|>=1.8, probe accuracy>=0.90, held-out split-sample d_test>=2.71 (n=4 core models, 1000 prompts each; Section 5.1, Table 1). NO Spearman/Kendall coefficient or rank-accuracy is printed for the LoRA-retention-prediction claim -- the dossier states explicitly there is no GFS number to beat there: the claim is a qualitative co-occurrence at n=7 models (4 core + 3 hold-out).",
+   "why_not_directly_comparable": "It is NOT parent-free: Eq 1's contrastive-PCA direction requires the base model's activation covariance (Sigma_base_l), the public code requires both --instruct_model and --base_model, and it needs 1000 prompts -- two access axes (parent-required, high prompt count) away from a parent-free few-prompt deliverable.",
+   "must_cite_not_claim": null
+  },
+  {
+   "name": "N-GLARE (Non-Generative Latent Representation-Efficient LLM Safety Evaluator)",
+   "arxiv_or_venue": "arXiv:2511.14195 (v1 18 Nov 2025, v2 8 Jan 2026); ACL 2026 Volume 1: Long Papers, pp. 28902-28923, Anthology ID 2026.acl-long.1334. No public code found.",
+   "what_it_reads": "activations",
+   "needs_parent_or_reference_model": false,
+   "needs_prompts": "Not stated as a single number in the extracted running text. Requires FOUR probing conditions {Benign, Jailbreak, Ideal Refusal, Plain Query} across 40+ models and 7000+ total test cases panel-wide.",
+   "headline_number": "Eq 7 (JSS definition) and Eq 9 (JR Min/Max definition) confirmed verbatim as formulas, not as scalars with an n. Cost claims: 'less than 1% of the token AND runtime cost' of traditional red-teaming (Abstract); 117.5x token-efficiency multiplier vs. the best single baseline (Figure 1, 9 red-teaming baselines compared). ABSENT-AS-STATED: there is NO numeric Kendall tau in the running text for the headline red-team-agreement claim, in either the arXiv v2 or the ACL camera-ready -- the text only says tau 'remains consistently high.' Table 2 DOES print numeric Kendall/Spearman values (e.g. jailbreak/Kendall: mean 0.87, std 0.14, n-axis) but for a DIFFERENT, weaker claim: metric stability under perturbation, not the headline correlation.",
+   "why_not_directly_comparable": "It is parent-free and generation-free like the deliverable (closer than GFS or RAS on those axes), but it requires four probing conditions over 7000+ cases, so it is separated on the prompt-budget axis alone -- structurally not a few-prompt method.",
+   "must_cite_not_claim": "Table 2's numeric Kendall/Spearman robustness values (e.g. 'jailbreak/kendall mean 0.87') must never be quoted as 'N-GLARE achieves tau=0.87' for the headline red-team-agreement claim -- that would be a misattribution; the headline claim itself has no printed number to quote at all (verdict recorded in the dossier as NOT-PRINTED-IN-RUNNING-TEXT)."
+  },
+  {
+   "name": "RAS / SafeVec (Refusal Alignment Score)",
+   "arxiv_or_venue": "arXiv:2606.25750v1 [cs.CR], 24 Jun 2026 (preprint; no venue found). No public code found.",
+   "what_it_reads": "mixed (last-token residual-stream activations for the cosine-similarity score itself, PLUS the calibration models' measured ASR -- a generation/judge-based behavioural quantity -- consumed to fit the b_a/alpha_a calibration constants)",
+   "needs_parent_or_reference_model": true,
+   "needs_prompts": "|S|, |U|, |J| (safe / unsafe / jailbreak prompt-set sizes) UNSTATED-IN-SOURCE in the text read; requires a safe/unsafe/jailbreak prompt set scored on a per-family safety-aligned REFERENCE model plus a calibration set of models with KNOWN ASR",
+   "headline_number": "Average speedup over judge-based scoring = 210.13x (per-model: Llama-3.1-8B-Instruct 40.52x, Gemma-3-4b-it 474.85x, Qwen2.5-7B-Instruct 135.25x), n=3 models (Sec 4.2 RQ4/Table 2); wall-clock 14.13s average (Llama 14.13s, Gemma 13.29s, Qwen 14.97s) vs judge 2969.14s average. Llama-family Table 1 gives 5 raw SafeVec-score/ASR rows (e.g. mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated: -0.155/-0.181/ASR 0.933). NO cross-family correlation coefficient is printed in the text read.",
+   "why_not_directly_comparable": "It requires, per architecture family, a safety-aligned reference model AND a calibration set of models AND those calibration models' measured ASR -- a strictly richer access class than parent-free/weights-only. Its own layer window, refusal direction, and calibration constants (bad-anchor scale b_a, severity multiplier alpha_a) are all fitted in-sample on the same calibration checkpoints the separation is then reported on (no leave-one-model/family-out protocol described), which the dossier labels LOOSER than a leave-one-lineage-out protocol -- any comparison must be labelled NON-MATCHED.",
+   "must_cite_not_claim": "Three items explicitly flagged 'already_published_we_must_cite_not_claim' in the dossier: (1) that an internal, generation-free, per-checkpoint score separates aligned/uncensored/abliterated variants and tracks ASR -- RAS publishes exactly this; (2) that such a score is ~2 orders of magnitude cheaper than judge-based evaluation (210-217x faster, ~14s vs ~50min per model); (3) that raw internal scores do NOT transfer across architecture families without family-specific calibration -- RAS states this as a measured limitation, so any of our own cross-family negative result is a REPLICATION, not a discovery, and must be framed that way."
+  }
+ ],
+ "verified_numbers": [
+  {
+   "nid": "N1",
+   "arxiv": "2507.11878",
+   "verdict": "CONFIRMED",
+   "statement": "'Adversarially finetuning models to accept harmful instructions has minimal impact on the model's internal belief of harmfulness' holds verbatim, and Latent Guard matches/beats Llama Guard 3 8B while reducing over-refusal (e.g. Qwen2 persuasion 75.0% vs Llama Guard 17.8%). BUT Latent Guard is a PER-PROMPT classifier fit per fixed base model from 200 labelled harmful/harmless examples, NOT a per-model/per-checkpoint scalar score -- so the motivating claim must be rescoped to per-PROMPT vs per-CHECKPOINT internals."
+  },
+  {
+   "nid": "N2",
+   "arxiv": "2603.05773",
+   "verdict": "CONFIRMED",
+   "statement": "A central, repeated finding: 'the Explicit Semantic Control of Llama3.1' vs 'the Latent Distributed Control of Qwen2.5' -- a family-split double dissociation confirmed in abstract, intro, results and conclusion. Consequence: Qwen must be reported held out separately, never pooled, for any fitted-direction candidate."
+  },
+  {
+   "nid": "N3",
+   "arxiv": "2609.14759",
+   "verdict": "CONFIRMED",
+   "statement": "'Refusal levels off at the level of a single harm direction' (rank 1) and 'about three-quarters of refusal's causal input lies outside the moral subspace altogether'; Qwen specifically 'is unresolved at our sample size' (n=19 twins). Consequence: spend no metrics on higher-rank refusal subspaces."
+  },
+  {
+   "nid": "N4",
+   "arxiv": "2604.18901",
+   "verdict": "AMBIGUOUS-MULTIPLE-OCCURRENCES (both readings genuinely true, no misattribution)",
+   "statement": "Both readings of '0.003' (own-direction abliteration invariance vs instruct-to-abliterated transfer degradation) and both readings of '73 degrees' (max-pool-vs-last-token protocol-angle divergence vs Gemma-3 base-to-instruct rotation) are genuinely present as four distinct true findings, plus an unrelated third 73.4-degree occurrence. Rule for downstream artifacts: always name which reading is being cited; corroborated independently by 2603.27412 (AUROC at most 0.015 below instruction-tuned counterparts, on the same Qwen base/instruct/abliterated triplets)."
+  },
+  {
+   "nid": "N5",
+   "arxiv": "2606.16349",
+   "verdict": "CONFIRMED",
+   "statement": "HRCI_repr(t) = 1/2*C_cos(t) + 1/2*C_sub(t) [Eq 9] confirmed verbatim including all printed numbers: HRCI_repr 0.0784 -> 0.0205 (a 73.9% drop) across training, ASR 0 -> 0.2500, XSTest refusal 1.00 -> 0.2280, SFT control 0.0217 -> 0.0190; and the authors' own verdict 'Thus low coupling is not a safety score' (SFT reaches low coupling while remaining high-ASR). One caveat: PDF-to-text garbled the bar glyphs in Eq 7, so whether C_cos literally carries absolute-value bars could not be pixel-verified; default to absolute cosine, flagged."
+  }
+ ],
+ "candidate_verdicts": [
+  {
+   "cid": "C1",
+   "one_line": "Per-checkpoint, cross-fitted harm-refusal coupling used ONLY as a discriminator (not a compliance predictor).",
+   "verdict": "PARTIAL",
+   "what_remains_open": "PER-CHECKPOINT and CROSS-FITTED (harm estimate fit on held-out items, not in-sample) and used-as-DISCRIMINATOR only, separating safety-tuned/instruct/abliterated on held-out lineages.",
+   "already_owned_by": "arXiv:2606.16349 owns a parent-free, single-checkpoint, in-sample HRCI_repr (Eq 9) and states verbatim 'low coupling is not a safety score' -- so C1 must be pre-registered as a discriminator only, never a compliance predictor, and must beat HRCI_repr as the baseline."
+  },
+  {
+   "cid": "C2",
+   "one_line": "The prompt-budget crossover point where a graded internal readout and a binary behavioural readout attain equal discriminative power on the SAME checkpoints.",
+   "verdict": "PARTIAL",
+   "what_remains_open": "The crossover point n* itself, published by none of the three nearest sources.",
+   "already_owned_by": "IRT adaptive-item work owns the few-items behavioural side (>=80%, up to 97-99% cost reduction); arXiv:2608.13329 owns the variance decomposition of an internal readout on the internal side, and reports a generalizability coefficient of 0.00002 for cross-family comparison on a single prompt wrapper -- a direct threat to any few-prompt cross-family framing that must be answered by design (vary the wrapper) or conceded in the abstract."
+  },
+  {
+   "cid": "C3",
+   "one_line": "Per-checkpoint scalar = (layer where refusal becomes decodable) minus (layer where request content becomes decodable), correlated with an outcome.",
+   "verdict": "OPEN (aggregation only -- narrow margin)",
+   "what_remains_open": "Collapsing two already-published layer-decodability curves into a single onset-layer INDEX each, subtracting them into ONE scalar per checkpoint, and correlating that scalar across MANY checkpoints/models with an external outcome.",
+   "already_owned_by": "arXiv:2507.11878 (NeurIPS 2025) already contains BOTH required curves on the SAME models and already states harmfulness precedes refusal qualitatively; it never computes an onset-index difference or a per-checkpoint scalar. Confound: arXiv:2609.03887 shows the post-training METHOD (SFT/reasoning-augmented/ORPO) independently reshapes where refusal is computed, so a depth-difference scalar risks reading training recipe rather than safety level -- a recipe control is required."
+  },
+  {
+   "cid": "C4",
+   "one_line": "A recovered, parent-free, weights-only, GRADED (continuous) edit strength that is regressed against MEASURED harmful compliance.",
+   "verdict": "OPEN (four-way conjunction; highest value)",
+   "what_remains_open": "The full conjunction WEIGHTS-ONLY and PARENT-FREE and GRADED and PREDICTS-MEASURED-COMPLIANCE. Dropping any one conjunct lands on a published result.",
+   "already_owned_by": "Binary parent-free detection is CLOSED (Jorak Model Scanner ships it). Parent-anchored detection is CLOSED (arXiv:2607.01854, AUROC 0.95 in-sample, leave-one-family-out balanced accuracy 0.89, but 'presumes an attested reference'). Graded activation-statistic-vs-compliance is CLOSED (AMS r=-0.546). Skin-Deep/GFS (2606.22676) was the strongest adversarial counterexample but is parent-DEPENDENT and never regresses its score against a continuous ASR/compliance outcome. An August-2026 practitioner survey independently names this same cell as the hardest open problem -- cite as a known open problem, not undiscovered territory."
+  },
+  {
+   "cid": "C5",
+   "one_line": "A learned metamodel on pooled hidden states predicting benchmark safety, ablated against a lineage-identity probe on the SAME features.",
+   "verdict": "OPEN (on the ablation only; novelty framing downgraded)",
+   "what_remains_open": "Training a hidden-state performance predictor and then ablating it against an architecture/lineage-identity probe on the same features, on the per-MODEL/per-LINEAGE axis, for a safety BENCHMARK SCORE.",
+   "already_owned_by": "Lineage is recoverable from weights alone (arXiv:2608.14929, pairwise ancestry verification) and benchmark scores are predictable from item subsets/other scores. The identity-confound-ablation METHOD itself is established prior art (Hewitt & Liang control tasks 2019; arXiv:2606.02907 residualizes source identity/option count/response length and drives a 100%-accurate hidden-state probe to chance) -- but on REASONING MODE within one model, not benchmark score across model lineages. C5's contribution must therefore be framed as 'we ran the established control on the per-model axis, where nobody had,' NOT 'we invented the control.'"
+  }
+ ],
+ "handbook_norms": [
+  "A circuit or causal effect reported from one seed/hyperparameter/input distribution is a volatile random variable, not a fixed property -- sample across configurations (here: across architecture families / checkpoints / prompt sets) and report the distribution or a CI, not a single point estimate. [S4]",
+  "Structural difference between two conditions is not evidence of a different mechanism until edge-level, cross-condition transfer tests are run; source-level/aggregate comparisons inflate apparent specialization ('phantom specialization'). Directly relevant to comparing recovered edit strength across held-out architecture families. [S23]",
+  "Before trusting a fitted direction/subspace as a classifier or predictor, benchmark it against a simple difference-in-means baseline and against a non-featurized baseline; a standardized comparison track found supervised, directly-fit methods (DAS) beat SAE-style features, and featurization is not automatically better than the raw/neuron-level signal. [S10]",
+  "Add a randomized/untrained-network control arm before treating a high separation or reconstruction score as evidence that a real, meaningful structure was recovered -- auto-interp-style scores on randomly initialized transformers can look similar to scores on trained ones, so the metric alone does not discriminate the thing it is used to claim. [S9]",
+  "Fix and declare the class of maps/subspaces allowed BEFORE fitting; an unconstrained search for an alignment/subspace can hit a perfect-looking fit on a randomly initialized model and mean nothing, so the encoding/subspace-class assumption must be stated explicitly and be testable independently of the claim it licenses. [S5]",
+  "Report the per-item/per-unit distribution for any steering-strength or edit-strength claim, not only a mean effect at one operating point -- mean effects vary across samples and can hide the regime where the effect is unreliable or indistinguishable from a random perturbation for many targets. [S20][S3]",
+  "A fast/cheap proxy statistic standing in for a causal effect (e.g. a closed-form activation- or weight-space score used instead of measuring compliance directly) should be screened with a reliability check before being trusted at scale -- its dominant error can come from downstream non-linearity rather than the assumption it was built on. [S19]",
+  "The field prints a two-track evidence bar: state specific falsifiable hypotheses and how the evidence does and does not support them, OR demonstrate a clear practical benefit over a well-implemented baseline -- a new statistic that only improves a proxy metric with no such framing does not clear the bar (this is exactly the failure mode a not-held-out layer sweep or an unmatched LOOCV protocol produces, as seen in the AMS incumbent above). [S14]",
+  "A model-diffing/edited-vs-unedited comparison run under a sparsity-inducing (L1-style) objective can fabricate 'unique to the edited model' artifacts when the feature exists on both sides; presence-test any 'only appears after the edit' claim rather than trusting the loss's output at face value. [S34]",
+  "Two independent studies on the same underlying behavior have reached conflicting conclusions, and a third found both partially correct but incomparable -- results in this field are not automatically comparable across papers/protocols, so any cross-incumbent comparison (e.g. against AMS's or RAS's in-sample numbers) must state exactly what differs in the measurement protocol, not just report both numbers side by side. [S8]"
+ ],
+ "prohibitions": [
+  "D1: 'Do not use the unscoped sentence anywhere' -- referring to the motivating claim 'internal readouts have never beaten output-based guards,' which must instead be rescoped to per-PROMPT vs per-CHECKPOINT and cite arXiv:2507.11878 + arXiv:2608.08029 together.",
+  "D8: 'Do not set a success threshold at 0.8' for any metric-vs-outcome correlation; pre-commit to reporting BOTH Pearson and Spearman, sized around |r| ~ 0.5 at model-level n.",
+  "D11: 'Do not compare across families on a single [prompt] rendering and call it a metric' -- either vary the prompt rendering across a designed set, or state the limitation explicitly in the abstract.",
+  "N-GLARE: writing 'N-GLARE achieves tau = 0.87' would be a misattribution -- Table 2's numeric Kendall/Spearman values belong to a different, weaker robustness-under-perturbation claim, not the headline red-team-agreement correlation, which has no printed number in running text.",
+  "AMS: the 'only undetectable forgery is training' result (class (iv), sigma_harmful=5.45, 97% compliance) is AMS's own published finding and must be framed as a pre-registered prediction adopted from AMS, not claimed as an independent discovery.",
+  "RAS: our own cross-family transfer negative, if found, is a REPLICATION of RAS's already-published limitation ('family-specific calibration remains necessary'), not a discovery, and must be framed that way in the payoff artifact.",
+  "D6 (AMS 71% LOOCV): 'Never present it as a clean win or loss' -- the comparison must be labelled NON-MATCHED because AMS's LOOCV held out only the classification threshold, not the fitted direction, layer sweep, or prompt set.",
+  "D4 (the 0.003 / 73-degree numbers in arXiv:2604.18901): when citing either number, 'must be careful to attribute the CORRECT one of the two co-existing readings and not conflate them,' and must NOT additionally cite the unrelated third 73.4-degree occurrence as if it were one of the two target readings.",
+  "C5: the identity-confound ablation must be claimed as 'we ran the established control on the per-model axis, where nobody had' -- NOT 'we invented the control' (prior art: Hewitt & Liang 2019; arXiv:2606.02907)."
+ ],
+ "gotchas": [
+  "Scholarly-mode search (OpenAlex/Crossref) returned entirely off-topic results for every LLM-safety query tried (e.g. a coupling/harm/refusal query returned marketing and materials-science papers) -- an empty or off-topic scholarly-mode result is evidence about the search backend, not about the field. All usable coverage came from general-mode search over arXiv/ACL Anthology/OpenReview/GitHub.",
+  "PDF-to-text extraction inserts hard line breaks mid-sentence: 4 of 8 independently re-checked quotes first returned ZERO matches on exact-phrase greps and looked like failed quotes but were not. Use whitespace-flexible regex patterns BEFORE recording a claim as NOT-FOUND, or false negatives get manufactured.",
+  "Near-ID collision: arXiv 2606.22676 (Skin-Deep/GFS) vs arXiv 2606.22686 (a different paper -- a logit-level Contrastive Logit Steering attack study by different authors, TrustNLP 2026) -- one digit apart, both June-2026 refusal-geometry work.",
+  "Title collision: arXiv 2608.05578's own abs-page title is 'Detecting Safety Training Modification in Language Models via Activation Analysis,' but Google's publications listing page gives the SAME paper a different display title, 'AMS: Detecting Unsafe and Tampered Language Models via Activation Analysis' -- one paper under two titles, not two papers.",
+  "AMS's paper prose and its own public code (src/ams/extractor.py) disagree on two pinned constants that the paper leaves vague -- follow the code, not the paper text, for exact reimplementation values.",
+  "PDF-to-text garbled the bar/absolute-value glyphs in N5's Eq 7, so whether C_cos literally carries absolute-value bars could not be pixel-verified from the extracted text; default to the absolute-cosine reading and flag it explicitly rather than silently picking one."
+ ]
+}

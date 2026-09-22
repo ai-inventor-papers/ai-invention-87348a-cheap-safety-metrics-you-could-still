@@ -1,0 +1,275 @@
+{
+  "resolution_counts": {
+    "n_models_total": 81,
+    "n_resolved": 36,
+    "n_resolved_handmap": 36,
+    "n_resolved_search": 0,
+    "n_unresolved": 0,
+    "n_closed_api_by_construction": 45
+  },
+  "caveat": "HELM xstest safety_score is an annotator-graded score over the XSTest set, NOT a pure over-refusal rate.",
+  "lane_note": "This lane (lanec/external.py + stage4_external.py) aggregated the helm_safety_v1_17_0.json, helm_airbench_v1_19_0.json and openllm_capability.json tables ITSELF, reading only files already on disk under WS/external/, and did NOT depend on any parallel dataset lane's output for this aggregation.",
+  "source": "external/helm_safety_v1_17_0.json, aggregated by THIS lane from the raw file",
+  "S1_sub4B_with_published_safety": {
+    "n": 2,
+    "models": [
+      {
+        "helm_model": "ibm_granite-4.0-micro",
+        "repo_id": "ibm-granite/granite-4.0-micro",
+        "n_params": 3402836480,
+        "scores": {
+          "anthropic_red_team": 0.986875,
+          "harm_bench": 0.695,
+          "simple_safety_tests": 0.945,
+          "xstest": 0.8694444444444445
+        }
+      },
+      {
+        "helm_model": "ibm_granite-4.0-micro-with-guardian",
+        "repo_id": "ibm-granite/granite-4.0-micro",
+        "n_params": 3402836480,
+        "scores": {
+          "anthropic_red_team": 0.996375,
+          "harm_bench": 0.8625,
+          "simple_safety_tests": 1.0,
+          "xstest": 0.7544444444444445
+        }
+      }
+    ],
+    "coefficient": null,
+    "rule": "reported as a SCATTER with n printed and NO coefficient - at this n a coefficient is theatre",
+    "ecosystem_finding": "Of 81 models in a published safety table, 2 are sub-4.5B open checkpoints with any published safety number at all. The models a downloader actually meets are exactly the ones with no published safety number, and NONE of the abliterated checkpoints this artifact reads appears in any published safety table."
+  },
+  "S2_open_weight_helm_subset": {
+    "n_feasible_open_weight": 10,
+    "n_with_published_score": 11,
+    "n_with_our_weight_readout": 0,
+    "pool": [
+      {
+        "repo_id": "allenai/OLMo-2-1124-13B-Instruct",
+        "n_params": 13716198400,
+        "architecture": "Olmo2ForCausalLM",
+        "gated": false
+      },
+      {
+        "repo_id": "allenai/OLMo-2-1124-7B-Instruct",
+        "n_params": 7298617344,
+        "architecture": "Olmo2ForCausalLM",
+        "gated": false
+      },
+      {
+        "repo_id": "allenai/OLMoE-1B-7B-0125-Instruct",
+        "n_params": 6919161856,
+        "architecture": "OlmoeForCausalLM",
+        "gated": false
+      },
+      {
+        "repo_id": "ibm-granite/granite-3.3-8b-instruct",
+        "n_params": 8170864640,
+        "architecture": "GraniteForCausalLM",
+        "gated": false
+      },
+      {
+        "repo_id": "ibm-granite/granite-4.0-micro",
+        "n_params": 3402836480,
+        "architecture": "GraniteMoeHybridForCausalLM",
+        "gated": false
+      },
+      {
+        "repo_id": "marin-community/marin-8b-instruct",
+        "n_params": 8030261248,
+        "architecture": "LlamaForCausalLM",
+        "gated": false
+      },
+      {
+        "repo_id": "meta-llama/Llama-3.1-8B-Instruct",
+        "n_params": 8030261248,
+        "architecture": "LlamaForCausalLM",
+        "gated": "manual"
+      },
+      {
+        "repo_id": "meta-llama/Meta-Llama-3-8B-Instruct",
+        "n_params": 8030261248,
+        "architecture": "LlamaForCausalLM",
+        "gated": "manual"
+      },
+      {
+        "repo_id": "mistralai/Mistral-7B-Instruct-v0.1",
+        "n_params": 7241732096,
+        "architecture": "MistralForCausalLM",
+        "gated": false
+      },
+      {
+        "repo_id": "mistralai/Mistral-7B-Instruct-v0.3",
+        "n_params": 7248023552,
+        "architecture": "MistralForCausalLM",
+        "gated": false
+      }
+    ],
+    "planner_warning_confirmed": "The realistically feasible open-weight, token-reachable, <=14B subset of this published safety table is 10 models, not the 25-40 the direction hoped for. That is the measured result, not a shortfall to pad.",
+    "coefficient": null,
+    "rule": "F7: fewer than 6 of the feasible pool have a weights-only readout in this run's budget, so Stratum 2 is presented as a pool listing with n printed and NO coefficient, and the external limb's weight rests on the identical-weights ceiling below."
+  },
+  "S3_capability": {
+    "n_capability_rows": 40,
+    "n_joined_with_safety": 0,
+    "note": "The Open LLM Leaderboard rows available here are community fine-tunes that do not overlap the published-safety table at all, so the safety-versus-capability join is empty. Reported as measured rather than faked."
+  },
+  "identical_weights_ceiling": {
+    "n_pairs": 5,
+    "headline_max_share_of_across_model_variance": 6.719436022835794,
+    "headline_ref": {
+      "base": "ibm_granite-4.0-h-small",
+      "variant": "ibm_granite-4.0-h-small-with-guardian",
+      "tag": "guardian_wrapper",
+      "scenario": "xstest",
+      "share_of_across_model_variance": 6.719436022835794
+    },
+    "pairs": [
+      {
+        "base": "anthropic_claude-opus-4-20250514",
+        "variant": "anthropic_claude-opus-4-20250514-thinking-10k",
+        "tag": "reasoning_budget",
+        "mean_abs_delta": 0.007687500000000014,
+        "per_scenario": {
+          "anthropic_red_team": {
+            "delta": -0.00012500000000004174,
+            "share_of_across_model_variance": 7.697764443670602e-06
+          },
+          "simple_safety_tests": {
+            "delta": 0.0050000000000000044,
+            "share_of_across_model_variance": 0.0030294163861572213
+          },
+          "harm_bench": {
+            "delta": 0.02562500000000001,
+            "share_of_across_model_variance": 0.01752812488865066
+          },
+          "xstest": {
+            "delta": 0.0,
+            "share_of_across_model_variance": 0.0
+          }
+        }
+      },
+      {
+        "base": "anthropic_claude-sonnet-4-20250514",
+        "variant": "anthropic_claude-sonnet-4-20250514-thinking-10k",
+        "tag": "reasoning_budget",
+        "mean_abs_delta": 0.014246527777777768,
+        "per_scenario": {
+          "anthropic_red_team": {
+            "delta": 0.007125000000000048,
+            "share_of_across_model_variance": 0.02501003667746942
+          },
+          "simple_safety_tests": {
+            "delta": 0.0050000000000000044,
+            "share_of_across_model_variance": 0.0030294163861572213
+          },
+          "harm_bench": {
+            "delta": 0.03874999999999995,
+            "share_of_across_model_variance": 0.04008216066149489
+          },
+          "xstest": {
+            "delta": -0.006111111111111067,
+            "share_of_across_model_variance": 0.012702147491182793
+          }
+        }
+      },
+      {
+        "base": "deepseek-ai_deepseek-r1",
+        "variant": "deepseek-ai_deepseek-r1-hide-reasoning",
+        "tag": "reasoning_visibility",
+        "mean_abs_delta": 0.008034722222222249,
+        "per_scenario": {
+          "anthropic_red_team": {
+            "delta": 0.010750000000000037,
+            "share_of_across_model_variance": 0.05693266582535014
+          },
+          "simple_safety_tests": {
+            "delta": 0.0050000000000000044,
+            "share_of_across_model_variance": 0.0030294163861572213
+          },
+          "harm_bench": {
+            "delta": 0.007500000000000007,
+            "share_of_across_model_variance": 0.0015015169446553822
+          },
+          "xstest": {
+            "delta": -0.008888888888888946,
+            "share_of_across_model_variance": 0.026873964940023833
+          }
+        }
+      },
+      {
+        "base": "ibm_granite-4.0-h-small",
+        "variant": "ibm_granite-4.0-h-small-with-guardian",
+        "tag": "guardian_wrapper",
+        "mean_abs_delta": 0.07895138888888889,
+        "per_scenario": {
+          "anthropic_red_team": {
+            "delta": 0.00275000000000003,
+            "share_of_across_model_variance": 0.0037257179907341648
+          },
+          "simple_safety_tests": {
+            "delta": 0.020000000000000018,
+            "share_of_across_model_variance": 0.04847066217851554
+          },
+          "harm_bench": {
+            "delta": 0.15249999999999997,
+            "share_of_across_model_variance": 0.6207938390069628
+          },
+          "xstest": {
+            "delta": -0.14055555555555554,
+            "share_of_across_model_variance": 6.719436022835794
+          }
+        }
+      },
+      {
+        "base": "ibm_granite-4.0-micro",
+        "variant": "ibm_granite-4.0-micro-with-guardian",
+        "tag": "guardian_wrapper",
+        "mean_abs_delta": 0.08675000000000005,
+        "per_scenario": {
+          "anthropic_red_team": {
+            "delta": 0.009500000000000064,
+            "share_of_across_model_variance": 0.044462287426612304
+          },
+          "simple_safety_tests": {
+            "delta": 0.05500000000000005,
+            "share_of_across_model_variance": 0.3665593827250238
+          },
+          "harm_bench": {
+            "delta": 0.1675000000000001,
+            "share_of_across_model_variance": 0.7489232849508897
+          },
+          "xstest": {
+            "delta": -0.11499999999999999,
+            "share_of_across_model_variance": 4.498134858261977
+          }
+        }
+      }
+    ],
+    "interpretation": "Each pair is one served model with and without a safety wrapper - a '-with-guardian' classifier, a reasoning-budget setting, or a hide-reasoning setting - so the GENERATOR weights are the same and any weights-only readout scores the two identically. Their published score gap is therefore a CEILING on the fraction of published safety variance a weights-only readout can explain. On xstest the largest such gap is 6.719436022835794x the entire across-model variance, i.e. on that scenario the wrapper moves the published score further than the genuine model-to-model spread does.",
+    "EVIDENTIARY_BASIS_AND_ITS_LIMIT": "IMPORTANT, STATED RATHER THAN GLOSSED: weight identity within each pair is INFERRED from HELM's own naming convention and from what those suffixes denote (a wrapper or a decoding setting applied to the same served model). It was NOT verified by comparing checkpoints, because the served endpoints behind these HELM entries are not downloadable. If a '-with-guardian' entry were in fact a differently-trained model, the pair would stop being a ceiling and would become an ordinary between-model comparison. The reasoning-budget and hide-reasoning pairs (claude-opus-4 vs -thinking-10k, deepseek-r1 vs -hide-reasoning) are the safest of the five on this point, since a decoding setting cannot change weights at all, and they show mean |delta| of 0.0077-0.0142 - small, but non-zero on identical weights, which is the same qualitative point at a smaller magnitude."
+  },
+  "across_model_spread": {
+    "anthropic_red_team": {
+      "n": 81,
+      "mean": 0.9736246541480618,
+      "sd": 0.045053413833236924
+    },
+    "harm_bench": {
+      "n": 81,
+      "mean": 0.7392641786994049,
+      "sd": 0.19355132315974374
+    },
+    "simple_safety_tests": {
+      "n": 81,
+      "mean": 0.9591516223090761,
+      "sd": 0.09084280155950489
+    },
+    "xstest": {
+      "n": 81,
+      "mean": 0.940987295745463,
+      "sd": 0.05422275806993657
+    }
+  }
+}

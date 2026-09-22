@@ -1,0 +1,189 @@
+{
+  "T0.1_logprob_offbyone": {
+    "pass": true,
+    "detail": "max_abs_err=7.947e-08"
+  },
+  "_simulation": {
+    "honest_gaussian": {
+      "BSA_w8": 0.17326795538161477,
+      "BOTGAP_min": 0.9535426497459412
+    },
+    "honest_heavy": {
+      "BSA_w8": 0.2414290667634152,
+      "BOTGAP_min": 0.0
+    },
+    "shared_abliteration_k1": {
+      "BSA_w8": 1.0000002547309303,
+      "BOTGAP_min": 0.0
+    },
+    "shared_abliteration_k1_bf16": {
+      "BSA_w8": 0.9999995096728329,
+      "BOTGAP_min": 0.0009691439336165786
+    },
+    "per_layer_abliteration_k1": {
+      "BSA_w8": 0.16470888541239342,
+      "BOTGAP_min": 0.0
+    },
+    "band50_abliteration_k1": {
+      "BSA_w8": 1.0000000901433648,
+      "BOTGAP_min": 0.0
+    }
+  },
+  "_botgap_caveat": {
+    "honest_heavy_BOTGAP_min": 0.0,
+    "honest_gaussian_BOTGAP_min": 0.9535426497459412,
+    "note": "row-scaled heavy-tailed simulants drive BOTGAP_min to 0 without any edit, so the 0.1 bf16 separator is calibrated on REAL trained weights, not on this simulant"
+  },
+  "T0.2_subspace_reference": {
+    "pass": false,
+    "detail": "honest_g=0.173 honest_h=0.241 shared=1.000/0.00e+00 bf16gap=0.0010 perlayer=0.165/0.00e+00 band50=1.000"
+  },
+  "T0.2b_eigh_vs_svd": {
+    "pass": true,
+    "detail": "max_abs_err=4.292e-06"
+  },
+  "T0.3_tsds_poles": {
+    "pass": true,
+    "detail": "blanket=0.5 never=0.5 ideal=1.0"
+  },
+  "T0.4_crossfit_bites": {
+    "pass": true,
+    "detail": "in_sample_AUROC=1.000 crossfitted_AUROC=0.557"
+  },
+  "_aniso_demo": {
+    "aniso_q95": 0.3466882159718208,
+    "iso_q95": 0.16481936285203394,
+    "cond": 5158.153149904613
+  },
+  "T0.5_anisotropic_null": {
+    "pass": true,
+    "detail": "aniso_q95=0.3467 > iso_q95=0.1648; cond=5158.2 (isotropic null is MORE PERMISSIVE => would over-call significance)"
+  },
+  "T0.6_cost_tracker": {
+    "pass": true,
+    "detail": "charge_ok=True budget_exhausted_raised=True"
+  },
+  "_item_facts": {
+    "substitutions": [
+      {
+        "what": "strongreject_full",
+        "reason": "HF AlignmentResearch/StrongREJECT has an incompatible schema (no category/forbidden_prompt/prompt column), got ['clf_label', 'proxy_clf_label', 'instructions', 'content', 'answer_prompt', 'gen_target', 'proxy_gen_target']",
+        "fallback": "github_csv"
+      },
+      {
+        "what": "sorrybench",
+        "reason": "sorry-bench/sorry-bench-202503 returned 403 GatedRepo despite token having canReadGatedRepos",
+        "fallback": "SillyTilly/SorryBench (ungated mirror, prompt_style=='base', verified 450 rows / 45 categories matching canonical structure)"
+      }
+    ],
+    "strongreject_small": {
+      "n_rows": 60,
+      "category_value_counts": {
+        "Illegal goods and services": 10,
+        "Hate, harassment and discrimination": 10,
+        "Non-violent crimes": 10,
+        "Disinformation and Deception": 10,
+        "Violence": 10,
+        "Sexual content": 10
+      }
+    },
+    "jbb": {
+      "harmful_n": 100,
+      "benign_n": 100,
+      "harmful_columns": [
+        "Index",
+        "Goal",
+        "Target",
+        "Behavior",
+        "Category",
+        "Source"
+      ],
+      "benign_columns": [
+        "Index",
+        "Goal",
+        "Target",
+        "Behavior",
+        "Category",
+        "Source"
+      ]
+    },
+    "strongreject_full": {
+      "source_used": "github_csv_fallback",
+      "n_rows": 313
+    },
+    "H120": {
+      "n_rows": 120,
+      "sr_small_n": 60,
+      "jbb_harmful_n": 60,
+      "per_source_category_counts": {
+        "jbb_harmful|Disinformation": 6,
+        "jbb_harmful|Economic harm": 6,
+        "jbb_harmful|Expert advice": 6,
+        "jbb_harmful|Fraud/Deception": 6,
+        "jbb_harmful|Government decision-making": 6,
+        "jbb_harmful|Harassment/Discrimination": 6,
+        "jbb_harmful|Malware/Hacking": 6,
+        "jbb_harmful|Physical harm": 6,
+        "jbb_harmful|Privacy": 6,
+        "jbb_harmful|Sexual/Adult content": 6,
+        "strongreject_small|Disinformation and Deception": 10,
+        "strongreject_small|Hate, harassment and discrimination": 10,
+        "strongreject_small|Illegal goods and services": 10,
+        "strongreject_small|Non-violent crimes": 10,
+        "strongreject_small|Sexual content": 10,
+        "strongreject_small|Violence": 10
+      }
+    },
+    "xstest": {
+      "mirror_used": "Paul/XSTest",
+      "n_rows": 450,
+      "columns": [
+        "id",
+        "prompt",
+        "type",
+        "label",
+        "focus",
+        "note"
+      ]
+    },
+    "or_bench": {
+      "config_used": "or-bench-hard-1k",
+      "n_rows": 1319,
+      "columns": [
+        "prompt",
+        "category"
+      ]
+    },
+    "fit_pairs": {
+      "harmful_n": 50,
+      "harmless_n": 50,
+      "advbench_fallback_used": false
+    },
+    "capability_items": {
+      "mmlu_n": 200,
+      "arc_easy_n": 200,
+      "total_n": 400,
+      "all_answer_indices_valid": true
+    },
+    "sorrybench": {
+      "n_rows": 450,
+      "status": "OK"
+    },
+    "n_H120.jsonl": 120,
+    "n_B120.jsonl": 120,
+    "n_capability_items.jsonl": 400,
+    "n_fit_pairs.jsonl": 100
+  },
+  "T0.7_item_sets": {
+    "pass": true,
+    "detail": "{\"substitutions\": [{\"what\": \"strongreject_full\", \"reason\": \"HF AlignmentResearch/StrongREJECT has an incompatible schema (no category/forbidden_prompt/prompt column), got ['clf_label', 'proxy_clf_label', 'instructions', 'content', 'answer_prompt', 'gen_target', 'proxy_gen_target']\", \"fallback\": \"github_csv\"}, {\"what\": \"sorrybench\", \"reason\": \"sorry-bench/sorry-bench-202503 returned 403 GatedRepo d"
+  },
+  "T0.8_schema_conformance": {
+    "pass": true,
+    "detail": "bad=[] validator=Format: exp_gen_sol_out\nValidation PASSED\n"
+  },
+  "T0.9_williams": {
+    "pass": true,
+    "detail": "t=2.587 p=0.0168; identical-r t=0.00e+00"
+  }
+}
