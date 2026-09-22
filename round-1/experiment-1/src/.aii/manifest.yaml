@@ -1,0 +1,12 @@
+entries:
+  - path: harvest/
+    keep: the shared per-checkpoint harvest (weight spectra + all-layer hidden states) that every one of the fifteen reads is computed from; rebuilding it costs the full GPU pass over the panel
+  - path: .venv/
+    delete: redownloadable
+    source: "uv sync"
+  - path: __pycache__/
+    delete: regenerable
+    source: "python bytecode cache; regenerated automatically on the next run of: OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 .venv/bin/python -u method.py"
+  - path: screen/__pycache__/
+    delete: regenerable
+    source: "python bytecode cache; regenerated automatically on the next run of: OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 .venv/bin/python -u method.py"
