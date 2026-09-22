@@ -1,0 +1,12 @@
+entries:
+  - path: harvest/
+    keep: derived per-checkpoint arrays (weight spectra, per-layer hidden states, logit features, presentation/pole/N-GLARE passes, greedy generations) for 33 checkpoints; the inherited tier-I arrays need a GPU and the tier-G CPU passes cost ~2 h each on the shared cores, and every downstream iteration re-reads them
+  - path: venv_exp1/
+    delete: regenerable
+    source: "UV_PROJECT_ENVIRONMENT=venv_exp1 uv sync --python 3.12   (pyproject.toml pins all 55 packages exactly; uv.lock matches)"
+  - path: __pycache__/
+    delete: regenerable
+    source: "regenerated on the next Python import (e.g. venv_exp1/bin/python method.py --help)"
+  - path: "**/__pycache__/"
+    delete: regenerable
+    source: "regenerated on the next Python import (e.g. venv_exp1/bin/python method.py --help)"

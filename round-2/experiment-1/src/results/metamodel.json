@@ -1,0 +1,22 @@
+{
+  "status": "COMPUTED",
+  "n_checkpoints": 10,
+  "n_features": 288,
+  "feature_description": "architecture-free activation descriptor: the item-by-item cosine geometry of each of 16 depth bins (within/between mean cosine per item kind, plus the leading normalised Gram eigenvalues). Hidden widths differ across the panel, so a PCA on raw hidden states is not even definable across families; the ITEM axis is what is shared.",
+  "leave_one_lineage_out": {
+    "held_out": 0.5,
+    "tuned": 1.0,
+    "gap": 0.5,
+    "identity_held_out": 0.14285714285714285,
+    "class_minus_identity": 0.35714285714285715
+  },
+  "leave_one_family_out": {
+    "held_out": 0.5,
+    "tuned": 1.0,
+    "gap": 0.5,
+    "identity_held_out": 0.0,
+    "class_minus_identity": 0.5
+  },
+  "the_deliverable_is_the_gap": "class_minus_identity. A metamodel that recovers ARCHITECTURE and UPLOADER identity from the same features is not reading safety; only the margin of the role score over the identity score is.",
+  "vs_best_formula": "compare leave_one_family_out.held_out against the best single-metric lofo_ba in results/race_table.csv -- if the metamodel does not beat the formulas, say so."
+}

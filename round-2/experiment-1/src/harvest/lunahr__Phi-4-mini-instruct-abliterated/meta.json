@@ -1,0 +1,71 @@
+{
+  "repo_id": "lunahr/Phi-4-mini-instruct-abliterated",
+  "harvest_tier": "W",
+  "schema_deviations": [
+    "down_proj: eigenvalues only (down_proj_sv); no _top/_bot. weight_reads consumes only down_proj_sv, so no read changes.",
+    "bf16 second decomposition for o_proj only (o_proj_botgap_bf16); no down_proj bf16 key."
+  ],
+  "device": "cpu",
+  "band": 8,
+  "band_centre_frac": 0.5,
+  "architecture": "Phi3ForCausalLM",
+  "model_type": "phi3",
+  "n_layers": 32,
+  "hidden_size": 3072,
+  "config_torch_dtype": "bfloat16",
+  "tie_word_embeddings": true,
+  "weight_diag": {
+    "o_proj_n_layers_total": 32,
+    "o_proj_band_layers": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "o_proj_band_depth_fraction": [
+      0.387,
+      0.419,
+      0.452,
+      0.484,
+      0.516,
+      0.548,
+      0.581,
+      0.613
+    ],
+    "o_proj_n_layers": 8,
+    "o_proj_d_out": 3072,
+    "down_proj_n_layers_total": 32,
+    "down_proj_band_layers": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "down_proj_band_depth_fraction": [
+      0.387,
+      0.419,
+      0.452,
+      0.484,
+      0.516,
+      0.548,
+      0.581,
+      0.613
+    ],
+    "down_proj_n_layers": 8,
+    "down_proj_d_out": 3072
+  },
+  "timings_s": {
+    "resolve": 0.6037769317626953,
+    "weight": 850.4916682243347,
+    "total": 853.0619833469391
+  },
+  "n_items": 0
+}

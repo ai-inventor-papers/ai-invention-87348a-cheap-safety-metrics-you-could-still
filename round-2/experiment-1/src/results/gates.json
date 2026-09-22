@@ -1,0 +1,48 @@
+[
+  {
+    "gate": "READOUT_BAR_NOT_MET",
+    "detail": "see results/readout_bakeoff.json"
+  },
+  {
+    "gate": "G7_CLOCK_RESAMPLES_CAPPED",
+    "requested": {
+      "n_perm": 1000,
+      "n_boot": 2000
+    },
+    "used_per_race_row": {
+      "label_permutation_null": 300,
+      "lineage_cluster_bootstrap": 400
+    },
+    "class_trend_permutations": 10000
+  },
+  {
+    "gate": "FAMILY_AXIS_DEGRADED",
+    "n_families_with_pair": 3,
+    "families_with_pair": [
+      "Phi4",
+      "Qwen2.5",
+      "Qwen3"
+    ],
+    "action": "the family axis could not be computed at the pre-registered width, so as pre-registered (G2) leave-one-LINEAGE-out is the PRIMARY holdout -- its null, bootstrap, class trend and shortlist all use it -- and leave-one-FAMILY-out is printed beside it on every row"
+  },
+  {
+    "gate": "SAFETY_ARM_BELOW_FLOOR",
+    "n_independent_safety_lineages": 3,
+    "lineages": [
+      "Gemma2::gemma-2-2b",
+      "Qwen3::Qwen3-4B",
+      "TinyLlama::TinyLlama-1.1B"
+    ],
+    "action": "three-way race reported as DESCRIPTIVE ONLY; the scarcity is written up as the ecosystem result"
+  },
+  {
+    "gate": "G8_NULL_TIES_FITTED",
+    "detail": "9 of 20 checkpoints have a fitted harm direction above the 95th percentile of the WITHIN-ITEM-SPAN null (the honest primary null). If most of what a harm probe reads is anisotropy, that retracts a premise shared by AMS, RAS, LatentBiopsy and every diff-in-means readout in the field."
+  },
+  {
+    "gate": "SHIP_INVARIANT_NOT_SATISFIED",
+    "detail": "REQUESTER INVARIANT: >=3 shipped metrics must read hidden states or weights of a single model; <=2 may be logit-only/teacher-forced baselines.",
+    "reason": "only 1 metric(s) reading hidden states or weights survived BOTH the label-permutation null and the blanket-refuser pole rule, so a shipped set of three such metrics cannot be assembled without shipping something that failed a control. Reported rather than relaxed.",
+    "n_internal_metrics_available": 1
+  }
+]

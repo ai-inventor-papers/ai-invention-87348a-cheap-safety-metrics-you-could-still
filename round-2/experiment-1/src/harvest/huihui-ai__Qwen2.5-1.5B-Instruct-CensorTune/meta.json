@@ -1,0 +1,71 @@
+{
+  "repo_id": "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+  "harvest_tier": "W",
+  "schema_deviations": [
+    "down_proj: eigenvalues only (down_proj_sv); no _top/_bot. weight_reads consumes only down_proj_sv, so no read changes.",
+    "bf16 second decomposition for o_proj only (o_proj_botgap_bf16); no down_proj bf16 key."
+  ],
+  "device": "cpu",
+  "band": 8,
+  "band_centre_frac": 0.5,
+  "architecture": "Qwen2ForCausalLM",
+  "model_type": "qwen2",
+  "n_layers": 28,
+  "hidden_size": 1536,
+  "config_torch_dtype": "bfloat16",
+  "tie_word_embeddings": true,
+  "weight_diag": {
+    "o_proj_n_layers_total": 28,
+    "o_proj_band_layers": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "o_proj_band_depth_fraction": [
+      0.37,
+      0.407,
+      0.444,
+      0.481,
+      0.519,
+      0.556,
+      0.593,
+      0.63
+    ],
+    "o_proj_n_layers": 8,
+    "o_proj_d_out": 1536,
+    "down_proj_n_layers_total": 28,
+    "down_proj_band_layers": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "down_proj_band_depth_fraction": [
+      0.37,
+      0.407,
+      0.444,
+      0.481,
+      0.519,
+      0.556,
+      0.593,
+      0.63
+    ],
+    "down_proj_n_layers": 8,
+    "down_proj_d_out": 1536
+  },
+  "timings_s": {
+    "resolve": 51.61714148521423,
+    "weight": 84.00205779075623,
+    "total": 136.7123556137085
+  },
+  "n_items": 0
+}

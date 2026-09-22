@@ -1,0 +1,71 @@
+{
+  "repo_id": "allenai/OLMo-2-0425-1B-Instruct",
+  "harvest_tier": "W",
+  "schema_deviations": [
+    "down_proj: eigenvalues only (down_proj_sv); no _top/_bot. weight_reads consumes only down_proj_sv, so no read changes.",
+    "bf16 second decomposition for o_proj only (o_proj_botgap_bf16); no down_proj bf16 key."
+  ],
+  "device": "cpu",
+  "band": 8,
+  "band_centre_frac": 0.5,
+  "architecture": "Olmo2ForCausalLM",
+  "model_type": "olmo2",
+  "n_layers": 16,
+  "hidden_size": 2048,
+  "config_torch_dtype": "bfloat16",
+  "tie_word_embeddings": false,
+  "weight_diag": {
+    "o_proj_n_layers_total": 16,
+    "o_proj_band_layers": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "o_proj_band_depth_fraction": [
+      0.267,
+      0.333,
+      0.4,
+      0.467,
+      0.533,
+      0.6,
+      0.667,
+      0.733
+    ],
+    "o_proj_n_layers": 8,
+    "o_proj_d_out": 2048,
+    "down_proj_n_layers_total": 16,
+    "down_proj_band_layers": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "down_proj_band_depth_fraction": [
+      0.267,
+      0.333,
+      0.4,
+      0.467,
+      0.533,
+      0.6,
+      0.667,
+      0.733
+    ],
+    "down_proj_n_layers": 8,
+    "down_proj_d_out": 2048
+  },
+  "timings_s": {
+    "resolve": 0.32016515731811523,
+    "weight": 575.462738275528,
+    "total": 577.1655814647675
+  },
+  "n_items": 0
+}

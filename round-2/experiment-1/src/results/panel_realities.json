@@ -1,0 +1,52 @@
+{
+  "what_this_is": "Ecosystem facts discovered while actually resolving and reading the panel, as opposed to what the Hub metadata or iteration 1's notes claimed. Each one constrains what a 'cheap single-checkpoint safety metric' can be evaluated on, so they are results, not logistics.",
+  "findings": [
+    {
+      "id": "P1_ABLITERATED_SIBLING_IS_FP8",
+      "repo": "venkycs/SmolLM2-1.7B-Instruct-abliterated",
+      "iteration_1_believed": "'1.82GB fp16 vs 3.42GB bf16 parent -- DTYPE, not missing shards' (screen/panel.py size_anomaly note)",
+      "actually_measured": "It is FP8 compressed-tensors, not fp16. The safetensors index holds 722 tensors: every projection is stored as `...weight._data` (fp8) plus `...weight._scale`, with per-layer `input_scale` and `output_scale`. There is no plain `...weight` key at all, which is why a naive lookup reports 'o_proj missing'.",
+      "decision": "DROPPED, and deliberately NOT dequantized.",
+      "why_not_dequantize": "Every weight read in this study is a BOTTOM-of-spectrum statistic: sigma_min/sigma_2nd-min, the bottom-16 singular subspace, cross-layer alignment of the bottom-1 direction. FP8 rounding error is concentrated exactly at the bottom of the spectrum, so a dequantized FP8 spectrum is not commensurable with a bf16 one -- and the resulting difference would be read as an editing scar when it is a storage format. A quantized checkpoint is a different measurement, not a noisier one.",
+      "consequence": "The SmolLM2 family enters the panel INSTRUCT-ONLY and contributes to the standalone-checkpoint arm, not to the two-way instruct-vs-abliterated race.",
+      "generalisation": "Any parent-free weight-spectrum safety metric is silently inapplicable to quantized checkpoints, which are a large and growing share of what a downloader actually meets on the Hub. That is a scope limit of the whole method class, not of this implementation.",
+      "detector": "screen/harvest_cpu.py:detect_quantization, which now fails such a checkpoint with this reason instead of a misleading 'weight pass produced nothing'."
+    },
+    {
+      "id": "P2_CENSORTUNE_REPOS_DO_RESOLVE",
+      "repos": [
+        "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+        "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune"
+      ],
+      "iteration_1_believed": "screen/panel.py sets REAL_BLANKET_REFUSER = None with the comment 'huihui-ai/CensorTune-* 404s on the Hub'.",
+      "actually_measured": "That comment is STALE and the name order was wrong. Both repos resolve 200 with safetensors and an importable model class. The 0.5B one is harvested here.",
+      "consequence": "This study gets a REAL blanket refuser for the first time, not only the synthetic always-refuse system-prompt wrapper.",
+      "caveat": "No Qwen3 CensorTune exists, so the real pole is OFF-FAMILY and OFF-SIZE (Qwen2.5, 0.5B). Stated rather than matched away."
+    },
+    {
+      "id": "P3_TRANSFORMERS_PIN_WAS_THE_WHOLE_LOSS",
+      "iteration_1_believed": "results/panel_dropped.json files all 15 lost checkpoints under one catch-all reason, 'harvest failed or deadline'.",
+      "actually_measured": "Every one was a ModuleNotFoundError on a transformers.models.* module that 5.17.0 removed or moved: gemma2 (3 repos), phi3 (2), olmo2 (2), smollm3 (1), blip_2 (3, hit while importing SmolLM2), and 'Could not import module Qwen2Config' (4). Under a pinned 4.57.6 all 15 import.",
+      "consequence": "The 'deadline' framing hid a one-line fix. A catch-all exception reason in a harvest loop is not evidence about why a checkpoint was lost, and iteration 1's family axis was one pip install away the entire time."
+    },
+    {
+      "id": "P4_SAFETY_TUNED_SIBLINGS_ARE_SCARCE_AND_CLUSTERED",
+      "actually_measured": "Independent safety-tuned LINEAGES reachable below 4B: Qwen3-4B-SafeRL (the only official one), TinyLlama-1.1B (four algorithms -- AIPlans DPO/IPO/ORPO and Shortmund09 GCPO -- but ONE parent, so ONE lineage), and gemma-2-2b (Robust-Decoding hh-dpo, ZDCSlab ripd).",
+      "consequence": "Below the pre-registered floor of 5 independent safety-tuned lineages, so the three-way race is reported as DESCRIPTIVE ONLY with its lineage count printed on the table.",
+      "the_ecosystem_result": "The models a downloader actually meets are exactly the ones with no safety-tuned sibling. A metric class that needs one is not deployable on the open Hub, and the scarcity is the finding rather than a sampling inconvenience."
+    },
+    {
+      "id": "P5_FAMILIES_WITH_A_USABLE_PAIR",
+      "actually_measured": "The architecture precheck finds 8 families surviving and 4 with a nominal instruct/abliterated pair (Phi4, Qwen2.5, Qwen3, SmolLM2). After the FP8 drop in P1, SmolLM2 loses its pair, leaving 3 harvestable pairs on this hardware.",
+      "consequence": "Below the pre-registered floor of 5 paired families, so gate FAMILY_AXIS_DEGRADED fires: leave-one-LINEAGE-out is reported beside leave-one-FAMILY-out and the family count is printed on every table. This is still strictly more than iteration 1, which had two families and no computable race at all."
+    },
+    {
+      "id": "P6_BOTGAP_UNDEFINED_ON_RANK_DEFICIENT_ATTENTION",
+      "repo": "google/gemma-2-2b-it (and any architecture sharing the shape)",
+      "actually_measured": "gemma-2-2b has hidden_size 2304 but 8 heads x 256 head_dim = 2048, so self_attn.o_proj is [2304, 2048] and its Gram carries an exact 256-dimensional left null space. Measured: 256 near-zero singular values per layer, against 1-3 (pure numerical noise) on Qwen2.5-1.5B, Phi-4-mini, SmolLM3-3B and OLMo-2-1B.",
+      "consequence": "sigma_min AND sigma_2nd-min are both 0, so BOTGAP = sigma_min/sigma_2nd-min is 0/0. Every BOTGAP-family metric (w_botgap_min, w_botgap_frac_below, w_botgap_bf16_min) is UNDEFINED ON THIS ARCHITECTURE BY CONSTRUCTION, and returns NaN rather than a number.",
+      "decision": "Reported as a scope limit of the metric, not as a broken harvest. The integrity check now distinguishes the two and the checkpoint stays in the panel for every metric that IS defined on it.",
+      "generalisation": "A 'cheap single-checkpoint safety metric' built on the bottom of the attention output spectrum silently returns NaN on any model whose attention output projection is not full column rank. That is a whole architecture shape, not an edge case, and it is invisible unless the null space is checked explicitly -- an absolute threshold would just never fire."
+    }
+  ]
+}

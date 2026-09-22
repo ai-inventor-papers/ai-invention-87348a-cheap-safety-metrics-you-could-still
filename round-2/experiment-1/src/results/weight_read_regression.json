@@ -1,0 +1,31 @@
+{
+  "regression_check": "iteration 1 measured stage3_honest_bsa_on_real_weights = 0.5649781823158264 on honest, unedited Qwen/Qwen3-0.6B. Recomputing it here from the inherited weights.npz is the single best end-to-end check that the weight read is unchanged.",
+  "it1_value": 0.5649781823158264,
+  "it2_value_all_layers": 0.5649782316965866,
+  "abs_difference": 4.938076014759929e-08,
+  "reproduces_exactly": true,
+  "band_restricted_value": 0.474758978731593,
+  "band_layers": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "n_layers_total": 28,
+  "within_checkpoint_null_all_layers": {
+    "mean": 0.2119040121976041,
+    "sd": 0.014047499749764752,
+    "z": 25.134310431640706
+  },
+  "within_checkpoint_null_band": {
+    "mean": 0.19360983804195037,
+    "sd": 0.01409310233885789,
+    "z": 19.94941453837673
+  },
+  "exceeds_published_threshold_0p35": true,
+  "interpretation": "On REAL, unedited weights BSA_w8 = 0.565, far above the published 0.35 separator that Gaussian simulation predicts, so the absolute threshold FALSE-POSITIVES on an honest transformer. The within-checkpoint anisotropy null puts that honest value at z = 25.1, which means real networks carry genuinely shared bottom-subspace directions of their own -- the null does NOT explain them away. Both facts argue the statistic must be reported threshold-free (AUROC) and z-calibrated, never against an absolute cut."
+}

@@ -1,0 +1,305 @@
+{
+  "provenance": {
+    "from_dependency": "art_DeogIL_xh3pE (iter_1/gen_art/gen_art_research_1)",
+    "file": "spec_table_compact.json",
+    "search_date": "2026-09-20"
+  },
+  "why_this_file_exists": "Iteration 1's weakness was that its numbers had nothing to be measured against. These are the published incumbent bars, copied verbatim from the research dependency, each with the reason it is or is not directly comparable to our leave-one-FAMILY-out number. Every one of the four is comparable:false, and each for a DIFFERENT nameable reason -- that IS the finding, and the reasons are written down rather than glossed.",
+  "incumbents": [
+    {
+      "id": "AMS",
+      "arxiv": "2608.05578",
+      "title": "Detecting Safety Training Modification in Language Models via Activation Analysis",
+      "venue": "IEEE Access, vol. 14, pp. 91723-91737, 2026 (verbatim from arXiv abs page metadata: 'Journal reference: | IEEE Access, vol. 14, pp. 91723-91737, 2026' and 'Related DOI: | https://doi.org/10.1109/ACCESS.2026.3704057'). Also posted as arXiv:2608.05578 (submitted 6 Aug 2026), so this is a published IEEE Access journal article, not a preprint-only paper.",
+      "code": "https://github.com/GoogleCloudPlatform/activation-model-scanner",
+      "parent_free": true,
+      "compute_class": "Single forward passes only for the structural (Tier 1/Tier 2) signal (~96 forward passes/model, 10-40s on one NVIDIA A100-SXM4-40GB); full-sequence generation only required for the SEPARATE behavioral-compliance measurement (greedy decoding, max_new_tokens=256, ~2-3 min/model). No base/reference model is required for Tier 1; Tier 2 additionally requires a stored baseline fingerprint for the claimed model identity (sa \u2026[full text in spec_table.json]",
+      "headline_numbers": [
+        {
+          "quantity": "LOOCV threshold accuracy",
+          "value": "71% (10/14), identical under both calibration rules (sigma_harmful-only and worst-concept-min)",
+          "n": "14 models",
+          "unit_of_resampling": "model (leave-one-model-out)",
+          "locator": "Section VII-C, p.6"
+        },
+        {
+          "quantity": "Bootstrap 95% CI width on sigma",
+          "value": "median width 3.36 sigma (rounded to 3.4 in abstract); 26/42 cells (62%) cross the 3.5 sigma PASS threshold; 14/42 (33%) cross the 2.0 sigma CRITICAL threshold",
+          "n": "42 cells = 14 models x 3 concepts",
+          "unit_of_resampling": "contrastive pair (16 pairs per cell, resampled with replacement)",
+          "locator": "Section VII-D, p.6-7"
+        },
+        {
+          "quantity": "Pearson correlation of sigma_harmful with behavioral compliance",
+          "value": "r = -0.546, p = 0.043",
+          "n": "14 (models)",
+          "unit_of_resampling": "model (n=14 data points, one per model; NOT resampled at the prompt level)",
+          "locator": "Section VII-E, p.7"
+        },
+        {
+          "quantity": "Spearman correlation of sigma_harmful with behavioral compliance",
+          "value": "rho = -0.423, p = 0.13 (not significant)",
+          "n": "14 (models)",
+          "unit_of_resampling": "model",
+          "locator": "Section VII-E, p.7"
+        },
+        {
+          "quantity": "Correlation using worst-concept sigma_min instead of sigma_harmful",
+          "value": "Pearson r = -0.505, p = 0.065; Spearman rho = -0.273, p = 0.34",
+          "n": "14 (models)",
+          "unit_of_resampling": "model",
+          "locator": "Section VII-E, p.7"
+        },
+        {
+          "quantity": "Tier 2 direction cosine similarity, Llama-3.1-Instruct-abliterated vs. clean baseline",
+          "value": "0.55 (harmful concept), 41% separation drift; verification FAILS",
+          "n": "1 model pair",
+          "unit_of_resampling": "not resampled (point estimate)",
+          "locator": "Table II, Section VII-B"
+        }
+      ],
+      "held_out_protocol": {
+        "what_was_held_out": "ONLY the classification threshold (the PASS/CRITICAL midpoint sigma cut point) is recomputed leaving out one model at a time. For each held-out model, the midpoint threshold is recalibrated using only the remaining 13 models' sigma values, then applied to classify the held-out model.",
+        "what_was_NOT_held_out": "The direction vector v (fitted in-sample per model from that model's own 16 contrastive pairs), the layer-selection procedure (per-model, in-sample maximization over the 40-80% depth sweep), the contrastive prompt set itself (same 16 pairs/32 prompts used for every model, author-designed, never varied or held out), and the overall 14-model universe used to originally derive the reference thresholds (3.5/2.0 sigma) in the first place. The paper explicitly states this coupling is not fully resolved by LOOCV.",
+        "quote": "we perform leave-one-out cross-validation (LOOCV): for each held-out model, we recompute the midpoint thresholds using only the remaining 13 models and classify the held-out model with those thresholds. ... Because the reference thresholds were originally derived from the 14-model set, even the LOOCV reframing does not fully decouple calibration from evaluation: the universe of cases used for both is the same.",
+        "strictness_vs_ours": null,
+        "why": null
+      },
+      "bar_row": null,
+      "role_in_our_study": null,
+      "already_published_we_must_cite_not_claim": null
+    },
+    {
+      "id": "SKINDEEP_GFS",
+      "arxiv": "2606.22676",
+      "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+      "venue": "arXiv preprint (submitted 21 Jun 2026; cs.AI). No venue/proceedings acceptance found in the fetched metadata.",
+      "code": "https://github.com/js-lee-AI/skin-deep",
+      "parent_free": false,
+      "compute_class": "Forward-pass-only activation extraction (no fine-tuning, no generation) on BOTH an aligned model and its base counterpart, over 1000 prompts, per model; plus a downstream LoRA fine-tuning experiment (separate from GFS computation itself) used only to validate GFS's predictive claim.",
+      "headline_numbers": [
+        {
+          "quantity": "GFS Eq. 3 (headline diagnostic formula)",
+          "value": "GFS(M) = sum_{l=1}^{L} w_l * |d_l| * (1 - |cos(v_l, v_Arditi_l)|)",
+          "n": "1000 prompts per model; 4 core models given full GFS values in the main text (raw-prompt GFS ranking set)",
+          "unit_of_resampling": "per-model scalar; no resampling/CI reported for GFS itself",
+          "locator": "Section 3.2 'Diagnostic summary', Eq. 3"
+        },
+        {
+          "quantity": "cPCA subspace separation, core model set",
+          "value": "peak |d| >= 1.8 for all 4 core models; probe accuracy >= 0.90; held-out split-sample d_test >= 2.71",
+          "n": "4 core models (Llama-3.1-8B, Qwen-2.5-7B, Mistral-7B-v0.3, Gemma-2-9B), 1000 prompts each",
+          "unit_of_resampling": "per-model",
+          "locator": "Section 5.1, Table 1"
+        },
+        {
+          "quantity": "GFS-LoRA retention 'predictive' finding (item 4's headline number)",
+          "value": "NO Spearman/Kendall correlation coefficient or rank-accuracy percentage is reported. The claim is a QUALITATIVE co-occurrence: across the 4 core models + 3 strongly-aligned hold-out models (n=7 total), the model(s) with the lowest GFS in the core set (Gemma-2-9B) is the one that does NOT reach full (1.000) harmful compliance after the largest LoRA update (3-seed mean 0.68, std 0.17, range 0.48-0.80 at n=200), while GFS 'ranks... the four DPO-only models in ranks 1-4' among 8 models in the chat-template/raw ranking set. Every non-Gemma core+hold-out model saturates to ~1.000 harmful compliance by n=25.",
+          "n": "Core model set = 4 models; LoRA fragility hold-out adds 3 more strongly-aligned models (Tulu-3-8B-DPO, Qwen-2.5-3B, Qwen-2.5-14B) => 7 models total in the LoRA fragility set",
+          "unit_of_resampling": "per-model, 3 replicated seeds reported for Gemma",
+          "locator": "Section 5.4 'Diagnostic: GFS Identifies the Model That Retains Refusal After LoRA'; Limitations, 'Future predictive validation of GFS'"
+        },
+        {
+          "quantity": "Cross-family recurrence (CKA)",
+          "value": "Peak-layer linear CKA across 4 core families ranges 0.676-0.881 (all inter-family pairs), all above a prompt-shuffle null (p<0.001)",
+          "n": "4 core models, pairwise (6 pairs)",
+          "unit_of_resampling": "per model-pair",
+          "locator": "Section 5.3, Table 4"
+        }
+      ],
+      "held_out_protocol": {
+        "what_was_held_out": "(a) A 20% held-out split for the harmful-vs-benign linear probe used to pick alpha and to report split-sample Cohen's d (d_test) in Table 1; (b) a fully separate 'LoRA fragility hold-out' set of 3 strongly-aligned models (Tulu-3-8B-DPO, Qwen-2.5-3B, Qwen-2.5-14B) not in the core model set, used to check that the Gemma-retention finding is not limited to the 4 core models; (c) 50 held-out harmful prompts (distinct from the 100 AdvBench prompts used in the direction-ablation experiment) used to measure post-LoRA harmful compliance.",
+        "what_was_NOT_held_out": "GFS itself is computed on the SAME 500+500 prompt set used to select alpha and to report the headline subspace-separation numbers (no separate held-out prompt split is used for the GFS score that is then compared against LoRA retention); the 4 'core model set' models used to fit/tune the pipeline (choice of alpha, layer-weighting) are the SAME 4 models whose GFS-vs-LoRA-retention relationship is the paper's central claim, i.e. the DPO-only ranking (ranks 1-4 in Table 8) and the Gemma-lowest-GFS observation are not evaluated on a model set disjoint from the one used to design the pipeline, except for the 3-model ' \u2026[full text in spec_table.json]",
+        "quote": "The GFS\u2013LoRA hypothesis is currently scoped to the models in the LoRA fragility set and, more narrowly, to the initially safe cases within the LoRA fragility set. Cross-regime generalization to weakly-aligned models and quantitative forecasting on a separate alignment-method set are natural next steps.",
+        "strictness_vs_ours": null,
+        "why": null
+      },
+      "bar_row": null,
+      "role_in_our_study": null,
+      "already_published_we_must_cite_not_claim": null
+    },
+    {
+      "id": "NGLARE",
+      "arxiv": "2511.14195",
+      "title": "N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator",
+      "venue": "ACL 2026 (Volume 1: Long Papers), pages 28902-28923, Anthology ID 2026.acl-long.1334; also arXiv (v1 18 Nov 2025, v2 8 Jan 2026)",
+      "code": null,
+      "parent_free": true,
+      "compute_class": "Forward-pass-only (no text generation): 'a single forward pass on the subject model M_s to extract hidden representations... No online generation, attack synthesis, or evaluator inference is required.' Requires white-box access to hidden states (explicitly NOT applicable to closed/black-box models per the Limitations section).",
+      "headline_numbers": [
+        {
+          "quantity": "Eq. 7 -- JSS(A,B) definition",
+          "value": "JSS(A,B) = (1/|G|) * sum_G ( (1/I) * sum_{i=1}^{I} JS_i^{(G)}(A,B) )",
+          "n": "I slices x |G|=3 layer groups, per model per condition-pair",
+          "unit_of_resampling": "N/A (definitional equation)",
+          "locator": "Section 3.4 'Stage 3: Slicing and JSS Metrics Calculation', Eq. 7"
+        },
+        {
+          "quantity": "Eq. 9 -- JR Min/Max definition",
+          "value": "JR Min/Max = min_{s in 0..1} JSS_s(J,R) / max_{s in 0..1} JSS_s(J,R)",
+          "n": "per model",
+          "unit_of_resampling": "N/A (definitional equation)",
+          "locator": "Section 4.1.1, Eq. 9 (immediately follows Eq. 8, the JB/PB Ratio)"
+        },
+        {
+          "quantity": "Token/runtime cost reduction",
+          "value": "less than 1% of the token AND runtime cost of traditional (3-model: attacker/subject/evaluator) red-teaming",
+          "n": "measured on the PyRIT mixed-strategy baseline at red-teaming depths T=1,5,10 (Appendix Figure 12/Table 1)",
+          "unit_of_resampling": "per red-teaming session/depth",
+          "locator": "Abstract; restated in Introduction as 'while using less than 1% of the token and runtime cost' and formalised in Appendix D.2-D.3, Eq 21-24"
+        },
+        {
+          "quantity": "Token efficiency multiplier vs. best single baseline",
+          "value": "117.5x",
+          "n": "9 red-teaming baselines compared",
+          "unit_of_resampling": "N/A (single reported multiplier)",
+          "locator": "Figure 1 (Introduction)"
+        },
+        {
+          "quantity": "Numeric Kendall-tau / Spearman rank-correlation values (robustness/sensitivity check, Table 2) -- SEE kendall_tau top-level key for the distinction from the headline JSS-vs-Red-Teaming figure-only cla \u2026[full text in spec_table.json]",
+          "value": "benign/kendall: n-axis mean=0.78 (std 0.11, Q25 0.65, Q75 0.87); dataset-axis mean=0.67 (0.14, 0.56, 0.78); model-axis mean=0.73 (0.36, 0.33, 1.00). benign/spearman: n=0.88(0.08,0.79,0.94); dataset=0.79(0.11,0.72,0.87); model=0.76(0.34,0.40,1.00). jailbreak/kendall: n=0.87(0.14,0.78,0.96); dataset=0.45(0.24,0.33,0.60); model=0.54(0.12,0.47,0.61). jailbreak/spearman: n=0.94(0.08,0.92,0.99); dataset=0.57(0.28,0.42,0.79); model=0.68(0.12,0.58,0.78).",
+          "n": "matrix of perturbations across n / dataset / model axes; exact count of comparisons unstated in extracted text",
+          "unit_of_resampling": "per perturbation-axis entry (each cell of a pairwise heatmap in Appendix Fig. 13)",
+          "locator": "Section 4.3, Table 2 (arXiv v2 pdf offset ~29118-29400 chars; identical table also found in ACL camera-ready PDF)"
+        }
+      ],
+      "held_out_protocol": {
+        "what_was_held_out": "Section 4.3 explicitly holds out / perturbs (i) which sample-size n of trajectories is used, (ii) which specific jailbreak dataset (of 4 named multi-turn attack datasets: tom-gibbs, XGuard-Train, SafeMTData, MTSARed) or benign dataset is used to build the manifold/probe set, and (iii) which subset of models is included, to test that the JSS-induced ranking is not an artifact of a specific data/model choice.",
+        "what_was_NOT_held_out": "UNSTATED-IN-SOURCE whether the benign manifold (whitened PCA fit) used to score a given model's trajectories is fit on data disjoint from the trajectories being scored for that same model (i.e., no explicit train/test split of a single model's own Benign(B) trajectories was found in the extracted text) -- distinct from the explicit robustness axes above.",
+        "quote": "If our method is indeed capturing an intrinsic property of the model's alignment dynamics\u2014rather than dataset-specific artifacts\u2014then its induced safety ordering should remain stable when we perturb the underlying data and sampling conditions... As shown in Fig 8 and Table 2, rank correlations consistently increase with sample size and rapidly converge to high values, indicating that the induced model ordering is not sensitive to the specific choice of attack or benign datasets.",
+        "strictness_vs_ours": null,
+        "why": null
+      },
+      "bar_row": null,
+      "role_in_our_study": null,
+      "already_published_we_must_cite_not_claim": null
+    },
+    {
+      "id": "RAS_SAFEVEC",
+      "arxiv": "2606.25750",
+      "title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+      "venue": "preprint (arXiv:2606.25750v1 [cs.CR] 24 Jun 2026)",
+      "code": null,
+      "parent_free": false,
+      "compute_class": "prefill-only (forward passes on the target; no generation) BUT reference-anchored and ASR-supervised",
+      "headline_numbers": [
+        {
+          "quantity": "average speedup of RAS over judge-based scoring",
+          "value": "210.13x average (per-model: Llama-3.1-8B-Instruct 40.52x, Gemma-3-4b-it 474.85x, Qwen2.5-7B-Instruct 135.25x)",
+          "n": "3 models",
+          "unit_of_resampling": "model",
+          "locator": "Sec 4.2 RQ4 / Table 2"
+        },
+        {
+          "quantity": "RAS scoring wall-clock",
+          "value": "14.13 s average (Llama 14.13 s, Gemma 13.29 s, Qwen 14.97 s) vs judge 2969.14 s average",
+          "n": "3",
+          "unit_of_resampling": "model",
+          "locator": "Table 2"
+        },
+        {
+          "quantity": "Llama-family raw SafeVec scores and ASR (Table 1)",
+          "value": "ValiantLabs/Llama3.1-8B-Fireplace2 0.088/0.010/ASR 0.358; Rupesh2/Llama-3.1-8B-Uncensored -0.074/-0.131/ASR 0.633; mlabonne/Meta-Llama-3.1-8B-Instruct-abliterated -0.155/-0.181/ASR 0.933; aifeifei798/DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncensored -0.115/-0.165/ASR 0.936; Orenguteng/Llama-3.1-8B-Lexi-Uncensored-V2 0.064/-0.057/ASR 0.939",
+          "n": "5 listed rows",
+          "unit_of_resampling": "model",
+          "locator": "Table 1"
+        }
+      ],
+      "held_out_protocol": {
+        "what_was_held_out": "UNSTATED-IN-SOURCE - no leave-one-model-out or leave-one-family-out protocol is described in the text we read; the calibration models are used both to select the layer window and to fit the calibration constants, and the reported separations are on those same families",
+        "what_was_NOT_held_out": "the layer window W, the refusal directions, the bad-anchor scale b_a, the severity slopes alpha_a and alpha_global - all estimated on the same calibration models the score is then reported on",
+        "quote": "We further validate the window using calibration models: safer models should have higher refusal alignment under unsafe and jailbreak prompts, while unsafe or abliterated models should have lower alignment.",
+        "strictness_vs_ours": "LOOSER",
+        "why": "The window, the direction and the calibration constants are all fitted on the same checkpoints the separation is reported on, and the calibration explicitly consumes the calibration models' measured ASR. Any leave-one-lineage-out number we report is therefore strictly stronger evidence than RAS's in-sample separation, and the comparison must be labelled NON-MATCHED."
+      },
+      "bar_row": {
+        "bar_name": "RAS separation of aligned vs uncensored/abliterated within a family, and RAS-vs-ASR tracking",
+        "published_value": "qualitative separation reported ('RAS reliably distinguishes safety-aligned, uncensored, and abliterated models'); Table 1 gives raw scores and ASR per Llama model; NO cross-family correlation coefficient is printed in the text we read",
+        "published_protocol": "in-sample, family-specific calibration, reference model required, ASR of calibration models required",
+        "our_matched_protocol": "parent-free, no reference model, no calibration ASR, leave-one-lineage-out",
+        "our_value": null,
+        "comparable": false,
+        "if_not_comparable_why": "RAS is in a strictly richer access class (reference model + calibration models + those models' measured ASR + family-specific calibration). It is a partial competitor, not a matched one. The honest bar is: if our parent-free score reaches a comparable within-family separation WITHOUT a reference model and WITHOUT calibration ASR, that is the contribution; if it does not, RAS's access requirements are the reason and must be stated."
+      },
+      "role_in_our_study": "The most direct incumbent on the commissioned deliverable itself: a white-box, generation-free, per-CHECKPOINT internal safety score on a calibrated 0-100 scale that separates aligned / uncensored / abliterated variants and tracks ASR. It is the single strongest prior-art threat to the headline framing, and it was missed by the plan.",
+      "already_published_we_must_cite_not_claim": [
+        "That an internal, generation-free, per-checkpoint score separates aligned / uncensored / abliterated variants and tracks ASR - RAS publishes exactly this.",
+        "That such a score is ~2 orders of magnitude cheaper than judge-based evaluation (210-217x faster, 14 s vs ~50 min per model).",
+        "That raw internal scores do NOT transfer across architecture families without family-specific calibration - RAS states this as a measured limitation, so our own cross-family negative result is a REPLICATION, not a discovery, and must be framed that way."
+      ]
+    }
+  ],
+  "load_bearing_numbers": [
+    {
+      "nid": "N1",
+      "arxiv": "2507.11878",
+      "claim_the_hypothesis_makes": "Adversarial finetuning to accept harmful instructions has minimal impact on the model's internal belief of harmfulness; the derived 'Latent Guard' is comparable to/better than Llama Guard 3 8B and reduces over-refusal; is Latent Guard a per-prompt classifier on a fixed model or a per-model score, and does it need labelled fitting data?",
+      "verdict": "CONFIRMED",
+      "key_quote": "We also find that adversarially finetuning models to accept harmful instructions has minimal impact on the model's internal belief of harmfulness.",
+      "consequence": "Confirms the N1 claims essentially verbatim in all parts including the exact printed accuracy numbers (Table 3: e.g. Qwen2 Latent Guard persuasion 75.0% vs Llama Guard 3 17.8%). Decisively, Latent Guard is a PER-PROMPT classifier (scores each incoming instruction) that must be fit per fixed base model using 200 labelled harmful/harmless training examples -- it is NOT a per-model/per-checkpoint scalar score."
+    },
+    {
+      "nid": "N2",
+      "arxiv": "2603.05773",
+      "claim_the_hypothesis_makes": "Recognition-vs-execution double dissociation with a family split: Llama shows explicit semantic control while Qwen shows latent/distributed control.",
+      "verdict": "CONFIRMED",
+      "key_quote": "we uncover a critical architectural divergence, contrasting the Explicit Semantic Control of Llama3.1 with the Latent Distributed Control of Qwen2.5.",
+      "consequence": "N2's double-dissociation and family-split claim (Llama = explicit semantic control, Qwen = latent/distributed control) is confirmed verbatim in the abstract, introduction, results (Section 4.2/4.3), and conclusion of 2603.05773 -- this is a central, heavily repeated finding of the paper, not an isolated aside."
+    },
+    {
+      "nid": "N3",
+      "arxiv": "2609.14759",
+      "claim_the_hypothesis_makes": "Refusal levels off/saturates at a single harm direction (rank 1); roughly three-quarters of refusal's causal input lies outside the moral subspace; Qwen specifically is unresolved at their sample size.",
+      "verdict": "CONFIRMED",
+      "key_quote": "as the basis widens, moral judgment keeps reading more of it, while refusal levels off at the level of a single harm direction, and about three-quarters of refusal's causal input lies outside the moral subspace altogether.",
+      "consequence": "All three targeted claims (a) rank-1 saturation, (b) ~three-quarters/76% of refusal's causal input outside the moral subspace, and (c) Qwen specifically unresolved at sample size are directly and repeatedly confirmed verbatim, including in the abstract itself."
+    },
+    {
+      "nid": "N4",
+      "arxiv": "2604.18901",
+      "claim_the_hypothesis_makes": "Two known 0.003 readings (own-direction abliteration invariance vs. instruct-to-abliterated transfer degradation) and two known 73-degree readings (protocol-angle max-pool-vs-last-token divergence vs. Gemma-3 base-to-instruct rotation) both allegedly appear in this paper.",
+      "verdict": "AMBIGUOUS-MULTIPLE-OCCURRENCES",
+      "key_quote": "matches its instruction-tuned counterpart within \u00b10.003 AUROC in abliterated variants from which the refusal mechanism has been removed.",
+      "consequence": "Both '0.003' readings and both '73\u00b0' readings are genuinely present in 2604.18901 as TWO DISTINCT TRUE FINDINGS EACH (not a single ambiguous/misattributed number): (0.003) own-direction abliteration invariance vs. instruct\u2192abliterated transfer degradation; (73\u00b0) max-pool/last-token extraction-protocol divergence vs. Gemma-3's anomalous base-to-instruct rotation. A downstream paper citing either reading of either number is on verbatim solid ground, but must be careful to attribute the CORRECT one of the two co-existing readings and not conflate them (and must not additionally cite the unrelated third 73.4\u00b0 occurrence as if it were one of the two)."
+    },
+    {
+      "nid": "N5",
+      "arxiv": "2606.16349",
+      "claim_the_hypothesis_makes": "HRCI_repr is Eq 9 = half |cos| inner product of harm/refusal directions plus half mean squared canonical correlation; SFT also reaches low coupling while remaining substantially less robust; authors state low coupling is not a safety score; various printed numbers; metric properties (parent-free? single-checkpoint? prompts needed? labelled data needed?).",
+      "verdict": "CONFIRMED",
+      "key_quote": "We summarize H/R coupling using three normalized quantities. The first is directional alignment, Ccos(t) = h\u22a4t rt / \u2016\u2016. (7) ... We use the average squared canonical correlation, Csub(t) = 1/k \u03a3_{i=1}^{k} cos2 \u03b8i, (8) ... Our primary direct representational coupling index is HRCIrepr(t) = 1/2 Ccos(t) + 1/2 Csub(t). (9)",
+      "consequence": "All (a)-(d) targets are CONFIRMED verbatim including every specific number requested. For (e): HRCIrepr is a per-checkpoint (not single-snapshot/parent-free) diagnostic recomputed at every training checkpoint from freshly extracted, LABELLED harmful/benign and refusal/compliance contrastive prompt sets; the exact number of prompts used per carrier was not found in the retrieved excerpts and would need a further targeted read of the methodology (Section 3.1) to pin down."
+    }
+  ],
+  "comparability_matrix": {
+    "our_protocol": "parent-free, single checkpoint, no reference model, no calibration ASR; leave-one-FAMILY-out (degrading to leave-one-LINEAGE-out below the pre-registered floor of 5 paired families); balanced accuracy; resampling unit = LINEAGE; every row carries a label-permutation null, a matched lexical floor, a card-regex text floor and a family-label-only baseline.",
+    "rows": [
+      {
+        "incumbent": "AMS (2608.05578)",
+        "published_bar": "71% (10/14) leave-one-out accuracy",
+        "comparable": false,
+        "why_not": "AMS held out ONLY THE CLASSIFICATION THRESHOLD. The direction vector is fitted in-sample from that model's own 16 contrast pairs, the layer is swept to MAXIMISE separation on those same pairs, and the prompt set is fixed -- none of those were held out, and the authors concede the coupling. 71% is therefore a LOOSE, NON-MATCHED bar; a leave-one-LINEAGE-out or leave-one-FAMILY-out number from us is strictly stricter and will legitimately be lower.",
+        "also": "Reported r=-0.546 (p=.043, n=14) but Spearman rho=-0.423 (p=.13, NOT significant); median bootstrap 95% CI width 3.36 sigma against a 2.0-3.5 decision band, i.e. 62% of cells unresolvable. Class (iv) behavioural fine-tuning is ALREADY PUBLISHED as undetectable -- cite, do not claim."
+      },
+      {
+        "incumbent": "Skin-Deep / GFS (2606.22676)",
+        "published_bar": "no printed coefficient",
+        "comparable": false,
+        "why_not": "NOT parent-free: Eq 1 cPCA needs the base model's covariance and the code requires --base_model. Also needs 1000 prompts. Its retention-prediction claim is a qualitative co-occurrence at n=7 with no coefficient, so there is no GFS number to beat. Different ACCESS CLASS and different PROMPT BUDGET."
+      },
+      {
+        "incumbent": "N-GLARE (2511.14195, ACL 2026)",
+        "published_bar": "no numeric Kendall tau for the headline claim",
+        "comparable": false,
+        "why_not": "Parent-free AND generation-free like us, but needs FOUR probing conditions {B,J,R,P} over 7000+ cases. It is separated from our lane on the PROMPT-BUDGET AXIS ALONE, which is precisely the axis the requester constrained. Table 2's numeric taus belong to a DIFFERENT robustness check; quoting them as the headline would be a misattribution."
+      },
+      {
+        "incumbent": "RAS / SafeVec (2606.25750)",
+        "published_bar": "qualitative separation of aligned / uncensored / abliterated; Table 1 raw scores + ASR",
+        "comparable": false,
+        "why_not": "Strictly richer access class: needs a per-family REFERENCE model, a calibration set, AND those calibration models' MEASURED ASR, and the paper itself states 'family-specific calibration remains necessary'. Nothing is held out -- the layer window, refusal directions and calibration constants are all fitted on the same families the separations are reported on. Our cross-family negative would be a REPLICATION of their stated limitation, not a refutation."
+      }
+    ],
+    "the_finding": "All four incumbents are comparable:false, and each for a DIFFERENT nameable reason -- access class (GFS, RAS), prompt budget (N-GLARE), or holdout strictness (AMS). There is no published number in this lane that a parent-free, few-prompt, leave-one-family-out score can be put beside. Writing that down IS the contribution of this comparison; quoting any of the four as a beaten baseline would be a category error."
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "repo_id": "ZDCSlab/ripd-anthropic-saferlhf-gemma-2b-uncensored-v1-seed-bt",
+  "harvest_tier": "W",
+  "schema_deviations": [
+    "down_proj: eigenvalues only (down_proj_sv); no _top/_bot. weight_reads consumes only down_proj_sv, so no read changes.",
+    "bf16 second decomposition for o_proj only (o_proj_botgap_bf16); no down_proj bf16 key."
+  ],
+  "device": "cpu",
+  "band": 8,
+  "band_centre_frac": 0.5,
+  "architecture": "Gemma2ForCausalLM",
+  "model_type": "gemma2",
+  "n_layers": 26,
+  "hidden_size": 2304,
+  "config_torch_dtype": "bfloat16",
+  "tie_word_embeddings": null,
+  "quantization": {
+    "fp8_compressed_tensors": false,
+    "has_weight_scale": false,
+    "has_activation_scales": false,
+    "gptq_awq": false,
+    "bnb_4bit": false,
+    "is_quantized": false
+  },
+  "weight_diag": {
+    "o_proj_n_layers_total": 26,
+    "o_proj_band_layers": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "o_proj_band_depth_fraction": [
+      0.36,
+      0.4,
+      0.44,
+      0.48,
+      0.52,
+      0.56,
+      0.6,
+      0.64
+    ],
+    "o_proj_n_layers": 8,
+    "o_proj_d_out": 2304,
+    "down_proj_n_layers_total": 26,
+    "down_proj_band_layers": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "down_proj_band_depth_fraction": [
+      0.36,
+      0.4,
+      0.44,
+      0.48,
+      0.52,
+      0.56,
+      0.6,
+      0.64
+    ],
+    "down_proj_n_layers": 8,
+    "down_proj_d_out": 2304
+  },
+  "timings_s": {
+    "resolve": 0.43561816215515137,
+    "weight": 226.4339759349823,
+    "total": 227.6921947002411
+  },
+  "n_items": 0
+}

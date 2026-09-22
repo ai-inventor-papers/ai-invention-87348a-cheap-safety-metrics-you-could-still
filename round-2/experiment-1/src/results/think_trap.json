@@ -1,0 +1,10 @@
+{
+  "checked": [
+    "Goekdeniz-Guelmez/Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1",
+    "Qwen/Qwen2.5-1.5B-Instruct",
+    "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune"
+  ],
+  "fired": [],
+  "think_trap_confirmed": false,
+  "interpretation": "The Qwen3 hybrid-thinking trap was the prime suspect for iteration 1's broken readout: without enable_thinking=False the first generated token is <think> and every first-token readout would have measured the delimiter. The harvest decodes one real token off the prefill cache and stores its id, so this is testable offline at zero cost. IT DID NOT FIRE on any checkpoint carrying a thinking token: the first generated token is a content token everywhere, so the trap is RULED OUT as the cause and the readout failure must be explained some other way."
+}
