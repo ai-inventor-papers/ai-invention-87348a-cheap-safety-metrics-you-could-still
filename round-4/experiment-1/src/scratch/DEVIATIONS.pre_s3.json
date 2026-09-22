@@ -1,0 +1,68 @@
+[
+ {
+  "code": "LIVE_TIER_NO_CUDA",
+  "detail": "torch.cuda.is_available()=False (no /dev/nvidia*, no nvidia-smi); cpuset = 2 hyperthreads of one Zen4 core, cgroup memory 16 GB shared with sibling agents. Panel restricted to CPU_SUBPANEL; 8 random directions; S5 not measurable on CPU.",
+  "affected_repos": []
+ },
+ {
+  "code": "CPU_DTYPE_BF16_ALL",
+  "detail": "the plan's CPU rule (fp32 under 1B) was replaced by bf16 for every model: measured Qwen2.5-0.5B 16x70-token pass 16.7 s fp32 vs 4.6 s bf16, single-token call 1.14 s vs 0.17 s. Readout precision is protected by computing the margin in float32 from the final-norm hidden state",
+  "affected_repos": []
+ },
+ {
+  "code": "LABELS_EXTENDED_POST_SNAPSHOT",
+  "detail": "the iter-3 CPU generation queue finished (results/GEN_DONE) after full_data_out.json was written; CORE-94 S2_core and P2 for these repos were recomputed here from their grades_fresh.jsonl with the same rates() logic",
+  "affected_repos": [
+   "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+   "tiiuae/Falcon3-1B-Instruct"
+  ]
+ },
+ {
+  "code": "PRODUCT_COMPUTED_FROM_COMPONENTS",
+  "detail": "no P2 column in dev_panel_outcome; PRODUCT = harm_refusal_rate * benign_alarming_compliance from metadata_core_components (CORE-94). J2 (=2*S2-1, linear in S2) is never used as the product target.",
+  "affected_repos": []
+ },
+ {
+  "code": "STAGE_B1_BF16_ROUNDING",
+  "detail": "Stage B1 (batched left-padded vs unbatched last-token margins, Qwen2.5-0.5B-Instruct) FAILS the plan's 1e-2 bound in bf16: max |diff| = 0.284, mean = 0.039 logits. The same check in fp32 gives max 9.5e-06 (mean 3.8e-06), so padding/positions are exact and the gap is bf16 kernel rounding that depends on batch shape. Every candidate compares passes with the SAME batch composition (skip-pass reference reproduces the base pass bit-exactly: max diff 0.0), so this per-item noise (~0.04 logits) enters candidates only through perturbation-dependent rounding; it is below the 0.25-logit variance floor and informative-pair threshold. [v2 note: this claim was false for C9 in v1, where true-patching and AtP numerators/denominators mixed 8-row and 16-row passes. v2 fixes it (CODE_FIXES_POST_REVIEW_V2 item 4).]",
+  "affected_repos": [
+   "all (bf16)"
+  ]
+ },
+ {
+  "code": "RANDOM_DIRS_FALLBACK_CLOSEST",
+  "detail": "anisotropy-matched random directions v = A^T g almost never fall within +/-25% of var(Ah): on the smoke model 0/2000 draws were accepted at every B_mid layer (closest ratios 2.0-3.9), so the pre-registered 'closest by |ratio-1|' fallback is used; per-model acceptance counts and picked ratios are in rows/*.json random_dirs",
+  "affected_repos": [
+   "see rows/*.json random_dirs"
+  ]
+ },
+ {
+  "code": "ROSI_ITEMSET_64_32",
+  "detail": "the iter-2 F2b_rosi__4 graded cell used 64 harmful + 32 benign twins (verified by exact item-id match), not the 64+64 stated in the plan; the 128-token arm uses the same 96 items",
+  "affected_repos": [
+   "Qwen/Qwen2.5-0.5B-Instruct"
+  ]
+ },
+ {
+  "code": "ANCHOR_QUARTET_LITE",
+  "detail": "the four GRADED Qwen3-4B-lineage checkpoints (outside CPU_SUBPANEL) are measured after the sub-panel in ANCHOR_LITE mode (plain-condition candidate values, oracle rows C1/C2, logit bars; no random-direction nulls, no k8, no pole-condition candidate values, no C16 oracle, no offset control) because the plan's fallback priority keeps the anchor quartet and CPU time allowed. Lite rows are excluded from S2(b) and from the S3 pole checks (never worst-valued). mlabonne/Qwen3-4B-abliterated ships fp32 shards and is loaded into bf16. Qwen/Qwen3-4B-Base (base stratum, excluded from correlations) is not measured.",
+  "affected_repos": [
+   "Qwen/Qwen3-4B",
+   "mlabonne/Qwen3-4B-abliterated",
+   "DreamFast/qwen3-4b-heretic",
+   "Qwen/Qwen3-4B-SafeRL"
+  ]
+ },
+ {
+  "code": "POD_RESTART_RESUME",
+  "detail": "The pod restarted at ~16:48 UTC and killed the session-1 panel loop during model 10/21. Session 2 (17:05 UTC) resumed from the persisted rows. No sibling agents were running in the container after the restart, so timings after 17:05 are uncontended.",
+  "affected_repos": []
+ },
+ {
+  "code": "CODE_FIXES_POST_REVIEW_V2",
+  "detail": "An independent code review (session 2) found no error in any primary plain-condition value, but found 3 MAJOR and 4 MINOR issues, all fixed in method.py/live_lib.py v2: (1) the offset control's C1 ran its first perturbed call on a stale KV cache still holding the last prompt token, so m_plus was wrong; fixed by cropping the cache after the offset base pass, plus an assert in last_call. (2) In 16-layer models C3's band-5 'middle layer' was the FINAL layer, where last-token patching gives f=1 by construction; the final layer is never patched now. (3) The C9 ATP_UNRELIABLE rule was not implemented; it now lives in analyze_live.py, and true patching is also run under both wrapped poles (true_patch_pole_*), with a k8 subset. (4) The C9 numerators mixed 8-row and 16-row bf16 batch shapes; each reference now comes from the same batch shape. (5) The C1 linearity check now uses item-level absolute one-sided differences and is 'undetermined' below 0.05 logits. (6) C3_sharp is now max_b(f_b - f_{b-1}) for b>=1, and C3_depth is the depth of the patched layer. (7) The C1/C2 oracle rows now need >=2 judged items per class, the same gate as C16_oracle; C16_oracle's direction is in-sample (stated in each row). EVERY row was re-measured with v2 code. The v1 rows and code are kept in scratch/rows_v1_pre_review/ and scratch/code_v1_pre_review/ for provenance. PREREG.json is unchanged (same hash).",
+  "affected_repos": [
+   "all"
+  ]
+ }
+]

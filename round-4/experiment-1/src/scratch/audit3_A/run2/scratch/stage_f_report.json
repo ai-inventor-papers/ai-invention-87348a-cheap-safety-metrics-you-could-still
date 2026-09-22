@@ -1,0 +1,56 @@
+{
+ "stage_f_tests": {
+  "smoke_row_found": "smoke_Qwen__Qwen2.5-0.5B-Instruct.json",
+  "synthetic_n20": {
+   "n_rows": 20,
+   "n_graded": 20,
+   "n_families": 6,
+   "n_lineages": 9,
+   "C1_shape_ok": true
+  },
+  "bootstrap_repro": {
+   "ci1": {
+    "point": 0.10526315789473684,
+    "ci_lo": -0.581481239107523,
+    "ci_hi": 0.6420161630427652,
+    "n_boot": 500,
+    "note": null
+   },
+   "ci2": {
+    "point": 0.10526315789473684,
+    "ci_lo": -0.581481239107523,
+    "ci_hi": 0.6420161630427652,
+    "n_boot": 500,
+    "note": null
+   },
+   "identical": true
+  },
+  "planted_signal": {
+   "n": 20,
+   "rho_ckpt_BALANCED": 0.9356901752342097,
+   "S1_pass": true,
+   "S1_reason": "one-sided 95% lineage-bootstrap lower bound of oriented partial rho (logit_gap, log10(n_params)) = 0.8925 (point=0.9601, n_boot=2000)"
+  },
+  "planted_noise": {
+   "rho_ckpt_BALANCED": 0.14065439129324533,
+   "S1_pass": false,
+   "S1_reason": "one-sided 95% lineage-bootstrap lower bound of oriented partial rho (logit_gap, log10(n_params)) = -0.2065 (point=0.1404, n_boot=2000)"
+  },
+  "planted_signal_S1_must_pass_ok": true,
+  "planted_noise_S1_should_usually_fail_ok": true
+ },
+ "value_check_real": {
+  "n_rows": 684,
+  "n_unique_keys": 684,
+  "n_duplicate_keys": 0,
+  "n_nan_values": 0,
+  "ok": true
+ },
+ "value_check_synthetic": {
+  "n_rows": 1120,
+  "n_unique_keys": 1120,
+  "n_duplicate_keys": 0,
+  "n_nan_values": 0,
+  "ok": true
+ }
+}

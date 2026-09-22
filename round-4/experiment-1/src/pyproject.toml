@@ -1,0 +1,33 @@
+[project]
+name = "live-causal-gain-screen"
+version = "0.1.0"
+description = "Iter-4 LIVE tier of the 16-candidate cheap-safety screen (C1,C2,C3,C7,C8,C9,C11,C16 + logit bars) and the ROSI 128-token side arm"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "torch>=2.4",
+  "transformers>=4.55,<5",
+  "accelerate",
+  "safetensors",
+  "numpy",
+  "scipy",
+  "pandas",
+  "scikit-learn",
+  "loguru",
+  "requests",
+  "aiohttp",
+  "tenacity",
+  "huggingface_hub",
+  "sentencepiece",
+  "protobuf",
+  "pytest",
+  "psutil",
+  "pyyaml",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

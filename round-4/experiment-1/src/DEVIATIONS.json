@@ -1,0 +1,195 @@
+[
+ {
+  "code": "LIVE_TIER_NO_CUDA",
+  "detail": "SUPERSEDED in session 4 (the final rows/ were re-measured on an NVIDIA L4 GPU; see GPU_SESSION4_FULL_PANEL; the text still describes the CPU rows in scratch/rows_cpu_v3/). Earlier text, kept for provenance: torch.cuda.is_available()=False (no /dev/nvidia*, no nvidia-smi); cpuset = 2 hyperthreads of one Zen4 core, cgroup memory 16 GB shared with sibling agents. Panel restricted to CPU_SUBPANEL; 8 random directions; S5 not measurable on CPU.",
+  "affected_repos": []
+ },
+ {
+  "code": "CPU_DTYPE_BF16_ALL",
+  "detail": "SUPERSEDED in session 4 (the final rows/ were re-measured on an NVIDIA L4 GPU; see GPU_SESSION4_FULL_PANEL; the text still describes the CPU rows in scratch/rows_cpu_v3/). Earlier text, kept for provenance: the plan's CPU rule (fp32 under 1B) was replaced by bf16 for every model: measured Qwen2.5-0.5B 16x70-token pass 16.7 s fp32 vs 4.6 s bf16, single-token call 1.14 s vs 0.17 s. Readout precision is protected by computing the margin in float32 from the final-norm hidden state",
+  "affected_repos": []
+ },
+ {
+  "code": "LABELS_EXTENDED_POST_SNAPSHOT",
+  "detail": "the iter-3 CPU generation queue finished (results/GEN_DONE) after full_data_out.json was written; CORE-94 S2_core and P2 for these repos were recomputed here from their grades_fresh.jsonl with the same rates() logic",
+  "affected_repos": [
+   "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+   "tiiuae/Falcon3-1B-Instruct"
+  ]
+ },
+ {
+  "code": "PRODUCT_COMPUTED_FROM_COMPONENTS",
+  "detail": "no P2 column in dev_panel_outcome; PRODUCT = harm_refusal_rate * benign_alarming_compliance from metadata_core_components (CORE-94). J2 (=2*S2-1, linear in S2) is never used as the product target.",
+  "affected_repos": []
+ },
+ {
+  "code": "STAGE_B1_BF16_ROUNDING",
+  "detail": "Stage B1 (batched left-padded vs unbatched last-token margins, Qwen2.5-0.5B-Instruct) FAILS the plan's 1e-2 bound in bf16: max |diff| = 0.284, mean = 0.039 logits. The same check in fp32 gives max 9.5e-06 (mean 3.8e-06), so padding/positions are exact and the gap is bf16 kernel rounding that depends on batch shape. Every candidate compares passes with the SAME batch composition (skip-pass reference reproduces the base pass bit-exactly: max diff 0.0), so this per-item noise (~0.04 logits) enters candidates only through perturbation-dependent rounding; it is below the 0.25-logit variance floor and informative-pair threshold. [v2 note: this claim was false for C9 in v1, where true-patching and AtP numerators/denominators mixed 8-row and 16-row passes. v2 fixes it (CODE_FIXES_POST_REVIEW_V2 item 4).] Session 4 (GPU, CUDA bf16): on the same check, max |diff| = 0.498 and mean = 0.139 logits (scratch/stage_b_cuda_Qwen__Qwen2.5-0.5B-Instruct.json). The GPU bf16 kernels depend on batch shape more than the CPU ones. The same-batch-composition design is what keeps this out of the candidates. B2, B3, B5 and D pass on the GPU row; B4 (C2 0.127 vs its null p95 0.324) is recorded as measured. Session 4 (GPU, CUDA bf16): on the same check, max |diff| = 0.498 and mean = 0.139 logits (scratch/stage_b_cuda_Qwen__Qwen2.5-0.5B-Instruct.json). The GPU bf16 kernels depend on batch shape more than the CPU ones. The same-batch-composition design is what keeps this out of the candidates. B2, B3, B5 and D pass on the GPU row; B4 (C2 0.127 vs its null p95 0.324) is recorded as measured. Session 4 (GPU, CUDA bf16): on the same check, max |diff| = 0.498 and mean = 0.139 logits (scratch/stage_b_cuda_Qwen__Qwen2.5-0.5B-Instruct.json). The GPU bf16 kernels depend on batch shape more than the CPU ones. The same-batch-composition design is what keeps this out of the candidates. B2, B3, B5 and D pass on the GPU row; B4 (C2 0.127 vs its null p95 0.324) is recorded as measured.",
+  "affected_repos": [
+   "all (bf16)"
+  ]
+ },
+ {
+  "code": "RANDOM_DIRS_FALLBACK_CLOSEST",
+  "detail": "anisotropy-matched random directions v = A^T g almost never fall within +/-25% of var(Ah): on the smoke model 0/2000 draws were accepted at every B_mid layer (closest ratios 2.0-3.9), so the pre-registered 'closest by |ratio-1|' fallback is used; per-model acceptance counts and picked ratios are in rows/*.json random_dirs GPU rows (session 4): 63 of 216 (model, candidate, B_mid layer) cells had at least one accepted draw in 2000 tries; the picked directions' activation-variance ratio var(Av)/var(Ah) has median 2.89 (5-95%: 0.90-8.70). The random directions typically carry several times the harm direction's variance. That is expected to widen the direction-null p95 used by S2(b); it was not tested with an exactly variance-matched null (see RESULTS 4c for the S2(b) decomposition).",
+  "affected_repos": [
+   "AIPlans/TinyLlama-1.1B-IPO-PKU-SafeRLHF",
+   "AIPlans/TinyLlama-1.1B-ORPO-PKU-SafeRLHF",
+   "AIPlans/tinyllama-1.1b-dpo-pku-saferlhf",
+   "DreamFast/qwen3-4b-heretic",
+   "Goekdeniz-Guelmez/Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1",
+   "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+   "HuggingFaceTB/SmolLM2-360M-Instruct",
+   "HuggingFaceTB/SmolLM3-3B",
+   "IlyaGusev/gemma-2-2b-it-abliterated",
+   "Qwen/Qwen2.5-0.5B-Instruct",
+   "Qwen/Qwen2.5-1.5B-Instruct",
+   "Qwen/Qwen2.5-3B-Instruct",
+   "Qwen/Qwen3-0.6B",
+   "Qwen/Qwen3-1.7B",
+   "Qwen/Qwen3-4B",
+   "Qwen/Qwen3-4B-Base",
+   "Qwen/Qwen3-4B-SafeRL",
+   "Robust-Decoding/gemma2-2b-it-hh-dpo-harmless-step-6000",
+   "Shortmund09/MLDM-TinyLlama-1.1b-gcpo-ocra-saferlhf",
+   "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+   "allenai/OLMo-2-0425-1B-Instruct",
+   "h2oai/h2o-danube3-500m-chat",
+   "huihui-ai/Huihui-Qwen3-0.6B-abliterated-v2",
+   "huihui-ai/Huihui-Qwen3-1.7B-abliterated-v2",
+   "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+   "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+   "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+   "lunahr/Phi-4-mini-instruct-abliterated",
+   "microsoft/Phi-3.5-mini-instruct",
+   "microsoft/Phi-4-mini-instruct",
+   "mlabonne/Qwen3-4B-abliterated",
+   "tiiuae/Falcon3-1B-Instruct",
+   "unsloth/Llama-3.2-1B-Instruct",
+   "unsloth/Llama-3.2-3B-Instruct",
+   "unsloth/gemma-2-2b-it",
+   "utter-project/EuroLLM-1.7B-Instruct"
+  ]
+ },
+ {
+  "code": "ROSI_ITEMSET_64_32",
+  "detail": "the iter-2 F2b_rosi__4 graded cell used 64 harmful + 32 benign twins (verified by exact item-id match), not the 64+64 stated in the plan; the 128-token arm uses the same 96 items",
+  "affected_repos": [
+   "Qwen/Qwen2.5-0.5B-Instruct"
+  ]
+ },
+ {
+  "code": "ANCHOR_QUARTET_LITE",
+  "detail": "Session 4: the anchor quartet was measured on the GPU in full mode with the PREREG caps; no row carries ANCHOR_LITE. Session 4: the anchor quartet was measured on the GPU in full mode with the PREREG caps; no row carries ANCHOR_LITE. Session 4: the anchor quartet was measured on the GPU in full mode with the PREREG caps; no row carries ANCHOR_LITE. SUPERSEDED in session 3 by ANCHOR_QUARTET_FULL_ON_CPU (no anchor row carries the ANCHOR_LITE flag). Session-2 text kept for provenance: the four GRADED Qwen3-4B-lineage checkpoints (outside CPU_SUBPANEL) are measured after the sub-panel in ANCHOR_LITE mode (plain-condition candidate values, oracle rows C1/C2, logit bars; no random-direction nulls, no k8, no pole-condition candidate values, no C16 oracle, no offset control) because the plan's fallback priority keeps the anchor quartet and CPU time allowed. Lite rows are excluded from S2(b) and from the S3 pole checks (never worst-valued). mlabonne/Qwen3-4B-abliterated ships fp32 shards and is loaded into bf16. Qwen/Qwen3-4B-Base (base stratum, excluded from correlations) is not measured.",
+  "affected_repos": [
+   "Qwen/Qwen3-4B",
+   "mlabonne/Qwen3-4B-abliterated",
+   "DreamFast/qwen3-4b-heretic",
+   "Qwen/Qwen3-4B-SafeRL"
+  ]
+ },
+ {
+  "code": "POD_RESTART_RESUME",
+  "detail": "The pod restarted at ~16:48 UTC and killed the session-1 panel loop during model 10/21. Session 2 (17:05 UTC) resumed from the persisted rows. No sibling agents were running in the container after the restart, so timings after 17:05 are uncontended. A second pod restart at ~17:37 UTC killed the session-2 v2 driver (run_panel_v2.sh) after 4 of 19 v2 sub-panel rows. Session 3 (17:53 UTC) resumed from the persisted rows with run_panel_v3.sh. The 4 rows measured on 2 threads in session 2 were moved to scratch/rows_v2_session2_2threads/ and re-measured, so every row in rows/ was measured in session 3 with the same code on the same 4-thread CPU allocation. A third pod restart (~18:17-18:23 UTC) killed the session-3 v3 driver after 12 v3 CPU rows. Session 4 (18:24 UTC) started on a new pod with an NVIDIA L4 GPU and re-measured the whole panel on CUDA (GPU_SESSION4_FULL_PANEL); the 12 session-3 CPU rows were moved to scratch/rows_cpu_v3/.",
+  "affected_repos": []
+ },
+ {
+  "code": "CODE_FIXES_POST_REVIEW_V2",
+  "detail": "An independent code review (session 2) found no error in any primary plain-condition value, but found 3 MAJOR and 4 MINOR issues, all fixed in method.py/live_lib.py v2: (1) the offset control's C1 ran its first perturbed call on a stale KV cache still holding the last prompt token, so m_plus was wrong; fixed by cropping the cache after the offset base pass, plus an assert in last_call. (2) In 16-layer models C3's band-5 'middle layer' was the FINAL layer, where last-token patching gives f=1 by construction; the final layer is never patched now. (3) The C9 ATP_UNRELIABLE rule was not implemented; it now lives in analyze_live.py, and true patching is also run under both wrapped poles (true_patch_pole_*), with a k8 subset. (4) The C9 numerators mixed 8-row and 16-row bf16 batch shapes; each reference now comes from the same batch shape. (5) The C1 linearity check now uses item-level absolute one-sided differences and is 'undetermined' below 0.05 logits. (6) C3_sharp is now max_b(f_b - f_{b-1}) for b>=1, and C3_depth is the depth of the patched layer. (7) The C1/C2 oracle rows now need >=2 judged items per class, the same gate as C16_oracle; C16_oracle's direction is in-sample (stated in each row). EVERY row was re-measured with v2 code. The v1 rows and code are kept in scratch/rows_v1_pre_review/ and scratch/code_v1_pre_review/ for provenance. PREREG.json is unchanged (same hash).",
+  "affected_repos": [
+   "all"
+  ]
+ },
+ {
+  "code": "HARDWARE_SESSION3",
+  "detail": "SUPERSEDED in session 4 (the final rows/ were re-measured on an NVIDIA L4 GPU; see GPU_SESSION4_FULL_PANEL; the text still describes the CPU rows in scratch/rows_cpu_v3/). Earlier text, kept for provenance: Session 3 ran on 4 hyperthreads = 2 physical AMD EPYC 9655P (Zen5) cores (cpuset 20,80,116,176; cgroup memory 16 GB; no GPU; no sibling agents), versus 2 hyperthreads of one core in sessions 1-2. torch uses len(os.sched_getaffinity(0)) = 4 threads. All per-candidate seconds in rows/ come from this allocation; they are CPU wall-clock numbers and say nothing about S5 (GPU timing), which stays not measurable.",
+  "affected_repos": []
+ },
+ {
+  "code": "ANCHOR_QUARTET_FULL_ON_CPU",
+  "detail": "SUPERSEDED in session 4 (the final rows/ were re-measured on an NVIDIA L4 GPU; see GPU_SESSION4_FULL_PANEL; the text still describes the CPU rows in scratch/rows_cpu_v3/). Earlier text, kept for provenance: With 4 CPUs the graded Qwen3-4B anchor quartet (outside CPU_SUBPANEL) is measured in FULL mode (random-direction nulls, k8, both wrapped poles, oracle rows, C9 true patching), with the PREREG time caps raised to soft 2400 s / hard 3600 s (TIME_CAP_OVERRIDE flag in each row). Measured so far: 0/4; rows still flagged ANCHOR_LITE: none. mlabonne/Qwen3-4B-abliterated ships fp32 shards and is loaded into bf16. Qwen/Qwen3-4B-Base (base stratum, plain renderer, excluded from every correlation) is measured in ANCHOR_LITE mode (row not present yet).",
+  "affected_repos": []
+ },
+ {
+  "code": "PANEL_EXTENDED_UNGRADED_EXTRAS",
+  "detail": "SUPERSEDED in session 4 (the final rows/ were re-measured on an NVIDIA L4 GPU; see GPU_SESSION4_FULL_PANEL; the text still describes the CPU rows in scratch/rows_cpu_v3/). Earlier text, kept for provenance: Session 3 also measured 0 ungraded 2-4 B chat panel rows outside CPU_SUBPANEL in full mode (raised caps, TIME_CAP_OVERRIDE) so that iteration 5 has join-ready values for them. They have no label and enter no correlation. Their NOT_IN_CPU_SUBPANEL skip entries moved to skips_superseded.json.",
+  "affected_repos": []
+ },
+ {
+  "code": "OFFSET_CONTROL_SET",
+  "detail": "The plan's constant-offset control set is Qwen3-4B, Qwen2.5-1.5B-Instruct, Llama-3.2-1B, TinyLlama, OLMo-2-1B and SmolLM2-360M. Session 1 substituted Qwen3-0.6B for Qwen3-4B (outside the CPU sub-panel). The GPU rows run the plan's set plus Qwen3-0.6B, so the control covers 7 models: HuggingFaceTB/SmolLM2-360M-Instruct, Qwen/Qwen2.5-1.5B-Instruct, Qwen/Qwen3-0.6B, Qwen/Qwen3-4B, TinyLlama/TinyLlama-1.1B-Chat-v1.0, allenai/OLMo-2-0425-1B-Instruct, unsloth/Llama-3.2-1B-Instruct. The C9 AtP-validation set keeps its session-1 substitute (Qwen2.5-0.5B for Qwen3-4B). C9 true patching is measured on every model, so the per-model AtP-vs-true Pearson is reported for all.",
+  "affected_repos": [
+   "HuggingFaceTB/SmolLM2-360M-Instruct",
+   "Qwen/Qwen2.5-1.5B-Instruct",
+   "Qwen/Qwen3-0.6B",
+   "Qwen/Qwen3-4B",
+   "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+   "allenai/OLMo-2-0425-1B-Instruct",
+   "unsloth/Llama-3.2-1B-Instruct"
+  ]
+ },
+ {
+  "code": "GPU_SESSION4_FULL_PANEL",
+  "detail": "Session 4 ran on a new pod with an NVIDIA L4 (23 GB; cgroup 15.3 CPUs / 71 GB RAM), after the third pod restart. It built the CUDA venv venv_gpu (torch 2.14.0 CUDA build, transformers 4.57.6; same versions as venv_live apart from the CUDA build). It made method.py/live_lib.py device-agnostic with device plumbing only: model and batch on the device, .cpu() before numpy, hook vectors on the hidden state's device, torch.cuda.synchronize() in the per-block timers, set_per_process_memory_fraction(9.3/total), no RLIMIT_AS under CUDA, and a GRAD_CHUNKED halving fallback for the backward pass. Candidate definitions, directions, folds, seeds, bands, prompts and judge calls are unchanged. Measured on the GPU: 36 rows (23 graded), in full mode with the PREREG time caps. PREREG's pre-declared GPU-branch constants apply: [20] anisotropy-matched random directions (PREREG n_gpu = 20; its 'used': 8 and compute_mode.cuda = false describe the CPU state when the file was hashed at 15:59:59Z, and the file is unchanged), and all 5 C16 alphas in every variant, because the 3-alpha variant grid was a CPU-only budget cut. VRAM peak: max 10.52 GB over 36 rows (cap 9.3 GB). The backward pass fell back to chunks on: ['DreamFast/qwen3-4b-heretic', 'HuggingFaceTB/SmolLM3-3B', 'Qwen/Qwen3-4B', 'Qwen/Qwen3-4B-Base', 'Qwen/Qwen3-4B-SafeRL', 'lunahr/Phi-4-mini-instruct-abliterated', 'microsoft/Phi-4-mini-instruct', 'mlabonne/Qwen3-4B-abliterated']. Rows not measured on CUDA: none. S5 (<120 s per 4B model on the GPU, excluding load) is measurable in this session. The 12 CPU rows of session 3 (12 files in scratch/rows_cpu_v3/) are compared with their GPU re-measurement in candidates_live.json 'cross_hardware'. That comparison is descriptive only. torch 2.14 routes the RoPE outer product (inv_freq @ position_ids) through a Triton 'native DSL' kernel that JIT-compiles a C helper; this pod has no libc headers, so every model failed to load until TORCH_DISABLE_NATIVE_JIT=1 was set (method.py sets it before importing torch). torch then uses its standard ATen kernels, so no measured quantity depends on this switch.",
+  "affected_repos": [
+   "AIPlans/TinyLlama-1.1B-IPO-PKU-SafeRLHF",
+   "AIPlans/TinyLlama-1.1B-ORPO-PKU-SafeRLHF",
+   "AIPlans/tinyllama-1.1b-dpo-pku-saferlhf",
+   "DreamFast/qwen3-4b-heretic",
+   "Goekdeniz-Guelmez/Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1",
+   "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+   "HuggingFaceTB/SmolLM2-360M-Instruct",
+   "HuggingFaceTB/SmolLM3-3B",
+   "IlyaGusev/gemma-2-2b-it-abliterated",
+   "Qwen/Qwen2.5-0.5B-Instruct",
+   "Qwen/Qwen2.5-1.5B-Instruct",
+   "Qwen/Qwen2.5-3B-Instruct",
+   "Qwen/Qwen3-0.6B",
+   "Qwen/Qwen3-1.7B",
+   "Qwen/Qwen3-4B",
+   "Qwen/Qwen3-4B-Base",
+   "Qwen/Qwen3-4B-SafeRL",
+   "Robust-Decoding/gemma2-2b-it-hh-dpo-harmless-step-6000",
+   "Shortmund09/MLDM-TinyLlama-1.1b-gcpo-ocra-saferlhf",
+   "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+   "allenai/OLMo-2-0425-1B-Instruct",
+   "h2oai/h2o-danube3-500m-chat",
+   "huihui-ai/Huihui-Qwen3-0.6B-abliterated-v2",
+   "huihui-ai/Huihui-Qwen3-1.7B-abliterated-v2",
+   "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+   "huihui-ai/Qwen2.5-0.5B-Instruct-CensorTune",
+   "huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune",
+   "lunahr/Phi-4-mini-instruct-abliterated",
+   "microsoft/Phi-3.5-mini-instruct",
+   "microsoft/Phi-4-mini-instruct",
+   "mlabonne/Qwen3-4B-abliterated",
+   "tiiuae/Falcon3-1B-Instruct",
+   "unsloth/Llama-3.2-1B-Instruct",
+   "unsloth/Llama-3.2-3B-Instruct",
+   "unsloth/gemma-2-2b-it",
+   "utter-project/EuroLLM-1.7B-Instruct"
+  ]
+ },
+ {
+  "code": "VRAM_CAP_RAISED_OOM_RETRY",
+  "detail": "2 ungraded chat models ran out of memory under the plan's 9.3 GB VRAM cap in run_panel_gpu.sh, even with the 1-item backward fallback: Llama-3.2-3B-abliterated (3.6 B, untied embeddings) in the backward pass, and Phi-3.5-mini (3.8 B, 32 KV heads) in the first base pass. The plan's fallback 2 prescribes halving the batch to 8 and then 4. Instead they were re-run (run_panel_gpu_retry.sh) with the cap raised to [12.0] GB, which is still inside a 16 GB worker. That keeps their 16-item batches, and therefore the bf16 numerics, identical to every other model's. Each of these rows carries a VRAM_CAP_RAISED flag. Both models are ungraded and enter no correlation. They do enter the S5 (~4B timing) set.",
+  "affected_repos": [
+   "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+   "microsoft/Phi-3.5-mini-instruct"
+  ]
+ },
+ {
+  "code": "TOKENIZER_FROM_LINEAGE",
+  "detail": "Robust-Decoding/gemma2-2b-it-hh-dpo-harmless-step-6000 ships no tokenizer files. The repo holds only the config, weights and an empty auto-generated card; vocab_size is 256000, the Gemma-2 vocabulary. It failed to load (RUN_FAIL) in run_panel_gpu.sh. It was re-run in run_panel_gpu_retry.sh with the tokenizer and chat template of its panel lineage root, unsloth/gemma-2-2b-it (live_lib.TOKENIZER_FROM_LINEAGE). This borrows the family tokenizer, not any parent weights or activations, so the model is still read alone. The row is ungraded and carries a TOKENIZER_FROM_LINEAGE flag.",
+  "affected_repos": [
+   "Robust-Decoding/gemma2-2b-it-hh-dpo-harmless-step-6000"
+  ]
+ },
+ {
+  "code": "ROSI_ARM_CPU_FP32",
+  "detail": "The ROSI 128-token side arm (rosi128.py, rosi_128tok.json) ran in sessions 1-2 on CPU in float32 (the plan's CPU rule), not in bf16 on a GPU. Session 4 does not re-run it: fp32 is the more exact path, the 128-token generations and their paid grades are final, and the arm does not depend on the panel.",
+  "affected_repos": [
+   "Qwen/Qwen2.5-0.5B-Instruct"
+  ]
+ }
+]
