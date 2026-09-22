@@ -1,0 +1,65 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.08044v1
+Type: PDF
+Pattern: LVS[^.]{0,200}(model|base)|Latent\s+Vulnerability\s+Score (17 matches in 57567 chars)
+
+--- Content ---
+
+1001:...e introduce an intervention-based evaluation framework to
+test model robustness through soft interventions in parameter and latent spaces,
+including harmful fine-tuning and layer-wise latent perturbations. To formalize
+the evaluation, we propose the Latent Vulnerability Score (LVS) to measure how
+easily harmful behavior can be elicited by bounded latent perturbations. Using
+this evaluation framework, we show that behavioral safety metrics are insufficient
+measures of representation-level robustness across multiple safely...
+--
+7141:...
+ior while remaining vulnerable in latent space; (ii) we introduce an intervention-based evaluation
+framework using soft interventions in parameter and latent space to analyze how internal perturba-
+tions affect safety behavior; (iii) we propose the Latent Vulnerability Score (LVS) to quantify how
+easily harmful behavior can be induced under bounded latent perturbations; and (iv) we evaluate a
+range of state-of-the-art safety-aligned and unsafe-aligned models under the proposed framework.
+Empirically, our intervention analysis reveals systematic representation-level failure modes that
+are not captured by behavioral evaluation alone: dissociated models consistently exhibit elevated
+2
+
+latent vulnerabilit...
+--
+10915:...ttacks in LLMs [Huang et al., 2024, Jiang et al., 2025]. Our work
+differs from prior adversarial attack literature in two ways. First, our goal is evaluation rather than
+attack construction. Second, we characterize vulnerability through the proposed Latent Vulnerability
+Score (LVS), which measures how easily harmful behavior can be induced under bounded latent
+perturbations across layers, models, and alignment strategies.
+3
+The Existence of Dissociated Model
+Data.
+We use three data components. PKU-SafeRLHF [Ji et al., 2024] provides contrast triples
+(p, y+, y−) for latent-monitor initialization and harmful-prompt construction, where y+ is ...
+--
+22658:...omparing the base model and models exhibiting
+latent–output divergence. The dissociated model shows stronger robustness under embedding-layer
+perturbations but significantly higher vulnerability in mid layers.
+6
+
+6
+Representation-Aware Safety Metric
+Latent Vulnerability Score (LVS).
+To quantify the sensitivity of safety-aligned behavior to latent
+perturbations, we introduce the Latent Vulnerability Score (LVS), a dissociation-aware metric that
+measures the amount of behavioral degradation induced per unit perturbation in latent space. Unlike
+standard behavioral metrics such as attack success rate (ASR), which only measure whether a model
+fails, LVS ...
+--
+23533:...δ∥∞≤ϵ, we denote the original and intervened outputs as
+y = fθ(x), y′ = f (δ,ℓ)
+θ
+(x).
+Let Sharmless(y) ∈[−∞, ∞] denote a continuous harmfulness score assigned to output y, obtained
+from a safety classifier or reward model. We define the per-example latent vulnerability score as:
+LVSℓ(x, δ) = [Sharmless(y) −Sharmless(y′)]+
+log(1 + ∥δ∥2) + η
+,
+where [·]+ = max(·, 0) and η > 0 is a small constant (1e-6) for numerical stability. We use the log
+operation in the denominator to make the score smoother. Intuitively, LVS measure...
+--
+[9 more matches not shown]

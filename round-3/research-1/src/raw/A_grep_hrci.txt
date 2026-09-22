@@ -1,0 +1,206 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.16349v3
+Type: PDF
+Pattern: anchor[s]?[^.]{0,150}(Llama|Qwen|Gemma|Mistral)|reopen|causal\s+matrix (22 matches in 52796 chars)
+
+--- Content ---
+
+814:...ly changes how tightly they are coupled. We
+study this problem with a dual safety-geometry protocol that extracts harmfulness carriers,
+refusal carriers, and direct harmfulness–refusal (H/R) representational coupling across aligned
+instruction-tuned anchors and matched Mistral-7B-v0.1 supervised fine-tuning (SFT) and Robust
+Refusal Dynamic Defense (R2D2) trajectories. The aligned anchors calibrate the protocol:
+refusal-side interventions reopen HarmBench attack success more strongly than harmfulness-
+only interventions, while the two carriers remain nearly orthogonal.
+The main result is a
+coupling-regime transition in R2D2. The primary direct-coupling metric, the representational
+Harmfulne...
+--
+5483:...ly R2D2 checkpoints have
+relatively higher direct H/R representational coupling, near-zero fixed-source ASR, saturated XSTest
+refusal, and collapsed benign helpfulness. Later checkpoints have much lower direct coupling, partial
+utility recovery, and reopened attack success. In the five-anchor summary, HRCIrepr falls from 0.0784
+at step 50 to 0.0205 at step 500, while fixed-source ASR rises from 0 to 0.25 and benign helpfulness
+rises from 0 to 1.12 on a 0–2 scale. SFT prevents the simple interpretation...
+--
+7079:...ompt
+R
+Refusal
+carrier R
+Behavior
+beyond
+refusal 
+geometry
+This paper: safety geometry
+Prompt
+H
+Harmfulness
+recognition 
+(H)
+R
+Refusal
+control (R)
+Coupling (H
+R)
+Outcomes
+• Robustness
+• Over-refusal
+• Utility
+• Fail-open
+(b) Study design
+(1) Aligned anchors
+Llama-3.1-Instruct
+Qwen2.5-Instruct
+protocol calibration
+(2) Mistral trajectory
+SFT
+R2D2
+checkpoints
+coupling dynamics
+Dual geometry
+H layer
+R layer
+H/R angles
+HRCI
+Causal matrix
+H
+R
+H+R
+H⊥R
+R⊥H
+Behavior diagnostics
+HarmBench
+×
+StrongREJECT
+XSTest
+Benign
+utility
+Sparse
+transfer
+(c) Evidence chain and claim boundary
+H/R
+extraction
+H
+R
+HRCI
+trajectory
+causal
+sweeps
+high
+low
+sparse-transfer
+diagnostic
+scoped
+conclusion
+✓
+R2D2: ...
+--
+8180:... refusal geometry to harmfulness–refusal safety geometry. Panel (a) contrasts the
+refusal-carrier view studied in the related refusal-geometry manuscript [13] with the dual H/R
+view studied here. Panel (b) shows the design: aligned instruction-tuned anchors calibrate the
+protocol, while matched Mistral SFT and R2D2 trajectories test how coupling changes under dynamic
+adversarial fine-tuning. Panel (c) gives the claim boundary. H/R coupling is used as an operational
+diagnostic, not as proof of independent pathways, fail-closed redundancy, or deploy...
+--
+13037:...hich direct-refusal behavior on the fixed probe set is stable. This
+yields step 30 for R2D2 and step 5 for SFT. Thus, “reference” denotes a regime-specific aligned
+anchor rather than the pretrained backbone or a shared optimization step. The aligned-anchor
+calibration uses instruction-tuned Llama-3.1-8B and Qwen2.5-7B models [9, 10]. These anchors
+test whether the H/R extraction and intervention protocol produces sensible behavior in models
+with mature instruction-following and safety behavior, under a dual-carrier framing motivated by
+harmf...
+--
+20008:...70,
+and Clayer = 0.1738; Eq. (12) yields HRCIfull = 0.0886, matching the continuity column in Table 2.
+Both summaries are operational trajectory diagnostics, not ground-truth latent variables.
+3.4
+Orthogonalized causal interventions and controls
+The causal matrix evaluates H-only, R-only, H+R, H⊥R, and R⊥H interventions under ablation and
+steering. To separate shared from residual components, we form
+h⊥r =
+ht −(h⊤
+t rt)rt
+∥ht −(h⊤
+t rt)rt∥2
+,
+r⊥h =
+rt −(r⊤
+t ht)ht
+∥rt −(r⊤
+t ht)ht∥2
+.
+(13)
+These residual car...
+--
+25671:...s that already have mature instruction-following behavior. Table 1
+reports the main pattern. In Llama-3.1-8B-Instruct [9], H and R are selected at different layers, and
+their leading principal angles are close to orthogonal. R-only and R⊥H ablations reopen HarmBench
+ASR sharply, while H-only ablation does not. Qwen2.5-7B-Instruct [10] shows the same qualitative
+refusal-side bottleneck, though the H-side effect is less clean. The calibration supports a dual-carrier
+measurement protocol; it does not pro...
+--
+26241:...calibration. ASR values are HarmBench attack success rates under
+the aligned-anchor causal protocol and are used for within-protocol intervention comparison, not
+as a complete safety evaluation of the aligned models. The pattern exposes refusal-side reopening
+without proving independent H/R mechanisms.
+Metric
+Llama-3.1-8B
+Qwen2.5-7B
+H layer
+31
+15
+R layer
+12
+20
+Principal angles
+86.1, 88.7, 89.4
+82.3, 88.1, 89.7
+Baseline ASR
+0.1675
+0.2625
+H-only ASR
+0.1400
+0.2925
+R-only ASR
+0.6825
+0.4050
+R⊥H ASR
+0.6575
+0.4250
+This calibration is necessary for interpreting the Mistral trajectory. If the same protocol did
+not recover a refusal-side bottleneck in aligned instruction models, a mixed result on base-to-R2D2
+9
+
+Table 2: Five-anchor H/R coupling and behavior summary for Mistral SFT/R2D2. Helpfulness is
+the mean 0–2 benign-utility score on the 60-prompt continuity set. HRCIrepr is the primary direct-
+coupling metric in Eq. (9); full HRCI is retained as the continuity parameterization in Eq. (12).
+Regime Anchor
+HRCIrepr
+Full...
+--
+27718:...700
+0.0800
+0.3952
+1.2167
+Step 250
+0.0191
+0.0153
+0.5875
+0.0760
+0.4530
+1.2667
+Step 500
+0.0190
+0.0153
+0.5775
+0.0760
+0.4645
+1.2167
+checkpoints would be hard to interpret. Instead, the aligned anchors show that the protocol can
+detect refusal-side causal reopening under a fixed intervention protocol.
+4.2
+RQ2: How does R2D2 change H/R coupling?
+Unlike the prior refusal-geometry trajectory analysis [13], this section treats the refusal carrier as
+one component of a dual H/R system and asks how its coupling w...
+--
+[10 more matches not shown]

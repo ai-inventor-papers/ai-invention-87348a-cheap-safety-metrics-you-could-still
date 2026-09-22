@@ -1,0 +1,24 @@
+# CAMPAGNE CPU — petite matrice Qwen2.5-0.5B qui tourne VRAIMENT sur CPU (15 Go RAM, sans GPU).
+# Modèles validés localement (verdicts CORRECTS) : 1 censuré + 2 ablatérés + 1 décensuré-par-finetune.
+# 1 sous-process par modèle (RAM libérée à chaque fin). Rapide : 0.5B en fp32 ≈ 2 Go.
+#
+# Lancer :  modelscanner tui   (choisir « campaign_cpu.yaml »)
+#      ou :  python experiments/run_scan.py experiments/runs/campaign_cpu.yaml
+device: cpu
+plans:
+  behavioral: true           # génération -> distingue censuré / ablatéré / décensuré-par-finetune
+  activations: false         # coupé sur CPU (plan POIDS + behavioral suffisent) — vitesse
+  weight_targets: o_proj
+multilingual: false
+profile: false
+output_dir: runs_out         # -> runs_out/<run_id>/<modele>.json (+ rapport 4-buckets)
+
+models:
+  - path: Qwen/Qwen2.5-0.5B-Instruct                 # base Instruct = censuré (poids intacts)
+    expected_label: censored
+  - path: huihui-ai/Qwen2.5-0.5B-Instruct-abliterated  # ablation directionnelle "classique"
+    expected_label: ablated
+  - path: grisun0/Qwen2.5-0.5B-Instruct-heretic      # Heretic (ablation auto-optimisée, localisée)
+    expected_label: ablated
+  - path: dphn/Dolphin3.0-Qwen2.5-0.5B               # décensuré par FINETUNE (pas d'ablation)
+    expected_label: finetuned_decensored

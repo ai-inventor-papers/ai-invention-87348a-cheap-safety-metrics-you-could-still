@@ -1,0 +1,33 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2508.00161
+Type: PDF
+Pattern: Remark\s+3\.2 (1 matches in 116509 chars)
+
+--- Content ---
+
+17295:...ng.
+When an input is flagged as anomalous along a direction u(l)
+i , we can orthogonalize the activations against
+that component before passing them to the next layer:
+a(l)
+steered = a(l) −(a(l) · u(l)
+i )u(l)
+i .
+This guides the model’s subsequent generation back towards its baseline behavior.
+We provide a pseudocode of this process Algorithm 1 as well as more details of the implementation in
+Appendix B. For our main experiments, we empirically set k = 20 for each matrix, resulting in 40 directions
+per layer. The process is lightweight and relatively easy to implement.
+Remark 3.1. Suppose a total of t directions are monitored, the false positive rate after n −1 samples collected
+from Dgen is bounded by 2t/n + O(1/n2) (see Appendix A for a proof). In other words, the false positive rate
+decreases linearly with the number of samples processed. We emperically confirm this in Appendix F.1.
+Remark 3.2. Our approach above applies SVD to the difference in weights from a base model. However,
+we could apply this the weights directly, hence doing away with the need for the base model entirely. In
+Appendix F.3 we experiment with this and find that the success varies greatly across models: perfect detection
+rate could be achieved for some models but near random for some other models. For consistency, we focus on
+the weight difference setup for the rest of the paper.
+4
+Case Study: Monitoring an RLHF-Poisoned Model
+In this section, we conduct a case study on a model poisoned during RLHF to qualitatively demonstrate
+some challenges in applying activation-based methods for backdoor detection.
+Setting. We examine the “trojan5” model with backdoor from Rando et al. (2024), which is trained to reject
+malicious prompts unless a trigger is present, in which case it complies. For simplicity, we prima...

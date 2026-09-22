@@ -1,0 +1,52 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2609.00760
+Type: HTML
+Pattern: commit-then-specify|commit.then.specify|first\s+\d+\s+token|trajector|token\s+position (6 matches in 134554 chars)
+
+--- Content ---
+
+4960:...t the overlap is asymmetric: SR signals transfer more strongly to KR than the reverse. Type-specific specialization emerges mainly in upper layers, with KR aligning with uncertainty- and knowledge-related representations and SR with safety- and policy-related ones. We thus characterize refusal as a commit-then-specify process: a shared initial mechanism commits to refusing, then type-specific features in later layers specify whether the grounds are epistemic or normative.
+
+## 1 Introduction
+
+Large language models (LLMs) are increasingly deployed in real-world settings where knowing when to refuse a user’s query ...
+--
+18178:...ria are provided in Appendix B.
+
+## 4 Experiments
+
+In the main experiments, we analyze the six models (three instruction-tuned models and their refusal-tuned variants, denoted by an asterisk, ∗) on the 213 matched quadruples from the previous section. Hidden states are extracted at the final prompt-token position; implementation details are in Appendix C. We address RQ1–RQ3 in §4.1–4.3 and then test the identified directions behaviorally (§4.4).
+
+### 4.1 RQ1: Shared Refusal Directions
+
+Our first question is whether KR and SR share a geometric direction in the hidden representation space. We approach this in...
+--
+35496:...aming, while +d^specS+\hat{d}^{S}_{\mathrm{spec}} induces more safety-oriented framing; the matched SR prompt shows the complementary pattern. This suggests that the geometric separation in RQ1–3 is reflected in distinct refusal rationales during generation.
+
+## 5 Discussion
+
+Our results support a _commit-then-specify_ view of LLM refusal. The model first commits to refusal through a shared component and then specifies its grounds as epistemic uncertainty in KR or a normative constraint in SR. This view explains why KR and SR appear similar on the surface despite having distinct grounds.
+
+The transfer asymmetry ...
+--
+79167:...ame formatting is applied to all four conditions (KR, KC, SR, SC), so formatting is held fixed across matched comparisons. System prompts, if used, are identical across all four conditions.
+
+#### Hidden State Extraction.
+
+hℓ​(x)h_{\ell}(x) denotes the residual-stream activation at the _final prompt-token position_ of layer ℓ\ell, extracted via output_hidden_states=True. We use the final prompt-token representation because it summarizes the full prompt immediately before generation. Since matched conditions can differ slightly in tokenized length, all analyses are based on control-subtracted shifts (KR−-KC a...
+--
+80497:...s at ℓ∗\ell^{*}. Repeating this process for B=1000B=1000 permutations gives a null distribution, and the one-sided pp-value is computed as (1+#{cosperm≥cosobs})/(1+B)(1+\\#\\{\cos_{\mathrm{perm}}\geq\cos_{\mathrm{obs}}\\})/(1+B). Because ℓ∗\ell^{*} is selected from the observed layer-wise alignment trajectory, we treat this as a diagnostic significance check rather than a fully independent confirmatory test.
+
+#### Linear Probes.
+
+ℓ2\ell_{2}-regularized logistic regression probes (C=1.0C=1.0) are trained at each layer. Four configurations are used: within-type (trained and evaluated on the same refusal ...
+--
+83110:...s all steering conditions.
+
+#### Direction Decomposition.
+
+The common direction and type-specific residuals are defined as in §4.1; all directions are estimated independently per layer. The final-layer direction d^ref\hat{d}_{\mathrm{ref}} (defined in §4.3) serves as a fixed reference for the layer-trajectory analysis. This decomposition is a geometric diagnostic of shared versus residual structure; the orthogonal residual does not necessarily correspond to an independent causal mechanism.
+
+#### Vocabulary Logit Lens.
+
+For each model, we apply its final normalization layer to the hidden state and proje...

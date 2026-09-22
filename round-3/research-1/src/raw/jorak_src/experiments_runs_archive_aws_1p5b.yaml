@@ -1,0 +1,59 @@
+# Campagne AWS GPU (G5 / A10G 24 Go) — matrice 4-voies COMPLÈTE, Qwen2.5-1.5B (10 modèles).
+# C'est la version "pleine puissance" du run CPU local (local_cpu_jorak_1p5b.yaml) :
+# le CPU ne faisait que JORAK (poids) ; ici on rallume behavioral + activations, ce qui
+# permet de trancher le cas Dolphin (finetuned_decensored) que JORAK seul ne sépare pas.
+#
+# Pré-requis (1 fois) : venv py3.11 + torch CUDA + `pip install -e ".[dev]"` (voir commandes).
+# Auth HF (sinon HF throttle les gros .safetensors) :   export HF_TOKEN=hf_xxx
+#
+# Lancer (anti-veille + token) :
+#   export HF_TOKEN=hf_xxx
+#   python experiments/run_scan.py experiments/runs/aws_1p5b.yaml
+# Reprise après interruption : relancer la MÊME commande (idempotent ; --force pour tout refaire).
+# Agréger :
+#   python experiments/aggregate.py runs_out/<run_id>/
+
+device: cuda
+plans:
+  behavioral: true           # génération -> sépare censuré / décensuré-par-finetune (cas Dolphin)
+  activations: true           # forward + Cohen's d (axe) — OK sur A10G 24 Go pour du 1.5B
+multilingual: false          # true -> taux de refus par langue (asymétrie EN-only). Plus lent.
+profile: false               # true -> profil modèle (qualité / hallu / métadonnées HF)
+# --- mode AWS (même méthode que `scan --s3`) ---
+download: true               # récupère chaque modèle absent du cache via la procédure box
+                             #   (CA interne + secrets + `hf download`) AVANT de le scanner.
+purge: true                  # vide du cache HF, après chaque scan, ce que CE run a téléchargé
+                             #   -> scanner les 10 modèles sans saturer le disque de la box.
+# probe_subset: 32           # décommenter pour limiter le nb de sondes (+ rapide). Vide = set complet.
+
+# Modèles tirés directement depuis le Hub (ids HF) — pas de models_dir : du 1.5B se télécharge
+# vite. Pour pré-stager depuis S3 à la place, voir aws_7b.yaml (models_dir + aws s3 sync).
+# models_dir: /data/models
+output_s3: s3://your-bucket/results   # 1 JSON/modèle poussé sur S3 au fil de l'eau (en plus du local)
+output_dir: runs_out         # -> runs_out/<timestamp>/<modele>.json (1 JSON / modèle)
+
+# 10 modèles, tous Qwen2.5-1.5B (safetensors, archi qwen2). 8 ablitérés (méthodes
+# variées) + base censurée + 1 décensuré-par-finetune. Tri par méthode d'ablitération.
+models:
+  # --- ablitérés : 8 méthodes / lignées différentes ---
+  - path: huihui-ai/Qwen2.5-1.5B-Instruct-abliterated          # huihui — ablation directionnelle "classique"
+    expected_label: ablated
+  - path: 0xA50C1A1/Qwen2.5-1.5B-Instruct-Heretic              # Heretic (p-e-w) — ablation auto-optimisée (TPE), localisée -> signal de BANDE
+    expected_label: ablated
+  - path: Goekdeniz-Guelmez/Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1   # JOSIEfied — recette Goekdeniz, v1
+    expected_label: ablated
+  - path: Goekdeniz-Guelmez/Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v3   # JOSIEfied — itéré (v3) : ablation plus profonde -> bande plus forte ?
+    expected_label: ablated
+  - path: nbeerbower/EVA-abliterated-TIES-Qwen2.5-1.5B         # ablitéré (huihui) + merge TIES avec EVA -> ablation DILUÉE par le merge (cas limite)
+    expected_label: ablated
+  - path: huihui-ai/Qwen2.5-1.5B-Instruct-abliterated-SFT      # ablitéré PUIS SFT (uncensor) -> la bande survit-elle au ré-entraînement ?
+    expected_label: ablated
+  - path: DeKodez/Qwen2.5-1.5B-Instruct-abliterated            # réimplémentation indépendante (style mlabonne/failspy)
+    expected_label: ablated
+  - path: Elstuhn/Qwen2.5-1.5B-Instruct-abliterated            # réimplémentation indépendante (style mlabonne/failspy)
+    expected_label: ablated
+  # --- ancres non-ablitérées (pour la matrice) ---
+  - path: Qwen/Qwen2.5-1.5B-Instruct                           # base Instruct = censuré (poids intacts)
+    expected_label: censored
+  - path: dphn/Dolphin3.0-Qwen2.5-1.5B                         # décensuré par FINETUNE (pas d'ablation) -> tranché par le plan behavioral
+    expected_label: finetuned_decensored

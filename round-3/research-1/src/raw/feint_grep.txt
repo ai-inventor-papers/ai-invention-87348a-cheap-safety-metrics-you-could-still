@@ -1,0 +1,129 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2410.16327
+Type: HTML
+Pattern: models?\s+(we|were|tested|evaluate)|Vicuna|Llama|Qwen|Gemma|Mistral|cross.model|across\s+models|Table\s+\d|correlat (44 matches in 54988 chars)
+
+--- Content ---
+
+5691:...ristic assumptions, resulting in unreliable indicators of attack efficacy. Thus, this paper aims to investigate the internal states of LLMs in response to jailbreak attacks and uncover the underlying correlations between these internal states and the success of such attacks.
+
+Figure 1: The attention distribution of different prompts.
+
+Recent studies have explored the underlying mechanisms of jailbreak att...
+--
+7121:... for deep learning models, providing advanced interpretability Zhang et al. (2024d). Drawing on these considerations, we pose a novel and significant research question: Does the success of jailbreaks correlate with their influence on attention distributions within LLMs?
+
+To gain preliminary insights, we examine the distributions of attention weights associated with various input prompts, as depicted in Figure 1. The attention weights represent the average attention scores on different words from all layers of the Llama2-7B-chat model. Figure 1(a) presents the attention distributions for harmful versus harmless inputs, demonstrating that the model’s attention is predominantly focused on sensitive words (e.g., nouns)...
+--
+8309:... to its capacity to distract LLMs from focusing on sensitive words. Additional preliminary experiments that support our findings are detailed in Section 3.
+
+Preliminary experiments indicate potential correlations between attention distributions and the efficacy of jailbreak attacks on LLMs. However, formally characterizing these correlations and effectively leveraging them to enhance both attack and defense strategies presents two key challenges. First, the development of appropriate metrics to accurately quantify attention diversion...
+--
+10309:...erior performance compared to existing SOTA baselines. Our main contributions are summarized as follows:
+
+  * •
+
+To the best of our knowledge, we are the first to comprehensively unveil the intrinsic correlations between attention distributions within LLMs and the effectiveness of jailbreak attacks.
+
+  * •
+
+We propose a novel attack paradigm, ABA, aimed at guiding LLMs to focus on hierarchically nested be...
+--
+13741:...mpt surface.
+
+## 3 Preliminary Experiment Analysis
+
+Figure 2: The overview of the proposed method, including Attention-Based Attack (ABA) and Attention-Based Defense (ABD) models. 
+
+Jailbreak Model | Llama2-7B | Llama2-13B | Average  
+---|---|---|---  
+ASW↓\downarrow | ASR↑\uparrow | ASR-G↑\uparrow | ASW↓\downarrow | ASR↑\uparrow | ASR-G↑\uparrow | ASW↓\downarrow | ASR↑\uparrow | ASR-G↑\uparrow  
+PAIR | 0.0096 | 0...
+--
+14341:....63 | 0.27 | 0.0086 | 0.66 | 0.27  
+ReNeLLM | 0.0070 | 0.71 | 0.43 | 0.0072 | 0.69 | 0.67 | 0.0071 | 0.70 | 0.55  
+BaitAttack | 0.0053 | 0.72 | 0.65 | 0.0048 | 0.88 | 0.86 | 0.0053 | 0.80 | 0.76  
+  
+Table 1: Preliminary study on the relations between Attn_SensWords (ASW) scores and the attack performance (ASR and ASR-G).
+
+In this section, we present preliminary experiments aimed at uncovering the correlations between attention patterns within LLMs and the success of jailbreak attacks. Prior research has indicated that certain words, particularly sensitive terms, are more likely to activate the safety ...
+--
+15280:...l metric, Attention Intensity on Sensitive Words (Attn_SensWords), designed to quantify the attention allocated by LLMs to such sensitive terms. This metric serves as the foundation for analyzing the correlation between the attention weights assigned to sensitive words within a prompt and the success rate of jailbreak attacks.
+
+Given the original query, denoted as xx, and the modified jailbreak prompt, de...
+--
+16231:...f time steps, layers, heads, and tokens.
+
+To investigate the relationship between Attn_SensWords scores and the effectiveness of jailbreak attacks, we perform a preliminary analysis, as summarized in Table 1. The Llama2 series models, specifically Llama2-7B and Llama2-13B, are chosen as the target LLMs. The verbs and nouns are viewed as the sensitive words. In line with prior research Chao et al. (2024), we utilize the AdvBench Zou et al. (2023) dataset, which in...
+--
+16894:... et al. (2024), and BaitAttack Pu et al. (2024). Two key metrics, Attack Success Rate (ASR) and GPT-4o-based ASR (ASR-G), are adopted to assess the efficacy of these attack methods Pu et al. (2024).
+
+Table 1 illustrates the correlation between Attn_SensWords (ASW) scores and attack performance metrics (ASR and ASR-G). BaitAttack achieves the highest ASR (0.80) and ASR-G (0.76), while simultaneously yielding the lowest ASW (0.005...
+--
+29298:...assessment before generating responses, thereby enhancing both reliability and security.
+
+## 5 Experiment
+
+Dataset | Method | Open-source Model | Closed-source Model | Average  
+---|---|---|---|---  
+Llama2-7B | Llama2-13B | Llama3-8B | GPT-4 | Claude-3  
+ASR | ASR-G | Qry | ASR | ASR-G | Qry | ASR | ASR-G | Qry | ASR | ASR-G | Qry | ASR | ASR-G | Qry | ASR | ASR-G | Qry  
+AdvBench | GCG | 37.3 | 16.7 | 498.7 | 35.1 | 14.2 | 4...
+--
+31729:...8 | 91.4 | 90.6 | 1.7 | 80.1 | 76.4 | 2.9 | 86.5 | 84.2 | 2.7  
+ABA (Ours) | 98.7 | 97.9 | 3.8 | 98.1 | 95.3 | 3.9 | 95.6 | 94.1 | 4.1 | 94.5 | 92.4 | 3.7 | 98.9 | 98.5 | 3.6 | 97.2 | 95.6 | 3.8  
+  
+Table 2: ASR (%), ASR-G (%), and Queries (Qry) results of various methods on the AdvBench and HarmBench Dataset. The best results are highlighted in bold. The second best results are highlighted in underline.
+
+Target | Defense Method | Attack Method | Average  
+---|---|---|---  
+GCG | AutoDAN | PAIR | TAP | Deeplnception | ReNeLLM | PAP | BaitAttack | ABA  
+Llama2-7B | No Defense | 16.7 | 26.3 | 11.6 | 23.5 | 28.1 | 84.2 | 48.2 | 65.4 | 97.5 | 44.6(base)  
+Perplexity Filter | 0.0 | 26.3 | 11.6 | 23.5 | 28.1 | 84.2 | 48.2 | 65.4 | 97.5 | 42.8(-1.8)  
+Self-Remi...
+--
+32529:...| 3.6 | 2.5 | 4.8 | 5.0 | 3.4(-41.2)  
+SafeDecoding | 0.0 | 0.0 | 2.3 | 2.4 | 1.8 | 2.1 | 1.5 | 2.8 | 4.7 | 2.0(-42.6)  
+ABD(Ours) | 0.0 | 0.0 | 1.8 | 1.6 | 2.0 | 1.9 | 1.3 | 2.4 | 4.0 | 1.7(-42.9)  
+Llama2-13B | No Defense | 14.2 | 23.8 | 15.3 | 29.6 | 26.8 | 63.8 | 50.3 | 86.4 | 94.3 | 45.0(base)  
+Perplexity Filter | 0.0 | 23.8 | 15.3 | 29.6 | 26.8 | 63.8 | 50.3 | 86.4 | 94.3 | 43.4(-1.6)  
+Self-Rem...
+--
+32970:...| 3.3 | 2.2 | 4.3 | 4.8 | 3.2(-41.8)  
+SafeDecoding | 0.0 | 0.0 | 2.3 | 2.4 | 1.8 | 2.1 | 1.4 | 2.8 | 4.7 | 1.9(-43.1)  
+ABD(Ours) | 0.0 | 0.0 | 2.0 | 2.2 | 1.7 | 1.9 | 1.3 | 2.5 | 4.3 | 1.8(-43.2)  
+Llama3-8B | No Defense | 16.9 | 22.1 | 18.6 | 26.3 | 25.3 | 56.8 | 27.8 | 91.2 | 92.8 | 42.0(base)  
+Perplexity Filter | 0.0 | 22.1 | 18.6 | 26.3 | 25.3 | 56.8 | 27.8 | 91.2 | 92.8 | 40.1(-1.9)  
+Self-Remi...
+--
+33413:....4 | 1.1 | 1.7 | 3.2 | 1.4(-40.6)  
+SafeDecoding | 0.0 | 0.0 | 1.5 | 1.4 | 1.2 | 1.4 | 1.2 | 1.5 | 2.8 | 1.2(-40.8)  
+ABD(Ours) | 0.0 | 0.0 | 1.2 | 1.3 | 1.2 | 1.1 | 1.1 | 1.2 | 1.8 | 1.0(-41.0)  
+  
+Table 3: The ASR-G (%) results of different LLMs under various defense methods. The best results are highlighted in bold.
+
+### 5.1 Experimental Settings
+
+#### Datasets.
+
+Following previous work Jiang et al. ...
+--
+34681:...t al. (2023) and SafeDecoding Xu et al. (2024)).
+
+#### Target LLMs.
+
+To assess the effectiveness of ABA, a range of representative LLMs is selected as targets, including three open-source models: the Llama-2-chat series (including 7B and 13B) and Llama-3-8B, and two closed-source models: GPT-4 and Claude-3-haiku.
+
+#### Evaluation Metrics.
+
+Three metrics have been proposed to evaluate jailbreak attack methods, such as ASR, ASR-G and Queries Pu et al...
+--
+35391:...essful jailbreak attempts between the attack and target models.
+
+### 5.2 Main Results
+
+#### Performance of Attack Success Rate.
+
+The ASR and ASR-G of various jailbreak attack methods are presented in Table 2. From the Table 2, it is evident that our proposed ABA achieves the highest ASR and ASR-G across both datasets (AdvBench and HarmBench) and on all evaluated open-source and closed-source LLMs. Specifically, the averag...
+--
+36103:...maximizing Attn_Entropy. Addition

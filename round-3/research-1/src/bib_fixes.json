@@ -1,0 +1,128 @@
+[
+ {
+  "item": "i",
+  "key_old": "LlorenteSaguer2026 (x2)",
+  "key_new": "LlorenteSaguer2026a (2604.18901) / LlorenteSaguer2026b (2603.27412, LatentBiopsy)",
+  "problem": "duplicate BibTeX key used for two different papers; BibTeX silently drops one",
+  "fix": "distinct keys with a/b suffix; titles verified on arXiv API",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2604.18901 ; https://arxiv.org/abs/2603.27412"
+ },
+ {
+  "item": "ii",
+  "key_old": "Casper2024",
+  "key_new": "Casper2024",
+  "problem": "planner reported bogus eprint '0106.36590'. VERIFIED: the iter-2 references.bib contains NO such eprint; line 226 holds doi = {10.1145/3630106.3659037}, and '0106.36590' is a mis-parse of the substring '...30106.3659037' of that correct DOI. The real defect was a MISSING eprint field.",
+  "fix": "kept DOI 10.1145/3630106.3659037 (Crossref-confirmed: title 'Black-Box Access is Insufficient for Rigorous AI Audits', pages 2254-2272); added eprint = 2401.14446 (arXiv abs confirmed, v3)",
+  "status": "RESOLVED (planner false positive on the eprint; eprint added)",
+  "source_url": "https://api.crossref.org/works/10.1145/3630106.3659037 ; https://arxiv.org/abs/2401.14446"
+ },
+ {
+  "item": "iii",
+  "key_old": "Shairah2025",
+  "key_new": "AbuShairah2025",
+  "problem": "first author truncated to 'H. Shairah' (Semantic Scholar mangling); 'G. Turkiyyah' abbreviated",
+  "fix": "author = {Abu Shairah}, Harethah and Hasan Abed Al Kader Hammoud and George Turkiyyah and Bernard Ghanem (arXiv abs page)",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2508.20766"
+ },
+ {
+  "item": "iv",
+  "key_old": "Ball2024 cited as '[24] C. Tan et al., On the Out-of-Distribution Brittleness of Steering Vectors, arXiv:2406.09289'",
+  "key_new": "Ball2024 (2406.09289) + NEW Tan2024 (2407.12404)",
+  "problem": "misattribution: 2406.09289 is Ball, Kreuter & Rimsky 'Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models'; the draft's title and author for [24] are fabricated",
+  "fix": "add Tan2024 = Daniel Tan, David Chanin, Aengus Lynch, Dimitrios Kanoulas, Brooks Paige, Adria Garriga-Alonso, Robert Kirk, 'Analyzing the Generalization and Reliability of Steering Vectors' (arXiv 2407.12404, NeurIPS 2024 per Semantic Scholar venue); steering-brittleness sentence must cite Tan2024; Ball2024 only for jailbreak latent dynamics",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2407.12404 ; https://arxiv.org/abs/2406.09289"
+ },
+ {
+  "item": "v-a",
+  "key_old": "Lan2026",
+  "key_new": "Lan2026",
+  "problem": "no eprint/DOI; SS author names hyphenated wrongly (Wen-Hao, Xin Lai, Jun-Bin)",
+  "fix": "eprint 2606.16349; authors per arXiv: Wenhao Lan, Shan Li, Xinhua Lai, Meiqi Wu, Junbin Yang, Haihua Shen",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2606.16349"
+ },
+ {
+  "item": "v-b",
+  "key_old": "Fogel2026",
+  "key_new": "Fogel2026",
+  "problem": "no eprint/DOI; initials only for co-authors",
+  "fix": "eprint 2602.04653; Ariel Fogel, Omer Hofman, Eilon Cohen, Roman Vainshtein",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2602.04653"
+ },
+ {
+  "item": "v-c",
+  "key_old": "Luo2026",
+  "key_new": "Luo2026",
+  "problem": "no eprint/DOI",
+  "fix": "eprint 2608.09624; 11 authors per arXiv (Mingyu Luo ... Xiaoyan Sun)",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2608.09624"
+ },
+ {
+  "item": "v-d",
+  "key_old": "Rivera2026",
+  "key_new": "Rivera2026",
+  "problem": "no eprint/DOI; author field 'Konstantinos Voudouris Independent and UK AI Security Institute' merges affiliations into a name, creating a fake 5th author",
+  "fix": "eprint 2608.05086; authors = {Rivera}, Joshua Fonseca and Neil Shah and David Demitri Africa and Konstantinos Voudouris (affiliations (1) Independent, (2) UK AI Security Institute dropped)",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2608.05086"
+ },
+ {
+  "item": "vi",
+  "key_old": "Messenger2026",
+  "key_new": "Messenger2026",
+  "problem": "planner reported truncated DOI fragment '2026.37040'. VERIFIED: iter-2 bib line 9 holds the FULL DOI 10.1109/ACCESS.2026.3704057; the fragment is a substring of it. The real defect: @inproceedings with booktitle=IEEE Access (it is a journal) and no arXiv eprint.",
+  "fix": "@article, journal = IEEE Access, volume 14, pages 91723--91737, doi 10.1109/ACCESS.2026.3704057 (Crossref-confirmed) AND eprint 2608.05578 (arXiv abs lists this DOI as the published version)",
+  "status": "RESOLVED (planner false positive on the DOI; entry type + eprint fixed)",
+  "source_url": "https://api.crossref.org/works/10.1109/ACCESS.2026.3704057 ; https://arxiv.org/abs/2608.05578"
+ },
+ {
+  "item": "vii",
+  "key_old": "Zhao2025 / Singh2025 / Ren2024 / Zhong2025",
+  "key_new": "same",
+  "problem": "reviewer flagged author lists",
+  "fix": "Zhao2025 authors CONFIRMED (Jiachen Zhao, Jing Huang, Zhengxuan Wu, David Bau, Weiyan Shi). Singh2025 corrected from SS abbreviations: 'A. Ustun'->'Ahmet Üstün', 'Yun-Tian Deng'->'Yuntian Deng', 'B. Ermiş'->'Beyza Ermis'. Ren2024: 'Ryan Kim'->'Ryan H. Kim'. Zhong2025: 'Zi-Qian Zhong'->'Ziqian Zhong'. All from arXiv abs pages. NOTE the iter-2 DRAFT's plain-text reference list names these as 'D. Li et al.' (Zhao), 'E. Boyko et al.' (Singh), 'L. Ren' (Ren), 'A. Timans et al.' (Zhong) - fabricated; see citation_corrections.",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2507.11878 ; https://arxiv.org/abs/2504.20879 ; https://arxiv.org/abs/2407.21792 ; https://arxiv.org/abs/2508.00161"
+ },
+ {
+  "item": "viii",
+  "key_old": "(missing)",
+  "key_new": "see references.bib",
+  "problem": "works cited by the hypothesis missing from the iter-2 bib",
+  "fix": "all 26 listed IDs resolved on arXiv and added (titles recorded in bib_entries.json); 2607.25750 is Africa et al. 'Detecting CSAM Text-to-Image LoRAs From Weights' (a weights-only adapter classifier), NOT RAS 2606.25750; Qwen3Guard/SafeRL: see bib_entries note; Jorak added as @misc pinned to SHA 8147de3...",
+  "status": "RESOLVED",
+  "source_url": "https://export.arxiv.org/api/query"
+ },
+ {
+  "item": "extra-1",
+  "key_old": "Huang2026 (RAS)",
+  "key_new": "Huang2026",
+  "problem": "Semantic Scholar lists first author as 'Changhui Huang'; arXiv lists 'Chang-Chieh Huang'",
+  "fix": "arXiv name used",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2606.25750"
+ },
+ {
+  "item": "extra-2",
+  "key_old": "Lin2025 (N-GLARE)",
+  "key_new": "Lin2026",
+  "problem": "year = preprint year 2025 though cited as ACL 2026",
+  "fix": "year 2026, booktitle ACL 2026 (iteration-1 verified ACL 2026 Long 1334); eprint 2511.14195",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2511.14195"
+ },
+ {
+  "item": "extra-3",
+  "key_old": "Rttger2023",
+  "key_new": "Rottger2023",
+  "problem": "key mangled by diacritic stripping ('Rttger')",
+  "fix": "ASCII-folded key Rottger2023",
+  "status": "RESOLVED",
+  "source_url": "https://arxiv.org/abs/2308.01263"
+ }
+]

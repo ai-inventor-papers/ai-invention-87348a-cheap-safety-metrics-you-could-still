@@ -1,0 +1,108 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2410.07137
+Type: PDF
+Pattern: win rate (138 matches in 100684 chars)
+
+--- Content ---
+
+105:Published as a conference paper at ICLR 2025
+CHEATING AUTOMATIC LLM BENCHMARKS:
+NULL MODELS ACHIEVE HIGH WIN RATES
+Xiaosen Zheng∗1,2, Tianyu Pang∗†1, Chao Du1, Qian Liu1, Jing Jiang†2, Min Lin1
+1Sea AI Lab, Singapore
+2Singapore Management University
+{zhengxs, tianyupang, duchao, liuqian, linmin}@sea.com;
+jingjiang@smu.edu.sg
+ABSTRACT
+Automatic LLM benchmarks, such as AlpacaEval 2.0, Arena-Hard-Auto, and MT-
+Be...
+--
+779:...ir cost-
+effectiveness and scalability compared to human evaluation. Achieving high win
+rates on these benchmarks can significantly boost the promotional impact of newly
+released language models. This promotional benefit may motivate tricks, such as
+manipulating model output length or style to game win rates, even though several
+mechanisms have been developed to control length and disentangle style to reduce
+gameability. Nonetheless, we show that even a “null model” that always outputs
+a constant response (irrelevant to input instructions) can cheat automatic bench-
+marks and achieve top-ranked win rates: an 86.5% LC win rate on AlpacaEval 2.0;
+an 83.0 score on Arena-Hard-Auto; and a 9.55 score on MT-Bench. Moreover, the
+crafted cheating outputs are transferable because we assume that the instructions
+of these benchmarks (e.g., 805 samples of AlpacaEval 2.0) are private and cannot
+be accessed. While our experiments are primarily proof-of-concept, an adversary
+could use LLMs to generate more imperceptible cheating responses, unethically
+benefiting from high win rates and promotional impact. Our findings call for the
+development of anti-cheating mechanisms for reliable automatic benchmarks. The
+code is available at https://github.com/sail-sg/Cheating-LLM-Benchmarks.
+1
+INTRODUCTION
+Numerous large language models (LLMs), both closed-source and open-source (OpenAI...
+--
+2838:...aluate language models. These automatic benchmarks are cheap,
+scalable, and have high Spearman correlations with Chatbot Arena (Li et al., 2023c). These advan-
+tages make them popular choices for providing timely assessments of newly released LLMs (Meng
+et al., 2024; Chen et al., 2024a), where high win rates can lead to significant promotional benefits.
+While automatic benchmarks offer a valuable way for comparing LLMs, recent studies have revealed
+that auto-annotated win rates can be affected by biases related to output length and style (Dubois
+et al., 2024; Chen et al., 2024b; Zhang et al., 2024). In most cases, these biases are unintentional,
+stemming from the training data distribution; however, they can still game win rates, causing leader-
+board results to deviate from actual human preferences. To mitigate this issue, several strategies have
+been introduced to control for output length and disentangle style from content, thereby reducing
+the potential for gameability (Dubois et al., 2024; Li et al., 2024a).
+∗Equal contribution. Work done during Xiaosen Zheng’s internship at Sea AI Lab.
+†Correspondence to Tianyu Pang and Jing Jiang.
+1
+arXiv:2410.07137v2  [cs.CL]  2 Mar 2025
+
+Published as a conference paper at ICLR 2025
+But, what if an adversary intentionally cheats auto-annotators to achieve high win rates and capital-
+ize on the resulting promotional benefits? In this study, we conduct stress tests on these benchmarks
+by submitting “null models” that, instead of responding to input instructions, generate constant
+outputs. Our initial experiments use ChatGPT to craft dozens of persuasive responses (Zeng et al.,
+2024) expecting auto-annotators to favor them and gain high win rates. Note that persuasive re-
+sponses do not respond to input instructions, so human annotators will assign them zero win rates.
+Pseudo-code for Null Models
+class NullModel():
+def __init__(self, const_str):
+# no trainable parameters
+self.output = const_str
+def generate(self, instruct):
+# irrelevant to instructions
+return self.output
+We submit these persuasive responses to AlpacaEval 2.0
+after wrapping them as null models. ...
+--
+4997:...del NullModel("Pick me!") always returns the
+same output “Pick me!” for all the 805 input instruc-
+tions in AlpacaEval 2.0, without providing any informa-
+tive response. As seen in Figure 1(b), the AlpacaEval 2.0
+auto-annotator (GPT-4-1106-preview) is robust to these
+persuasive responses, assigning win rates of less than 1%.
+Nevertheless, we find that structured cheating responses can cheat the auto-annotator by exploiting
+a weakness in LLMs, which may become confused during syntactic analysis when processing the
+evaluation templates, such as those used in AlpacaEval 2.0. A manually crafted cheating response
+that is structured can already achieve a 76.8% LC win rate, as seen in Figure 1(c).
+We further modify this structured response by adding a prefix and optimizing it through random
+search based on querying results from GPT-4 (Andriushchenko et al., 2024; Zheng et al., 2024). To
+simulate more challenging scenarios, we assume that all input instructions of the...
+--
+6592:...ut this remains unexplored in the context of LLM benchmarks. While our exper-
+iments in this paper are primarily proof-of-concept, a determined adversary could leverage LLMs
+to generate more subtle and imperceptible cheating responses (Liu et al., 2023a; Chao et al., 2023),
+unethically gaining high win rates and promotional advantages. Our findings highlight the urgent
+need to develop robust anti-cheating mechanisms to ensure reliable automatic LLM benchmarks.1
+2
+PRELIMINARIES
+LLM-based auto-annotators. We focus on the problem of evaluating outputs from LLMs using
+auto-annotators. Formally, we define ...
+--
+7812:...ion I, the response
+from the target model LLMtar(I), and optionally, the response from a reference model LLMref(I).
+The output of the auto-annotator is either JUDGE(I∥LLMtar(I)), evaluating the target model alone, or
+JUDGE(I∥LLMref(I)∥LLMtar(I)), comparing the target and reference models to compute win rates.
+Threat model of cheating. The cheater is assumed to have no direct access to the auto-annotator’s
+parameters but can query the auto-annotator through an API provided by a service provider. Ad-
+ditionally, the cheater has no access to the test input instructions. The cheater’s goal is to craft a
+n...
+--
+[123 more matches not shown]

@@ -1,0 +1,340 @@
+{
+ "tan_ball_swap": {
+  "wrong_text": "iter-2 draft reference [24]: 'C. Tan et al., \"On the Out-of-Distribution Brittleness of Steering Vectors,\" NeurIPS 2024, arXiv:2406.09289' (and the hypothesis sentence 'Tan et al. (arXiv 2406.09289) on the out-of-distribution brittleness of steering vectors')",
+  "problem": "arXiv 2406.09289 is Ball, Kreuter & Rimsky, 'Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models'. The title 'On the Out-of-Distribution Brittleness of Steering Vectors' does not exist. The steering-reliability paper is Tan et al., arXiv 2407.12404, 'Analyzing the Generalization and Reliability of Steering Vectors'.",
+  "fix": "Cite \\citep{Tan2024} (2407.12404) for steering-vector brittleness and unreliability. Cite \\citep{Ball2024} (2406.09289) ONLY for jailbreak latent-space dynamics.",
+  "sources": [
+   "https://arxiv.org/abs/2406.09289",
+   "https://arxiv.org/abs/2407.12404"
+  ]
+ },
+ "jorak_threshold_misattribution": {
+  "wrong_text": "iter-2 draft Section 5 / contribution 4: 'the published 0.35 separator' / 'a published parent-free weight scanner ... 100% false-positive rate at its published threshold (honest BSA = 0.565 vs. separator 0.35)'",
+  "problem": "0.35 is NOT Jorak's threshold. It is this run's own simulation-calibrated pre-registered value (iter_1/gen_art/gen_art_experiment_2/flab/config.py:74 BSA_PREREG_THRESHOLD). Jorak ships 0.5, on different statistics (see scanner_pin.json).",
+  "fix": "Rename it 'our pre-registered simulation threshold'. Withdraw the claim that a published scanner has a 100% false-positive rate, or re-run Jorak's own statistic at 0.5.",
+  "sources": [
+   "https://github.com/JolanMc/Jorak/blob/8147de343964a3cced37db71814e9007c7465a52/modelscanner/classifier/scanner.py#L37-L55"
+  ]
+ },
+ "draft_reference_list_audit": {
+  "summary": "The iter-2 paper_draft.md plain-text reference list [1]-[30] disagrees with its own references.bib. Verified against the arXiv API: 20 of 30 first authors are FABRICATED names, 5 have the wrong first initial, 4 are correct, and 1 is software (Jorak). At least 8 titles are altered or invented: [6] 'LatentBiopsy', [8] 'Rank-One Safety Injection', [12] 'From Refusal Geometry to Safety Geometry: Recognition Versus Execution' (the real title is 'Knowing without Acting: ...'), [14], [21], [24], [25], [26], [28]. Also: [3] credits N-GLARE to 'J. Cordes' and [4] credits RAS to 'Z. Lin'; Lin is actually N-GLARE's first author, so the names are shuffled.",
+  "fix": "Delete the hand-typed reference list. Generate references only from references.bib via BibTeX, using the keys below.",
+  "rows": [
+   {
+    "ref_no": 1,
+    "draft_first_author": "G. Messenger",
+    "verified_first_author": "Glen Messenger",
+    "arxiv": "2608.05578",
+    "verdict": "OK",
+    "title_ok": true,
+    "verified_title": "Detecting Safety Training Modification in Language Models via Activation Analysis",
+    "use_key": "Messenger2026"
+   },
+   {
+    "ref_no": 2,
+    "draft_first_author": "J.-S. Lee et al.",
+    "verified_first_author": "Dongyub Jude Lee",
+    "arxiv": "2606.22676",
+    "verdict": "WRONG_INITIAL",
+    "title_ok": true,
+    "verified_title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+    "use_key": "Lee2026"
+   },
+   {
+    "ref_no": 3,
+    "draft_first_author": "J. Cordes et al.",
+    "verified_first_author": "Zheyu Lin",
+    "arxiv": "2511.14195",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator",
+    "use_key": "Lin2026"
+   },
+   {
+    "ref_no": 4,
+    "draft_first_author": "Z. Lin et al.",
+    "verified_first_author": "Chang-Chieh Huang",
+    "arxiv": "2606.25750",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+    "use_key": "Huang2026"
+   },
+   {
+    "ref_no": 5,
+    "draft_first_author": "A. Vogel et al.",
+    "verified_first_author": "Isaac Llorente-Saguer",
+    "arxiv": "2604.18901",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "Harmful Intent as a Geometrically Recoverable Feature of LLM Residual Streams",
+    "use_key": "LlorenteSaguer2026a"
+   },
+   {
+    "ref_no": 6,
+    "draft_first_author": "S. Guo et al.",
+    "verified_first_author": "Isaac Llorente-Saguer",
+    "arxiv": "2603.27412",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": false,
+    "verified_title": "The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams",
+    "use_key": "LlorenteSaguer2026b"
+   },
+   {
+    "ref_no": 7,
+    "draft_first_author": "A. Arditi et al.",
+    "verified_first_author": "Andy Arditi",
+    "arxiv": "2406.11717",
+    "verdict": "OK",
+    "title_ok": true,
+    "verified_title": "Refusal in Language Models Is Mediated by a Single Direction",
+    "use_key": "Arditi2024"
+   },
+   {
+    "ref_no": 8,
+    "draft_first_author": "Y. Wang et al.",
+    "verified_first_author": "Harethah Abu Shairah",
+    "arxiv": "2508.20766",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "Turning the Spell Around: Lightweight Alignment Amplification via Rank-One Safety Injection",
+    "use_key": "AbuShairah2025"
+   },
+   {
+    "ref_no": 9,
+    "draft_first_author": "A. Souly et al.",
+    "verified_first_author": "Alexandra Souly",
+    "arxiv": "2402.10260",
+    "verdict": "OK",
+    "title_ok": true,
+    "verified_title": "A StrongREJECT for Empty Jailbreaks",
+    "use_key": "Souly2024"
+   },
+   {
+    "ref_no": 10,
+    "draft_first_author": "D. Li et al.",
+    "verified_first_author": "Jiachen Zhao",
+    "arxiv": "2507.11878",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "LLMs Encode Harmfulness and Refusal Separately",
+    "use_key": "Zhao2025"
+   },
+   {
+    "ref_no": 11,
+    "draft_first_author": "T. B. Brown et al.",
+    "verified_first_author": "Faaiz Joad",
+    "arxiv": "2602.02132",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "There Is More to Refusal in Large Language Models than a Single Direction",
+    "use_key": "Joad2026"
+   },
+   {
+    "ref_no": 12,
+    "draft_first_author": "Z. Huang et al.",
+    "verified_first_author": "Jinman Wu",
+    "arxiv": "2603.05773",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": false,
+    "verified_title": "Knowing without Acting: The Disentangled Geometry of Safety Mechanisms in Large Language Models",
+    "use_key": "Wu2026"
+   },
+   {
+    "ref_no": 13,
+    "draft_first_author": "M. Chen et al.",
+    "verified_first_author": "Wenhao Lan",
+    "arxiv": "2606.16349",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "From Refusal Geometry to Safety Geometry: Harmfulness--Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+    "use_key": "Lan2026"
+   },
+   {
+    "ref_no": 14,
+    "draft_first_author": "Y. Zhang et al.",
+    "verified_first_author": "Shei Pern Chua",
+    "arxiv": "2607.00572",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "HARC: Coupling Harmfulness and Refusal Directions for Robust Safety Alignment",
+    "use_key": "Chua2026"
+   },
+   {
+    "ref_no": 15,
+    "draft_first_author": "A. Timans et al.",
+    "verified_first_author": "Ziqian Zhong",
+    "arxiv": "2508.00161",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": false,
+    "verified_title": "Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs",
+    "use_key": "Zhong2025"
+   },
+   {
+    "ref_no": 16,
+    "draft_first_author": "Jorak Project",
+    "verified_first_author": null,
+    "arxiv": null,
+    "verdict": "NO_ARXIV_ENTRY (Jorak = GitHub software; see scanner_pin.json)",
+    "title_ok": false,
+    "verified_title": null,
+    "use_key": "JolanMc2026Jorak"
+   },
+   {
+    "ref_no": 17,
+    "draft_first_author": "K. Park et al.",
+    "verified_first_author": "Gabriel Hurtado",
+    "arxiv": "2607.01854",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+    "use_key": "Hurtado2026"
+   },
+   {
+    "ref_no": 18,
+    "draft_first_author": "N. Tamirisa et al.",
+    "verified_first_author": "Rishub Tamirisa",
+    "arxiv": "2408.00761",
+    "verdict": "WRONG_INITIAL",
+    "title_ok": true,
+    "verified_title": "Tamper-Resistant Safeguards for Open-Weight LLMs",
+    "use_key": "Tamirisa2024"
+   },
+   {
+    "ref_no": 19,
+    "draft_first_author": "L. Zheng et al.",
+    "verified_first_author": "Xiaosen Zheng",
+    "arxiv": "2410.07137",
+    "verdict": "WRONG_INITIAL",
+    "title_ok": true,
+    "verified_title": "Cheating Automatic LLM Benchmarks: Null Models Achieve High Win Rates",
+    "use_key": "Zheng2024"
+   },
+   {
+    "ref_no": 20,
+    "draft_first_author": "L. Ren et al.",
+    "verified_first_author": "Richard Ren",
+    "arxiv": "2407.21792",
+    "verdict": "WRONG_INITIAL",
+    "title_ok": true,
+    "verified_title": "Safetywashing: Do AI Safety Benchmarks Actually Measure Safety Progress?",
+    "use_key": "Ren2024"
+   },
+   {
+    "ref_no": 21,
+    "draft_first_author": "E. Boyko et al.",
+    "verified_first_author": "Shivalika Singh",
+    "arxiv": "2504.20879",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": false,
+    "verified_title": "The Leaderboard Illusion",
+    "use_key": "Singh2025"
+   },
+   {
+    "ref_no": 22,
+    "draft_first_author": "D. Wen et al.",
+    "verified_first_author": "Florian A. D. Burnat",
+    "arxiv": "2605.06324",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "Gaming the Metric, Not the Harm: Certifying Safety Audits against Strategic Platform Manipulation",
+    "use_key": "Burnat2026"
+   },
+   {
+    "ref_no": 23,
+    "draft_first_author": "A. Jha et al.",
+    "verified_first_author": "Ariel Fogel",
+    "arxiv": "2602.04653",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "Inference-Time Backdoors via Chat Templates: From LLM Supply Chains to Agentic System Compromise",
+    "use_key": "Fogel2026"
+   },
+   {
+    "ref_no": 24,
+    "draft_first_author": "C. Tan et al.",
+    "verified_first_author": "Sarah Ball",
+    "arxiv": "2406.09289",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": false,
+    "verified_title": "Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models",
+    "use_key": "Ball2024"
+   },
+   {
+    "ref_no": 25,
+    "draft_first_author": "J. Wu et al.",
+    "verified_first_author": "Mingyu Luo",
+    "arxiv": "2608.09624",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "Measuring the Wrong Thing: Internal Harmfulness Scores Anti-Rank Successful Jailbreaks",
+    "use_key": "Luo2026"
+   },
+   {
+    "ref_no": 26,
+    "draft_first_author": "L. Wang et al.",
+    "verified_first_author": "Dominik Schwarz",
+    "arxiv": "2607.13075",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators",
+    "use_key": "Schwarz2026"
+   },
+   {
+    "ref_no": 27,
+    "draft_first_author": "K. Ganguli et al.",
+    "verified_first_author": "Joshua Fonseca Rivera",
+    "arxiv": "2608.05086",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": true,
+    "verified_title": "Item Response Theory for AI Safety",
+    "use_key": "Rivera2026"
+   },
+   {
+    "ref_no": 28,
+    "draft_first_author": "S. Jha et al.",
+    "verified_first_author": "Fabio Spagliardi",
+    "arxiv": "2606.20626",
+    "verdict": "WRONG_AUTHOR (fabricated name)",
+    "title_ok": false,
+    "verified_title": "Efficient Safety Benchmarking via Item Response Theory",
+    "use_key": "Spagliardi2026"
+   },
+   {
+    "ref_no": 29,
+    "draft_first_author": "J. Casper et al.",
+    "verified_first_author": "Stephen Casper",
+    "arxiv": "2401.14446",
+    "verdict": "WRONG_INITIAL",
+    "title_ok": true,
+    "verified_title": "Black-Box Access is Insufficient for Rigorous AI Audits",
+    "use_key": "Casper2024"
+   },
+   {
+    "ref_no": 30,
+    "draft_first_author": "P. Rottger et al.",
+    "verified_first_author": "Paul Röttger",
+    "arxiv": "2308.01263",
+    "verdict": "OK",
+    "title_ok": true,
+    "verified_title": "XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models",
+    "use_key": "Rottger2023"
+   }
+  ]
+ },
+ "other": [
+  {
+   "wrong_text": "'Qwen3-4B-SafeRL' cited with no source",
+   "fix": "cite Qwen3Guard Technical Report arXiv 2510.14276, Section 3.5 'Application I: Safety RL with Generative Qwen3Guard'. That section confirms Qwen3Guard-4B-Gen supplied the reward for Safety RL on Qwen3-4B, so Qwen3Guard must NOT be used as the judge for SafeRL.",
+   "source": "https://arxiv.org/pdf/2510.14276"
+  },
+  {
+   "wrong_text": "iter-2 bib key Lin2025 / draft '[3] ... ACL 2026'",
+   "fix": "key Lin2026, year 2026 (ACL 2026)"
+  },
+  {
+   "wrong_text": "CAA cited as 'Rimsky et al.'",
+   "fix": "the arXiv 2312.06681 metadata now lists first author Nina Panickssery (the same person); key Panickssery2023"
+  }
+ ]
+}

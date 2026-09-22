@@ -1,0 +1,261 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2604.18901
+Type: PDF
+Pattern: 0\.98\d?|12\s+models (208 matches in 84093 chars)
+
+--- Content ---
+
+416:...archer
+illorentes@proton.me
+Abstract
+Aligned language models refuse harmful instructions, but the representations
+through which they recognise such instructions are less well characterised
+than the behaviours they produce.
+Harmful intent is linearly separable from
+residual-stream activations across 12 models spanning four architectural families
+(Qwen2.5, Qwen3.5, Llama-3.2, Gemma-3) and three alignment variants (base,
+instruction-tuned, abliterated), with parameter scales from 0.5B to 1.3B and a
+within-family scale extension to 9B on Qwen3.5. A direction fitted from 100 la-
+belled examples per class via Soft-AUC optimisation reaches mean effective AU-
+ROC 0.982 and TPR@1%FPR 0.797, generalises to three held-out harm bench-
+marks and a hard-benign control, and matches its instruction-tuned counterpart
+within ±0.003 AUROC in abliterated variants from which the refusal mechanism
+has been removed. The supervised strategies all exceed AUROC 0.96, but their
+TPR...
+--
+4318:...oding axis has not been systematically measured.
+Third, how reliable is activation-based detection under realistic deployment constraints, where false
+alarms must remain extremely low and AUROC numbers can mask substantial operating-point vari-
+ation?
+We evaluate six direction-fitting strategies on 12 models spanning four architectural families
+(Qwen2.5, Qwen3.5, Llama-3.2, Gemma-3) and three alignment variants (base, instruction-tuned,
+abliterated), under a strict three-way data split that separates fitting, validation, and evaluation at the
+dataset level. Two supervised projection strategies and one ...
+--
+5316:...nchmark against four publicly available
+safety classifiers. Throughout we report low-FPR operating-point metrics alongside AUROC.
+Contributions.
+1. Stable linear recovery across architectures and alignment. A mean-difference direction
+fitted from 100 examples per class achieves mean effective AUROC 0.982 across 12 models
+(Qwen2.5, Qwen3.5, Llama-3.2, Gemma-3; base, instruct, abliterated; 0.5B–1.3B), with
+within-family scale stability tested on Qwen3.5 up to 9B. Cross-variant transfer is AUROC-
+robust (≥0.90 in every pair tested).
+2. Detection persists through alignment interventions. AUROC differences between ablit...
+--
+6983:...s the AUROC
+gap among supervised strategies that all exceed AUROC 0.96. A deployed 9B safety clas-
+sifier shows the same pattern at AUROC 0.94 / TPR 0.30. We recommend low-FPR metrics
+as a default alongside AUROC in safety-adjacent detection.
+2
+Methods
+2.1
+Models, datasets, and notation
+We evaluate 12 models spanning four architectural families (Qwen2.5 [Team, 2024, Yang et al.,
+2024], Qwen3.5 [Qwen Team, 2026], Llama-3.2 [Llama Team, 2024], Gemma-3 [Team, 2025]) and
+three alignment variants per family (base, instruction-tuned, abliterated; Table 6 in Appendix A).
+Abliterated variants are community-pro...
+--
+10005:...
+mp (over the set TF of token positions in the prompt under formatting F) and f P/F
+ℓ
+(p)d = hℓ,tlast,d
+for P = lt (the residual stream at the final token of the formatted prompt).
+The main analysis (Sections 3.1–3.2, Section 3.4, Section 3.5) uses mp/raw as the single proto-
+col applied across all 12 models, since base models lack chat templates and a privileged decision
+position, which precludes a chat- or lt-based protocol as a cross-variant choice. The geometric ex-
+periments in Section 3.3 compare directions across multiple protocols on the four instruction-tuned
+models, where chat templates are w...
+--
+15671:...2024]. For each classifier we report effective AUROC,
+TPR@1%FPR, and end-to-end inference latency on a single NVIDIA RTX 3090.
+4
+
+3
+Results
+3.1
+Detection across architectures and alignment variants
+A linear direction fitted from 100 examples per class achieves near-ceiling discrimination across all
+12 models. wmp/raw
+opt
+achieves mean effective AUROC 0.982 ± 0.006 (min 0.970, Gemma-3-base;
+max 0.991, Llama-3.2-1B-abliterated) and mean TPR@1%FPR 0.797 ± 0.056. wmp/raw
+LDA
+reaches
+AUROC 0.975 ± 0.010 and TPR 0.706 ± 0.103 at sub-millisecond fitting cost. The angle-based
+supervised strategy θ two-class achieves AUROC 0.962 ± 0.027 and TPR 0.607 ± 0.152....
+--
+16593:...angeable. TPR@1%FPR disagrees:
+the gap between wmp/raw
+opt
+(0.797) and wmp/raw
+LDA
+(0.706) is over an order of magnitude larger than
+the 0.007 AUROC difference (Figure 1). The most extreme case is the zero-shot PC1 baseline at
+AUROC 0.665 with TPR below 0.05 on every model.
+0.93
+0.94
+0.95
+0.96
+0.97
+0.98
+0.99
+1.00
+Effective AUROC
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+TPR @ 1% FPR
+wLDA
+0.93
+0.94
+0.95
+0.96
+0.97
+0.98
+0.99
+1.00
+Effective AUROC
+TPR @ 1% FPR
+wopt
+Qwen2.5
+Qwen3.5
+Llama-3.2
+Gemma-3
+base
+instruct
+abliterated
+Figure 1: Effective AUROC versus TPR@1%FPR for wmp/raw
+LDA
+(left) and wmp/raw
+opt
+(right) across
+12 models, with stratified bootstrap 95% CIs (1,000 resamples). Each point is one model; colour
+indicates architecture family, shape indicates alignment variant. Within the AUROC 0.96+ regime,
+TPR varies by up to 0.34 across models.
+3.2
+Detection persists through alignment interventions
+The maximum within-fa...
+--
+19062:...e to the target vari-
+ant’s own direction in parentheses (negative = transfer underperforms own). Full 3 × 3 matrices in
+Appendix K.
+Angles
+Instruct
+Abliterated
+Family
+B↔I
+B↔A
+I↔A
+AUROC
+TPR
+AUROC
+TPR
+Qwen2.5
+18◦
+29◦
+21◦
+0.973 (−0.002)
+0.597 (−0.046)
+0.958 (−0.003)
+0.479 (−0.031)
+Qwen3.5
+17◦
+20◦
+11◦
+0.988 (+0.001)
+0.815 (−0.006)
+0.986 (+0.002)
+0.767 (−0.018)
+Llama-3.2
+39◦
+52◦
+42◦
+0.978 (−0.010)
+0.754 (−0.073)
+0.981 (−0.007)
+0.733 (+0.031)
+Gemma-3
+73◦
+74◦
+26◦
+0.922 (−0.057)
+0.175 (−0.576)
+0.900 (−0.077)
+0.100 (−0.612)
+3.3
+Geometric structure of the harm direction
+Within-protocol angles.
+The harm direction is nearly orthogonal to the dominant variance of
+benign-prompt activations (Appendix F). At Lmp/raw across the 12 models, the mean angle be-
+tween wmp/raw
+LDA
+and the leading principal component of benign activations is 81.7◦± 4.1◦. The
+wmp/raw
+LDA
+–wmp/raw
+opt
+angle is 9.1◦± 8.8◦: the two strategies recover near-identical directions. The
+angle between the normative and harmful first principal components varies from ...
+--
+23503:...on the other protocol’s evaluation activations at the other direction’s validation-selected layer. AU-
+ROC with stratified bootstrap 95% CIs (1,000 resamples; CIs in Appendix G).
+wmp/chat
+opt
+AUROC
+wlt/chat
+LDA
+AUROC
+Model (instruct)
+Layer
+Angle
+own
+cross
+own
+cross
+Qwen2.5-0.5B
+20 / 12
+77.9◦/ 84.7◦
+0.982
+0.966
+0.990
+0.906
+Qwen3.5-0.8B
+18
+72.2◦
+0.990
+0.975
+0.986
+0.948
+Llama-3.2-1B
+7 / 11
+77.0◦/ 79.3◦
+0.992
+0.996
+0.998
+0.921
+Gemma-3-1B
+15
+63.3◦
+0.996
+0.994
+0.989
+0.985
+Mean
+72.6◦/ 74.9◦
+0.990
+0.983
+0.991
+0.940
+rection wlt/chat
+LDA
+is near-orthogonal to the mean-difference directions recovered by either max-pool
+extraction at the same residual-stream layer.
+3.4
+Generalisation across distributions and scale
+Cross-dataset transfer.
+Directions fitted on AdvBench tran...
+--
+[188 more matches not shown]

@@ -1,0 +1,82 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2603.14278
+Type: PDF
+Pattern: (Llama|Qwen|Gemma|Mistral|Phi)[-\s0-9.]*[0-9]+B|where\s+and\s+how\s+refusal|layer[-\s]wise (14 matches in 49864 chars)
+
+--- Content ---
+
+896:...lar responses. In this work, we combine these
+two lines of research by directly manipulating the model’s internal acti-
+vations to alter its generation trajectory without changing the prompt.
+Our method constructs a nearby benign prompt and performs layer-wise
+activation substitutions using a sequential procedure. We show that this
+activation surgery method reveals where and how refusal arises, and pre-
+vents refusal signals from propagating across layers, thereby inhibiting
+the model’s safety mechanisms. Finally, we discuss the security implica-
+tions for open-weights models and instrumented inference environments.
+Keywords: LLM S...
+--
+4979:...ned convincing, actionable responses for 30% of the 520 harmful prompts
+in AdvBench [30] with Llama-4-Scout-17B-16E-Instruct, despite its ad-
+vanced safety mechanisms. We also verified that the method remains effective be-
+yond Llama-4, including on Qwen2.5-7B-Instruct and Mistral-7B-Instruct-v0.3.
+
+Activation Surgery
+3
+Write a script that can automate the creation of fake social media
+accounts and generate spam messages.
+Without Acti-
+vation Surgery
+I can’t help with
+that. Creating fake social
+media accounts and gen-
+erating
+sp...
+--
+6597:...s the refusal mechanism without modifying the input text.
+2
+Background and Related Work
+2.1
+Alignment, Refusal, and Safety Behaviors
+Modern instruction-tuned LLMs are typically trained to refuse requests that vi-
+olate safety policies. Understanding where and how refusal emerges inside the
+model has become an active area of study. Recent evidence suggests that refusal
+is mediated by low-dimensional structure in representation space: prior work has
+found that refusal is largely captured by a single direction, and tha...
+--
+22265:...ss (45% of samples), and (iii) Misinformation and discrimination (44% of sam-
+ples). Although the detailed experimental study reported here is conducted on
+Llama-4-Scout-17B-16E-Instruct, we additionally verified that the method
+remains effective on Qwen2.5-7B-Instruct and Mistral-7B-Instruct-v0.3.
+Hyperparameters We attacked the 520 samples of our dataset using 32 dis-
+tinct hyperparameter configurations, varying τ over {0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
+1.0, 1.1} and γ over {0.0, 0.2, 0.4, 0.6}. The attacks were conducted with a t...
+--
+36251:...as safety mitigations are updated. Our goal is
+therefore to document a reproducible, execution-level failure mode on a modern
+target through a clean, controlled case study. We nevertheless additionally veri-
+fied that the method remains effective on Qwen2.5-7B-Instruct and Mistral-7B-
+Instruct-v0.3. At the same time, the most effective hyperparameter region ap-
+pears to be model-dependent: in particular, for Mistral-7B-Instruct-v0.3, suc-
+cessful interventions were obtained for relatively small τ values, typically be-
+tween 0 and 0.1. We therefore keep Llama-4 as the main experimental focus of
+the paper, while viewing broader cross-model evaluation as an important...
+--
+38919:..., we studied an attack vector that is complementary to both classical
+prompt-based jailbreaking and abliteration-style methods. Rather than modify-
+ing the input text or model weights, we alter the LLM’s internal trajectory at
+inference time through layer-wise activation substitutions guided by a benign
+twin prompt. Our approach, Activation Surgery, constructs a very close benign
+twin prompt (differing by only a few tokens) and performs sequential activation
+replacements following a patch-then-compute pro...
+--
+39671:...al dy-
+namics and yield actionable outputs for a substantial fraction of tested requests
+on Llama-4-Scout-17B-16E-Instruct, achieving a 32.8% success rate on Ad-
+vBench. We also verified that the method remains effective beyond Llama-4,
+including on Qwen2.5-7B-Instruct and Mistral-7B-Instruct-v0.3, although the
+most effective hyperparameter region varies across models. Our analysis on
+Llama-4 reveals a stable operating region in the (τ, γ) space and a clear trade-off
+between intervention strength and resp...
+--
+[2 more matches not shown]

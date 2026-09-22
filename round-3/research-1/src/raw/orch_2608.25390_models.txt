@@ -1,0 +1,61 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.25390
+Type: PDF
+Pattern: frozen[- ]model|Qwen|Llama|Gemma|OLMo-2-\d (25 matches in 92098 chars)
+
+--- Content ---
+
+749:...Yet
+it remains unclear why safety-critical features in a wide range of models emerge in
+a concentrated, low-dimensional structure. In a case study of OLMo-2-0425-1B-
+Instruct we find that the refusal geometry reflects refusal training: activation updates
+resulting from refusal-completion first-token losses ...
+--
+1244:...ated with
+repetitive refusal starts, which in turn is linked to concentration of gradients and
+refusal features in a low-dimensional subspace. Across frozen-model analyses and
+controlled synthetic fine-tuning, we find evidence of a hardening lever: diverse
+refusal starts can raise stable ranks of gradients and ...
+--
+4947:...sional subspace remained elusive.
+In this work, we bridge this gap by studying robustness to refusal ablation attacks analytically and
+empirically in OLMo-2-0425-1B-Instruct:
+(a) Low-dim refusal residuals
+(b) Diverse refusal residuals
+1
+4
+8
+12
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Refusal rate...
+--
+7159:...plete component of their cross-layer relation and
+account for its observed rank amplification or contraction.
+• Rank–vulnerability connection. Across frozen-model analyses and controlled fine-tuning,
+greater refusal-start diversity is associated with higher stable ranks and weaker difference-
+in-means single-ve...
+--
+20175:... spectral error, and row-wise cosine similarity.
+4
+Empirical validation
+4.1
+Experimental setup
+Target models.
+We perform measurements against allenai/OLMo-2-0425-1B-Instruct, an
+instruction-tuned OLMo 2 1B model with 16 transformer blocks, 16 attention heads, and hidden
+dimension d = 2048. For the training-stage analysis in Section 4.2, we evaluate its additional check-
+points: allenai/OLMo-2-0425-1B (olmo_base), allenai/OLMo-2-0425-1B-SFT (olmo_sft),
+allenai/OLMo-2-0425-1B-DPO (olmo_dpo), allenai/OLMo-2-0425-1B-RLVR1 (olmo_rlvr),
+and allenai/OLMo-2-0425-1B-Instruct (olmo_inst) [24].
+Target datasets.
+We use AdvBench (adv), WildJailbreak evaluation and training splits (wld,
+wld_tr), and XSTest-Respo...
+--
+[15 more matches not shown]

@@ -1,0 +1,37 @@
+# =============================================================================
+# MODÈLE DE CAMPAGNE — À DUPLIQUER PUIS MODIFIER.
+# -----------------------------------------------------------------------------
+# 1. Copie ce fichier :  cp campaign_20260703_base.yaml campaign_<date>_<nom>.yaml
+#    (tout fichier `campaign_*.yaml` de ce dossier apparaît AUTOMATIQUEMENT dans
+#     `modelscanner tui` -> écran Campagne.)
+# 2. Édite la liste `models` ci-dessous (path HF/local + provenance ATTENDUE).
+# 3. Lance :  modelscanner tui   (ou)   python experiments/run_scan.py <ton_fichier>
+#
+# Ici seule la liste `models` est active : la TUI INJECTE les plans cochés à l'écran
+# (comportemental / activations / multilingue / profil) + device + sortie. Pour un
+# fichier 100 % autonome (lancé tel quel, plans figés), DÉCOMMENTE le bloc ci-dessous.
+# =============================================================================
+
+# --- bloc optionnel : décommente pour figer les réglages dans le fichier ---------
+# device: auto                 # auto | cpu | cuda
+# probe_subset: 32             # sondes behavioral / classe (baisse -> + rapide ; retire -> complet)
+# plans:
+#   behavioral: true           # génération -> sépare censuré / ablatéré / décensuré-par-finetune
+#   activations: true          # Cohen's d (GPU/CPU propre ; sur CPU ou gros modèle -> false)
+#   weight_targets: o_proj     # "o_proj" (défaut) ou "o_proj,down_proj" (ajoute le writer MLP)
+# multilingual: false          # true -> refus par langue (asymétrie EN-only). Plus lent
+# profile: false               # true -> profil qualité / hallu / tags HF
+# download: true               # box AWS : télécharge chaque modèle absent du cache…
+# purge: true                  # …puis le purge après scan (grande matrice sans saturer le disque)
+# output_s3: s3://your-bucket/results   # 1 JSON/modèle + rapport poussés au fil de l'eau (si aws-cli)
+output_dir: runs_out           # -> runs_out/<run_id>/<modele>.json (+ rapport 4-buckets)
+
+# expected_label ∈ {censored, ablated, finetuned_decensored, ambiguous} — optionnel mais
+# recommandé (colonne « attendu » + coche ✓/✗ dans le rapport de campagne).
+models:
+  - path: Qwen/Qwen2.5-0.5B-Instruct
+    expected_label: censored
+  - path: huihui-ai/Qwen2.5-0.5B-Instruct-abliterated
+    expected_label: ablated
+  # - path: <ton_modele_hf_ou_chemin_local>
+  #   expected_label: ablated

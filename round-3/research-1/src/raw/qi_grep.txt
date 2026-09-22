@@ -1,0 +1,40 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2406.05946
+Type: HTML
+Pattern: KL\s+diverg|first\s+few\s+tokens|token\s+position|base model (53 matches in 119373 chars)
+
+--- Content ---
+
+4413:...ng attacks. Importantly, we discuss how this consolidated notion of shallow safety alignment sheds light on promising research directions for mitigating these vulnerabilities. For instance, we show that deepening the safety alignment beyond just the first few tokens can often meaningfully improve robustness against some common exploits. We also design a regularized fine-tuning objective that makes the safety alignment more persistent against fine-tuning attacks by constraining updates on initial tokens. Overall...
+--
+7301:...atic experiments to characterize the shallow safety alignment issue in current LLMs (Section 2). We demonstrate that the primary difference in safety behaviors between an aligned model and its unaligned counterpart lies in their modeling of only the first few tokens of their outputs.22 2 Similar token-wise dynamics have recently also been noted by Lin et al. [25], Zhang and Wu [26], and Zhao et al. [27]. This is also related to Superficial Alignment Hypothesis by Zhou et al. [28]. See Section 5 for more detailed discussions of the related work. Part of the problem is that there are easy optimization shortcuts that may drive such a local optimum. For example, simply prefilling an unaligned base model to start its output with a prefix “I cannot fulfill” is sufficient to make it as safe as aligned models. We note that the shallow safety alignment issue helps explain why attack methods that focus on initiating trajectories with harmful or affirmati...
+--
+8265:...ponses are so effective, like adversarial suffix attacks [29], decoding parameters exploit [24], and an emerging paradigm of prefilling attacks [30, 21]. Moreover, we show that fine-tuning attacks [22] also create the most significant changes in the first few tokens of a harmful response. This means that by simply modifying these initial tokens, it is possible to undo the model alignment, explaining why so few fine-tuning steps can lead to jailbroken models.
+
+Second, we argue that future safety alignment approa...
+--
+10158:...e Language Models
+
+We consolidate the notion of “shallow safety alignment” to characterize an issue that we commonly find in current safety-aligned LLMs. Specifically, we say that a model undergoes shallow safety alignment if it primarily adapts the base model’s generative distribution only over the very first few output tokens to induce a basic refusal response. In this section, we present a set of case studies to systematically illustrate the above issue: this type of alignment can appear safe in pre-deployment testing or standard workflows but quickly falls apart if anything triggers a non-refusal prefix. First, in Section 2.2, we show that there exists a local optimum where promoting simple refusal prefixes in the first few tokens of an unaligned model improves its safety to similar levels as an aligned model. We also show that the KL divergence between aligned and their unaligned counterparts is largely biased toward these initial token positions, suggesting that this shortcut is in fact exploited by current alignment approaches. Then, in Section 2.3, we demonstrate how this shallow safety alignment can be a source of many safety vulnerabilities, including vulnerabilities at the inference s...
+--
+15708:...⋅|𝒙,𝒔)\bm{y}\sim\pi_{\mathrm{base}}(\,\cdot\,|\bm{x},\bm{s}). Table 1 shows the Harmfulness Rate of the outputs produced by the models with different prefilled refusal prefixes 𝒔\bm{s} for both Llama-2 [5] and Gemma [31] base. Although the unaligned base models generally have higher ASR than their aligned counterparts in standard decoding, the gap considerably decreases when both models are forced to start with refusal prefixes. This makes sense: continuing a refusal prefix with an absence of fullfillment...
+--
+16312:...suggests a simple shortcut or reward hacking scheme for safety alignment: safety behaviors can be introduced by solely updating an unaligned model’s distribution over the first few output tokens to promote some refusal prefixes.
+
+Figure 1: Per-token KL Divergence between Aligned and Unaligned Models on Harmful HEx-PHI.
+
+Current Safety-aligned Models Exploit This Shortcut. We provide evidence that current safety-aligned models are likely exploiting this shortcut, resulting in shallow safety alignment. We ...
+--
+16970:...from the HEx-PHI safety benchmark and then generate harmful answers for these instructions using a jailbroken version of GPT-3.5-Turbo from Qi et al. [22]. We call this dataset Harmful HEx-PHI. With this harmful dataset, we can examine the per-token KL divergence DKL(πaligned(⋅|𝒙,𝒚<k)∥πbase(⋅|𝒙,𝒚<k))D_{\text{KL}}\big(\pi_{\mathrm{aligned}}(\,\cdot\,|\bm{x},\bm{y}_{<{k}})\big\|\pi_{\mathrm{base}}(\,\cdot\,|\bm{x},\bm{y}_{<{k}})\big) between the aligned model πaligned\pi_{\mathrm{aligned}} and unaligned pre-trained model πbase\pi_{\mathrm{base}} on each of the harmful example (𝒙,𝒚)(\bm{x},\bm{y}). As shown in Figure 1, for both the Llama and Gemma models, the KL divergence is significantly higher in the first few tokens than for later tokens. This suggests that most of the KL ‘‘budget’’ for the safety alignment in these models is spent on the first few prefix tokens.33 3 Using the terminology “spending” KL on a KL “budget” from Gao et al. [33]. At the high level, t...
+--
+18707:...
+
+Since we know that there exists a safety shortcut, and aligned models likely exploit it, this helps explain and unify existing inference-time and fine-tuning time vulnerabilities.
+
+#### 2.3.1 Inference-Stage Vulnerabilities
+
+As demonstrated by the KL divergence in Figure 1, a shallowly aligned model’s generative distribution of later harmful tokens remains largely unaffected when compared to its unaligned counterpart. This implies that we can still induce harmful outputs from such shallowly aligned models as long as we can bypass the block of refusal prefixes in the early token positions. We note that this can be a source of vulnerabilities, leading to various types of inference-stage exploits.
+
+Figure 2: ASR vs. Number of Prefilled Harmful Tokens, with 𝒚^∼πθ(⋅|𝒙,𝒚≤k)\hat{\bm{y}}\sim\pi_{\theta}(\cdot|\bm{x},\bm{y}_{\leq k}) on Har...
+--
+[38 more matches not shown]

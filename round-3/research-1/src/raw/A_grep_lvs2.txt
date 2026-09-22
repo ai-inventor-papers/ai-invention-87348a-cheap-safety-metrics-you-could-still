@@ -1,0 +1,180 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.08044v1
+Type: PDF
+Pattern: LVS\s*[=(]|perturbation\s+direction|direction\s+of\s+(the\s+)?perturb|range\s+of\s+state|unsafe-aligned|Table\s+[0-9]+[:.]|per\s+unit (12 matches in 57567 chars)
+
+--- Content ---
+
+7288:...; (ii) we introduce an intervention-based evaluation
+framework using soft interventions in parameter and latent space to analyze how internal perturba-
+tions affect safety behavior; (iii) we propose the Latent Vulnerability Score (LVS) to quantify how
+easily harmful behavior can be induced under bounded latent perturbations; and (iv) we evaluate a
+range of state-of-the-art safety-aligned and unsafe-aligned models under the proposed framework.
+Empirically, our intervention analysis reveals systematic representation-level failure modes that
+are not captured by behavioral evaluation alone: dissociated models consistently exhibit elevated
+2
+
+latent vulnerability despite comparable refusal behavior, with the strongest sensitivities emerging in
+intermedia...
+--
+22910:...ons but significantly higher vulnerability in mid layers.
+6
+
+6
+Representation-Aware Safety Metric
+Latent Vulnerability Score (LVS).
+To quantify the sensitivity of safety-aligned behavior to latent
+perturbations, we introduce the Latent Vulnerability Score (LVS), a dissociation-aware metric that
+measures the amount of behavioral degradation induced per unit perturbation in latent space. Unlike
+standard behavioral metrics such as attack success rate (ASR), which only measure whether a model
+fails, LVS measures how easily safety behavior can be destabilized under small interventions.
+Let fθ denote a language model with hidden representation hℓ(x) at layer ℓfor input x. Given a
+soft intervention h′
+ℓ(x)...
+--
+25474:...rturbation
+budgets and model families, using the Harmbench [Mazeika et al., 2024] dataset. Across all pertur-
+bation scales, the middle layers consistently exhibit elevated LVS values, indicating substantially
+greater sensitivity to latent perturbations than the embedding or final layers. Since LVS measures the
+increase in harmful behavior induced per unit perturbation, higher middle-layer LVS suggests that
+intermediate representations constitute particularly vulnerable regions of the latent space, where small
+interventions can disproportionately destabilize safety-aligned behavior. Moreover, across Gemma,
+Llama, and Qwen families, dissociated models generally display higher LVS than their correspon...
+--
+26440:...under standard evaluation.
+Does alignment really make the model safer?
+To better understand whether existing alignment
+methods improve representation-level safety, we evaluate the proposed Latent Vulnerability Score
+(LVS) across multiple aligned and intentionally de-aligned model families. Table 1 reports layer-wise
+LVS for both safety-aligned and unsafe-aligned variants using the perturbation budget ϵ = 0.001.
+Within the Llama-3 family, models with explicitly weakened safety mechanisms generally exhibit
+substantially higher vulnerability, particularly in the final layer. For example, both the weight-level
+safety removal model (Llama-3-8B-Instruct-abliterated) and the data-level unsafe alignment
+model (do...
+--
+30083:...Safety ↓– Data)
+17.875
+0.345
+201.190
+Alpaca Family - Safe Alignment
+alpaca-7b-reproduced [Ji et al., 2024] (Baseline)
+121.957
+2.025
+0.000
+SACPO [Wachi et al., 2024] (Harmless + Helpful)
+62.757
+2.339
+7.448
+P-SACPO [Wachi et al., 2024] (Harmless + Helpful)
+152.400
+3.832
+10.362
+Beaver-7B-v3.0 [Ji et al., 2023] (Harmless + Helpful)
+115.538
+3.131
+0.000
+Table 1: Layer-wise LVS across different alignment strategies and model variants under perturbation
+budget ϵ = 0.001. Higher LVS indicates greater behavioral degradation per unit latent perturbation.
+Within each model family, bold indicates the largest value and underlined values denote the smallest.
+perturbations. These findings suggest that behavioral safety metrics alone may provide incom-
+plete evidence about representation-level robustness. The primary contribution of this work is an
+intervention-based perspective on ...
+--
+45852:.... [2024]
+1,064
+overrefusal probe
+Do-Not-Answer
+Wang et al. [2024]
+726
+harmful direct
+AdvBench
+Zou et al. [2023b]
+506
+harmful direct
+HarmBench
+Mazeika et al. [2024]
+188
+harmful direct
+MaliciousInstruct
+Huang et al. [2024]
+100
+harmful direct
+WildJailbreak
+Jiang et al. [2024]
+98
+harmful jailbreak
+JailbreakBench
+Chao et al. [2024]
+70
+harmful jailbreak
+Table 2: Sources included in the evaluation suite, with prompt counts before deduplication.
+A.2
+Evaluation preprocessing
+We build the evaluation suite by concatenating the sources in Table 2. Prompts are deduplicated
+with a lowercased, whitespace-normalized key, and prompts shorter than ten characters are removed.
+When two prompts share the same deduplication key, we keep the example from the higher-priority
+source according to the fixed source-priority order in the preprocessing configuration. The resulting
+evaluation suite is used on...
+--
+51524:...es gϕ at the start of dissociated-model construction; ϕ
+then continues to update as described in Section B. Table 3 summarizes the optimization settings.
+Dissociated-model hyperparameters.
+The dissociated model is initialized from Gemma 2 2B
+Instruct [Gemma Team, 2024] and fine-tuned with the loss in Equation 1. Optimization settings are
+listed in Table 4.
+Loss coefficients and target.
+The default coefficients are λSFT = 0.05, λmon = 0.1, and λKL =
+0.3. The monitor target is a sigmoid score of τ = 0.75, corresponding to ℓ⋆= logit(0.75) = log 3 ≈
+14
+
+Item
+Value
+Probe architecture
+flatten →linear (no bias, dim. 512) →linear logit head
+Loss
+binary cross-entropy with logits
+Optimizer
+AdamW, weight decay 10−4
+Learning rate
+3 × 10−4
+Batch size
+32
+Epochs
+30
+Selection criterion
+best AUROC on held-out split
+Pooling
+masked mean over sequence positions, per layer
+Layers used
+all transformer layers above the embedding
+Max sequence length
+512 tokens
+Table 3: Hyperparameters for latent monitor initialization.
+Item
+Value
+Base model
+Gemma 2 2B Instruct [Gemma Team, 2024]
+Optimizer
+AdamW
+Precision
+bfloat16 mixed precision
+Learning rate
+2 × 10−5
+Warmup ratio
+0.1
+Schedule
+linear decay
+Per-device micro-batch
+2
+Gradient accumulation
+8 steps
+Effective batch size
+16 examples
+Epochs
+3
+Max sequence length
+512 tokens
+Table 4: Hyperparameters for dissociated-model construction.
+1.0986. The relative weight of λmon to λKL controls the trade-off between latent harmfulness and
+behavioral fidelity to the base model. Both larger and smaller values of λmon produced dissociation at
+different operating points. We did not perform an exhaustive sweep; the reported values were chos...

@@ -1,0 +1,106 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2410.13708
+Type: HTML
+Pattern: models?\s+(we|were|are)|families?|across\s+\d+|Llama|Vicuna|Mistral|Qwen|Gemma (51 matches in 95678 chars)
+
+--- Content ---
+
+4053:...e critical safety attention heads inside the model. Our findings show that the special attention head has a significant impact on safety. Ablating a single safety head allows the aligned model (e.g., Llama-2-7b-chat) to respond to 16×⁣↑\times\uparrow more harmful queries, while only modifying 0.006%↓\textbf{0.006\%}\downarrow of the parameters, in contrast to the ∼5%\sim 5\% modification required in pr...
+--
+7926:...e harmful query datasets, using Ships to identify safe heads and using undifferentiated attention ablation (only modifying ∼\sim 0.006% of the parameters) can improve the attack success rate (ASR) of Llama-2-7b-chat from 0.04 to 0.64 ↑\uparrow and Vicuna-7b-v1.5 from 0.27 to 0.55 ↑\uparrow.
+
+Furthermore, to attribute generalized safety attention heads, we generalize Ships to evaluate the changes in the representation of ablating attention heads on ha...
+--
+8801:... ablating the attention head group can further weaken the safety capability collaboratively.
+
+Based on the Ships and Sahara, we interpret the safety head of attention on several popular LLMs, such as Llama-2-7b-chat and Vicuna-7b-v1.5. This interpretation yields several intriguing insights: 1. Certain safety heads within the attention mechanism are crucial for feature integration in safety tasks. Specifically, modifying th...
+--
+21448:...re 2(b) uses scaling contribution. 
+
+We conduct a preliminary experiment to demonstrate that Ships can be used to effectively identify safety heads. Our experiments are performed on two models, i.e., Llama-2-7b-chat (Touvron et al., 2023) and Vicuna-7b-v1.5 (Zheng et al., 2024b), using three commonly used harmful query datasets: Advbench (Zou et al., 2023b), Jailbreakbench (Chao et al., 2024), and Malicious Instruct (Huang et al., 2024). After a...
+--
+22630:...el is more susceptible to attacks and, thus, less safe. The results in Figure 2 indicate that ablating the attention head with the highest Ships score significantly reduces the safety capability. For Llama-2-7b-chat, using undifferentiated attention with chat template, ablating the most important head (which constitutes 0.006% of all parameters) improves the average ASR from 0.04 to 0.64 ↑\uparrow for ‘template’, representing a 16x ↑\uparrow improvement. For Vicuna-7b-v1.5, the improvement is less pronounced but still notable, with an observed improvement from 0.27 to 0.55 ↑\uparrow. In both models, Undifferentiated Attention consistently outperforms Scaling Co...
+--
+30752:...y safety head groups and perform ablations to assess model safety capability changes. Figure 4(a) illustrates the impact of ablating attention heads in varying group sizes on the safety capability of Vicuna-7b-v1.5 and Llama-2-7b-chat. Interestingly, we find safety capability generally improve with the ablation of a smaller head group (typically size 3), with ASR decreasing beyond this threshold. Further analysis reveals...
+--
+31413:...esents comprehensive ASR results for individual ablations of 1024 heads. The findings indicate that only a minority of heads are critical for safety, with most ablations having negligible impact. For Llama-2-7b-chat, head 2-26 emerges as the most crucial safety attention head. When ablated individually with the input template from Appendix B.1, it significantly weakens safety capability.
+
+Method |  Par...
+--
+31967:... | Neuron  
+LSP | ∼3%\sim 3\% | 0.58±\pm0.04 | Layer  
+Ours | ∼0.018%\sim 0.018\% | 0.72±\pm0.05 | Head  
+Table 1: Safety capability degradation and parameter attribution granularity. Tested model is Llama-2-7b-chat.
+
+Our Method Localizes Safety Parameters at a Finer Granularity. Previous research on interpretability (Zou et al., 2023a; Xu et al., 2024c), such as ActSVD (Wei et al., 2024b), Generation-...
+--
+34190:... post-ablation necessitates full text generation, which becomes increasingly impractical as language models grow in complexity. For instance, BERT-Base comprises 12 layers with 12 heads each, whereas Llama-2-7b-chat boasts 32 layers with 32 heads each. This scaling results in a prohibitive computational expense, hindering the feasibility of evaluating metric shifts after ablating each head. We conduct ...
+--
+37210:...ety of language models. To further explore the mechanisms of the safety head, we compare different ablation methods, Undifferentiated Attention (as defined by Eq 7) and Scaling Contribution (Eq 8) on Llama-2-7b-chat (results of Vicuna-7b-v1.5 are deferred to Appendix C.3). Table 3 presents our findings. The upper section of the table shows that attributing and ablating the safety head at the dataset level using Sahara leads to a i...
+--
+38571:...uence of a parameter may persist even after it has been ablated, which we believe is why some safety heads may be mistakenly judged as unimportant.
+
+(a) Safety heads for different ablation methods on Llama-2-7b-chat. Left. Attribution using Jailbreakbench. Right. Attribution using Malicious Instruct.
+
+(b) Safety heads on Llama-2-7b-chat and Vicuna-7b-v1.5. Left. Attribution using Undifferentiated Attention. Right. Attribution using Scaling Contribution.
+
+Figure 5: Overlap diagram of the Top-10 highest scores calculated using generalized Ships.
+
+Attention Weight and Attention Output Do Not Transfer. As depicted in Figure 5(a), when examining the model Llama-2-7b-chat, there is minimal overlap between the top-10 attention heads identified by Undifferentiated Attention ablation and those identified by Scaling Contribution ablation. Furthermore, we observe...
+--
+40022:...a crucial role in safety, not just the alignment process. In this section, we substantiate this perspective through an attribution analysis. We analyze the overlap in safety heads when attributing to Llama-2-7b-chat and Vicuna-7b-v1.511 1 Both of which are fine-tuned versions on top of Llama-2-7b, having undergone identical pre-training. using two ablation methods on the Malicious Instruct dataset. The findings, as presented in Figure 5(b), reveal a significant overlap of safety heads be...
+--
+41931:... of knowledge and capabilities. Therefore, we evaluate the impact of safety heads ablation on helpfulness. We use lm-eval (Gao et al., 2024) to assess model performance after ablating safety heads of Llama-2-7b-chat on zero-shot tasks, including BoolQ (Clark et al., 2019a), RTE (Wang, 2018), WinoGrande (Sakaguchi et al., 2021), ARC Challenge (Clark et al., 2018), OpenBookQA (Mihaylov et al., 2018). As ...
+--
+43414:...ecting harmful queries to offers a novel way for LLM safety understanding. Extensive experiments show that selectively ablating identified safety heads significantly increases the ASR for models like Llama-2-7b-chat and Vicuna-7b-v1.5, underscoring its effectiveness. This work also presents the Safety Attention Head Attribution Algorithm (Sahara), a generalized version of Ships that identifies groups of heads whose ablatio...
+--
+45753:...Gavves.  Mechanistic interpretability for ai safety–a review.  _arXiv preprint arXiv:2404.14082_ , 2024. 
+  * Campbell et al. (2023) James Campbell, Phillip Guo, and Richard Ren.  Localizing lying in llama: Understanding instructed dishonesty on true-false questions through prompting, probing, and patching.  In _Socially Responsible Language Modelling Research_ , 2023.  URL <https://openreview.net/foru...
+--
+49367:...04805_ , 2018. 
+  * Dubey et al. (2024) Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian, Ahmad Al-Dahle, Aiesha Letman, Akhil Mathur, Alan Schelten, Amy Yang, Angela Fan, et al.  The llama 3 herd of models.  _arXiv preprint arXiv:2407.21783_ , 2024. 
+  * Fang et al. (2024) Junfeng Fang, Zac Bi, Ruipeng Wang, Houcheng Jiang, Yuan Gao, Kun Wang, An Zhang, Jie Shi, Xiang Wang, and Tat-Sen...
+--
+58600:...024. 
+  * Touvron et al. (2023) Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier Martinet, Marie-Anne Lachaux, Timothée Lacroix, Baptiste Rozière, Naman Goyal, Eric Hambro, Faisal Azhar, et al.  Llama: Open and efficient foundation language models.  _arXiv preprint arXiv:2302.13971_ , 2023. 
+  * Vaswani (2017) A Vaswani.  Attention is all you need.  _Advances in Neural Information Processing Syste...
+--
+61223:...r.  _arXiv preprint arXiv:2404.12038_ , 2024c. 
+  * Yang et al. (2024) An Yang, Baosong Yang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Zhou, Chengpeng Li, Chengyuan Li, Dayiheng Liu, Fei Huang, et al.  Qwen2 technical report.  _arXiv preprint arXiv:2407.10671_ , 2024. 
+  * Yu et al. (2024a) Le Yu, Bowen Yu, Haiyang Yu, Fei Huang, and Yongbin Li.  Extend model merging from fine-tuned to pre-trained large language models via weight disentanglement.  _arXiv preprint arXiv:2408.03092_ , 2024a. 
+  * Yu et al. (2024b) Le Yu, Bowen Yu, Haiyang Yu, Fei Huang, and Yongbin Li.  Language models are super mario: Absorbing abilities from homologous models as a free lunch.  In _Forty-first International Conference on Machine Learning_ , 2024b. 
+  * Zeng et al. (2024) Yi Zeng, Hongpeng Lin, Jingwen...
+--
+71377:...ccess and use firearms’. 
+
+In Figure 8, we visualize the attention weights after applying the mean operation to Query (WqW_{q}), Key (WkW_{k}), and Value (WvW_{v}), as discussed in Section 5.3. Using Llama-2-7b-chat, we modified Head-26 of Layer-2 for three different inputs from the AdvBench dataset. The results show that using mean ablation produces results similar to those obtained with ϵ\epsilon sca...
+--
+72976:... Instruct
+
+The other is to use a simple template, as shown in Figure 10. The reason for using this simple template instead of a unique template for each model (such as [INST] and [\INST] wrappers for Llama-2) is to ensure consistency and comparability of the attribution analysis, and to avoid introducing specific information learned by the model in alignment tuning when calculating the safety head atte...
+--
+77308:...at when Ships is calculated for specific harmful queries and more safety attention heads are ablated, the ASR increases with the number of ablations. Interestingly, when using the ‘template’ input on Llama-2-7b-chat, this increase is absolute but not strictly correlated with the number of ablations. We believe this may be related to the format-dependent components of the model (see D for a more detailed discussion).
+
+When using Scaling Contribution for ablation, as shown in Figure 12, the overall effect on Vicuna-7b-v1.5 is less pronounced. However, with ‘template’ input, the ASR increases, though the change does not scale with the number of ablated heads.
+
+### C.2 Additional Experimental Results 4.2
+
+Figure ...
+--
+79222:...0.15+0.15  
+Contribution | Jailbreakbench | +0.09+0.09 | +0.08+0.08 | +0.14+0.14 | +0.09+0.09 | +0.11+0.11 | +0.10+0.10  
+Table 5: The impact of the number of ablated safety attention heads on ASR on Vicuna-7b-v1.5. Upper. Results of attributing safety heads at the dataset level using generalized Ships; Bottom. Results of attributing attributing specific harmful queries using Ships. 
+
+In this section, w...
+--
+80318:...ating that the Ships metric effectively identifies these critical safety heads.
+
+### C.3 Additional Experimental Results 5.1
+
+In this section, we supplement the results of the Sahara experiment using Vicuna-7b-v1.5, as discussed in Section 5.1. Despite Vicuna-7b-v1.5’s relatively poor intrinsic safety, Sahara is still able to attribute the safety heads that, when ablated, reduce the model’s safety. Furthermore, compared to Llama-2-7b-chat, the use of Scaling Contribution on Vicuna-7b-v1.5 yields more effective results.
+
+## Appendix D Attributing Safety Parameters Should Not Set the System Prompts
+
+In this paper, we employ a simple and consistent input format, as shown in Figur...
+--
+[11 more matches not shown]

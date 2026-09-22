@@ -1,0 +1,237 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2508.20766
+Type: PDF
+Pattern: Table\s+1 (6 matches in 59609 chars)
+
+--- Content ---
+
+13793:...rites to the resid-
+ual stream. The modification is a rank-one update
+designed to add a small, consistent push in the di-
+rection of ˆs. The ROSI update rule is:
+W ′
+out ←Wout + α · ˆs · ¯wT
+(6)
+where α is a scalar hyperparameter that controls
+the strength of the injection, ˆs ∈Rdmodel is the
+normalized safety direction, and ¯w ∈Rdinput is
+the mean of the row vectors of the original weight
+matrix Wout.
+This formulation creates a rank-one matrix
+α(ˆs ¯wT ) which is added to the original weights.
+Table 1: Harm Refusal in Aligned Models. ROSI con-
+sistently improves the refusal rate for harmful prompts
+(HR %) while maintaining high compliance for benign
+ones (BC %).
+Model
+ROSI
+HR %
+BC %
+GEMMA-2B-INSTRUCT
+✗
+98.4
+99.4
+✓
+99.8 (+1.5)
+99.0 (-0.4)
+LLAMA-2-7B-CHAT-HF
+✗
+99.8
+98.8
+✓
+100.0 (+0.2)
+99.8 (+1.0)
+META-LLAMA-3.1-8B-INSTRUCT
+✗
+98.2
+99.6
+✓
+99.1 (+0.9)
+99.6 (0.0)
+META-LLAMA-3.2-1B-INSTRUCT
+✗
+79.5
+99.2
+✓
+92.7 (+13.2)
+95.9 (-3.9)
+QWEN2.5-0.5B-INSTRUCT
+✗
+90.4
+98.6
+✓
+99.3 (+8.9)
+91.4 (-7.2)
+QWEN2.5-3B...
+--
+20329:...randomly sam-
+pled set of 512 instructions from ALPACA (Taori
+et al., 2023), to ensure ROSI models do not over
+refuse safe instructions.
+Implementation.
+The safety direction for each
+model was extracted using 50 harmful/harmless
+pairs. Generations use greedy decoding with a max
+length of 1024 tokens.
+4.2
+Amplifying Safety in Aligned Models
+We first test ROSI’s ability to bolster the defenses
+of models that already possess safety alignment.
+Increased Refusal and Jailbreak Robustness.
+As shown in Table 1, applying ROSI consistently
+enhances the Harm Refusal (HR) rate across all
+aligned models tested. The effect is particularly
+pronounced for models with weaker baselines,
+such as YI-6B-CHAT (+18.2 points) and META-
+LLAMA-3.2-1B-INSTRUCT (+13.2 points), elevat-
+ing their safety to near-perfect levels. This improve-
+ment is not superficial; Table 2 shows that ROSI
+drastically hardens models against a full suite of ad-
+versarial jailbreak attacks. For many models, attack
+success rates are cut by mo...
+--
+21355:...strat-
+ing a fundamental increase in robustness.
+In Appendix A, we discuss what role ROSI can
+play in fine-tuning LLMs.
+Preservation of Model Utility.
+Crucially, these
+safety gains do not compromise the models’ core
+functionalities. Table 3 provides a comprehensive
+view of utility preservation. The average perfor-
+mance across a suite of six benchmarks remains
+remarkably stable. The vast majority of models
+see an average score change of less than 0.5%. A
+similar pattern holds for BC, as seen in Table 1,
+ROSI models’ refusal of safe instructions, on av-
+erage, remains minimal. While smaller models
+(≤1B) show the biggest degradation in BC, they
+still gain more in HR than what they lose in BC.
+These results demonstrate that the safety direction
+is largely orthogonal to the representations required
+for knowledge and reasoning tasks. ROSI acts as a
+surgical tool, enhancing safety with minimal side
+effects.
+Injected Layers Ablations.
+To assess how stable
+the ROSI update is within a model, we perfor...
+--
+53967:...
+WG-Micro
+WG-Adv.
+WG-Vanilla
+QWEN2.5-14B-INSTRUCT
+32.3
+7.2
+12.1
+24.0
+2.4
+81.2
+QWEN2.5-14B-ROSI
+5.0 (-27.3)
+1.6 (-5.6)
+5.1 (-7.0)
+11.0 (-13.0)
+0.2 (-2.2)
+43.9 (-37.3)
+QWEN2.5-14B-ROSI-FROM-32B
+5.0 (-27.3)
+0.9 (-6.3)
+4.3 (-7.8)
+9.5 (-14.5)
+0.0 (-2.4)
+34.5 (-46.7)
+QWEN2.5-32B-INSTRUCT
+42.0
+18.4
+14.8
+28.2
+3.9
+83.3
+QWEN2.5-32B-ROSI
+21.7 (-20.3)
+12.2 (-6.2)
+10.4 (-4.4)
+19.9 (-8.3)
+2.7 (-1.2)
+72.6 (-10.7)
+QWEN2.5-32B-ROSI-FROM-14B
+28.7 (-13.3)
+12.5 (-5.9)
+11.9 (-2.9)
+22.9 (-5.3)
+2.9 (-1.0)
+76.9 (-6.4)
+Table 10: Utility evaluations under cross-model safety vector transfer. Utility remains broadly stable across
+settings, indicating that the safety improvements shown in Table 9 do not come at the cost of substantial performance
+degradation.
+Model
+MMLU
+HELLASWAG
+ARC EASY
+ARC CHAL.
+BOOLQ
+TRUTHFULQA
+QWEN2.5-14B-INSTRUCT
+78.8
+65.6
+85.7
+60.4
+88.0
+69.0
+QWEN2.5-14B-ROSI
+78.9 (+0.1)
+65.6 (0.0)
+85.6 (-0.1)
+60.7 (+0.3)
+85.8 (-2.2)
+71.9 (+2.9)
+QWEN2.5-14B-ROSI-FROM-32B
+78.5 (-0.3)
+65.6 (0.0)
+84.7 (-1.0)
+59.5 (-0....
+--
+57082:...ch transfer. We leave these
+questions to future work.
+C
+Sensitivity to The Extraction Set
+A key advantage of our lightweight alignment
+method is its minimal data requirement. To em-
+pirically verify this, we investigate the sensitivity
+of ROSI to the size of the dataset used for extract-
+ing the safety vector. We conduct an ablation study
+on QWEN2.5-3B-INSTRUCT, varying the number
+of contrasting harmful/harmless pairs used in the
+extraction phase from 1 to 100 samples.
+The results, presented in Table 11, demonstrate
+high data efficiency. Surprisingly, ROSI achieves a
+substantial improvement in safety using just a sin-
+
+Table 11: Change in Harm Refusal (HR) using differ-
+ent sets of harmful and harmless pairs to extract the
+safety vector from QWEN2.5-3B-INSTRUCT.
+Model
+Dataset Size
+HR %
+QWEN2.5-3B-INSTRUCT
+Base
+89.8
+ROSI (1 Sample)
+99.1
+ROSI (10 Samples)
+96.55
+ROSI (20 Samples)
+99.1
+ROSI (30 Samples)
+98.0
+ROSI (40 Samples)
+98.7
+ROSI (50 Samples)
+99.5
+ROSI (60 Samples)
+97.8
+ROSI (70 Samples)
+98...
+--
+[1 more matches not shown]

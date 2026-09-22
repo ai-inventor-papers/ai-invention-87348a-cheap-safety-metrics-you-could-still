@@ -1,0 +1,688 @@
+% =====================================================================
+%  Model Scanner (Jorak) — Détection reference-free de l'abliteration
+%  VERSION SIMPLIFIÉE (français). Justification mathématique condensée.
+%
+%  COMPILATION : Overleaf -> moteur pdfLaTeX.
+%  FIGURES     : les 3 PNG sont dans docs/figures/ :
+%                  scatter.png, heatmap-ablated.png, heatmap-censored.png
+%
+%  Version anglaise : docs/report_en.tex (maintenue en parallèle avec ce fichier)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.4cm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{tikz}
+\graphicspath{{figures/}{./}}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Définition}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+% --- encadré "intuition" (vulgarisation) ---
+\newtcolorbox{intuition}[1][Intuition]{
+  enhanced, breakable,
+  colback=blue!4, colframe=blue!55!black, fonttitle=\bfseries,
+  title=#1, boxrule=0.6pt, left=4pt,right=4pt,top=3pt,bottom=3pt}
+
+% --- raccourcis mathématiques ---
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\rhat}{\hat{r}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+\newcommand{\dmodel}{d_{\text{model}}}
+\newcommand{\E}{\mathbb{E}}
+\DeclareMathOperator{\proj}{proj}
+\DeclareMathOperator{\tr}{tr}
+
+\title{\textbf{Model Scanner} — projet \textbf{Jorak} \\[2mm]
+\large Détection \emph{reference-free} de l'abliteration des grands modèles de langue\\
+\normalsize\emph{(version simplifiée — justification mathématique condensée)}}
+\author{Jolan Mocanu}
+\date{Version 1.0 --- juillet 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+L'\emph{abliteration} retire le comportement de refus d'un grand modèle de langue
+(LLM) \textbf{sans réentraînement}, en supprimant une unique direction dans
+l'espace interne du modèle. Détecter qu'un modèle a été abliteré est un enjeu de
+sûreté et de traçabilité. \textbf{Jorak} est un détecteur \emph{reference-free}
+(qui n'a \textbf{pas} besoin du modèle d'origine) reposant sur trois techniques
+complémentaires~: la \emph{santé} de l'axe de refus mesurée sur les activations
+($d$ de Cohen), une \emph{signature spectrale} des matrices de poids (SVD), et le
+\emph{comportement} observable. Ce document condense la justification
+mathématique~: on formalise le mécanisme d'abliteration, on définit et on
+\emph{commente} chaque métrique, puis on valide le classifieur sur une matrice de
+modèles réels dérivés d'une même base (\texttt{Qwen2.5-0.5B}). Le détecteur classe
+correctement les trois provenances et n'émet \textbf{aucun faux positif} sur un
+modèle simplement fine-tuné. On confirme en outre la signature de poids sur des
+modèles abliterés réels diffusés en ligne --- jusqu'à \textbf{8B} et sur des
+architectures différentes (Granite-3.2-8B, Qwen3-VL-4B) --- tous deux signalés avec
+une confiance maximale.
+\end{abstract}
+
+\tableofcontents
+\bigskip
+
+% =====================================================================
+\section{Introduction}
+% =====================================================================
+
+\subsection{Contexte}
+Les LLM dits \og alignés\fg{} sont entraînés à \textbf{refuser} certaines requêtes
+(dangereuses, illégales, etc.). Arditi et~al.~\cite{arditi2024} ont montré que ce
+refus est, dans une large mesure, porté par une \textbf{unique direction} $\rhat$
+dans la représentation interne du modèle~: la projection de l'état interne sur
+$\rhat$ est élevée pour les requêtes dangereuses, basse pour les inoffensives. On
+peut alors \emph{retirer} le refus en supprimant cette direction des poids~: c'est
+l'\textbf{abliteration}~\cite{labonne2024}, aujourd'hui automatisée et appliquée à
+des centaines de modèles \og uncensored\fg{} diffusés en ligne.
+
+En une phrase~: on ne réentraîne pas le modèle, on \emph{débranche} chirurgicalement
+le câble par lequel il exprimait son refus. Le modèle \og sait\fg{} toujours qu'une
+requête est dangereuse — sa représentation interne reste intacte — mais il ne peut
+plus \emph{agir} sur ce savoir.
+
+\subsection{Problème}
+Étant donné un modèle open-source (souvent quantifié, parfois sans \emph{pedigree}),
+\textbf{a-t-il été abliteré~?} La difficulté centrale~: en pratique on ne dispose
+\emph{pas} du modèle d'origine pour comparer \og avant/après\fg{}. On veut donc un
+détecteur \emph{reference-free}. La comparaison avec l'original (\og oracle\fg{}) ne
+sert qu'à \emph{valider} la méthode en développement, jamais en production.
+
+\subsection{Jorak~: le projet et ses trois techniques}
+\begin{intuition}[Jorak = le projet, pas une métrique]
+\textbf{Jorak} est le nom du \emph{projet} (ce scanner et le rapport qu'il produit).
+Ce n'est pas une métrique unique, mais un \textbf{ensemble de trois techniques}
+de détection complémentaires, qui examinent le modèle sous trois angles~:
+\begin{itemize}\itemsep1pt
+  \item le \textbf{$d$ de Cohen} — sur les \emph{activations}~: l'axe de refus
+  est-il encore \emph{vivant}~? (\S\ref{sec:cohen})
+  \item la \textbf{signature spectrale SVD} — sur les \emph{poids}~: le chemin
+  d'écriture du refus est-il \emph{sectionné}~? Elle porte trois signaux,
+  $\mathcal{A}$, $\mathcal{B}$ et $\mathcal{S}$ (\S\ref{sec:svd}).
+  \item le \textbf{comportement} — le modèle \emph{refuse}-t-il encore~?
+  (\S\ref{sec:behav})
+\end{itemize}
+En particulier, le champ \texttt{svd\_alignment} ($\mathcal{A}$) n'est \emph{qu'un}
+des signaux de la deuxième technique~: il ne faut pas le confondre avec \og Jorak\fg{}
+dans son ensemble.
+\end{intuition}
+
+\noindent Ces trois techniques sont combinées par un \textbf{classifieur de
+provenance} (\S\ref{sec:classif}) qui range le modèle dans l'une de quatre classes~:
+\emph{censuré} / \emph{abliteré} / \emph{fine-tuné-décensuré} / \emph{ambigu}, avec
+un score de confiance et les couches touchées.
+
+% =====================================================================
+\section{Préliminaires mathématiques}\label{sec:prelim}
+% =====================================================================
+On note $\dmodel$ la dimension de l'espace interne ($\dmodel=896$ pour
+\texttt{Qwen2.5-0.5B}), $L$ le nombre de couches ($L=24$ ici). Les vecteurs sont en
+colonne~; $\norm{\cdot}$ est la norme euclidienne, $A^\top$ la transposée, $I$
+l'identité.
+
+\subsection{Le \og residual stream\fg{}~: où vivent les représentations}
+Un transformeur maintient, à chaque position, un vecteur $h\in\R^{\dmodel}$, le
+\textbf{residual stream}~\cite{elhage2021}. Sa propriété clé est qu'il est
+\textbf{additif}~: chaque sous-module \emph{lit} $h$, calcule une contribution $c$,
+et la \emph{rajoute} ($h\leftarrow h+c$). Deux modules seulement \emph{écrivent}
+dans ce flux — la sortie d'attention \texttt{o\_proj} et celle du MLP
+\texttt{down\_proj}~; ce sont donc les seules cibles de l'abliteration.
+
+\begin{intuition}[Pourquoi des \og directions\fg{}]
+On peut voir $h$ comme un tableau blanc où chaque couche \emph{ajoute} une
+annotation sans rien effacer. Comme l'information s'y inscrit de façon largement
+\emph{linéaire}, un concept y devient une \textbf{direction} que l'on peut isoler
+par projection — l'observation fondatrice de l'interprétabilité
+mécaniste~\cite{elhage2021}.
+\end{intuition}
+
+\subsection{Projection et cosinus}
+Pour $u,v\in\R^{\dmodel}$, le produit scalaire $\inner{u}{v}=u^\top v$ mesure leur
+alignement. La \textbf{projection} de $v$ sur une direction unitaire $\rhat$
+($\norm{\rhat}=1$) est $\proj_{\rhat}(v)=(\rhat\rhat^\top)v$~; la matrice
+$P=\rhat\rhat^\top$ est le \textbf{projecteur} sur la droite de $\rhat$. Son
+complément $I-P$ \emph{efface} la composante selon $\rhat$ et garde le reste —
+c'est, mot pour mot, l'opération de l'abliteration (\S\ref{sec:meca}). L'angle
+entre deux vecteurs se mesure par le \textbf{cosinus}
+$\cos(u,v)=\inner{u}{v}/(\norm{u}\,\norm{v})\in[-1,1]$~; le signe d'une direction
+étant arbitraire, on travaille souvent avec $\lvert\cos\rvert$.
+
+\subsection{L'hypothèse de représentation linéaire}
+On postule que le concept \og la requête est dangereuse\fg{} est encodé
+\textbf{linéairement}~: il existe une direction $\rhat$ telle que $\inner{\rhat}{h}$
+est élevé pour les exemples \emph{harmful}, bas pour les \emph{harmless}. Cette
+idée — des régularités linéaires des plongements de mots~\cite{mikolov2013} à leur
+formalisation pour les LLM~\cite{park2023} — transforme une question floue (\og le
+modèle est-il censuré~?\fg{}) en une question \emph{géométrique} précise, à laquelle
+les outils linéaires suivants répondent un à un.
+
+% =====================================================================
+\section{Le mécanisme de l'abliteration}\label{sec:meca}
+% =====================================================================
+\begin{definition}[Direction de refus]
+La \textbf{direction de refus} $\rhat\in\R^{\dmodel}$, $\norm{\rhat}=1$, est la
+direction du flux résiduel le long de laquelle le modèle encode et exprime le refus.
+\end{definition}
+
+Soit $W$ une matrice qui \emph{écrit} dans le flux résiduel
+($W\in\{\texttt{o\_proj},\texttt{down\_proj}\}$). Pour empêcher le modèle d'écrire le
+long de $\rhat$, on applique $I-\rhat\rhat^\top$ à chaque sortie, soit
+\begin{equation}\label{eq:ablate}
+  W' = (I-\rhat\rhat^\top)\,W .
+\end{equation}
+C'est une perturbation de \textbf{rang $1$}~: le modèle peut tout écrire \emph{sauf}
+le long de l'axe du refus.
+
+\begin{proposition}[L'invariant exploité par la détection]\label{prop:invariant}
+Après abliteration, $\rhat^\top W'=0$~: la direction de refus appartient au
+\textbf{noyau à gauche} de $W'$.
+\end{proposition}
+\begin{proof}
+$\rhat^\top W'=\rhat^\top(I-\rhat\rhat^\top)W=\rhat^\top W-(\rhat^\top\rhat)\rhat^\top W=0$,
+car $\rhat^\top\rhat=1$.
+\end{proof}
+
+\noindent Cet invariant est \emph{exact} et \emph{permanent} (gravé dans les poids
+livrés). L'abliteration ne touche que les poids d'écriture~: la représentation
+interne du refus, elle, reste intacte. D'où la \textbf{signature} recherchée~:
+\[
+  \boxed{\ \text{axe de refus \emph{vivant}}\ \wedge\ \text{chemin d'écriture \emph{sectionné}}\ }
+\]
+combinaison qu'aucun fine-tuning ne reproduit~: un fine-tuning déplace l'ensemble des
+poids et des représentations, il ne \emph{débranche} pas une direction unique.
+Détecter revient donc à \emph{retrouver} $\rhat$ — que l'on ne nous donne pas — puis à
+\emph{vérifier} qu'elle est à la fois vivante dans les activations et absente des
+poids.
+
+% =====================================================================
+\section{Les trois techniques de détection de Jorak}\label{sec:outils}
+% =====================================================================
+Le scanner réalise un \textbf{unique} passage avant (\og scan-once\fg{}) et en dérive
+toutes les mesures. On travaille couche par couche~: $h^{h}_{\ell,i}$ (resp.
+$h^{hl}_{\ell,i}$) désigne l'état interne au dernier token du prompt \emph{harmful}
+(resp. \emph{harmless}) $i$ en sortie de la couche $\ell$, sur $n$ exemples par classe.
+
+\subsection{Prérequis~: la direction de refus par différence de moyennes}
+On ne connaît pas $\rhat$~; on l'\emph{estime}. Le séparateur le plus simple de deux
+nuages de points est le vecteur qui relie leurs centres de gravité~:
+\begin{equation}\label{eq:meandiff}
+  \rhat_\ell=\frac{\mu^{h}_\ell-\mu^{hl}_\ell}{\norm{\mu^{h}_\ell-\mu^{hl}_\ell}},
+  \qquad
+  \mu^{h}_\ell=\tfrac1n\textstyle\sum_i h^{h}_{\ell,i},\quad
+  \mu^{hl}_\ell=\tfrac1n\textstyle\sum_i h^{hl}_{\ell,i}.
+\end{equation}
+C'est la direction \emph{mean-diff}~\cite{arditi2024}~: un séparateur de rang $1$,
+sans inversion de matrice, robuste en petite donnée. Elle fournit un \emph{candidat}
+d'axe de refus par couche, estimé sans le modèle d'origine. \emph{(Implémenté dans
+\texttt{modelscanner/directions/mean\_diff.py}.)}
+
+\subsection{Technique 1 — Santé de l'axe~: le $d$ de Cohen (activations)}\label{sec:cohen}
+On projette chaque état sur $\rhat_\ell$ ($p_{\ell,i}=\inner{\rhat_\ell}{h_{\ell,i}}$)
+et l'on quantifie la \emph{séparation} des deux nuages de scalaires (harmful vs
+harmless) par la \textbf{taille d'effet} de Cohen~\cite{cohen1988}~:
+\begin{equation}\label{eq:cohen}
+  d_\ell=\frac{\overline{p^{h}_\ell}-\overline{p^{hl}_\ell}}{\sigma_{\text{pool},\ell}},
+  \qquad
+  \sigma_{\text{pool}}=\sqrt{\tfrac{(n_h-1)s_h^2+(n_{hl}-1)s_{hl}^2}{n_h+n_{hl}-2}} .
+\end{equation}
+
+\begin{intuition}[Ce que mesure $d_\ell$]
+$d_\ell$ exprime \og de combien d'écarts-types\fg{} les deux classes sont séparées le
+long de $\rhat_\ell$. Diviser par $\sigma_{\text{pool}}$ rend la mesure
+\emph{sans dimension}, donc comparable d'une couche, d'un modèle et d'une
+quantification à l'autre. Conventions usuelles~\cite{cohen1988}~: $0{,}2$ faible,
+$0{,}5$ moyen, $0{,}8$ fort. Un $d_\ell$ grand signale un \textbf{axe vivant}~; on
+mesure jusqu'à $d_\ell\approx 4{,}5$ dans les couches profondes de
+\texttt{Qwen2.5-0.5B}.
+\end{intuition}
+
+\noindent\textbf{Garde-fou.} Si l'on calcule $\rhat$ \emph{et} $d$ sur les
+\emph{mêmes} sondes, $d$ devient optimiste. Le protocole impose un \textbf{découpage
+train/test} des sondes (estimer $\rhat$ sur un sous-ensemble, mesurer $d$ sur un
+autre, disjoint). \emph{(Implémenté dans
+\texttt{modelscanner/metrics/axis\_health.py}.)} Le $d$ de Cohen mesure la
+\emph{vitalité} de l'axe dans les représentations~; il ne dit rien des poids — un
+modèle abliteré garde un axe vivant tout en ayant le chemin d'écriture sectionné.
+D'où la technique suivante.
+
+\subsection{Technique 2 — Signature spectrale des poids (SVD)}\label{sec:svd}
+
+\paragraph{(a) Lire la direction directement dans la matrice.}
+Une première idée serait de projeter \emph{notre} $\rhat$ estimée sur les poids et de
+mesurer ce qui \og passe encore\fg{}. Cela \textbf{échoue}~: notre $\rhat_m$
+(mean-diff) n'est pas exactement la direction $\rhat_a$ utilisée par l'ablateur,
+si bien que $\rhat_m^\top W'\neq 0$ et que le résidu se \emph{noie} dans le bruit
+(de l'ordre de $1/\sqrt{\dmodel}\approx 0{,}03$). On cesse donc de \emph{deviner}
+$\rhat$ pour la \emph{lire} dans la matrice, grâce à la \textbf{décomposition en
+valeurs singulières}~\cite{golub2013}.
+
+\begin{intuition}[La SVD en une image]
+$W$ transforme la sphère unité en un \emph{ellipsoïde}. Les longueurs de ses axes
+sont les \textbf{valeurs singulières} $\sigma_1\ge\dots\ge\sigma_r\ge 0$, leurs
+directions de sortie les \textbf{vecteurs singuliers à gauche} $u_1,\dots,u_r$. Le
+plus petit, $u_{\min}$, est la direction que la matrice \og produit le moins\fg{}.
+\end{intuition}
+
+\noindent Formellement $W=U\Sigma V^\top$, et $\norm{u_i^\top W}=\sigma_i$.
+\textbf{Conséquence (le cœur de la méthode)}~: après abliteration $\rhat_a^\top W'=0$
+(Prop.~\ref{prop:invariant}), donc $\rhat_a$ est un vecteur singulier à gauche de
+valeur singulière \emph{nulle}~: $u_{\min}(W')\approx\rhat_a$. \emph{On récupère la
+direction ablatée sans jamais l'avoir connue.}
+
+\paragraph{(b) Signal $\mathcal{A}$ — alignement inter-couches (le \emph{smoking-gun}).}
+Une seule couche ne suffit pas (toute matrice a un $u_{\min}$). La signature décisive
+est que, sur un modèle abliteré, \emph{toutes} les couches partagent la \emph{même}
+$u_{\min}\approx\rhat_a$ (la même direction ayant été retirée partout). On empile les
+$u_{\min}$ en $\mathbf{U}\in\R^{L\times\dmodel}$ (lignes unitaires) et l'on mesure leur
+cohérence~:
+\begin{equation}\label{eq:align}
+  \mathcal{A}=\frac{\sigma_1(\mathbf{U})}{\norm{\mathbf{U}}_F}\in\Big[\tfrac{1}{\sqrt{L}},\,1\Big].
+\end{equation}
+
+\begin{intuition}[Lire $\mathcal{A}$]
+Si toutes les couches partagent la même direction, $\mathbf{U}$ est de rang $1$ et
+$\mathcal{A}\approx 1$. Si les directions sont sans rapport (bruit non corrélé d'un
+modèle sain), $\mathcal{A}\approx 1/\sqrt{L}$. Avec $L=24$, cela donne $\approx 0{,}20$
+(sain) contre $\approx 0{,}90$ (abliteré)~: une séparation franche, \emph{indépendante
+de toute sonde}, calculable sur CPU. On garde aussi un \textbf{signal par couche}
+$a_\ell=\lvert\cos(u_{\min}^{(\ell)},w)\rvert$ ($w$~=~axe partagé dominant) pour savoir
+\emph{quelles} couches ont été touchées (lignes de la heatmap).
+\end{intuition}
+
+\paragraph{(c) Signal $\mathcal{B}$ — alignement de \emph{bande} (ablation localisée).}
+$\mathcal{A}$ moyenne sur \emph{toutes} les couches. Or une ablation \emph{furtive}
+(type Heretic, qui optimise pour préserver les capacités) ne touche qu'une bande de
+couches~: la moyenne globale est alors \emph{diluée} et repasse sous le seuil. On
+ajoute donc une statistique \emph{par bande}~:
+\begin{equation}\label{eq:band}
+  \mathcal{B}=\max_{0\le i\le L-w}\ \frac1w\sum_{\ell=i}^{i+w-1} a_\ell ,
+  \qquad w\approx L/6 ,
+\end{equation}
+la moyenne maximale de l'alignement par couche sur une fenêtre de $w$ couches
+\emph{consécutives}. $\mathcal{B}$ est \emph{agnostique en position}~: un modèle sain
+(bruit dispersé) ne forme aucune bande ($\mathcal{B}$ bas)~; une ablation localisée
+(bande contiguë) donne $\mathcal{B}$ élevé, où qu'elle se trouve.
+
+\paragraph{(d) Signal $\mathcal{S}$ — alignement de \emph{sous-espace} (multi-direction).}
+$\mathcal{A}$ et $\mathcal{B}$ supposent une \emph{unique} direction retirée. Or,
+empiriquement, le refus vit dans \emph{plusieurs} directions indépendantes, voire un
+\emph{cône} de concepts~\cite{wollschlager2025,piras2025}, et les abliterateurs
+récents (Gabliteration~\cite{gabliteration}) retirent un
+\emph{sous-espace} de $k>1$ directions~: la trace est alors \emph{étalée} sur les $k$
+plus petites valeurs singulières et aucun $u_{\min}$ unique n'est partagé. On
+\emph{généralise} donc au sous-espace de bas rang. Soit $B_\ell\in\R^{\dmodel\times k}$
+les $k$ vecteurs singuliers à gauche de plus petites valeurs singulières de la couche
+$\ell$~; on cherche le sous-espace $k$-D le plus \emph{partagé}~:
+\begin{equation}\label{eq:subspace}
+  M=\sum_{\ell=1}^{L} B_\ell B_\ell^\top,\qquad
+  \mathcal{S}=\frac{1}{Lk}\sum_{i=1}^{k}\lambda_i(M)\ \in\Big[\tfrac{k}{\dmodel},\,1\Big],
+\end{equation}
+où $\lambda_1\ge\dots$ sont les valeurs propres de $M$. $\mathcal{S}\to 1$ si toutes
+les couches partagent le même sous-espace $k$-D (abliteré multi-direction)~;
+$\mathcal{S}\approx k/\dmodel$ si les sous-espaces sont sans rapport (sain). Pour
+$k=1$, $\mathcal{S}=\mathcal{A}^2$~: c'est bien une généralisation.
+
+\begin{intuition}[Les trois signaux de poids, en un coup d'œil]
+$\mathcal{A}$ détecte l'ablation \emph{totale} (toutes les couches)~; $\mathcal{B}$
+l'ablation \emph{localisée} (une bande de couches)~; $\mathcal{S}$ l'ablation
+\emph{multi-direction} (un sous-espace de $k$ directions). Le critère de
+\og poids sectionnés\fg{} est~: \textbf{$\mathcal{A}$, $\mathcal{B}$ \emph{ou}
+$\mathcal{S}\ge 0{,}5$}. \emph{(Tous calculés en NumPy pur, sans inférence, dans
+\texttt{modelscanner/metrics/jorak.py} — le cœur \emph{reference-free} et CPU de Jorak.)}
+\end{intuition}
+
+\subsection{Technique 3 — Le comportement (behavioral)}\label{sec:behav}
+On fait \emph{générer} une réponse à des prompts harmful et l'on mesure le
+\textbf{taux de refus} par appariement de marqueurs (\og I cannot\fg{}, \og désolé\fg{},
+\dots) — l'heuristique standard d'évaluation~\cite{zou2023}. C'est le \emph{seul}
+signal qui distingue un modèle qui \emph{refuse} d'un modèle qui \emph{obéit}.
+
+\begin{intuition}[Pourquoi le comportement est indispensable]
+Un modèle simplement \emph{fine-tuné-décensuré} garde, lui aussi, un axe \emph{vivant}
+($d$ élevé) \emph{et} des poids \emph{intacts} ($\mathcal{A},\mathcal{B},\mathcal{S}$
+bas)~: pour les seules activations et poids, il est \textbf{indistinguable} d'un
+censuré. Seul le \emph{comportement} les sépare — le censuré refuse, le fine-tuné
+obéit. Le plan comportemental n'est donc pas optionnel.
+\end{intuition}
+
+\noindent On mesure de plus le \textbf{sur-refus du harmless} (refus de requêtes
+\emph{inoffensives}) et l'\textbf{asymétrie multilingue} (écart de refus entre
+langues)~: deux marqueurs de \emph{dégât}. Un modèle sainement fine-tuné y reste
+cohérent~; une ablation, elle, abîme le comportement (sur-refus, refus inégal selon la
+langue). \emph{(Implémenté dans \texttt{modelscanner/metrics/behavioral.py}.)}
+
+\subsection{Le classifieur de provenance}\label{sec:classif}
+On combine les indicateurs scalaires (seuils calibrés)~: \emph{axe vivant}
+($\max_\ell d_\ell\ge 1$), \emph{poids sectionnés} ($\mathcal{A}$, $\mathcal{B}$
+\textbf{ou} $\mathcal{S}\ge 0{,}5$), \emph{obéit} (taux de refus $<0{,}5$). La règle~:
+\[
+\begin{array}{l@{\quad}l}
+  \text{poids sectionnés} & \Rightarrow \textbf{ABLITÉRÉ}\ (\text{axe vivant attendu})\\
+  \text{sinon, refuse} & \Rightarrow \textbf{CENSURÉ}\\
+  \text{sinon, obéit} & \Rightarrow \textbf{FINE-TUNÉ-DÉCENSURÉ}\\
+  \text{incohérent} & \Rightarrow \textbf{AMBIGU}
+\end{array}
+\]
+On visualise la règle dans un \textbf{plan de provenance}~: en abscisse l'alignement
+$\mathcal{A}$ (poids sectionnés $\rightarrow$), en ordonnée le taux de refus
+($\uparrow$ refuse). La sévérance des poids ($x$) isole l'abliteré~; le comportement
+($y$) sépare censuré et fine-tuné. La \textbf{confiance} rendue est la \emph{marge}
+du signal décisif (sa distance au seuil).
+
+\paragraph{Sur les seuils.} Les seuils de décision sont des \emph{valeurs par défaut
+raisonnées}, non ajustées au banc d'essai. Pour les signaux de poids, $0{,}5$ est le
+milieu entre le plancher théorique d'un modèle décorrélé ($1/\sqrt{L}\approx 0{,}2$
+pour $L=24$) et le plafond de rang $1$ ($1$)~; pour la santé d'axe, $d\ge 1$ suit la
+convention \og effet fort\fg{} de Cohen~\cite{cohen1988}~; pour le comportement,
+refus~$<0{,}5$ est le partage majoritaire naturel. Un balayage systématique par signal
+(ROC) est laissé aux travaux futurs --- les marges rapportées en
+\S\ref{sec:resultats} montrent que les défauts actuels sont loin de la frontière de
+décision.
+
+\paragraph{Garde-fou anti-faux-positif (veto comportemental).} La règle ci-dessus
+admet une exception cruciale, issue de la campagne $8$B~: si les poids paraissent
+sectionnés \emph{mais} que le modèle \textbf{refuse encore largement} (taux de refus
+$\ge 0{,}5$), le \emph{comportement prime} et le verdict reste \textbf{CENSURÉ}. Un
+signal de poids peut en effet être un \emph{faux positif} (p.~ex.\ une bande
+naturellement alignée sur un modèle de base)~; un abliteré réussi, lui, \emph{obéit}
+par construction et ne déclenche jamais ce veto.
+
+\begin{intuition}[Le cas furtif, en bref]
+Une ablation \emph{multi-direction norm-preserving} peut laisser les poids
+\og intacts\fg{} aux yeux de la SVD ($\mathcal{A},\mathcal{B},\mathcal{S}$ sous le
+seuil). Le \emph{comportement} la trahit alors~: un axe \emph{fortement} vivant
+combiné à l'obéissance et à un dégât incohérent (sur-refus / asymétrie multilingue)
+ne s'explique pas par un fine-tuning propre. La confiance rendue est plus
+\emph{modérée}, car la preuve est \emph{indirecte}.
+\end{intuition}
+
+\noindent\emph{(Implémenté dans \texttt{modelscanner/classifier/scanner.py}~:
+\texttt{classify(...)} est une fonction pure, testable hors modèle~; \texttt{scan(model)}
+orchestre le scan-once et assemble un \texttt{ScanResult}.)}
+
+% =====================================================================
+\section{Résultats}\label{sec:resultats}
+% =====================================================================
+\textbf{Banc d'essai.} Trois modèles dérivés de la \emph{même} base
+\texttt{Qwen2.5-0.5B} (même architecture, même taille — comparaison propre)~:
+\texttt{Qwen2.5-0.5B-Instruct} (\emph{censuré}),
+\texttt{huihui-ai/\dots-abliterated} (\emph{abliteré} réel),
+\texttt{dphn/Dolphin3.0-Qwen2.5-0.5B} (\emph{fine-tuné-décensuré}, le faux positif à
+éviter), plus un Heretic réel (ablation \emph{localisée}). \textbf{Sondes}~: $40$ paires
+harmful/harmless appariées en longueur et registre~; split train/test des sondes.
+
+\begin{table}[H]
+\centering
+\caption{Verdict du scanner sur la matrice. $\mathcal{A}$~: alignement SVD global~;
+$\mathcal{B}$~: alignement de bande (localisé)~; $\mathcal{S}$~: alignement de
+sous-espace ($k{=}4$)~; $d_{\max}$~: santé d'axe~; \og refus\fg{}~: taux de refus.}
+\label{tab:matrice}
+\begin{tabular}{llccccc}
+\toprule
+Modèle & Label & $d_{\max}$ & $\mathcal{A}$ & $\mathcal{B}$ & $\mathcal{S}$ & refus \\
+\midrule
+\texttt{Qwen2.5-0.5B-Instruct} & \textsc{censuré} & $4{,}5$ & $0{,}24$ & $0{,}28$ & $0{,}08$ & $0{,}88$ \\
+\texttt{huihui\dots abliterated} & \textsc{abliteré} & $2{,}6$ & $\mathbf{0{,}90}$ & $\mathbf{0{,}99}$ & $0{,}29$ & $0{,}06$ \\
+\texttt{grisun0\dots heretic} & \textsc{abliteré} & $3{,}3$ & $0{,}29$ & $\mathbf{0{,}67}$ & $0{,}10$ & --- \\
+\texttt{Dolphin3.0-Qwen2.5-0.5B} & \textsc{fine-tuné} & $3{,}0$ & $0{,}24$ & $0{,}28$ & $0{,}08$ & $0{,}06$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\emph{\small Reproduire~: \texttt{modelscanner scan <modèle> --behavioral
+--report}~; chaque valeur est lue telle quelle dans le \texttt{scan\_log.json} émis
+(jeu de sondes~: $40$ paires harmful/harmless, split train/test).}
+
+\noindent Les quatre provenances sont \textbf{correctement classées}, et le modèle
+fine-tuné n'est \textbf{pas} pris pour un abliteré (faux positif critique évité).
+Trois lectures résument la matrice~:
+\begin{itemize}\itemsep2pt
+  \item \textbf{La SVD est le vrai smoking-gun.} Seul $\mathcal{A}$ sépare l'abliteré
+  ($0{,}90$) du reste ($0{,}24$). La projection naïve de $\rhat$ sur les poids vaut
+  $\approx 0{,}038$ \emph{pour les trois} modèles (= le plancher aléatoire $0{,}033$)~:
+  elle ne voit rien. C'est la signature \emph{spectrale} qui tranche.
+  \item \textbf{Le comportement sépare ce que les poids ne séparent pas.} Le fine-tuné
+  a un axe vivant ($d_{\max}=3{,}0$) et des poids intacts ($\mathcal{A}=0{,}24$)~:
+  identique au censuré en reference-free. Seul le refus les distingue ($0{,}06$ vs
+  $0{,}88$).
+  \item \textbf{La bande rattrape l'ablation localisée.} Le modèle Heretic a
+  $\mathcal{A}=0{,}29$ (sous le seuil~: l'ablation serait \emph{ratée} par le global),
+  mais $\mathcal{B}=0{,}67$~: Heretic n'a touché qu'une bande \emph{profonde}
+  (couches $19$--$22$ sur $24$), révélée par la fenêtre glissante.
+\end{itemize}
+La colonne $\mathcal{S}$ reste \emph{dormante} ($\le 0{,}29$) sur ces ablations
+\emph{mono}-direction~: par construction, elle ne se déclenche que sur le
+\emph{multi}-direction, et n'introduit ici aucun faux positif.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\linewidth]{scatter.png}
+\caption{\textbf{Plan de provenance.} Abscisse~: alignement SVD $\mathcal{A}$ (poids
+sectionnés $\rightarrow$). Ordonnée~: taux de refus ($\uparrow$ refuse). Les trois
+modèles occupent trois quadrants distincts, correspondant exactement à leur provenance.}
+\label{fig:scatter}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{heatmap-ablated.png}
+\caption{\textbf{Signature par couche du modèle abliteré.} La ligne
+\emph{alignement poids par couche} $a_\ell$ (échelle $[0,1]$) est \textbf{saturée} sur
+presque toutes les couches~: l'ablation a touché tout le réseau.}
+\label{fig:heatmap-abl}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{heatmap-censored.png}
+\caption{\textbf{Modèle censuré (témoin).} Sur la même échelle $[0,1]$, la ligne
+\emph{alignement poids par couche} reste \textbf{sombre} ($\approx 0{,}2$)~: aucune
+direction partagée n'a été retirée.}
+\label{fig:heatmap-cen}
+\end{figure}
+
+\noindent\textbf{Confiance.} La confiance du verdict est la \emph{marge} du signal
+décisif~: $0{,}81$ (abliteré), $0{,}75$ (censuré), $0{,}88$ (fine-tuné).
+
+\subsection{Validation terrain à l'échelle et sur d'autres architectures}
+Au-delà du banc contrôlé $0{,}5$B, on a passé Jorak sur des modèles abliterés réels
+diffusés en ligne, à plus grande échelle et sur des architectures différentes
+(Table~\ref{tab:field}). Les deux sont correctement signalés \textsc{abliteré} avec une
+\textbf{confiance maximale}~; pour Granite, le verdict correspond à la provenance
+déclarée (\emph{attendu}~$\checkmark$).
+
+\begin{table}[H]\centering
+\caption{Validation terrain sur des modèles abliterés réels (lignée huihui). Valeurs
+lues dans le \texttt{scan\_log.json} de chaque modèle.}
+\label{tab:field}
+\begin{tabular}{llccccc}
+\toprule
+Modèle & Arch\,·\,taille & $\mathcal{A}$ & $\mathcal{B}$ & $\mathcal{S}_{k=4}$ & $d_{\max}$ & refus \\
+\midrule
+\texttt{Qwen3-VL-4B-abliterated} & qwen3\_vl · 4B & $1{,}00$ & $1{,}00$ & $0{,}39$ & $4{,}97$ & $0{,}00$ \\
+\texttt{granite-3.2-8B-abliterated} & granite · 8B & $0{,}99$ & $1{,}00$ & $0{,}50$ & $5{,}07$ & $0{,}06$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent Trois enseignements~: \textbf{(i)} la signature inter-couches $\mathcal{A}$
+\emph{sature} ($0{,}99$--$1{,}00$) à $8$B et sur un modèle vision--langage --- ce n'est
+pas un artefact du $0{,}5$B~; \textbf{(ii)} la combinaison-signature --- axe
+\emph{vivant} ($d_{\max}\approx 5$), chemin d'écriture \emph{sectionné} et
+\emph{obéissance} (refus~$\approx 0$) --- tient à l'échelle~; \textbf{(iii)} les
+capacités restent largement intactes (Granite~: exactitude factuelle $0{,}88$,
+perplexité $11{,}2$), soit une ablation \emph{propre} que le plan des poids détecte
+malgré tout d'emblée.
+
+\begin{figure}[H]\centering
+\begin{tikzpicture}[yscale=0.6]
+\foreach \name/\y/\a/\b in {%
+  Heretic (0.5B)/2/0.79/0.92,
+  Qwen3-VL (4B)/1/0.28/0.42,
+  Granite (8B)/0/0.18/0.33}{
+  \draw[gray!45] (0,\y) rectangle (8,\y+0.6);
+  \fill[blue!55!black] (8*\a,\y) rectangle (8*\b,\y+0.6);
+  \node[left] at (-0.15,\y+0.3) {\small \name};
+}
+\node[below] at (0,-0.05) {\scriptsize entrée};
+\node[below] at (8,-0.05) {\scriptsize sortie};
+\node[below=7pt] at (4,-0.05) {\scriptsize profondeur de couche (normalisée) $\rightarrow$};
+\end{tikzpicture}
+\caption{\textbf{Le signal de bande $\mathcal{B}$ est agnostique en position.} La bande
+contiguë de couches sectionnées (grisée) se situe à une profondeur \emph{différente}
+selon le modèle --- profonde pour Heretic, médiane pour Qwen3-VL et Granite --- mais la
+fenêtre glissante (éq.~\eqref{eq:band}) la rattrape dans tous les cas.}
+\label{fig:band}
+\end{figure}
+
+\paragraph{Portée honnête.} Ces deux modèles sont des \emph{positifs} (tous deux
+ablatés). Une matrice $8$B complète avec \emph{témoins négatifs} (un censuré et un
+fine-tuné-seul à $8$B) est laissée aux travaux futurs~; la propriété
+\emph{aucun-faux-positif} est donc établie sur la matrice $0{,}5$B
+(\S\ref{sec:resultats}) et pas encore à $8$B. L'échantillon ne couvre en outre qu'une
+seule lignée/outil (huihui).
+
+\paragraph{Leçon méthodologique (anti-faux-positif).} La cible \texttt{down\_proj}
+(sortie du MLP) a une bande $\mathcal{B}$ \emph{naturellement haute sur les modèles de
+base} (non discriminante) et a produit des faux positifs lors d'un premier essai
+multi-cible~; le verdict de campagne s'appuie donc sur \texttt{o\_proj} seul, complété
+par le \textbf{veto comportemental} (\S\ref{sec:classif}). Le journal de scan trace
+désormais la \emph{ventilation par cible} ($\mathcal{A}$, $\mathcal{B}$ par
+\texttt{o\_proj}/\texttt{down\_proj} séparément) pour rendre tout réexamen non ambigu.
+
+% =====================================================================
+\section{Travaux connexes}\label{sec:related}
+% =====================================================================
+Jorak se situe au croisement de trois courants récents~: la \emph{géométrie} du refus,
+les \emph{défenses} contre l'abliteration, et le \emph{paysage} des outils d'ablation.
+
+\paragraph{Du mécanisme unique aux directions multiples.}
+Le point de départ — une \emph{unique} direction de refus~\cite{arditi2024} — a été
+nuancé. Wollschläger et~al.~\cite{wollschlager2025} montrent, par une approche à base
+de gradient, l'existence de \emph{plusieurs} directions mécaniquement indépendantes,
+voire de \emph{cônes de concepts} multi-dimensionnels, et que l'orthogonalité
+n'implique pas l'indépendance sous intervention. Piras et~al.~\cite{piras2025}
+extraient de même plusieurs directions par cartes auto-organisatrices (SOM) et
+établissent qu'ablater \emph{plusieurs} directions supprime le refus plus efficacement
+qu'une seule (leur méthode \emph{généralise} d'ailleurs la différence de moyennes de
+l'éq.~\eqref{eq:meandiff}). Zhang \& Sun~\cite{zhang2025dbdi} scindent enfin la
+direction unique en deux processus — \emph{détection du danger} et \emph{exécution du
+refus}. Ces résultats justifient directement notre signal de \emph{sous-espace}
+$\mathcal{S}$ (\S\ref{sec:svd}d)~: on ne peut supposer qu'un seul $u_{\min}$ porte toute
+la trace de l'ablation.
+
+\paragraph{Attaque, défense, détection.}
+L'abliteration a suscité ses \emph{défenses}. Abu Shairah et~al.~\cite{abushairah2025}
+proposent un fine-tuning \emph{extended-refusal} (le modèle \emph{justifie} son refus)
+qui limite la chute du taux de refus à $10\%$ au plus après attaque, contre
+$70$--$80\%$ pour la baseline. Jorak est \emph{complémentaire}~: ce n'est pas une
+défense mais un outil de \emph{détection}/forensique. À noter qu'un modèle ainsi
+défendu \emph{refuse encore} après tentative d'ablation — précisément le cas que notre
+\emph{veto comportemental} (\S\ref{sec:classif}) est conçu pour ne pas confondre avec
+un modèle sain.
+
+\paragraph{Le paysage des outils d'ablation.}
+Young~\cite{young2025} compare quatre outils d'abliteration (Heretic, DECCP, ErisForge,
+FailSpy) sur seize modèles instruct ($7$--$14$B) et confirme que le dégât de capacités
+dépend de l'outil, le raisonnement mathématique (GSM8K) étant le plus sensible — ce qui
+conforte à la fois notre campagne multi-outils (\S\ref{sec:resultats}) et nos
+\emph{marqueurs de dégât} (sur-refus, asymétrie). Enfin, les méthodes
+\emph{norm-preserving} récentes~\cite{dang2026,grimjim}, qui remplacent l'ablation
+\og binaire\fg{} par une rotation préservant la norme, constituent exactement la classe
+d'ablation \emph{furtive} que nous listons comme limite ouverte (\S\ref{sec:robustesse}).
+
+% =====================================================================
+\section{Robustesse et limites}\label{sec:robustesse}
+% =====================================================================
+\begin{itemize}\itemsep2pt
+  \item \textbf{Quantification.} $\mathcal{A}$ est une signature \emph{inter-couches}~;
+  le bruit de quantification étant largement décorrélé d'une couche à l'autre, il
+  dégrade peu une cohérence \emph{partagée}. On conjecture la survie de la signature
+  jusqu'à $4$ bits (seuil glissant, \og quant-aware\fg{}) — à valider sur \texttt{bf16},
+  \texttt{bnb-4bit}, GGUF.
+  \item \textbf{Sophistication de l'ablation.} L'ablation localisée est couverte par
+  $\mathcal{B}$~; le multi-direction par $\mathcal{S}$ et, à défaut, par le relais
+  comportemental. Restent ouverts~: la projection \emph{partielle} ($\alpha<1$, qui fait
+  décroître $\mathcal{A},\mathcal{B},\mathcal{S}$ continûment) et le norm-preserving
+  \emph{par lignes}~\cite{dang2026,grimjim}, qui \emph{déplace} le noyau gauche et atténue
+  $\mathcal{S}$.
+  \item \textbf{Architectures et formats.} Les modèles MoE / MLA demandent un
+  traitement par expert~; pour les formats GGUF non exécutables, le plan d'activations
+  est indisponible (repli sur poids $+$ comportemental).
+\end{itemize}
+
+% =====================================================================
+\section{Conclusion}
+% =====================================================================
+Le fil rouge est simple~: \emph{le refus est une direction}~; l'\emph{abliteration
+efface cette direction des poids d'écriture} en laissant un invariant exact
+($\rhat^\top W'=0$)~; cet invariant se \emph{lit} dans le spectre des matrices, sans
+connaître la direction ni le modèle d'origine, via l'\textbf{alignement des plus
+petits vecteurs singuliers}. Jorak combine trois techniques — la \emph{santé de l'axe}
+($d$ de Cohen), la \emph{signature spectrale} des poids ($\mathcal{A},\mathcal{B},
+\mathcal{S}$) et le \emph{comportement} — pour situer un modèle parmi quatre
+provenances. Sur une matrice de modèles réels, le détecteur classe correctement les
+trois provenances et évite le faux positif critique. Toute la démarche est
+implémentée et reproductible dans la librairie \texttt{modelscanner}.
+
+% =====================================================================
+\begin{thebibliography}{99}
+\bibitem{arditi2024} A.~Arditi \emph{et al.}, \emph{Refusal in Language Models Is
+Mediated by a Single Direction}, arXiv:2406.11717, 2024.
+\bibitem{labonne2024} M.~Labonne, \emph{Uncensor any LLM with abliteration},
+Hugging Face Blog, 2024.
+\bibitem{elhage2021} N.~Elhage \emph{et al.}, \emph{A Mathematical Framework for
+Transformer Circuits}, Transformer Circuits Thread (Anthropic), 2021.
+\bibitem{mikolov2013} T.~Mikolov, W.~Yih, G.~Zweig, \emph{Linguistic Regularities
+in Continuous Space Word Representations}, NAACL-HLT, 2013.
+\bibitem{park2023} K.~Park, Y.~J.~Choe, V.~Veitch, \emph{The Linear Representation
+Hypothesis and the Geometry of Large Language Models}, arXiv:2311.03658, 2023.
+\bibitem{cohen1988} J.~Cohen, \emph{Statistical Power Analysis for the Behavioral
+Sciences}, 2\textsuperscript{e} éd., Lawrence Erlbaum, 1988.
+\bibitem{golub2013} G.~H.~Golub, C.~F.~Van~Loan, \emph{Matrix Computations},
+4\textsuperscript{e} éd., Johns Hopkins University Press, 2013.
+\bibitem{zou2023} A.~Zou \emph{et al.}, \emph{Universal and Transferable Adversarial
+Attacks on Aligned Language Models}, arXiv:2307.15043, 2023.
+\bibitem{gabliteration} G.~Gülmez, \emph{Gabliteration: Adaptive Multi-Directional
+Neural Weight Modification for Selective Behavioral Alteration in Large Language
+Models}, arXiv:2512.18901, 2025.
+\bibitem{grimjim} grimjim, \emph{Norm-Preserving Biprojected Abliteration},
+Hugging Face, 2025.
+\bibitem{wollschlager2025} T.~Wollschläger, J.~Elstner, S.~Geisler, V.~Cohen-Addad,
+S.~Günnemann, J.~Gasteiger, \emph{The Geometry of Refusal in Large Language Models:
+Concept Cones and Representational Independence}, arXiv:2502.17420, 2025.
+\bibitem{piras2025} G.~Piras, R.~Mura, F.~Brau, L.~Oneto, F.~Roli, B.~Biggio,
+\emph{SOM Directions are Better than One: Multi-Directional Refusal Suppression in
+Language Models}, arXiv:2511.08379, 2025.
+\bibitem{zhang2025dbdi} P.~Zhang, P.~Sun, \emph{Differentiated Directional
+Intervention: A Framework for Evading LLM Safety Alignment}, arXiv:2511.06852, 2025.
+\bibitem{abushairah2025} H.~Abu~Shairah, H.~A.~K.~Hammoud, B.~Ghanem, G.~Turkiyyah,
+\emph{An Embarrassingly Simple Defense Against LLM Abliteration Attacks},
+arXiv:2505.19056, 2025.
+\bibitem{young2025} R.~J.~Young, \emph{Comparative Analysis of LLM Abliteration
+Methods: A Cross-Architecture Evaluation}, arXiv:2512.13655, 2025.
+\bibitem{dang2026} Q.-A.~Dang, C.~Ngo, \emph{Selective Steering: Norm-Preserving
+Control Through Discriminative Layer Selection}, arXiv:2601.19375, 2026.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,165 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.05086
+Type: PDF
+Pattern: ten\s+adaptively|97\s*%|99\s*%|97-99|97–99 (11 matches in 66032 chars)
+
+--- Content ---
+
+1224:...plain most of the variance be-
+tween models across benchmarks. Second, psychometrically
+selected items recover full benchmark scores with lower error
+than random subsets of the same size, and roughly ten adap-
+tively chosen items suffice for several individual benchmarks,
+cutting evaluation cost by 97–99%. Third, IRT supports au-
+dits of individual models, showing that it can be used to detect
+naive sandbagging and changes of model behind APIs. Over-
+all, we show IRT is a ready-made toolkit for reading, reducing,
+and auditing safety benchmarks, which we recommend fron-
+tier labs and evaluators adop...
+--
+4714:...e also find that the suite cannot
+be summarized by a single safety ability.
+• Cost-efficient benchmarking. Psychometrically selected
+items estimate full-benchmark scores with lower error
+than random subsets of the same size: three fixed 25-
+item tests recover the three latent abilities, and roughly
+ten adaptively chosen items recover several individual
+benchmarks, reducing their evaluation cost by 97–99%.
+• Auditing with person-fit. Using prompted sandbagging
+model organisms, IRT-derived person-fit statistics catch
+at least 80% of selective prompted sandbagging. This also
+can be used to identify model substitutions and changes
+behind API endpoints.
+arXiv:2608.05086v1  [cs.AI]  5 Aug 2026
+
+Using It...
+--
+25650:...n the truthfulness test, TruthfulQA is estimated at
+RMSE 0.052 against a random baseline of 0.065; allocating
+the same number of items across one pooled, all-benchmark
+test drops its rank recovery from ρ = 0.73 to ρ = 0.60.
+Roughly ten adaptive items recover individual bench-
+marks, cutting cost by 97–99%.
+Approximately ten adap-
+tive items estimate HarmBench, SORRY-Bench, and OR-
+Bench-Hard scores with 18–34% lower error than a random
+ten-item subset, corresponding to a 97–99% reduction rel-
+ative to administering those benchmarks in full. The same
+ten items recover their full rankings at ρ = 0.92–0.94. The
+advantage narrows to 4–21% at 25 items, and by 50 items
+random subsampling matches or beats CAT on score recov-
+ery for five of the eight benchmarks, although seven ...
+--
+27122:...t approximately 75–100
+items.
+Sandbagging Detection and API Auditing
+Person-fit catches selective prompted sandbagging but
+misses most uniform sandbagging.
+At the calibrated 10%
+false-positive rate, person-fit flags 80–100% of targeted and
+triggered sandbagging runs in every prompt framing (90%
+and 97% pooled; Figure 4). Uniform sandbagging is flagged
+less often: 18–20% of runs under the plain and persona fram-
+ings and 70% under the incentive framing (35% pooled). Per-
+framing rates and full ROC curves are given in Appendix B.
+Ability shift catches uniform sandbagging; combined, the
+two tests detect 94–97% of runs.
+Uniform sandbagging
+changes the estimated ability by a median of +1.69 log-
+its and by as much as +3.94, whereas targeted and triggered
+interventions shift ability by only +0.24 to +0.35 logits (Fig-
+ure 5A). The 40-item ability check against the model’s histor-
+ical θ flags 84% of uniform runs, including every plain- and
+persona-framing uniform run that person-fit misses; com-
+bining the two tests detects 94–97% of sandbagging runs in
+every scope.
+Response fingerprints identify even ability-matched
+model substitutions.
+A 40-item ability test distinguishes
+99.5% of the 8,911 model pairs in our 134-model cohort on
+at least one benchmark. The remaining 41 ability-matched
+pairs (24 same-vendor snapshots or siz...
+--
+29352:...eports rank recovery (Spearman correlation). We compare computerized adaptive testing, a fixed
+static test, and stratified random subsampling.
+−20
+−15
+−10
+−5
+0
+Person-fit lz (lower = more aberrant)
+Genuine cohort
+10% flagged
+Uniform sandbag
+35% flagged
+Targeted sandbag
+90% flagged
+Triggered sandbag
+97% flagged
+Person-fit catches selective sandbagging
+Figure 4: Person-fit lz distributions on HarmBench for the
+genuine cohort and the three sandbagging scopes; the dashed
+line marks the calibrated cutoff (10% false-positive rate).
+Selective sandbagging produces aberrant response patterns;
+uniform sand...
+--
+31963:...comes should be valued.
+Evaluators should report distinct abilities when benchmarks
+separate, justify the weights used in any aggregate, and test
+whether a new benchmark measures anything not already
+captured by the suite.
+Distilled tests enable frequent evaluation.
+Reducing sev-
+eral benchmarks by 97–99% makes it more practical to eval-
+uate models throughout development rather than only before
+release. Short tests could be used to compare training inter-
+ventions, monitor individual checkpoints, and detect changes
+introduced by fine-tuning, quantization, system prompts, or
+minor model updates. Th...
+--
+52149:...one step. This appendix explains why the two-stage
+design estimates the same quantity and reports a direct MIRT
+fit that reaches the same conclusions.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+False-positive rate (171 genuine models)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Detection rate
+chance
+calibrated cutoff
+lz ≤−0.87 (10% FPR)
+97%
+90%
+35% pooled
+(18–70% by framing)
+A
+Full 196-item budget, three framings pooled
+Uniform (n=31)
+Targeted (n=31)
+Triggered (n=30)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+False-positive rate (171 genuine models)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Detection rate
+targeted: 10/11 at 196 items,
+11/11 at 100 items
+uniform: 2/11 at ...

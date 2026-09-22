@@ -1,0 +1,103 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2609.18471
+Type: HTML
+Pattern: models?\s+(we|tested|evaluate|across)|Llama|Qwen|Gemma|Mistral|DeepSeek|trajector|first\s+token|onset (92 matches in 57489 chars)
+
+--- Content ---
+
+863:.... Large Reasoning Models.
+     2. Safety-Related Representations.
+     3. Models and Data.
+  4. 3 Locating Safety Collapse in Large Reasoning Models
+     1. 3.1 Safety Failure Induced by Chain of Thought
+     2. 3.2 The Onset Refusal Collapse of LRMs
+     3. 3.3 Linking ORC to Safety Failure
+  5. 4 SafeToken: Anchoring Safety at Reasoning Onset
+     1. 4.1 Methodology
+        1. 4.1.1 Motivation
+        2. 4.1.2 Mechanism of SafeToken
+           1. Soft Token Optimization.
+           2. Inference-Time Injection.
+     2. 4.2 Experiments
+        1. 4.2.1 Experim...
+--
+1953:...overy of Safety Heads
+     1. B.1 EAP-IG Introduction and Data Preparation
+     2. B.2 Setup
+     3. B.3 Safety Heads
+  12. C Details of Refusal Direction Extraction
+  13. D Results for Benign Queries
+  14. E Details of Onset Interventions
+     1. E.1 Prefixes
+     2. E.2 Refusal Direction Injection
+  15. F On the Source of Onset Refusal Collapse
+     1. F.1 The Suppression of Refusal in Deep Layers
+     2. F.2 Attributing the Affirmative Token to Task Focus
+  16. G Details of SafeToken
+     1. G.1 Baselines
+     2. G.2 Safety Performance
+     3. G.3 Additional Results on Compatibility
+
+
+
+[ License: arXiv.org perpetual non-exclusive license ](https://info.arxiv.org/help/license/index.html#licenses-available)
+
+arXiv:2609.18471v1 [cs.AI] 16 Sep 2026
+
+# First Token Matters: Understanding Safety Collapse in Large Reasoning Models
+
+Yizheng Yang  Affiliation: Harbin Institute of Technology, Harbin, China  Haining Yu ††thanks: Corresponding author: yuhaining@hit.edu.cn. Affiliation: H...
+--
+3622:...ited understanding of the internal mechanisms behind safety failures. In this work, we investigate this failure through a token-level positional analysis of refusal dynamics and identify a localized vulnerability at the onset of reasoning, which we term Onset Refusal Collapse (ORC). We find that the refusal-related signal of LRMs drops sharply at the first generated token under harmful queries, which is associated with unsafe response generation. Motivated by this finding, we propose SafeToken, a lightweight inference-time intervention that injects a learned continuous safety anchor precisely at reasoning onset. Despite updating only a single token embedding, SafeToken effectively mitigates ORC, improves safety on harmful-query benchmarks, and largely preserves reasoning utility. These results suggest that safety failures in L...
+--
+5864:...structure [45], we project the latent hidden states of LRMs onto shared refusal vectors extracted from their Instruction-Tuned counterparts. Through this temporal analysis, we discover a critical phenomenon that we term Onset Refusal Collapse (ORC), as illustrated in Figure 1. Specifically, while the refusal projection strength of LRMs remains aligned with that of IT models during the prompt encoding phase, it drops sharply at the first generated token.
+
+## 2 Preliminaries
+
+##### Large Reasoning Models.
+
+We focus on decoder-only Transformer-based LRMs. Given an input query xx, an LRM generates an intermediate reasoning trajectory t=(t1,…,tK)t=(t_{1},\dots,t_{K}) before producing the final response yy:
+
+| P⁡(y,t∣x)=∏i=1KP⁡(ti∣x,t<i)⋅P⁡(y∣x,t).P(y,t\mid x)=\prod_{i=1}^{K}P(t_{i}\mid x,t_{<i})\cdot P(y\mid x,t). |  | (1)  
+---|---|---|---  
+  
+Unl...
+--
+7352:... it possible to analyze or steer refusal through activation-level interventions [1, 22].
+
+##### Models and Data.
+
+We study instruction-tuned (IT) models and LRMs derived from the same pretrained family. For LRMs, we use DeepSeek-R1-Distill-Llama-8B and DeepSeek-R1-Distill-Qwen-7B and 14B [4], denoted as R1-8B, R1-7B and R1-14B. As their IT counterparts, we use Llama-3.1-8B-Instruct [31] and Qwen2.5-7B(and 14B)-Instruct [37, 32].11 1 Actually, R1-7B was distilled from Qwen-2.5-Math-7B-Instruct, but the models ultimately belong to the same base family. For the datasets, we use AdvBench [2], StrongReject [29], and Alpaca [30] for analysis.
+
+## 3 Locating Safety Collapse in Large Reasoning Models
+
+In this section, we identify Onset Refusal Collapse, a localized safety failure in LRMs where refusal strength drops sharply at the first generated token. By comparing LRMs with their IT counterparts in a shared refusal subspace, we show that the failure is concentrated at reasoning onset.
+
+### 3.1 Safety Failure Induced by Chain of Thought
+
+We conduct comparative experiments between IT models and LRMs derived from the same backbone. The results suggest that reasoning traces in current LRMs can create a bypass mechanism for safety alignment, thereby motivating a deeper investigation into their internal representations (see Appendix A for more details).
+
+### 3.2 The Onset Refusal Collapse of LRMs
+
+We next ask whether LRMs fail on harmful queries because they genuinely lose refusal capability, or because they fail to preserve refusal-related information that remains encoded in latent spac...
+--
+10326:... higher StS_{t} indicates stronger refusal-related activation. By comparing the evolution of StS_{t} across token positions, we can examine how refusal-related representations change over the course of generation.
+
+(a)  Trajectory comparison for Llama.
+
+(b)  Trajectory comparison for Qwen.
+
+Figure 2:  Trajectory comparison analysis. The visualization illustrates the refusal-projection trajectories of LRMs and their IT counterparts on harmful prompts.
+
+Figure 2 shows that, under harmful queries, LRMs remain partially aligned with their IT counterparts during prompt encoding (t<0t<0), suggesting that they may st...
+--
+10989:...a sharp divergence emerges exactly at the first generated token (t=0t=0): while the IT model maintains strong refusal activation, the LRM exhibits a sudden drop toward the non-refusal region. We term this abrupt decline Onset Refusal Collapse (ORC). This localization identifies generation onset as a possible failure point. Results for harmless inputs are provided in Appendix D.
+
+To quantify this effect beyond single trajectories, we measure ORC relative to each matched IT/LRM pair. Specifically, we compute the matched-pair refusal gap Gt=StI​T−StL​R​MG_{t}=S_{t}^{IT}-S_{t}^{LRM} and define the normalized onset change as
+
+| RORC=G0−G−114​(|S−1I​T|+|S−1L​R​M|+|S0I​T|+|S0L​R​M|).R_{\mathrm{ORC}}=\frac{G_{0}-G_{-1}}{\frac{1}{4}\left(|S_{-1}^{IT}|+|S_{-1}^{LRM}|+|S_{0}^{IT}|+|S_{0}^{LRM}|\right)}. |  | (3)  
+---|---|---|---  
+  
+P...
+--
+[62 more matches not shown]

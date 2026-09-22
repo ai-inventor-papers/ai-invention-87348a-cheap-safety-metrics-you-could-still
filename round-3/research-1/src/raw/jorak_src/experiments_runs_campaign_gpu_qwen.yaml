@@ -1,0 +1,31 @@
+# CAMPAGNE GPU — famille Qwen3-8B (arch qwen3). Modèles VALIDÉS en campagne (verdicts corrects) :
+# 1 base censurée + 3 ablatérés (méthodes variées). Matrice propre censored / ablated.
+#
+# Pré-requis : venv torch CUDA + `pip install -e ".[dev]"`. GPU PROPRE (kill vLLM fantôme
+# via nvidia-smi) sinon OOM sur le plan activations. Auth HF conseillée : export HF_TOKEN=hf_xxx
+# Lancer :  modelscanner tui   (choisir « campaign_gpu_qwen.yaml »)
+#      ou :  python experiments/run_scan.py experiments/runs/campaign_gpu_qwen.yaml
+device: cuda
+probe_subset: 32             # 8B = lent : borne les sondes du plan behavioral. Commenter -> complet
+plans:
+  behavioral: true
+  activations: true          # Cohen's d — GPU propre requis (OOM -> passer à false)
+  weight_targets: o_proj
+multilingual: false
+profile: false
+
+# --- mode AWS (box GPU) : récupère chaque modèle absent du cache puis le purge après scan ---
+download: true
+purge: true
+output_s3: s3://your-bucket/results   # 1 JSON/modèle + rapport poussés au fil de l'eau (si aws-cli)
+output_dir: runs_out
+
+models:
+  - path: Qwen/Qwen3-8B                                          # base Instruct = censuré
+    expected_label: censored
+  - path: huihui-ai/Huihui-Qwen3-8B-abliterated-v2              # huihui v2 (conf 1.00)
+    expected_label: ablated
+  - path: Goekdeniz-Guelmez/Josiefied-Qwen3-8B-abliterated-v1   # JOSIEfied (conf 1.00)
+    expected_label: ablated
+  - path: DreamFast/qwen3-8b-heretic                            # Heretic (download exclut *.gguf)
+    expected_label: ablated

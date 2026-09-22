@@ -1,0 +1,116 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.25390
+Type: PDF
+Pattern: stable\s+rank|effective\s+rank|correlat|across\s+models|Spearman (155 matches in 92098 chars)
+
+--- Content ---
+
+79:Refusal geometry reflects refusal training: diverse
+refusal prefixes can raise stable rank and weaken
+refusal vector ablation attacks
+Andrey Labunets
+UC San Diego
+alabunets@ucsd.edu
+Abstract
+Refusal training protects AI models from jailbreaks by training models to decline
+unsafe queries, reducing the risk of ...
+--
+1376:...o concentration of gradients and
+refusal features in a low-dimensional subspace. Across frozen-model analyses and
+controlled synthetic fine-tuning, we find evidence of a hardening lever: diverse
+refusal starts can raise stable ranks of gradients and activation changes, making
+refusals harder to remove with a vector ablation attack.
+1
+Introduction
+State-of-the-art AI systems are beginning to exhibit dual-use capabilities that could pose severe
+risk...
+--
+5199:...-dim refusal residuals
+(b) Diverse refusal residuals
+1
+4
+8
+12
+16
+Number of refusal starts
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Refusal rate
+Refusal rate
+before intervention
+after ablation
+(c) Refusal ablation attack
+Figure 1: Higher stable rank resists refusal ablation (conceptual schematic). When residuals are
+less concentrated, a shared single-vector ablation cannot fully disable the refusal mechanism, so the
+refusal score after attack remains higher.
+Figure...
+--
+6204:...ection, and their principal directions partially overlap direction space of
+refusal subspace. For refusal completions, the per-gradient-step activation-change and final
+refusal-residual matrices also have comparable low stable rank.
+• Prefix concentration and spectral collapse. We identify concentrated refusal-start support
+in safety datasets — especially repeated first tokens — as one mechanism that can produce
+low-stable-rank gradients, activation changes, and refusal residuals.
+• Cross-layer stable rank transfer. We introduce stable rank transfer factors and show
+that refusal-diversity-induced stable rank increases propagate back through late layers with
+bounded ratios across evaluated conditions.
+• Shared effective Jacobian explanation. We define top-k source-subspace shared maps and
+a relative transfer factor fit error...
+--
+7267:...elation and
+account for its observed rank amplification or contraction.
+• Rank–vulnerability connection. Across frozen-model analyses and controlled fine-tuning,
+greater refusal-start diversity is associated with higher stable ranks and weaker difference-
+in-means single-vector ablation, providing evidence of a simple hardening lever.
+2
+Background and definitions
+2.1
+Transformer architecture and notation
+We consider a decoder-only transformer lang...
+--
+8872:...valuated at the same position, which
+is the first-assistant token output position, consistent with [17]. For SVD of a matrix M = UMΣMV ⊤
+M,
+we write V(M) = span(VM) to denote the right-singular subspace of M.. We define stable rank as
+sr(M) = ∥M∥2
+F /∥M∥2
+2.
+2.2
+Refusal mediation and existing attacks
+One of the well-known refusal ablation attacks involves estimating a refusal direction from a pair
+of harmless and harmful datasets [17]. For a fixed...
+--
+13657:...est the above prediction using these three diagnostics:
+cos(µ∆, µG) ≈−1,
+training steps move activations opposite to gradients,
+(18)
+V(∆Hc) ≈V(Gc),
+right singular vectors span similar subspaces,
+(19)
+sr(∆H) ≈sr(G)
+their stable ranks are very close.
+(20)
+Stable rank of first-token target matrix.
+Let Er ∈RN×|V | be the one-hot matrix of refusal first
+tokens r1, . . . , rN. Across N examples, for a token k ∈V , let ck = #{i : ri = k} denote its count ,
+fk = ck/N denote its empirical ...
+--
+14155:...d let m = |{k : ck > 0}| be the number of observed
+first-token buckets. The following lemma, whose full statement, proof, and a corollary appear in
+Section E.1, shows that first-token concentration directly controls the stable rank of Er.
+Lemma 3.1 (Stable rank of refusal first-token targets). The stable rank of Er is
+sr(Er) =
+N
+maxk ck
+=
+1
+maxk fk
+.
+(21)
+In particular, sr(Er) = 1 when all examples share the same first refusal token. For a fixed n...
+--
+[143 more matches not shown]

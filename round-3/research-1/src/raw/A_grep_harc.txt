@@ -1,0 +1,144 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2607.00572v3
+Type: PDF
+Pattern: correlat|Spearman|Pearson|across\s+(the\s+)?(five|models)|rank (11 matches in 97046 chars)
+
+--- Content ---
+
+1663:...periments, HARC achieves the strongest
+robustness-capability-usability trade-off among six baselines spanning the major
+training-time and inference-time safety methods. The harmfulness and refusal
+directions at prompt and response positions transfer across the five model families
+and two scales we tested without architecture-specific tuning. 2
+1
+Introduction
+Aligned large language models refuse harmful requests under direct prompting, but adversarial
+attacks such as adversarial suffixes [1, 2], persuasion-styl...
+--
+3941:...is generating that content, even when it failed to recognize
+the input as harmful during prompt encoding. It knows what it is producing but fails to translate
+that knowledge into refusal. We further show that this four-direction structure replicates across
+five instruction-tuned model families, suggesting it is a property of aligned LLMs rather than an
+architectural artifact (Section A.2).
+This suggests a simple intervention, where we directly couple harmful recognition with refusal. In this
+work, we intro...
+--
+5578:...de counterparts: cross-concept,
+cross-position pairs become nearly orthogonal in late layers (Figure 2b). The model still recognizes
+harmful content at generation time even when prompt-side refusal has failed. The four-direction
+structure replicates across five distinct model families. (2) We find that successful attacks suppress
+the refusal direction during prompt encoding, and distinct attack classes occupy separable regions
+of the harmfulness-refusal plane. (3) We propose HARC, a representation-level fi...
+--
+9601:...ss and Refusal
+In this section, we characterize the internal representations of harmfulness and refusal in LLAMA-
+3.1-8B and QWEN-2.5-7B, which are the two models we use for the main experiments. We
+additionally showed that this structure replicates across the five model families (Section A.2). Prior
+work characterizes vref at tpost-inst [23] and vharm at tinst [24] at prompt-side token positions. We
+hypothesize that harmful recognition may persist at generation time even when prompt-side refusal
+has been bypa...
+--
+19838:...estricted to the in-band range [4, n −4]. A layer scores highly only when prompt-side and response-
+side directions are decoupled while same-concept cross-position pairs remain aligned. The criterion
+has no architecture-specific tuning; it transfers across the five model families we test (Section A.2).
+We pick the top-K layers, ramping K from 2 to 4 linearly over the first 1,000 training steps so that
+early training perturbs the geometry only weakly while the LoRA establishes initial alignments.
+Direction reco...
+--
+35646:...at both positions through an additive margin hinge loss, achieving strong
+robustness against diverse jailbreak attacks without the capability or over-refusal costs of prior safety
+alignment techniques [19, 20]. The four-direction structure transfers across the five model families
+we test (Section A.2) and to larger scales without architecture-specific tuning, which suggests it is a
+property of how aligned LLMs are organized rather than an artifact of any specific training pipeline.
+Beyond the headline result, ...
+--
+36426:...gnal. Full
+asset details and licenses for models, datasets, and code are reported in Appendix H.
+Limitations. We focus on LoRA fine-tuning rather than full-parameter, and our hyperparameter
+search ablates only loss weights (Appendix F), leaving LoRA rank, learning rate, and KL retention
+strength unswept. We tested HARC under a fine-tuning attack (Appendix I) and found that adversaries
+with weight access can break HARC within roughly 160 harmful examples, since the same subspace-
+targeted footprint t...
+--
+63367:...ciated regions of the projection plane. The four-direction-
+16
+
+aware criterion selects similarly decoupled layers on both Llama and Qwen without architecture-
+specific tuning, and the cross-model analysis (Section A.2) shows the same property holds across five
+instruction-tuned model families.
+The two architectures differ in how they internally relate the prompt-side and response-side realiza-
+tions of these concepts. QWEN-2.5-7B couples vresp
+harm and vresp
+ref
+more tightly than LLAMA-3.1-8B.
+We attribut...
+--
+66386:...arm
+vref
+vresp
+harm
+vresp
+ref
+vharm
+vref
+vresp
+harm
+vresp
+ref
+1.00
++0.27
++0.62
++0.10
++0.27
+1.00
++0.35
++0.27
++0.62
++0.35
+1.00
+-0.13
++0.10
++0.27
+-0.13
+1.00
+Gemma-2-9B
+L=34/42
+1.0
+0.5
+0.0
+0.5
+1.0
+cosine
+Figure 8: The four-direction structure replicates across five instruction-tuned model families.
+Pairwise cosine similarities at each model’s selected layer (Eq. 6). Response-side decoupling
+(vresp
+harm ↔vresp
+ref ) and same-concept cross-position alignment (vharm ↔vresp
+harm and vref ↔vresp
+ref )
+replicate con...
+--
+74763:...0 144 GB GPU for
+training and evaluation. We use AdamW as the optimizer and report the learning rate per method.
+Random seeds are 0 (Ours, SFT) and 42 (DPO, CB, RepBend), matching each source repository’s
+default.
+D.1
+HARC (Ours)
+LoRA configuration.
+Rank r = 32, α = 64, dropout 0.0, attached to {q, k, v, o}proj and
+{gate, up, down}proj. Trainable parameters: 84M on Llama-3.1-8B (approximately 1.03% of base
+model parameters).
+Optimization.
+Learning rate 1 × 10−4 with 100 warmup steps, then constant. ...
+--
+76443:...entropy
+applied to every example’s response tokens. Both Llama and Qwen variants are trained with the
+same budget as HARC, where IFEval dropped to 0.46–0.58 from a base of 0.69, below the 0.9× base
+threshold.
+D.3
+DPO and Ours+DPO
+LoRA configuration.
+Rank r = 16, α = 16, dropout 0.05. Same target modules as Ours.
+Optimization.
+Learning rate 5 × 10−5 with 50 warmup steps and linear scheduler, 1 epoch over
+3000 preference pairs, effective batch size 16 (per-device 4, gradient accumulation 4). Approxima...

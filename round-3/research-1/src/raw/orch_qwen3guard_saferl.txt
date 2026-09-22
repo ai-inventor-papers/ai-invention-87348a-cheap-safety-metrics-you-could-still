@@ -1,0 +1,193 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: Safe\s*RL|reward (31 matches in 101931 chars)
+
+--- Content ---
+
+21909:...arkov et al., 2023),
+Aegis (Ghosh et al., 2024), Aegis2.0 (Ghosh et al., 2025), SimpleSafetyTests (Vidgen et al., 2024),
+HarmBench (Mazeika et al., 2024), WildguardTest (Han et al., 2024).
+• Response Classification: Harmbench (Mazeika et al., 2024), SafeRLHF (Ji et al., 2025), Beaver-
+tails (Ji et al., 2023), XSTest (R¨ottger et al., 2024), WildguardTest (Han et al., 2024). We also utilize
+the test set of Aegis2.0 (Ghosh et al., 2025).
+Furthermore, we employ prompts from the Beavertails test set to ge...
+--
+23728:...trict Mode, which classifies controversial cases as unsafe, and Loose Mode, which treats them as
+safe. *The average score for Qwen3Guard-Gen is based on the optimal mode per benchmark; the selected
+scores are underlined.
+Model
+English Response
+HarmB
+SafeRLHF
+Beavertails
+XSTest
+Aegis2.0
+WildG
+Think
+Avg.
+LlamaGuard3-8B
+84.5
+45.2
+67.9
+89.8
+66.1
+69.5
+72.0
+70.7
+LlamaGuard4-12B
+83.3
+42.5
+68.6
+88.9
+63.7
+66.4
+59.3
+67.5
+WildGuard-7B
+86.3
+64.2
+84.4
+94.7
+83.2
+75.4
+71.4
+79.9
+ShieldGemma-9B
+60.4
+44.2
+62.4
+86.3
+70....
+--
+30416:...e underlined.
+8
+
+50
+60
+70
+80
+90
+100
+Precision (%)
+50
+60
+70
+80
+90
+100
+Recall (%)
+Aegis
+F1=91.4
+50
+60
+70
+80
+90
+100
+Precision (%)
+50
+60
+70
+80
+90
+100
+Recall (%)
+OpenAIMod
+F1=81.3
+30
+40
+50
+60
+70
+80
+90
+100
+Precision (%)
+30
+40
+50
+60
+70
+80
+90
+100
+Recall (%)
+SafeRLHF
+F1=70.5
+50
+60
+70
+80
+90
+100
+Precision (%)
+50
+60
+70
+80
+90
+100
+Recall (%)
+XSTest
+F1=94.7
+NemoGuard-8B
+WildGuard-7B
+PolyGuard-Qwen-7B
+LlamaGuard3-8B
+ShieldGemma-27B
+Qwen3Guard-8B-Gen-Strict
+Qwen3Guard-8B-Gen-Loose
+Precision = Recall
+Figure 4: Precision and Recall for Prompt Classification (Aegis and OpenAIMod) and Response
+Classification (SafeRLHF and XSTest). Results reveal inconsistency in safety policy across datasets
+and guard models. For instance, WildGuard-7B aligns well with the Aegis dataset but proves overly
+restrictive on OpenAIMod.
+performance of existing Guard models that are mo...
+--
+[27 more matches not shown]
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2510.14276
+Type: PDF
+Pattern: Safety\s+RL|as\s+a\s+reward|reward\s+(model|signal)|Qwen3-4B (23 matches in 101931 chars)
+
+--- Content ---
+
+38558:.../86.5
+79.5/77.3
+84.0/80.2
+–
+∆
++0.2/+0.8
+-0.2/+1.3
+0.0/+0.4
++1.1/-1.3
++0.2/+2.2
++0.7/0.0
++1.5/+1.9
++0.50/+0.76
+Table 9: Qwen3Guard-Gen’s F1 Scores on Safety Classification Benchmarks Before and After Distilla-
+tion. XX/YY denotes the scores in Strict and Loose modes, respectively.
+3.5
+Application I: Safety RL with Generative Qwen3Guard
+Generative Qwen3Guard’s safety assessment of model responses can serve as a reward signal in Rein-
+forcement Learning (RL). In this section, we conduct Safety RL on a hybrid thinking model, Qwen3-4B,
+with the goal of aligning it to be more robust against harmful or adversarial prompts. Crucially, our
+approach avoids degenerate behaviors such as overly simplistic or blanket refusals that harm user
+experience, while still ensuring strong safety guarantees.
+3.5.1
+Reward Design
+We explore two rewa...
+--
+40694:...oth is safe and is refusal are predicates provided by Qwen3Guard-4B-Gen.
+3.5.2
+Experiment Settings
+Training
+We employ Group Sequence Policy Optimization (GSPO) (Zheng et al., 2025), a stable and
+efficient reinforcement learning algorithm, to train the policy model. For the training data, we use the
+Qwen3-4B model to generate eight distinct responses for each prompt in the WildJailbreak training
+set (from Vanilla Harmful and Adversarial Harmful categories). Responses are generated under both
+thinking and non-thinking modes. We then filter out samples where all eight responses are either
+uniformly safe ...
+--
+[18 more matches not shown]

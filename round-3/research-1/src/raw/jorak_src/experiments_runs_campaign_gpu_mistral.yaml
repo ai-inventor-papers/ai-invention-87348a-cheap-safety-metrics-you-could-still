@@ -1,0 +1,30 @@
+# CAMPAGNE GPU — famille Mistral / Ministral (arch `ministral`, supportée). Modèles qui TOURNENT
+# (validés en campagne2, contrairement aux Ministral-3 / mistral3 multimodaux non supportés).
+#
+# ⚠️  La base vanilla Ministral-8B est un CAS LIMITE du classifieur actuel : elle sort souvent
+#     `ablated` (poids Mistral atypiques). Gardée comme ancre « censored » -> l'écart attendu/prédit
+#     s'affiche tel quel dans le rapport (honnête). L'ablatéré, lui, est bien détecté (conf 0.88).
+#
+# Pré-requis : venv torch CUDA. `mistralai/Ministral-8B-Instruct-2410` est GATED ->
+#   accepter la licence sur HF + export HF_TOKEN=hf_xxx.
+# Lancer :  modelscanner tui   (choisir « campaign_gpu_mistral.yaml »)
+#      ou :  python experiments/run_scan.py experiments/runs/campaign_gpu_mistral.yaml
+device: cuda
+probe_subset: 32
+plans:
+  behavioral: true
+  activations: true          # OOM -> passer à false
+  weight_targets: o_proj
+multilingual: false
+profile: false
+
+download: true               # box AWS : récupère/purge chaque modèle au fil de l'eau
+purge: true
+output_s3: s3://your-bucket/results
+output_dir: runs_out
+
+models:
+  - path: mistralai/Ministral-8B-Instruct-2410       # base ⚠️ GATED + cas limite (peut sortir ablated)
+    expected_label: censored
+  - path: BobSteven/ministral-8b-abliterated         # ablatéré -> détecté ablated (conf 0.88)
+    expected_label: ablated

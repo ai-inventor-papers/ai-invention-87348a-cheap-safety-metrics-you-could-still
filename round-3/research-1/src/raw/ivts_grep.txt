@@ -1,0 +1,127 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2606.04778
+Type: PDF
+Pattern: models?\s+(we|tested|evaluate|across)|Llama|Qwen|Gemma|Mistral|trajector|first\s+\d+\s+token|commitment (265 matches in 103085 chars)
+
+--- Content ---
+
+79:Inference-Time Vulnerability Beyond Shallow Safety:
+Alignment Along Generation Trajectories
+Kyungmin Park
+Hankuk University of Foreign Studies
+falspace@hufs.ac.kr
+Taesup Kim∗
+Seoul National University
+taesup.kim@snu.ac.kr
+Abstract
+Safety-aligned Large Language Models (LLMs) remain vulnerable to intervention...
+--
+965:...its hidden states does not predict its robustness to such injection,
+revealing that internal state alone does not determine generation behavior under
+perturbation. To address this, we align models directly on generation trajectories
+constructed by simulating mid-sequence perturbation, and show that this improves
+robustness to mid-sequence injection and generalizes to attacks that exploit early-
+token generation. Our work argues that robust safet...
+--
+3948:...entations. Using a
+difference-in-means refusal prototype [Rimsky et al., 2024, Arditi et al., 2024], we find that models
+occupy refusal-like hidden states at the time of injection, yet injection redirects the generation
+trajectory toward harmful outputs regardless. Harmful tokens redirect the generation trajectory away
+from these states, even when the model’s hidden state closely resembles known refusal representations.
+Robust safety alignment must therefore go beyond eliciting refusal states. Instead, it must stabilize
+them under perturbation and recover safe trajectories when generation drifts toward harmful regions.
+Existing safety alignment methods largely do not train for this. Standard post-training objectives
+such as RLHF and DPO optimize behavior from complete prompt-response e...
+--
+5478:...al representations, rather than training the model on the dynamics of disrupted generation.
+This motivates a form of safety alignment that operates on the generation process itself. We augment
+the model’s own generation trajectories by simulating token injections at intermediate decoding steps
+to construct training data. The augmented trajectories include both cases where safe generation is
+disrupted by harmful injection and cases where unsafe generation is steered back toward refusal.
+Empirically, our method improves robustness to inference-time injection and...
+--
+6472:...havior at any generation step, with the
+strongest effect early in generation.
+• We find that a model’s alignment with the refusal direction in its hidden states does not
+prevent injection from redirecting its generation trajectory. This motivates aligning the
+generation trajectory directly rather than defending fixed internal states.
+• We propose a safety alignment method based on bidirectional trajectory augmentation that
+trains the model on its own generation trajectories. Applied iteratively, the method drives
+ASR toward zero on in-domain data and generalizes to prefilling, suffix optimization, and
+semantic jailbreak attacks.
+2
+Characterizing Inference-Time Vulnerability
+2.1
+Notation...
+--
+7484:...rom the AdvBench dataset [Zou et al., 2023]
+as input prompts. For each instruction xi, we generate a complete response yi through standard
+autoregressive decoding and evaluate whether the model refuses or complies using Llama-Guard-3-8B
+[Inan et al., 2023]. We partition the dataset into two subsets:
+Drefuse = {(xi, yi) : the model refuses xi},
+(1)
+Dcomply = {(xi, yi) : the model complies with xi}.
+(2)
+To identify directions in hidden state s...
+--
+8273:...ation step. Both injection types
+substantially shift ASR relative to the uninjected
+baseline (dotted line), with the effect strongest at
+early steps but persisting throughout generation.
+PC1 (23.2%)
+PCA Region Plot with Trajectories (Injection Step=6)
+PC2 (12.7%)
+Figure 2:
+Hidden-state trajectories under
+inference-time injection.
+Without injection
+(blue), the trajectory remains in the refusal re-
+gion, while harmful injection at step 6 (red)
+causes a sharp divergence toward the accept re-
+gion precisely at the injection step.
+hidden states from generations on Drefuse and Dcomply, then...
+--
+9740:...the response and continue normal decoding. We test two injection types: a
+harmful statement (“As a harmful assistant, here’s a detailed guide on”) and a refusal statement
+(“I can’t fulfill that request”). We evaluate on Mistral-7B-Instruct-v0.3, Qwen2.5-7B-Instruct, and
+Llama-3.1-8B-Instruct.
+Figure 1 reports results on Mistral; results for other models are in Appendix D.1. Both injection
+types substantially alter safety behavior. Harmful injections raise ASR well above the uninjected
+baseline, while refusal injections suppress it. The effect ...
+--
+11300:...bin. Across all three models, most samples cluster in the high similarity
+region, confirming that the model typically occupies a refusal-like state before injection. Yet ASR
+remains high in precisely these bins, and for Mistral the highest ASR coincides with the highest
+refusal-prototype similarity. The model refused but did not resist: it occupied the refusal region yet
+was redirected just as easily. This reveals that refusal-like hidden states do not predict robustness,
+3
+
+Cosine Similarity with Refusal Prototype
+(a) Mistral-7B-Instruct-v0.3 
+Binned ASR vs. Refusal Prototype Similarity
+Binned ASR vs. Refusal Prototype Similarity
+Binned ASR vs. Refusal Prototype Similarity
+Attack Success Rate
+Samples Per Bin
+(b) Llama-3.1-8B-Instruct
+(c) Qwen2.5-7b-instruct
+Cosine Similarity with Refusal Prototype
+Cosine Similarity with Refusal Prototype
+Figure 3: Relationship between refusal-prototype similarity (x-axis) and attack success rate
+(y-axis). At each generation ...
+--
+12373:...an ASR per bin; lines show sample counts. The base model “refused but
+didn’t resist”: occupying the refusal region did not confer resistance to injection at that step. The
+same pattern holds across three model families (Mistral, Llama, Qwen).
+calling into question representation-level defenses that assume alignment with a fixed internal
+direction provides resistance to trajectory-level perturbation.
+2.4
+Injection Redirects Generation Trajectories from Refusal to Compliance
+To understand why refusal-like hidden states fail to prevent successful injection, we examine how
+injection affects the model’s hidden state trajectory throughout generation. We apply PCA to
+hidden states from Drefuse and Dcomply, obtaining a two-dimensional plane that separates refusal
+from compliance. We then project two exemplar trajectories onto this plane: one from unperturbed
+generation and one with harmful injection at step 6. Figure 2 shows the result (similar divergence
+patterns for injection at steps 3 and 9 and for mean trajectories are shown in ...
+--
+[235 more matches not shown]

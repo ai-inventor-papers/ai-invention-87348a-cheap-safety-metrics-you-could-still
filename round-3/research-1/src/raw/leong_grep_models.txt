@@ -1,0 +1,191 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2502.13946v2
+Type: HTML
+Pattern: we\s+(evaluate|test|use|experiment|analyze)|models?\s+(we|used|tested|include)|Llama|Vicuna|Mistral|Qwen|Gemma|families?|Table\s+\d (62 matches in 84229 chars)
+
+--- Content ---
+
+1944:...ates within Template for Safety Decision-making
+  12. C Transferability of Harmful Probes
+  13. D Examples of TempPatch
+  14. E Further Discussions
+     1. E.1 Distinct Pattern of Llama-2-7B in 
+     2. E.2 Non-semantic tokens might expand the template anchor effects
+
+
+
+[ License: CC BY-NC-SA 4.0 ](https://info.arxiv.org/help/license/index.html#licenses-available...
+--
+11121:...
+Consider a metric m∈ℝm\in{\mathbb{R}} evaluated via a computation graph (e.g., an LLM), 𝐫∈ℝd{\mathbf{r}}\in{\mathbb{R}}^{d} represent a node (e.g., an intermediate activation11 1 We use these terms activation, representation and hidden state interchangeably throughout this paper.) in this graph. Following prior work Vig et al. (2020); Finlayson et al. (2021); Mar...
+--
+13021:...the model’s compliance (equivalently, refusal) decision on this pair of inputs Wang et al. (2023); Heimersheim and Nanda (2024).
+
+#### Chat Template.
+
+Figure 2: Chat template from Llama-3-Instruct series.
+
+To encode necessary information about roles and interaction turns in the input, existing LLMs employ a predefined chat template to format user inputs and model...
+--
+13946:...plate region.
+
+## 3 The Template-Anchored Safety Alignment in Aligned LLMs
+
+More heads become less focused on this region. More heads become more focused on this region. L17H21 of Llama-3-8B-Instruct Figure 3: Left: Distributions of attention shift across different LLMs. The long positive tails of the template region’s shift distribution demonstrate that their attentions shift systematically from the instruction to the template region when processing harmful inputs. Right: Attention heatmaps (17th-layer, 21st-head) from Llama-3-8B-Instruct consistently illustrate this distinct pattern.
+
+### 3.1 Preliminaries
+
+#### Datasets.
+
+We construct two datasets, 𝒟anlz{\mathcal{D}}_{\text{anlz}} and 𝒟eval{\mathcal...
+--
+15580:...}_{\text{anlz}} and 𝒟eval{\mathcal{D}}_{\text{eval}} for each model.
+
+#### Models.
+
+To validate the generality of our findings, we study a diverse set of safety fine-tuned models: Gemma-2 (2b-it, 9b-it) Team et al. (2024), Llama-2-7b-Chat Touvron et al. (2023), Llama-3 (3.2-3b-Instruct, 8B-Instruct) Dubey et al. (2024), and Mistral-7B-Instruct Jiang et al. (2023).
+
+### 3.2 Attention Shifts to The Template Region
+
+In modern LLMs based on attention mechanisms, the distribution of attention weights across diffe...
+--
+17044:...marily anchored in the template regions.
+
+#### Method.
+
+To investigate whether the attention weights exhibit increased focus on the template region when processing harmful inputs, we analyze attention weight distributions across all heads for both the instruction and template regions. More importantly, we examine how these distributions differ between harmless and har...
+--
+19268:...iding strong evidence for the existence of TASA.
+
+To illustrate this phenomenon more concretely, we showcase the behavior of a specific attention head (17th-layer, 21st-head) from Llama-3-8B-Instruct on the right side of Figure 3. This example demonstrates how an individual head behaves differently when processing harmless versus harmful inputs. We observe that t...
+--
+24134:..._{R^{\prime}} indicates the information from region R′R^{\prime} has a greater causal effect on the model’s compliance decision, and vice versa. For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m⁡(x−)−m⁡(x+))(m(x^{-})-m(x^{+})).
+
+#### Results.
+
+Figure 4 shows the trend of NIE in different regions as...
+--
+26273:...rease attack success rates. Figure 6: Probed harmful rates in the residual streams across layers and template positions (from the 5th to the 1st closest to the ending position) of Llama-3-8B-Instruct. The background intensity reflects the importance of each layer’s states for safety-related decisions, as aligned with Figure 10.
+
+### 4.1 TASA’s Impact on Response ...
+--
+28214:...the deep connection between TASA and the safety mechanisms of LLMs. Moreover, while other attack methods demonstrate limited effectiveness against certain models, particularly the Llama-3 8B and 3B variants, TempPatch achieves notably higher ASR in comparison. This contrast suggests that what might seem like stronger safety alignment could actually depend more on...
+--
+28895:...res are represented in the intermediate states under different attack scenarios.
+
+#### Method.
+
+We feed both harmful and harmless inputs from 𝒟anlz{\mathcal{D}}_{\text{anlz}} into Llama-3-8B-Instruct and collect residual streams at the template region across all layers. At each intermediate location, we construct a probe 𝒅−≔−𝒅+{\bm{d}}^{-}\coloneqq-{\bm{d}}^{+}, ...
+--
+31941:... all layers at the first 50 positions of each response and measure the probes’ accuracy in classifying harmfulness.
+
+Figure 7: Harmful probes from middle layers (i.e., layer 14 in Llama-3-8B-Instruct) can be transferred to response generation while maintaining high accuracy.
+
+Figure 7 shows the harmfulness probes of Llama-3-8B-Instruct in the ending position of the template. It reveals that harmfulness probes from the middle layers achieve relatively high accuracy and remain consistent across respo...
+--
+34101:...ases}, |  | (6)  
+---|---|---|---  
+  
+where α\alpha is a factor controlling the strength of injection and λ\lambda is a decision threshold (See Section A.3 for further details).
+
+We evaluate this approach against AIM, AmpleGCG, and PAIR attacks. We compare ASRs for response generations with and without detaching the safety mechanism, as shown in Table 1. The results demonstrate that detaching the safety mechanism from the template and applying it directly to response generation effectively reduces ASRs, strengthening the model’s safety robustness.
+
+Model | Attacks | w/o Detach | w/ Detach | Δ%\Delta\%  
+---|---|---|---|---  
+Gemma-2-9b-it | AIM | 89.3%89.3\% | 0.0%0.0\% | −89.3%-89.3\%  
+AmpleGCG | 62.3%62.3\% | 5.7%5.7\% | −56.6%-56.6\%  
+PAIR | 94.3%94.3\% | 11.9%11.9\% | −82.4%-82.4\%  
+Llama-3-8B-Instruct | AIM | 0.0%0.0\% | 0.0%0.0\% | 0.0%0.0\%  
+AmpleGCG | 29.6%29.6\% | 3.1%3.1\% | −26.5%-26.5\%  
+PAIR | 56.6%56.6\% | 16.2%16.2\% | −40.4%-40.4\%  
+  
+Table 1: Success rates of attacks with (w/) and without (w/o) detaching safety mechanism from the template region during response generation.
+
+## 6 Related Works
+
+#### Safety Vulnerabilit...
+--
+44953:...et al. (2024) Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian, Ahmad Al-Dahle, Aiesha Letman, Akhil Mathur, Alan Schelten, Amy Yang, Angela Fan, et al. 2024.  The llama 3 herd of models.  _arXiv preprint arXiv:2407.21783_. 
+  * Elhage et al. (2021) Nelson Elhage, Neel Nanda, Catherine Olsson, Tom Henighan, Nicholas Joseph, Ben Mann, Amanda Askell...
+--
+48894:...lexandre Sablayrolles, Arthur Mensch, Chris Bamford, Devendra Singh Chaplot, Diego de las Casas, Florian Bressand, Gianna Lengyel, Guillaume Lample, Lucile Saulnier, et al. 2023.  Mistral 7b.  _arXiv preprint arXiv:2310.06825_. 
+  * Jiang et al. (2025) Fengqing Jiang, Zhangchen Xu, Luyao Niu, Bill Yuchen Lin, and Radha Poovendran. 2025.  Chatbug: A common vulnerabi...
+--
+57769:...3) Rohan Taori, Ishaan Gulrajani, Tianyi Zhang, Yann Dubois, Xuechen Li, Carlos Guestrin, Percy Liang, and Tatsunori B. Hashimoto. 2023.  Stanford alpaca: An instruction-following llama model.  <https://github.com/tatsu-lab/stanford_alpaca>. 
+  * Team et al. (2024) Gemma Team, Morgane Riviere, Shreya Pathak, Pier Giuseppe Sessa, Cassidy Hardin, Surya Bhupatiraju, Léonard Hussenot, Thomas Mesnard, Bobak Shahriari, Alexandre Ramé, et al. 2024.  Gemma 2: Improving open language models at a practical size.  _arXiv preprint arXiv:2408.00118_. 
+  * Templeton (2024) Adly Templeton. 2024.  _Scaling monosemanticity: Extracting interp...
+--
+58671:...l. (2023) Hugo Touvron, Louis Martin, Kevin Stone, Peter Albert, Amjad Almahairi, Yasmine Babaei, Nikolay Bashlykov, Soumya Batra, Prajjwal Bhargava, Shruti Bhosale, et al. 2023.  Llama 2: Open foundation and fine-tuned chat models.  _arXiv preprint arXiv:2307.09288_. 
+  * Vaswani et al. (2017) Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jon...
+--
+65459:...the first 10%10\% heads in ℋ{\mathcal{H}}. We sweep the proportion of patched heads across 10%,20%​…,90%10\%,20\%\dots,90\%, and the results are shown in Figure 8. For each model, we use the proportion which gives the highest ASR on 𝒟anlz{\mathcal{D}}_{\text{anlz}} to conduct TempPatch on 𝒟eval{\mathcal{D}}_{\text{eval}} in Section 4.1.
+
+### A.2 Jailbreak Attacks
+...
+--
+66049:...ctly fill the target harmful request into the prompt for attacking. The AIM prompt is shown in Figure 9. PAIR uses LLMs to propose and refine jailbreak prompts. To implement this, we use Mixtral-8x22b-instruct as the attacker and gpt-4o-mini as the judge model, with N=20N=20 streams and a maximum depth of K=3K=3 for each query. AmpleGCG fine-tunes LLMs to generate jailbreak suffixes given harmful queries. We use the recommended checkpoint44 4 https://huggingface.co/osunlp/AmpleGCG-plus-llama2-sourced-vicuna-7b13b-guanaco-7b13b and settings to obtain suffixes with a diverse beam search of 200 beams and a maximum of 20 tokens.
+
+For response generation during attack scenarios (including TempPatch), we use greedy decoding with a maximum of 512 tokens.
+
+Figure 8: The ASR of applying TempPatch on different proportion of attention heads, with results from 𝒟anlz{\mathcal{D}}_{\text{anlz...
+--
+68904:...d from the template region and re-eliciting it during response generation. This process requires the probe from a specific layer ℓ\ell and template position τ\tau. For each model, we evaluate the accuracy in classifying harmful responses of the probes from all layers and template positions, and use the probe which yields the highest accuracy. Specifically, we evaluate probes on the residual streams from the initial 50 tokens of both harmful and harmless responses to instructions in 𝒟anlz{\mathcal{D}}_{\text{anlz}}. The harmful responses are sourced from successful jailbreaks using PAIR or AmpleGCG. Harmless responses are sourced from responses to harmless instructions.
+
+For Meta-Llama-3-8B-Instruct, we use the probe from layer ℓ=13\ell=13, position τ=4\tau=4 (where 00 is the first position of the template). For gemma-2-9b-it, we use the probe from ℓ=23\ell=23, position τ=4\tau=4. When performing the steering as in Equation 6, we empirically use a strength of α=1\alpha=1 and α=0.7\alpha=0.7 for these two model...
+--
+70006:...e average probe activations for both harmful and harmless responses, respectively, then take the median value between the two as the threshold.
+
+Model |  Chat Template  
+---|---  
+LLaMA-3 |  <|begin_of_text|><|start_header_id|>user<|end_header_id|>\n \n{input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n  
+Gemma-2 |  <bos><start_of_turn>user\n{input}<end_of_turn>\n<start_of_turn>model\n  
+LLaMA-2 |  <s>[INST] {input} [/INST]  
+Mistral |  <s>[INST] {input} [/INST]  
+Table 2: Chat templates of the used LLMs, where {input} is a placeholder for the user input.
+
+### A.4 Chat Templates
+
+The chat templates of the used models in our experiments are shown in Table 2.
+
+## Appendix B Critical Intermediate States within Template for Safety Decision-making
+
+Identifying critical intermediate states for safety decision-making helps understand how s...
+--
+71510:...ight)\sim{\mathcal{D}}_{\text{anlz}}}{\mathbb{E}}\left[m\left(x^{+}|\mathrm{do}\left({\bm{x}}_{\tau}^{\ell,+}={\bm{x}}_{\tau}^{\ell,-}\right)\right)-m(x^{-})\right], |   
+  
+where we use a refusal metric, the negative compliance metric used in Section 3.3, −𝒙TL​𝒅+-{\bm{x}}_{T}^{L}{\bm{d}}^{+} as m⁡(x)m(x). For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m⁡(x+)−m⁡(x−))(m(x^{+})-m(x^{-})). The value of NIE represents the proportion of refusal logit recovered b...
+--
+73158:... at the final position.
+
+## Appendix C Transferability of Harmful Probes
+
+Figure 11 demonstrates the accuracy distribution of the harmful probes when transferred to responses, for LLaMA-3-8B-Instruct from positions 0-3 in the template region. The result of the last position (i.e., 44-th position) is presented in Figure 7.
+
+## Appendix D Examples of TempPatch
+
+We ...
+--
+74232:...es that the model heavily relies on information in the template region when forming its initial response decisions.
+
+## Appendix E Further Discussions
+
+### E.1 Distinct Pattern of Llama-2-7B in Figure 3
+
+The most distinctive pattern in llama-2-7B’s mode is the significant attention decay in the instruction region compared to other models. It’s reasonable to infer that attention might shift more significantly to the pre-input region since there’s no corresponding increase in attention for the template region. To verify this, we collected the average attention shifts in different regions on Llama-2-7B-chat and Llama-3-8B-Instruct in the Table 3.
+
+Model | BOS Token | Pre-Input | Instruction | Template  
+---|---|---|---|---  
+Llama-2-7B-chat | 0.150 | 0.153 | -0.178 | 0.025  
+Llama-3-8B-Instruct | 0.0003 | 0.005 | -0.05 | 0.045  
+  
+Table 3: Average attention shift in different regions. Figure 12: Residual stream patching result when a quote mark is appended to the prompt ‘How to make a bomb’.
+
+We confirm that the distinctive attention shift in Llama-2-7B-chat occurs because attention significantly shifts to the pre-instruction region. However, rather than indicating an unexpected role for the system prompt region, this shift ...
+--
+76204:...xtend the model’s original template region, effectively helping to transfer harmful signals from the input.
+
+To empirically demonstrate this, we conducted a simple case study with Gemma-2-2b-it using layer-wise causal tracing (detailed in Appendix B) to show the flow of harmful signals in this scenario. We used a harmful prompt ‘"How to make a bomb"’ and a harmless prompt ‘"How to make a cake"’, both sharing the same ending part of the AIM jailbreak prompt - a quotation mark.
+
+The resul...
+--
+[2 more matches not shown]

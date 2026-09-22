@@ -1,0 +1,217 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2603.24543
+Type: PDF
+Pattern: γ\s*1|gamma|regression|steering\s+(coefficient|strength)|dose (15 matches in 71075 chars)
+
+--- Content ---
+
+22952:...fety, we regress the
+ASR slope on the cosine similarity with ˆr. For each
+steering vector vℓ,τ, the safety effect is measured by
+the ASR slope across multipliers m ∈[−1.5, 1.5]:
+slopeASR(vℓ) = ASRℓ(1.5) −ASRℓ(−1.5)
+1.5 −(−1.5)
+. (4)
+For each model, we then fit a simple ordinary least-
+squares (OLS) regression using all of its steering
+vectors:
+slopeASR(vℓ) = γ0 + γ1 cos(vℓ, ˆrℓ) + εℓ,
+(5)
+where the coefficient γ1 quantifies how strongly
+refusal alignment predicts the safety impact. We
+0.15
+0.10
+0.05
+0.00
+0.05
+0.10
+0.15
+Cosine Similarity
+Qwen 3B
+Llama 7B
+Gemma 7B
+Qwen 7B
+Qwen 14B
+Qwen 32B
+30
+20
+10
+0
+10
+20
+Model
+Qwen 3B
+Llama 7B
+Gemma 7B
+Qwen 7B
+Qwen 14B
+Qwen 32B
+ASR Slope
+Figure 5: Relationship between steering vector align-
+ment with the refusal direction and safety impact. Each
+point represents a steering vector, plotted by its cosine
+similarity to the refusal direction (x-axis) and its effect
+on attack success rate (y-axis) across six models.
+Model
+Slope (γ1)
+r
+R2
+p-value
+Qwen 3B
+1.46
+0.15
+0.02
+0.696
+Llama 7B
+−36.52
+−0.93
+0.87
+<0.001
+Gemma 7B
+−82.12
+−0.93
+0.87
+<0.001
+Qwen 7B
+−125.19
+−0.92
+0.85
+<0.001
+Qwen 14B
+−180.71
+−0.95
+0.91
+<0.001
+Qwen 32B
+−193.40
+−0.94
+0.88
+<0.001
+Table 1: Regression of ASR Slope against Cosine Simi-
+larity with Refusal Direction for Prefix-Injection Attack.
+report results for the prefix injection setting, as it
+exhibits the clearest effect on ASR. Results for the
+prompt-only and refusal suppression scenarios are
+provided in Section B.2.
+Our regression analysis, presented in Figure 5
+and Table 1, demonstrates a strong predictive re-
+lationship between refusal alignment and safety
+impact. The plot visually confirms this, showing
+a clear negative linear trend for all models except
+the smallest, Qwen 3B. For every model larger
+than 3B, the relationship is statistically significant
+(p < 0.001) and exceptionally strong, with refusal
+alignment explaining over 85% of the variance in
+ASR slope (R2 ≥0.85). The steep negative slopes
+(γ1 ≪0) confirm that as a vector’s alignment with
+the refusal direction increases, its capacity to re-
+duce the attack success rate grows substantially.
+Effect of model scale.
+Furthermore, our analysis
+highlights a clear scaling trend in the magnitude
+of this effect. As detailed in Table 1, the regres-
+sion slope γ1 becomes progressively steeper with
+model size. It grows from −36.52 for Llama 7B to
+6
+
+−193.40 for Qwen 32B. This suggests that larger,
+more capable, models are significantly more sensi-
+tive to the geometric alignment of steering vectors
+with their internal refusal mechanism.
+Collateral Effects on...
+--
+58417:...efen-
+sive strategies, conceptual explanations,
+ethical guidance) →SAFE.
+Please respond with one of the following as
+the first word, followed by a brief explanation
+of your reasoning: JAILBROKEN, SAFE, or
+NON-COMPREHENSIBLE.
+User Question: {question}
+AI Response: {response}
+Evaluation:
+Model
+Slope (γ1)
+r
+R2
+p-value
+Qwen 3B
+−22.46
+−0.82
+0.66
+<0.01
+Llama 7B
+−17.60
+−0.95
+0.90
+<0.001
+Gemma 7B
+−51.82
+−0.92
+0.85
+<0.001
+Qwen 7B
+−26.90
+−0.96
+0.92
+<0.001
+Qwen 14B
+−20.09
+−0.78
+0.61
+<0.05
+Qwen 32B
+−29.38
+−0.92
+0.84
+<0.001
+Table 6: Regression of ASR Slope against Cosine Simi-
+larity with Refusal Direction for Prompt-Only Scenario.
+Model
+Slope (γ1)
+r
+R2
+p-value
+Qwen 3B
+−31.92
+−0.94
+0.88
+<0.001
+Llama 7B
+−53.83
+−0.97
+0.94
+<0.001
+Gemma 7B
+−39.45
+−0.80
+0.64
+<0.01
+Qwen 7B
+−66.31
+−0.94
+0.88
+<0.001
+Qwen 14B
+−153.96
+−0.99
+0.98
+<0.001
+Qwen 32B
+−241.55
+−0.96
+0.91
+<0.001
+Table 7: Regression of ASR Slope against Cosine Simi-
+larity with Refusal Direction for Refusal-Suppression
+Attack.
+B
+Supplementary Results
+B.1
+General Performance under Activation
+Steering
+Table 5 presents the general performance of our
+tested models under different steering vectors and
+multipliers. To assess whether...
+--
+[3 more matches not shown]

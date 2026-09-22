@@ -1,0 +1,95 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2609.14759
+Type: PDF
+Pattern: correlat|Spearman|Pearson|rank\s|safety\s+(score|benchmark)|refusal\s+rate (81 matches in 128016 chars)
+
+--- Content ---
+
+624:...ed, not
+what the refusal decision was reading in the first place. We ask what it reads, and
+we separate that from what the model comprehends.
+Across four open-weight models spanning three families, moral comprehension is
+native to pretraining: a low-rank moral subspace crystallizes during pretraining,
+and alignment rotates it once without rebuilding it. The refusal gate, in contrast, is
+a fresh post-training construction with only a weak pretraining precursor, written
+into a narrow control-token channel where the refusal decision is orthogonal to the
+moral-judgment decision.
+The central result is causal and comes from one model, OLMo-3. A nested
+interchange rank sweep patches successively larger slices of the moral subspace
+between matched requests and reads how much of refusal’s response transfers: as
+the basis widens, moral judgment keeps reading more of it, while refusal levels off
+at the level of a singl...
+--
+1787:...families. Llama reads broad moral content; Qwen
+reads beyond the single harm cue but is unresolved at our sample size; GPT-OSS
+reads harm, and its refusals can be argued in either direction by its own reasoning
+trace. Where refusal reads only a low- rank slice and routes around the bulk of
+what the model knows, a rank-one edit removes it. Whether widening what refusal
+reads would also deepen the behavior is the open question this raises.
+1
+Introduction
+Alignment applied after pretraining is shallow i...
+--
+3569:...he one a “deep alignment” program would hope
+for, is that refusal consults the model’s moral representations broadly, the same representations that
+let it judge scenarios as right or wrong. We find the opposite. Refusal reads the harm percept, a
+low-rank slice of moral content, and writes it into a narrow control-token bottleneck at the decision
+site; on the model we test causally it does not read the broad moral subspace where comprehension
+lives. The two are nearly orthogonal at the decision (refus...
+--
+5303:...-token bottleneck on all four architectures, and at that site
+the refusal-decision direction is separated from the moral-judgment-decision direction (no coupling
+detectable above | cos | 0.10 against a null q95 of 0.41 on OLMo). A nested interchange rank sweep
+on OLMo resolves what refusal reads: as the moral basis expands, judgment coupling climbs while
+refusal coupling levels off at the rank-1 harm level. Refusal reads harm; judgment reads two-thirds of
+the subspace patch effect (0.66); they are di...
+--
+7150:...ge and cross-architecture generalization for
+the representational cells. Llama-3.1-8B-Instruct is a gated model; access and checkpoint details are
+in Section E.
+2.2
+Directions and subspaces
+Three objects carry the argument, each a direction or a low-rank subspace in the residual stream,
+extracted by mean-difference over labeled stimulus contrasts in the spirit of representation reading
+(Park et al., 2024, Zou et al., 2023).
+The moral subspace Vmoral. We build one direction per moral-content source by...
+--
+7743:...Understanding Fables, and
+ETHICS (Hendrycks et al., 2021), grounded in moral foundations theory (Graham et al., 2013,
+Haidt, 2012). The three source directions are distinguishable rather than collinear, and their or-
+thonormalized span has effective rank 3. Vmoral is richer but lower-dimensional than a six-foundation
+2
+
+moral-foundations span (effective dimension 3 versus 4); its value is construct diversity, source
+distinguishability, and resistance to single-source contamination, not extra dimensio...
+--
+11644:...ning studies in this line find about how moral structure emerges.
+Moral content is learned early and compositionally rather than as a bag of words (Reblitz-Richardson,
+2026a). The moral foundations a model acquires also integrate into one positively correlated subspace
+rather than splitting into the theory’s individualizing and binding clusters: mean off-diagonal cosine
+0.232–0.274, effective dimension 5 at every layer, first principal component 0.379 of variance
+against 0.179 for a random baseline, and...
+--
+15684:... gate,
+about twice the matched null, not none. The number is not an artifact of noisy direction estimates:
+split-half reliability of the proto-refusal direction is 0.99 and of the instruct gate 0.99 (200 paired
+half-splits of the 400/400 prompt set, Spearman-Brown corrected), so the disattenuated cosine is
+0.156. Nor does the precursor drift into the gate late in pretraining: across 13 stage-3 checkpoints
+the proto-refusal direction crystallizes toward its final form (self-cosine 0.93 rising to 1.0) whi...
+--
+18054:...t projects below the moral-family band at every rung. The base proto-refusal projects 0.33
+onto the base moral subspace (covariance-matched null q95 0.291), and the aligned gate projects
+0.14 onto the aligned moral subspace (null q95 0.26). Across a rank sweep over the moral basis
+(one to three sources) refusal never clears the null-plus-margin bar, and the same holds against a
+richer six-foundation construction (per-model projections and nulls in Section B). Figure 2 shows the
+calibrated ladder that...
+--
+27546:...ching (Meng et al., 2022) on the heads that
+write the decision channel resolves what the refusal decision reads. The answer is the harm percept:
+a mostly-extra-moral harm direction, aligned with a harm direction (Zhao et al., 2025), that clips a
+low-rank corner of the moral subspace. About three-quarters of refusal’s causal input lies off the
+subspace (the rank sweep below reports 76% outside the rank-16 basis); it is not the broad subspace
+that moral judgment reads on the same patches. Moral directions here are causal and foundation-
+specific to begin with, a preliminary we established with foundation-wise...
+--
+[69 more matches not shown]

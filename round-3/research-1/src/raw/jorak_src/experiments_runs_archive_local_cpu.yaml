@@ -1,0 +1,23 @@
+# Test LOCAL CPU — la matrice 0.5B (modèles en cache HF).
+# Lancer : HF_HUB_OFFLINE=1 python experiments/run_scan.py experiments/runs/local_cpu.yaml
+# Puis   : python experiments/aggregate.py runs_out/<run_id>/
+
+device: cpu
+probe_subset: 12            # peu de sondes -> rapide sur CPU
+plans:
+  behavioral: true          # sépare censuré / fine-tuné
+  activations: false        # coupé sur CPU pour la vitesse (le plan POIDS suffit au verdict)
+multilingual: false
+profile: false
+output_dir: runs_out        # pas de S3 en local
+# output_s3: s3://your-bucket/results   # (décommenter sur AWS)
+
+models:
+  - path: Qwen/Qwen2.5-0.5B-Instruct
+    expected_label: censored
+  - path: huihui-ai/Qwen2.5-0.5B-Instruct-abliterated
+    expected_label: ablated
+  - path: grisun0/Qwen2.5-0.5B-Instruct-heretic
+    expected_label: ablated
+  - path: dphn/Dolphin3.0-Qwen2.5-0.5B
+    expected_label: finetuned_decensored

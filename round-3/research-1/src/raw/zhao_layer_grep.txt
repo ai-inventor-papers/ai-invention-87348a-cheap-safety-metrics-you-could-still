@@ -1,0 +1,96 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2507.11878v5
+Type: HTML
+Pattern: layer.*(probe|accuracy|decodab)|probe.*layer|across\s+layers|Figure\s+\d.*layer (8 matches in 98992 chars)
+
+--- Content ---
+
+19941:... hypothesis in Section 3.2 by analyzing how the hidden states of different instructions (harmful but accepted, and harmless but rejected) form clusters at different token positions.
+
+(a) Llama3-Instruct-8B
+
+(b) Llama2-Chat-7B
+
+(c) Qwen2-Instruct-7B
+
+Figure 2: The internal clustering of hidden states extracted at tinstt_{\text{inst}} (the first row) and tpost-instt_{\text{post-inst}} (the second row) exhibit opposing patterns. The red region: 𝒞refused harmfull\mathcal{C}^{l}_{\text{refused harmful}} (the cluster of refused harmful instructions). The green region: 𝒞accepted harmlessl\mathcal{C}^{l}_{\text{accepted harmless}} (the cluster of accepted harmless instructions). At each token position, we collect hidden states of two special misbehaving cases: accepted harmful instructions (the red line) and refused harmless instructions (the green line) to see which cluster these two cases fall in. The first row: At tinstt_{\text{inst}}, across layers, accepted harmful instructions (the red line) mostly fall in 𝒞refused harmfull\mathcal{C}^{l}_{\text{refused harmful}} (the red region), while refused harmless instructions (the green line) mostly fall in 𝒞accepted harmlessl\mathcal{C}^{l}_{\text{a...
+--
+25922:...nce feature or the harmful/harmless feature.
+
+#### At tinstt_{\text{inst}}, hidden states primarily form clusters by harmfulness; at tpost-instt_{\text{post-inst}}, hidden states form cluster by refusal.
+
+The results of different models are shown in Figure 2. We find that at tinstt_{\text{inst}}, harmfulness plays a more decisive role in clustering, while at tpost-instt_{\text{post-inst}}, refusal plays a more important role in clustering. For example, at tinstt_{\text{inst}} (the first row of Figure 2), for all three models tested, across all layers, the hidden states of accepted harmful instructions (the red solid line) mainly fall in the 𝒞refused harmfull\mathcal{C}^{l}_{\text{refused harmful}} cluster, and refused harmless instructions (the green dashed line) mainly fall in the 𝒞accepted harmlessl\mathcal{C}^{l}_{\text{accepted harmless}} cluster (the green region). These results suggest that at tinstt_{\text{inst}}, the clustering is driven more by the harmfulness feature of the instructions than by whether they were refused. However, at tpost-instt_{\text{post-inst}} (the second row of Figure 2), the clustering behavior is reversed. The hidden states of refused harmless instructions (the green dashed line) fall in 𝒞refused harmfull\mathcal{C}^{l}_{\text{refused harmful}} (the red region), and the accepted harmful instructions (the red solid line) fall in 𝒞accepted harmlessl\mathcal{C}^{l}_{\text{accepted harmless}} (the green region). These results suggest that the clustering is driven more by whether the instruction was accepted or refused, regardless of whether it was actually harmful or harmless. Apart from the two positions tinstt_{\text{inst}} and tpost-instt_{\text{post-inst}}, we also study the clustering patterns at more token positions and perform similar layer-wise analysis in Appendix F.1. We find that clustering based on the harmfulness of instructions is the most evident at tinstt_{\text{inst}}.
+
+Additionally, in both Llama3 and Qwen2 models, we observe a similar layer-wise pattern that at tpost-instt_...
+--
+34574:...t{accept}} at token tpost-instt_{\text{post-inst}}.
+
+#### Steering results.
+
+We find that both the harmfulness direction and the refusal direction can elicit LLMs’ refusal behaviors on harmless instructions. Layer-wise results on Llama3 are shown in Figure 4, and results on other models are shown in Appendix C. Steering along the harmfulness direction at layer nine leads to the highest refusal rate (94%), while the refusal direction performs the best at layer eleven (100% refusal rate). On Qwen2 and Llama2, the refusal rate elicited by the harmfulness direction is much lower than that elicited directly by the refusal direction (see Appendix C). Although both directions can elicit refusal behaviors, we fi...
+--
+73465:...rmful direction
+
+We perform the steering experiment discussed in Section 3.4 on different models. We steer the hidden states of harmless instructions along the proposed harmfulness direction and the refusal direction. Layer-wise results are shown in Figure 8. We find that the steering results differ from model to model. For Llama2, we can reach the best refusal rate when steering with the harmfulness direction relatively early in layer 9, which is consistent with Llama3 (Figure 4). But for Qwen2, the best steering performance appears in the intermediate layers (e.g., layer 13). Besides, steering with the harmfulness direction does not always cause refusal. We speculate that this may be because LLMs reason about refusal based on the harmfulness signal, but in some cases, the harmfulness signal itself may not be suffici...
+--
+74350:...tly related to the refusal signal, steering with it generally leads to a higher refusal rate.
+
+(a) Llama2
+
+(b) Qwen2
+
+Figure 8: Steering the hidden states of harmless instructions along the harmfulness direction and the refusal direction.
+
+(a)
+
+(b)
+
+Figure 9:  (a) Average cosine similarity between the harmfulness/refusal direction of one category and the harmfulness/refusal directions of all the other categories. Our results suggest that harmfulness directions are more different from one category to another than the refusal directions, which are more similar across categories. (b) Refusal rate in the reply inversion task when intervening with the reverse harmful directions from different risk categories (the best refusal rate among all layers is shown). Higher refusal rates mean more effective intervention. The test set consists of examples from the risk category “Hate_Haras_Violence” so as to evaluate in-domain and out-of-domain intervention effects. The result shows that harmful direc...
+--
+82919:...ach token position. Our results suggest that tinstt_{\text{inst}} position encodes harmfulness the most evidently.
+
+(a) Llama3-Instruct-8B
+
+(b) Qwen2-Instruct-7B
+
+(c) Llama2-Chat-7B
+
+(d) Llama3-Instruct-8B
+
+(e) Qwen2-Instruct-7B
+
+(f) Llama2-Chat-7B
+
+Figure 14: Average sl​(hl)s^{l}(h^{l}) over the middle layers for hidden states extracted at different token positions. sl​(hl)s^{l}(h^{l}) indicates the difference between the cosine-similarity with the cluster of refused harmful instructions and the cluster of accepted harmless instructions. Larger sl​(hl)s...
+--
+84164:...tes of test cases hlh^{l} at layer ll fall in the cluster of rejected harmful instructions or accepted harmless instructions. Larger positive sl​(hl)s^{l}(h^{l}) means these hidden states are closer to the cluster of refused harmful instructions. In Figure 14, we average the layer-wise sl​(hl)s^{l}(h^{l}) in the middle layers (9 to 20) as they tend to be more responsible for handling harmfulness information inside LLMs (evidenced by observation that the steering performance reaches peak in the middle layers in experiments of Section 3.4 and Section 3.5). If a token position encodes harmfulness, then the clustering of examples in the latent space should reflect the shared harm-related features instead of the refusal-related features. Specifically, the hidden states of accepted harmful instructions should fall within the red region (the cluster of refused harmful instructions), while the refused harmless instructions should fall within the green region (the cluster of accepted harmless instructions). Among all the token positions tested, only tinstt_{\text{inst}} demonstrates this desired clustering pattern. Full layer-wise results are shown in Figure 15.
+
+(a) Llama3-Instruct-8B
+
+(b) Llama3-Instruct-8B
+
+(c) Llama2-Chat-7B
+
+(d) Llama2-Chat-7B
+
+(e) Qwen2-Instruct-7B
+
+(f) Qwen2-Instruct-7B
+
+Figure 15: Clustering at different token positions
+
+(a) Qwen2
+
+(b) Llama3
+
+Fi...
+--
+91055:...  
+w/o in-domain | 27.1 | 41.9 | 52.9 | 40.4 | 36.8 | 27.1 | 41.4 | 25.0  
+w/ in-domain | 93.3 | 91.1 | 92.1 | 86.2 | 90.7 | 96.4 | 87.8 | 83.3  
+  
+Table 9: Evaluation on the OpenAI Moderation Evaluation Dataset across different unsafe categories.  Figure 18: The direction from accepted harmless instructions to harmful instructions that are accepted now due to adversarial finetuning is still a refusal direction. Steering along it in the intermediate layers can elicit refusal behaviors on harmless instructions.
+
+### H.2 Effects of finetuning on latent representation
+
+Additionally, we observe a similar phenomenon on the refusal direction after finetuning. We compute a direction at tpost-instt_{\text{po...

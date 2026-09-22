@@ -1,0 +1,79 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2511.14195
+Type: PDF
+Pattern: 7,?000\+?\s*(test\s*)?cases|over\s+40\s+models (5 matches in 75259 chars)
+
+--- Content ---
+
+1221:...rates entirely on the
+model’s latent representations, bypassing the
+need for full text generation. It characterizes
+hidden layer dynamics by analyzing the APT
+(Angular-Probabilistic Trajectory) of latent rep-
+resentations and introducing the JSS (Jensen-
+Shannon Separability) metric. Experiments on
+over 40 models and 20 red teaming strategies
+demonstrate that the JSS metric exhibits high
+consistency with Red Teaming safety rankings
+at less than 1% token and runtime cost.
+1
+Introduction
+Large Language Models must be aligned to ensure
+their behavior consistently follows human values
+and safety norms, rather t...
+--
+5672:...ts the core intuition: when com-
+paring multiple variants of the same base model
+(e.g., RL-aligned, base, and safety-removed ver-
+sions of Qwen3-4B), we observe that better-aligned
+variants exhibit more pronounced geometric sepa-
+ration between different trajectories in latent space.
+Experiments on over 40 models and 20 red-
+teaming strategies demonstrate that N-GLARE
+faithfully reproduces the safety rankings induced
+by traditional Red Teaming while using less than
+1% of the token and runtime cost, making it suit-
+able for agile diagnostics after training new models
+or updating safety mechanisms.
+Our main c...
+--
+19509:...ss of JSS to alignment-
+related weight updates.
+4.1.1
+Cross-Model Validation of JSS-Derived
+Safety Proxies
+For model-level differentiation, we collected a di-
+verse set of models and evaluated their performance
+under a series of standardized red-teaming safety
+tests (20+ testing protocols with over 7000 test
+cases, more data listed in the Appendix table 9
+and 10). For each model, the results were aggre-
+gated into a single averaged traditional safety score.
+Our goal in this experiment is twofold: (1) to de-
+rive proxy safety indicators from our JSS-based
+evaluation framework, and (2) to assess the con-
+siste...
+--
+30552:...ety
+evaluation that captures safety state through latent
+trajectory geometry rather than outputs. By mod-
+eling a benign manifold and using JSS to measure
+deviations of jailbreak and refusal trajectories, N-
+GLARE produces model-level safety rankings con-
+sistent with large-scale red-teaming across over 40
+models, while reducing cost by more than two or-
+ders of magnitude. It further reveals fine-grained
+safety dynamics, demonstrating latent trajectory
+analysis as a scalable tool for continuous safety
+diagnostics.
+6
+Limitations
+While N-GLARE demonstrates strong empirical
+effectiveness, several limitations remain. First, al-
+though our evaluation covers over 40 models with
+diverse sizes and alignment settings, it does not
+exhaustively represent all architectures, training
+paradigms, or deployment variants. Second, N-
+GLARE requires access to internal hidden represen-
+tations, which limits its direct applicability to fully
+black-box models that expose only text o...

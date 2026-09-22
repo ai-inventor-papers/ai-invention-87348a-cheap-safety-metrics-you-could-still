@@ -1,0 +1,231 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2607.13075
+Type: PDF
+Pattern: 0\.656|0\.819 (14 matches in 76304 chars)
+
+--- Content ---
+
+724:...dge-classified compliant at-
+tacks in a taxonomy-selected set. It also blocks 59.6–68.4
+percent of XSTest prompts. A fully disjoint audit recon-
+structs near-ceiling source-contrast AUROC (0.996–0.999),
+but fixed transfer to matched pairs is weaker: 0.656–0.819
+on the guard-selected Twin-n70 subset and 0.590–0.690 on
+the full Twin-n163 cohort. We test ten axes on the reference
+family and seven across all families with leakage, hold-out,
+and permutation controls. On Twin-n163, no axis evaluated
+without dire...
+--
+26894:...-
+ification reuse 420 AdvBench positives. A disjoint audit
+separates direction fitting, layer selection, and verifica-
+tion. Source AUROC remains 0.998, 0.996, and 0.999 for
+Llama, Mistral, and Qwen (Table 21).
+Without pair refitting, AUROC falls to 0.656, 0.692, and
+0.819 on Twin-n70 and 0.590, 0.605, and 0.690 on Twin-
+n163. Twin-n163 concordance is 0.656, 0.724, and 0.847,
+with exact sign-test p ≤7.9 × 10−5. The paired shift is
+clear, but TNR at 95 percent TPR is only 8.0, 9.8, and 21.5
+percent. Hierarchical intervals give the same conclusion
+(Tables 13 and 14).
+A max-|t| sign-flip test over 33 Twin...
+--
+35220:...with transferable corpus cues.
+5.7
+Read-point consistency
+The primary Llama transfer uses index 10. Exploratory
+controls at deployment index 14 and analysis index 12 give
+AUROC 0.685 and 0.695, both inside the interval around
+the primary estimate of 0.656. Their deflated medians are
+0.621 and 0.599. Neither read point meets the numerical
+threshold.
+On Twin-n163, prompt-level geometry and generation-
+window gate scores have Pearson correlations 0.438, 0.800,
+and 0.833 for Llama, Mistral, and Qwen. Twi...
+--
+36711:...0.559–0.610
+5.8–9.2
+0.018–0.043
+Per-intent hold-out
+0.866–0.906
+39.7–62.2
+0.373–0.461
+0.694–0.723
+14.0–16.6
+0.125–0.181
+Co-occurrence
+0.514–0.580
+1.4–10.0
+0.029–0.157
+0.514–0.558
+5.5–6.1
+0.037–0.092
+Transferred mean-difference probe (disjoint audit)
+0.656–0.819
+15.7–28.6
+0.114–0.300
+0.590–0.690
+8.0–21.5
+0.074–0.153
+Directly trained (fit on the pair corpus)
+DTW (direct)
+0.843–0.922
+44.3–68.6
+0.086–0.414
+0.565–0.663
+9.8–29.4
+0.025–0.153
+Transition (direct)
+0.963–0.979
+80.0–85.7
+0.700–0.771
+0.744–0.760
+6.1–9....
+--
+57228:...: Paired Twin-n163 summaries. Brackets are 5,000-draw bootstrap intervals, and p is the exact sign test. Score
+differences are readout-specific.
+Model
+Readout
+Pooled AUROC
+Paired concordance [95%]
+Mean ∆
+Median ∆
+Sign p
+Llama
+Transferred probe
+0.590
+0.656 [0.583,0.730]
+0.255
+0.156
+7.9×10−5
+Mistral
+Transferred probe
+0.605
+0.724 [0.650,0.791]
+2.834
+1.926
+9.7×10−9
+Qwen
+Transferred probe
+0.690
+0.847 [0.791,0.902]
+0.889
+0.765
+3.9×10−20
+Llama
+Full-reference prompt max–max
+0.722
+0.840 [0.779,0.896]
+0.0221
+0...
+--
+59479:...0.098
+0.080
+0.429
+0.472
+Qwen
+Generation gate score
+0.706
+0.092
+0.301
+0.405
+0.497
+Llama
+Pair-trained linear OOF
+0.895
+0.491
+0.209
+0.607
+0.724
+Mistral
+Pair-trained linear OOF
+0.929
+0.675
+0.442
+0.755
+0.810
+Qwen
+Pair-trained linear OOF
+0.917
+0.620
+0.350
+0.656
+0.798
+Table 15: Fixed zero-threshold gate on both Twin arms.
+Rates are unconditional decisions, and difference brackets
+are 5,000-draw paired-bootstrap intervals.
+Model
+Cohort
+Camo blocked
+Twin blocked
+Paired difference [95% CI]
+Score AUROC
+Llama
+Tw...
+--
+61247:...
+0.906
+0.880
+Per-intent hold-out
+Twin-n70
+TNR@95%TPR
+39.7
+62.2
+43.9
+Per-intent hold-out
+Twin-n163
+AUROC
+0.694
+0.723
+0.702
+Co-occurrence (unsupervised)
+Twin-n70
+AUROC
+0.542
+0.514
+0.580
+Transferred mean-difference probe (disjoint audit)
+Twin-n70
+AUROC
+0.656
+0.692
+0.819
+Directly trained (fit on the pair corpus)
+DTW form (1-NN, direct)
+Twin-n70
+AUROC
+0.843
+0.922
+0.920
+Transition graph (direct)
+Twin-n70
+AUROC
+0.969
+0.979
+0.963
+Table 18: Classifier-free PC1 removal (B2) and 20-split cross-fit mean-difference deflation...
+--
+63447:...d fixed-direction transfer. Brackets are paired bootstrap intervals. Parentheses
+give TPR at nominal one percent FPR.
+Family
+Verify AUROC (TPR)
+Twin-n70 [95% CI] (TPR)
+Twin-n163 [95% CI] (TPR)
+Twin-n217 [95% CI] (TPR)
+Llama-3.1-8B-abl.
+0.998 (0.972)
+0.656 [0.604, 0.712] (0.114)
+0.590 [0.561, 0.621] (0.074)
+0.713 [0.687, 0.742] (0.074)
+Mistral-7B-Instruct-v0.3
+0.996 (0.947)
+0.692 [0.645, 0.749] (0.200)
+0.605 [0.577, 0.635] (0.110)
+0.748 [0.723, 0.775] (0.143)
+Qwen2.5-7B-abl.
+0.999 (0.994)
+0.819 [0.777, 0.867] (0.300)
+0.690 [0.660, 0.722] (0.153)
+0.861 [0.835, 0.889] (0.267)
+Table 22: Text-only nested-CV baselines on Twin-n163. Masking removes a fixed 28-term intent list. The sentence-
+encoder fold ensemble false-blocks 92.4 percent of XSTe...

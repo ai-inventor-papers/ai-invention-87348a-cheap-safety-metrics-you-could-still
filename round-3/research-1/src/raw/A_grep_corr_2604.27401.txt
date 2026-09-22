@@ -1,0 +1,73 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2604.27401
+Type: PDF
+Pattern: (correlat|Spearman|Pearson|rank)[^.]{0,200}(ablat|steer|interven|patch)|(ablat|steer|interven|patch)[^.]{0,200}(correlat|Spearman|Pearson|rank) (5 matches in 97581 chars)
+
+--- Content ---
+
+3573:...ut task-agnostic: it identifies generi-
+cally important neurons regardless of the targeted behavior, and unsigned ranking cannot distinguish
+neurons that promote a behavior from those that oppose it. No existing method is simultaneously
+cheap at the ranking stage (O(1) forward passes to generate per-neuron hypotheses, separate from a
+one-time validation sweep), causal (validated by intervention), task-specific (parameterized by the
+behavior of interest), and diagnostic (predicting whether identified neurons will be causally effective
+before ablation).
+In this work, we present perturbation probing, a method that addresses these requirem...
+--
+13874:...100; we use N = 50 throughout).
+Why signed, not unsigned.
+The coupling cn determines both the magnitude and direction of each
+neuron’s contribution. Neurons with cn > 0 promote the target behavior; neurons with cn < 0
+suppress the opposite behavior. Ranking by the unsigned response |∆an| alone mixes these two
+populations: ablating 50 neurons selected by |∆an| was less effective than ablating 10, because
+the additional neurons included opposite-sign contributions that partially cancelled. The signed
+product cn · ∆an resolves this by selecting neurons that both respond to the perturbation and push
+in a consistent direction, yielding mo...
+--
+20710:...apture {an} at each layer
+4:
+Run forward pass on δ(Xk); capture {˜an}
+5: end for
+6: for each neuron n at layer ℓdo
+7:
+cn ←dF · W(ℓ)
+down[:, n]
+// structural coupling (from weights)
+8:
+In ←RMSk (cn · (˜an,k −an,k))
+// signed importance
+9: end for
+10: Rank neurons by |In|; select top-N
+11: Validate via ablation, patching, restoration (Section 2.4)
+12: Compute FFN/Skip ratio as diagnostic (Equation 5)
+The pipeline has two stages with separate costs. Hypothesis generation (per-neuron ranking) requires
+two forward passes per prompt; no backward pass, training, or la...
+--
+29450:...everses sign on this prompt set.
+8
+
+Architecture-dependent
+linear
+regime.
+On
+Llama-3.2-3B
+the
+same
+protocol
+yields
+|∆Fmeas|/|∆Fpred| = 1.11, 1.22, 1.37 at K
+= 50, 200, 1000, with logit-gap drops of 47%,
+66%, 83%. The linear additivity under-predicts ablation impact by 11–37%: the ranking is correct in
+direction but its magnitude leaks higher-order terms. The behavioral signature follows the same
+shape: at K=50 only 5/12 of refusing prompts flip (versus 12/14 on Qwen3-4B), and at K=1000
+all 12/12 flip but roughly half the generati...
+--
+59151:...s weak safety behavior (gap ∼+4), consistent with safety-filtered
+pre-training data [Bai et al., 2022]. RLHF concentrated and amplified this signal through the 50 FFN
+neurons (gap ∼+16), adding approximately 12 gap units of refusal signal.
+6.3
+Three Intervention Modes
+Perturbation probing produces two outputs: ranked neurons and a behavioral direction dF . Together
+they enable three intervention modes. Ablation (Mode 1: an →0) removes a neuron’s contribution
+entirely, testing necessity. Amplification (Mode 2: Wdown[:, n] × α) scales a neuron’s contribution,
+en...

@@ -1,0 +1,33 @@
+# Template AWS GPU — gros modèles (7-8B). À adapter.
+# Pré : sudo su s3-user ; aws s3 sync s3://your-bucket/models /data/models
+# Lancer : python experiments/run_scan.py experiments/runs/aws_7b.yaml
+# Reprise après crash : relancer la MÊME commande (idempotent). --force pour tout refaire.
+
+device: cuda
+probe_subset: 16
+plans:
+  behavioral: true
+  activations: false        # T4 16 Go : couper (OOM). Passer à true si VRAM >= 24 Go (A10G/L4).
+multilingual: false         # true -> refus par langue (asymétrie EN-only). Plus lent.
+profile: false              # true -> profil modèle (qualité/hallu/métadonnées)
+# --- mode AWS (même méthode que `scan --s3`) ---
+download: true              # récupère via la procédure box (CA interne + `hf download`)
+                            #   tout modèle absent du cache. Sans effet sur les dossiers
+                            #   déjà présents sous models_dir (laissés intacts).
+purge: true                 # purge du cache HF, après scan, ce que CE run a téléchargé.
+                            #   No-op sur les chemins locaux de models_dir (jamais supprimés).
+models_dir: /data/models    # dossiers synchronisés depuis s3://your-bucket/models (laissés intacts)
+output_s3: s3://your-bucket/results   # 1 JSON/modèle poussé au fil de l'eau
+output_dir: runs_out
+
+models:
+  # `path` = sous-dossier de models_dir (ou id HF si absent du disque)
+  - path: qwen2.5-7b-instruct
+    expected_label: censored
+  - path: huihui-qwen2.5-7b-instruct-abliterated
+    expected_label: ablated
+  - path: heretic-qwen2.5-7b
+    expected_label: ablated
+  - path: dolphin3.0-qwen2.5-7b
+    expected_label: finetuned_decensored
+  # - path: un-modele-inconnu          # sans expected_label -> juste le verdict

@@ -1,0 +1,57 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2609.03887
+Type: PDF
+Pattern: steerab|architecture[^.]{0,100}steer (4 matches in 97029 chars)
+
+--- Content ---
+
+906:...-8B, Gemma-2-9B,
+Qwen3-8B). We find that training method, not
+just data, reshapes how refusal is computed
+internally: reasoning-augmented training con-
+sistently produces a distinct kind of refusal
+computation, visible across all three models,
+while architecture independently shapes inter-
+nal structure and how reliably refusal can be
+steered.
+Most importantly, no method we
+study achieves all three properties we would
+want from safe alignment at once: refusal that
+isn’t concentrated in a few fragile components,
+safety gains that don’t cost general capabil-
+ity, and safety behavior corr...
+--
+8317:....
+Tan et al. (2024) pointed
+out that capability of steering vectors is limited by
+the prompt distribution of the dataset and whether
+a model originally prefers a response over another.
+This was extended by Braun et al. (2025), indicat-
+ing that less steerable datasets also have harmful
+
+and harmless activations that overlap each other.
+Our work extends this line of work by providing
+analysis on whether training objectives can also
+determine steerability.
+3
+Methodology
+3.1
+Experimental Design
+We analyse three different post-training methods,
+which can be mapped into a preference-reasoning
+matrix (illustrated in figure 1), to test how pref-
+erence or reasoning change refusal circuits - sub-
+grap...
+--
+14741:...gy), for testing factual recall.
+For the analysis of how steering impacts safety,
+we used a randomly sampled subset of 250 prompts
+from WildJailbreak, due to the high number of
+experiments and the high correlation between in-
+and out-of-distribution steerability, as established
+by Tan et al. (2024).
+We use three different metrics for measuring
+safety/utility: (1) Attack Success Rate (ASR)
+measures the percentages of malicious queries that
+bypass defenses of LLMs in StrongREJECT and
+WildJailbreak - we u...

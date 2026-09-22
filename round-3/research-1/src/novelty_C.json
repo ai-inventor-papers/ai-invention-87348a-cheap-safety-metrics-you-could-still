@@ -1,0 +1,183 @@
+{
+  "records": [
+    {
+      "candidate": "C12",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2603.27412", "title": "The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams (LatentBiopsy)", "first_author": "Isaac Llorente-Saguer", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2607.13075", "title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators", "first_author": "Dominik Schwarz", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2308.01263", "title": "XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models", "first_author": "Paul Röttger", "year": 2023, "venue": "NAACL 2024"},
+        {"arxiv_id_or_doi": "2410.03415", "title": "Surgical, Cheap, and Flexible: Mitigating False Refusal in Language Models via Single Vector Ablation", "first_author": "Xinpeng Wang", "year": 2024, "venue": "arXiv"}
+      ],
+      "what_it_measured": "LatentBiopsy computes AUROC for harmful-vs-normative and harmful-vs-benign-aggressive (XSTest 'twin') discrimination via radial deviation angle from a normative-prompt principal direction, evaluated per model on 6 Qwen base/instruct/abliterated variants. Entanglement Wall computes AUROC of an activation probe on matched harmful/benign 'Twin-n163' pairs, per model, across 3-5 model families, specifically to show it is a weaker/diagnostic signal, not a ranking tool.",
+      "n_models_and_families": "LatentBiopsy: 6 checkpoints, 2 families (Qwen3.5-0.8B, Qwen2.5-0.5B) x 3 variants. Entanglement Wall: 3 primary families (Llama-3.1-8B-abliterated, Mistral-7B-Instruct-v0.3, Qwen2.5-7B-abliterated) plus 2 extension checkpoints (Mistral-Small-24B, Qwen2.5-32B).",
+      "used_to_rank_models": {"value": "partial", "quote": "both abliterated variants achieve AUROC at most 0.015 below their instruction-tuned counterparts, establishing a geometric dissociation between harmful-intent representation and the downstream generative refusal mechanism"},
+      "parent_free": "yes",
+      "prompt_budget": "LatentBiopsy: 200 normative + target prompts (not few-prompt); Entanglement Wall: full Twin-n163 cohort (not few-prompt)",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "no correlation coefficient reported against an external benchmark; both papers report AUROC of the internal statistic itself against a held-out label, not against a behavioral benchmark score"},
+      "verdict": "ADJACENT",
+      "verbatim_quote": "Across all six variants, LatentBiopsy achieves AUROC $\\geq$0.937 for harmful-vs-normative detection and AUROC = 1.000 for discriminating harmful from benign-aggressive prompts (XSTest), with sub-millisecond per-query overhead.",
+      "locator": "Abstract, arXiv:2603.27412v1",
+      "queries_run": [
+        {"query": "refusal direction activation projection harmful vs benign twin separation safety score across models", "mode": "general", "hits_scanned": 10},
+        {"query": "XSTest refusal direction projection separation ratio model comparison safety", "mode": "general", "hits_scanned": 9},
+        {"query": "OR-Bench activation refusal direction discrimination safety score model ranking", "mode": "general", "hits_scanned": 9},
+        {"query": "\"twin prompts\" harmful benign activation separation refusal axis safety metric", "mode": "general", "hits_scanned": 9},
+        {"query": "contrastive pair activation projection safety score cross-architecture LLM comparison", "mode": "general", "hits_scanned": 9},
+        {"query": "intrinsic dimension residual stream harmful benign safety score model comparison", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "Neither paper computes C12's exact ratio form (harmful-vs-twin separation RELATIVE TO harmful-vs-plain-benign separation). LatentBiopsy computes only harmful-vs-twin (XSTest benign-aggressive) AUROC per model and uses the cross-variant comparison as evidence for a different claim (geometry survives abliteration), not as a general-purpose safety ranking statistic -- borderline PUBLISHED/ADJACENT; recorded ADJACENT because the functional form (single AUROC, no plain-benign baseline ratio) differs and the paper's own framing is a mechanism claim, not a safety-ranking tool. Entanglement Wall explicitly disclaims ranking use: \"At the tested read points, these activation scores behave as broad-risk detectors rather than standalone context adjudicators\" -- used diagnostically only, not as a cross-model safety indicator.",
+      "positioning_sentence": "Unlike LatentBiopsy (arXiv:2603.27412), which reports a single harmful-vs-twin AUROC per checkpoint as evidence of geometric invariance under abliteration, and Entanglement Wall (arXiv:2607.13075), which explicitly declines to use matched-pair separation as a cross-model ranking signal, our twin-discrimination statistic is defined relative to a plain-benign baseline and is validated as a safety-ranking indicator across architecture families."
+    },
+    {
+      "candidate": "C13",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2608.09624", "title": "Measuring the Wrong Thing: Internal Harmfulness Scores Anti-Rank Successful Jailbreaks", "first_author": "Mingyu Luo", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2607.13075", "title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators", "first_author": "Dominik Schwarz", "year": 2026, "venue": "arXiv"}
+      ],
+      "what_it_measured": "2608.09624 pairs 100 benign and 100 harmful JailbreakBench goals in plain and wrapped (jailbreak-template) presentations and reports the internal harmfulness score's outcome-AUROC per generator model in a rows(score)xcolumns(model) table, showing the score's ranking of prompts reverses under wrapping. 2607.13075 tests whether the same activation probe transfers when a camouflaged prompt shares surface text with a benign twin, across model families.",
+      "n_models_and_families": "2608.09624: 5 models (Llama-3.1-8B-Instruct primary; Mistral, Qwen, Gemma, Phi for transfer). 2607.13075: 3-5 models across Llama/Mistral/Qwen families.",
+      "used_to_rank_models": {"value": "no", "quote": "Outcome AUROC R_Y for the same 100 wrapped harmful goals. Rows identify the native score and columns identify the generator."},
+      "parent_free": "yes",
+      "prompt_budget": "2608.09624: 200 JailbreakBench goals x plain/wrapped x multiple attack families -- far above a 16-prompt budget",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "reports AUROC of the internal score against generation-outcome labels, showing reversal (0.936 -> 0.803, and down to 0.078-0.491 wrapped-only), not a correlation with an external benchmark safety score"},
+      "verdict": "ADJACENT",
+      "verbatim_quote": "wrapping raises harmful generation from 0.05 to 0.27 while harmful intent AUROC falls from 0.936 to 0.803",
+      "locator": "Section 5.2 / RQ1 and Table 1, arXiv:2608.09624v1",
+      "queries_run": [
+        {"query": "presentation invariance jailbreak template robustness internal safety score LLM", "mode": "general", "hits_scanned": 9},
+        {"query": "paraphrase robustness refusal direction projection safety probe language model", "mode": "general", "hits_scanned": 9},
+        {"query": "jailbreak wrapping internal harmfulness score reversal AUROC drop safety probe", "mode": "general", "hits_scanned": 9},
+        {"query": "\"pre-registered\" sign refusal direction negative orientation safety probe internal", "mode": "general", "hits_scanned": 10},
+        {"query": "template sensitivity harmful prompt activation probe safety score robustness across surface forms", "mode": "general", "hits_scanned": 10}
+      ],
+      "adversarial_note": "Both incumbents compute the quantity (internal score under changed presentation) per model, in a multi-model table, but explicitly frame it as a measurement-validity critique rather than a per-model safety-ranking indicator: 2608.09624's own conclusion is that 'harmfulness validation does not establish validity for success prediction' -- a critique of the metric class, not a comparison of which model is safer. Recorded ADJACENT rather than PUBLISHED because neither paper treats the per-model number as a safety comparison. No paper found that pre-signs the expected direction of the invariance gap (a negative orientation fixed before measurement) as C13 does.",
+      "positioning_sentence": "Where Measuring the Wrong Thing (arXiv:2608.09624) uses wrapped-vs-plain AUROC reversal to argue that internal harmfulness scores are invalid outcome predictors, our presentation-invariance statistic pre-signs the expected direction and is validated as a cross-model safety-ranking feature rather than used only to critique measurement validity."
+    },
+    {
+      "candidate": "C14",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2606.22676", "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations", "first_author": "unknown (GFS/Skin-Deep authors)", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2606.25750", "title": "RAS: Measuring LLM Safety Through Refusal Alignment", "first_author": "unknown (RAS/SafeVec authors)", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2502.16173", "title": "Mapping 1,000+ Language Models via the Log-Likelihood Vector", "first_author": "Momose Oyama", "year": 2025, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2502.14445", "title": "PredictaBoard: Benchmarking LLM Score Predictability", "first_author": "Lorenzo Pacchiardi", "year": 2025, "venue": "ACL Findings 2025"}
+      ],
+      "what_it_measured": "GFS aggregates a per-layer geometric-fragility term into one scalar with a FIXED depth weight (w_l proportional to l/L, not fit by regression, no attention/MLP site decomposition). RAS squashes a window-averaged cosine-to-refusal-direction statistic through a per-family-calibrated logistic (not ridge, not depth x site features). 2502.16173 builds a 'model map' from log-likelihood vectors over a fixed text corpus (output-distribution features, not internal-activation depth x site features). PredictaBoard trains 'assessors' to predict per-instance LLM error/score but is not shown, on inspection, to use internal depth x site activation features via ridge regression.",
+      "n_models_and_families": "GFS: 21 models, 6 alignment recipes, 3B-32B. RAS: multiple families with reference+calibration models. 2502.16173: 1,000+ language models. PredictaBoard: multiple LLM/assessor pairs (exact n not confirmed in fetched abstract).",
+      "used_to_rank_models": {"value": "yes", "quote": "wl is proportional to l/L, a linear depth weight [...] wl emphasizes later layers"},
+      "parent_free": "n/a",
+      "prompt_budget": "GFS: 500 harmful + 500 benign prompts (parent-required); RAS: requires reference model + calibration set; 2502.16173: full text corpus per model, not a small prompt set",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "none of these fit a ridge (L2-penalized linear) regression on an explicit <=24-dimensional depth-by-site feature grid; GFS uses a fixed heuristic depth weight validated only by comparing to uniform/exponential/late-only alternatives in a sensitivity appendix, not a fitted ridge coefficient vector"},
+      "verdict": "NEW",
+      "verbatim_quote": "wl≅l/L is a linear depth weight",
+      "locator": "Section 3.2, arXiv:2606.22676 (via fetched HTML); RAS calibration formula 's(M) = w_u*UnsafeScore + w_j*JailbreakScore with w_u=w_j=0.5' and 'RAS(M) = 100/(1 + exp(β(d_aligned − c)))', Section on RAS calibration, arXiv:2606.25750 (reused from iteration-1 dependency, research_out.json)",
+      "queries_run": [
+        {"query": "ridge regression internal activations multiple layers predict safety benchmark score LLM", "mode": "general", "hits_scanned": 9},
+        {"query": "linear probe combining layers sites predict jailbreak success rate across models metamodel", "mode": "general", "hits_scanned": 9},
+        {"query": "weight-space model zoo predict downstream safety behavior regression neural network", "mode": "general", "hits_scanned": 9},
+        {"query": "neural functional network weight space representation predict model property safety", "mode": "general", "hits_scanned": 9},
+        {"query": "\"depth\" layer features regression predict refusal rate multiple models safety indicator", "mode": "general", "hits_scanned": 10},
+        {"query": "attention output MLP output site-wise features ridge regression cross-model safety score prediction", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "GFS is the structurally closest incumbent (a depth-indexed, per-model aggregated geometric score, computed and compared across 21 models) but its weight w_l is a fixed heuristic confirmed by a sensitivity appendix comparing to uniform/exponential/late-only alternatives, NOT fit by ridge or any regression, and it has no within-layer site (attention-output vs MLP-output vs residual) decomposition -- confirmed via direct fetch: 'The diagnostic operates purely at the per-layer level on residual-stream activations at the final token position. There is no mention of factoring analyses across different within-layer components or sub-sites.' RAS's calibration is a two-term fixed-weight average (w_u=w_j=0.5) plus a logistic squash with hand-set constants (c=0.75, beta=5.0), not a learned ridge coefficient vector over an explicit depth x site feature grid. 2502.16173 and weight-space/model-zoo/neural-functional-network literature predict model properties from OUTPUT-distribution or WEIGHT features across large model populations, not from internal ACTIVATION depth x site features for a safety score. No paper found fitting a ridge regression on <=24 depth-by-site activation features to build a cross-model safety metamodel after 6 general queries plus a citation-chasing hop into GFS's own weighting-scheme appendix and RAS's calibration section.",
+      "positioning_sentence": "Unlike Skin-Deep/GFS (arXiv:2606.22676), whose depth weight is fixed at w_l proportional to l/L rather than fit, and RAS (arXiv:2606.25750), whose calibration is a fixed 0.5/0.5 average through a hand-set logistic, our ridge metamodel learns depth-by-site feature weights directly from a <=24-dimensional feature grid."
+    },
+    {
+      "candidate": "C15",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2401.17139", "title": "Diff-eRank: A Novel Rank-Based Metric for Evaluating Large Language Models", "first_author": "Lai Wei", "year": 2024, "venue": "NeurIPS 2024"},
+        {"arxiv_id_or_doi": "2605.30018", "title": "Latent Performance Profiling of Large Language Models", "first_author": "Tanmoy Chakraborty", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2603.27412", "title": "The Geometry of Harmful Intent (LatentBiopsy)", "first_author": "Isaac Llorente-Saguer", "year": 2026, "venue": "arXiv"}
+      ],
+      "what_it_measured": "Diff-eRank computes effective rank of hidden representations per model and shows it increases with model size and correlates with loss/accuracy (a CAPABILITY metric, not safety). Latent Performance Profiling (LPP) computes effective rank and participation ratio per model across 8 LLMs (0.5B-14B) as general 'latent-profile' diagnostics; a safety framing appears only as an aside ('a model with lowest entropy may be better suited for tasks requiring minimized hallucination risk'), not as the paper's safety claim. LatentBiopsy computes an angular-deviation DISPERSION statistic (sigma_theta) at a target layer, but as a per-PROMPT anomaly score within each of 6 model checkpoints, not as a per-MODEL scalar compared across models.",
+      "n_models_and_families": "Diff-eRank: multiple LLM families/sizes (single-modal + multi-modal). LPP: 8 LLMs (LLaMA-3B/8B, Qwen-0.5B/1.5B/3B/7B/14B, Mistral-7B). LatentBiopsy: 6 checkpoints, 2 families.",
+      "used_to_rank_models": {"value": "partial", "quote": "Intrinsic metrics including entropy, participation ratio, and effective rank clearly separate models and offer actionable guidance for selecting models based on stability, activation diversity, or representational richness"},
+      "parent_free": "n/a",
+      "prompt_budget": "LPP and Diff-eRank use large corpora/generation sets per model, not a 16-prompt budget",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "no paper found reporting a correlation between late-layer effective rank/dispersion and an external harmful-refusal or over-refusal benchmark score, across models"},
+      "verdict": "NEW",
+      "verbatim_quote": "models with similar benchmark scores can exhibit contrasting latent profiles, such as differences in entropy or adaptability",
+      "locator": "Abstract, arXiv:2605.30018 (via fetched HTML, title/first-author per abs-page fetch)",
+      "queries_run": [
+        {"query": "effective rank representation safety alignment across LLMs indicator", "mode": "general", "hits_scanned": 9},
+        {"query": "\"effective rank\" OR \"participation ratio\" hidden representation safety large language model", "mode": "general", "hits_scanned": 9},
+        {"query": "representation dispersion anisotropy jailbreak detection safety across model families", "mode": "general", "hits_scanned": 9},
+        {"query": "late layer representation geometry dispersion safety indicator cross-model ranking", "mode": "general", "hits_scanned": 9},
+        {"query": "\"effective rank\" late layer multiple models compliance jailbreak resistance correlation ranking", "mode": "general", "hits_scanned": 9},
+        {"query": "intrinsic dimension residual stream harmful benign safety score model comparison", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "LPP is the nearest miss: it computes effective rank/participation ratio across 8 models and explicitly says these metrics 'clearly separate models,' but its use is general capability/behavioral profiling (entropy, adaptability, hallucination-risk aside), never validated against a harmful-refusal or over-refusal benchmark, and never described as a safety score. Diff-eRank likewise ties effective rank to model SIZE/capability, not safety. LatentBiopsy's dispersion statistic (sigma_theta) is the right functional family (angular/geometric dispersion) but is computed per PROMPT within a model for anomaly detection, not as a single per-model late-layer dispersion number compared across a model panel as a safety indicator. No paper found using effective rank or late-layer dispersion as a cross-model SAFETY indicator after 6 general queries plus a citation hop from LPP into its safety-adjacent aside.",
+      "positioning_sentence": "While Latent Performance Profiling (arXiv:2605.30018) and Diff-eRank (arXiv:2401.17139) show that effective rank and participation ratio separate models on general capability, neither validates late-layer dispersion as a safety indicator against harmful-refusal or over-refusal benchmarks, which is what our metric does."
+    },
+    {
+      "candidate": "C16",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2603.24543", "title": "Analysing the Safety Pitfalls of Steering Vectors", "first_author": "Yuxiao Li", "year": 2026, "venue": "arXiv (ACL 2026 Findings, per repo)"},
+        {"arxiv_id_or_doi": "2602.02132", "title": "There Is More to Refusal in Large Language Models than a Single Direction", "first_author": "Faaiz Joad", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2407.12404", "title": "Analyzing the Generalization and Reliability of Steering Vectors", "first_author": "Daniel Tan", "year": 2024, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2312.06681", "title": "Steering Llama 2 via Contrastive Activation Addition", "first_author": "Nina Panickssery (formerly published as Nina Rimsky)", "year": 2023, "venue": "arXiv"}
+      ],
+      "what_it_measured": "2603.24543 fits a per-model regression of attack-success-rate against cosine-similarity-to-refusal-direction for a steering vector, reporting the regression SLOPE per model across 6 checkpoints spanning 3 families and Qwen at 4 scales (3B/7B/14B/32B), and explicitly compares the slope across models as a function of scale.",
+      "n_models_and_families": "6 models: 3 families at 7B (Llama, Gemma, Qwen) plus Qwen at 3B/7B/14B/32B.",
+      "used_to_rank_models": {"value": "yes", "quote": "The regression slope γ1 becomes progressively steeper with model size. It grows from −36.52 for Llama 7B to −193.40 for Qwen 32B. This suggests that larger, more capable, models are significantly more sensitive to the geometric alignment of steering vectors with their internal refusal mechanism."},
+      "parent_free": "yes",
+      "prompt_budget": "JailbreakBench-scale evaluation set per steering-magnitude sweep point (m in {-1.5,...,+1.5}), not a 16-prompt budget",
+      "correlated_with_benchmark_safety": {"value": "yes", "number": "regression slope gamma_1 reported per model: -36.52 (Llama 7B) to -193.40 (Qwen 32B), Table 1"},
+      "verdict": "PUBLISHED",
+      "verbatim_quote": "The regression slope γ1 becomes progressively steeper with model size. It grows from −36.52 for Llama 7B to −193.40 for Qwen 32B.",
+      "locator": "Section 6 (\"Effect of model scale\"), Table 1, arXiv:2603.24543 (version as fetched; HTML rendering, no explicit vN tag recovered -- treat as v1 pending re-check)",
+      "queries_run": [
+        {"query": "steering vector dose response magnitude slope model comparison safety refusal", "mode": "general", "hits_scanned": 10},
+        {"query": "steerability comparison across models refusal direction magnitude sweep safety indicator", "mode": "general", "hits_scanned": 9},
+        {"query": "\"dose-response\" activation steering safety behavior curve slope", "mode": "general", "hits_scanned": 10},
+        {"query": "steering vector magnitude sweep refusal rate curve model ranking safety score", "mode": "general", "hits_scanned": 9},
+        {"query": "self-steering internal direction magnitude behavior change models compare alignment tax", "mode": "general", "hits_scanned": 9},
+        {"query": "\"-36.52\" \"-193.40\" regression slope steering refusal direction cosine similarity attack success rate", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "This is an unambiguous PUBLISHED match to C16's functional form: a per-model dose-response-style slope of safety outcome vs. steering-alignment magnitude, fit independently per model and explicitly compared/ranked across 6 models by scale in a named subsection ('Effect of model scale'). The hypothesis's own prior concession that C16 has prior art is confirmed exactly by this paper, not by 2602.02132 (Joad et al.), which studies within-model steering along multiple refusal DIRECTIONS (not a magnitude dose-response slope) and is more relevant to a different candidate (direction multiplicity). Tan et al. (2407.12404) and Panickssery/Rimsky CAA (2312.06681) are the SOURCE of steering-vector methodology and generalization caveats but do not themselves report a per-model dose-response slope comparison -- they are foundational/adjacent, not the direct hit.",
+      "positioning_sentence": "Analysing the Safety Pitfalls of Steering Vectors (arXiv:2603.24543) already reports self-steering dose-response slopes compared across 6 models and finds slope steepens with scale (-36.52 to -193.40); our contribution must be positioned as extending this comparison to a parent-free, few-prompt, cross-architecture-family setting rather than as introducing the slope-comparison idea itself."
+    }
+  ],
+  "incumbent_map": {
+    "AMS_2608.05578": {
+      "closest_candidate": "C12",
+      "reason": "AMS's sigma statistic is a standardized (Cohen's-d-style) mean-difference of projections from 16 contrastive positive/negative prompt pairs onto a fitted direction, computed and thresholded per model -- the same 'contrastive-pair projection separation, reported per model' shape as C12's twin discrimination, though AMS's pairs are topic-contrastive rather than paraphrase-matched twins and it lacks C12's plain-benign baseline ratio.",
+      "statistic_quote": "separation (sigma) = (mu+ - mu-) / sigma_pooled [...] confirmed identical in the public source code, src/ams/extractor.py: 'pooled_std = np.sqrt((pos_var + neg_var) / 2)'; 'separation = (pos_mean - neg_mean) / pooled_std'"
+    },
+    "N-GLARE_2511.14195": {
+      "closest_candidate": "C13",
+      "reason": "N-GLARE's JR Min/Max is a stability RATIO of a Jensen-Shannon-divergence trajectory statistic taken across four different probing conditions (Benign, Jailbreak, Ideal Refusal, Plain Query) and across trajectory slices -- structurally an invariance-across-presentations ratio, the same shape as C13, though N-GLARE's four conditions are probe-content types rather than surface-presentation variants of the same content.",
+      "statistic_quote": "JR Min/Max = min_s JSS_s(J,R)/max_s JSS_s(J,R)"
+    },
+    "RAS_2606.25750": {
+      "closest_candidate": "C14",
+      "reason": "RAS is the incumbent whose ROLE is closest to a metamodel: it maps several internal cosine-to-refusal-direction statistics (UnsafeScore, JailbreakScore) through fixed weights and a calibrated logistic into one 0-100 per-model safety score -- the same 'combine several internal features into one calibrated cross-model score' shape as C14's ridge metamodel, though RAS uses a hand-set 0.5/0.5 average and logistic squash rather than a fitted ridge regression over an explicit depth-by-site feature grid.",
+      "statistic_quote": "s(M) = w_u*UnsafeScore + w_j*JailbreakScore with w_u=w_j=0.5 [...] RAS(M) = 100/(1 + exp(β(d_aligned − c))) [...] with c = 0.75 and β = 5.0"
+    },
+    "LatentBiopsy_2603.27412": {
+      "closest_candidate": "C15",
+      "reason": "LatentBiopsy's core statistic is an angular-deviation DISPERSION (sigma_theta of the radial angle from a fitted normative direction, fit at a chosen target layer), the same 'geometric dispersion of late-representation activations' shape as C15, even though LatentBiopsy reports it as a per-prompt anomaly score within a model rather than a single per-model scalar compared across a model panel.",
+      "statistic_quote": "harmful prompts exhibit a near-degenerate angular distribution (\\sigma_\\theta \\approx 0.03 rad), an order of magnitude tighter than the normative distribution (\\sigma_\\theta \\approx 0.27 rad), preserved across all alignment stages including abliteration"
+    }
+  },
+  "papers_checked": [
+    {"id": "2308.01263", "title": "XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models", "first_author": "Paul Röttger", "year": 2023, "url": "https://arxiv.org/abs/2308.01263", "verified_title_matches": true},
+    {"id": "2405.20947", "title": "OR-Bench: An Over-Refusal Benchmark for Large Language Models", "first_author": "Justin Cui", "year": 2024, "url": "https://arxiv.org/abs/2405.20947", "verified_title_matches": true},
+    {"id": "2410.03415", "title": "Surgical, Cheap, and Flexible: Mitigating False Refusal in Language Models via Single Vector Ablation", "first_author": "Xinpeng Wang", "year": 2024, "url": "https://arxiv.org/abs/2410.03415", "verified_title_matches": true},
+    {"id": "2608.09624", "title": "Measuring the Wrong Thing: Internal Harmfulness Scores Anti-Rank Successful Jailbreaks", "first_author": "Mingyu Luo", "year": 2026, "url": "https://arxiv.org/abs/2608.09624", "verified_title_matches": true},
+    {"id": "2607.13075", "title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators", "first_author": "Dominik Schwarz", "year": 2026, "url": "https://arxiv.org/abs/2607.13075", "verified_title_matches": true},
+    {"id": "2502.16173", "title": "Mapping 1,000+ Language Models via the Log-Likelihood Vector", "first_author": "Momose Oyama", "year": 2025, "url": "https://arxiv.org/abs/2502.16173", "verified_title_matches": true},
+    {"id": "2401.17139", "title": "Diff-eRank: A Novel Rank-Based Metric for Evaluating Large Language Models", "first_author": "Lai Wei", "year": 2024, "url": "https://arxiv.org/abs/2401.17139", "verified_title_matches": true},
+    {"id": "2407.12404", "title": "Analyzing the Generalization and Reliability of Steering Vectors", "first_author": "Daniel Tan", "year": 2024, "url": "https://arxiv.org/abs/2407.12404", "verified_title_matches": true},
+    {"id": "2312.06681", "title": "Steering Llama 2 via Contrastive Activation Addition", "first_author": "Nina Panickssery (arXiv metadata; historically cited as Rimsky et al.)", "year": 2023, "url": "https://arxiv.org/abs/2312.06681", "verified_title_matches": true},
+    {"id": "2602.02132", "title": "There Is More to Refusal in Large Language Models than a Single Direction", "first_author": "Faaiz Joad", "year": 2026, "url": "https://arxiv.org/abs/2602.02132", "verified_title_matches": true},
+    {"id": "2603.24543", "title": "Analysing the Safety Pitfalls of Steering Vectors", "first_author": "Yuxiao Li", "year": 2026, "url": "https://arxiv.org/abs/2603.24543", "verified_title_matches": true},
+    {"id": "2605.30018", "title": "Latent Performance Profiling of Large Language Models", "first_author": "Tanmoy Chakraborty", "year": 2026, "url": "https://arxiv.org/abs/2605.30018", "verified_title_matches": true},
+    {"id": "2502.14445", "title": "PredictaBoard: Benchmarking LLM Score Predictability", "first_author": "Lorenzo Pacchiardi", "year": 2025, "url": "https://arxiv.org/abs/2502.14445", "verified_title_matches": true},
+    {"id": "2505.15710", "title": "Advancing LLM Safe Alignment with Safety Representation Ranking", "first_author": "Tianqi Du", "year": 2025, "url": "https://arxiv.org/abs/2505.15710", "verified_title_matches": true},
+    {"id": "2603.27412", "title": "The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams (LatentBiopsy)", "first_author": "Isaac Llorente-Saguer", "year": 2026, "url": "https://arxiv.org/abs/2603.27412", "verified_title_matches": true},
+    {"id": "2606.22676", "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations", "first_author": "reused from iteration-1 dependency", "year": 2026, "url": "https://arxiv.org/abs/2606.22676", "verified_title_matches": true},
+    {"id": "2608.05578", "title": "AMS (IEEE Access 14:91723-91737)", "first_author": "reused from iteration-1 dependency", "year": 2026, "url": "https://arxiv.org/abs/2608.05578", "verified_title_matches": true},
+    {"id": "2606.25750", "title": "RAS: Measuring LLM Safety Through Refusal Alignment", "first_author": "reused from iteration-1 dependency", "year": 2026, "url": "https://arxiv.org/abs/2606.25750", "verified_title_matches": true},
+    {"id": "2511.14195", "title": "N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator", "first_author": "reused from iteration-1 dependency", "year": 2025, "url": "https://arxiv.org/abs/2511.14195", "verified_title_matches": true}
+  ]
+}

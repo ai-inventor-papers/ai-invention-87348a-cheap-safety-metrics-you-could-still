@@ -1,0 +1,50 @@
+{
+ "status": "RESOLVED_WITH_CORRECTION",
+ "repo_url": "https://github.com/JolanMc/Jorak",
+ "owner_confirmed_from": "iteration-1 raw/jorak_readme.txt fetched https://raw.githubusercontent.com/JolanMc/Jorak/main/README.md",
+ "default_branch_head_sha": "8147de343964a3cced37db71814e9007c7465a52",
+ "head_commit_date": "2026-07-24T09:52:55Z",
+ "threshold_file": "modelscanner/classifier/scanner.py",
+ "threshold_file_permalink": "https://github.com/JolanMc/Jorak/blob/8147de343964a3cced37db71814e9007c7465a52/modelscanner/classifier/scanner.py#L37-L55",
+ "threshold_lines": {
+  "48": "svd_align_severed: float = 0.5     # alignement u_min GLOBAL au-dessus = poids sectionnés",
+  "49": "band_align_severed: float = 0.5    # alignement de BANDE (couches contiguës) -> capte l'ablation localisée (Heretic)",
+  "55": "subspace_severed: float = 0.5      # alignement sous-espace bottom-k au-dessus = poids sectionnés (multi-dir)"
+ },
+ "calibration_docstring_lines_37_45": "class Thresholds:\n    \"\"\"Seuils quant-aware (valeurs provisoires calibrées sur Qwen2.5-0.5B ;\n    affinées en J8 contre la matrice réelle + l'oracle J7).\n\n    Calibration observée (censuré vs ablitéré in-memory) :\n      Cohen's d max : ~4.5 (vivant)         -> seuil axe vivant 1.0\n      suppression médiane : 0.038 vs ~2e-8  -> seuil sectionné 1e-2\n      alignement SVD u_min : 0.24 vs 1.00   -> seuil sectionné 0.5\n    Le finding clé : l'alignement SVD est le signal le plus robuste.\"\"\"",
+ "band_statistic_file": "modelscanner/metrics/jorak.py",
+ "band_calibration_line_223": "\"\"\"",
+ "band_window_rule_line_210": "\"\"\"Largeur de bande adaptée à la profondeur (≈ 1/6 des couches, min 3).\"\"\"",
+ "global_statistic": "alignment = sigma_1(U)/||U||_F over stacked per-layer bottom-1 left singular vectors u_min of o_proj/down_proj (jorak.py umin_signature, lines 85-110); band = max over windows of width round(L/6) (min 3) of mean per-layer |cos(u_min_l, shared axis)|",
+ "grep_for_0.35_in_all_90_text_files_at_HEAD": "only hit: modelscanner/viz/__init__.py:81 'figsize=(max(6, result.n_layers * 0.35), ...' (a plotting width, NOT a threshold)",
+ "threshold_history": [
+  {
+   "sha": "27957d672d05d97eb09f73c1a4f7d8d175ec4b9b",
+   "date": "2026-07-15T15:29:29Z",
+   "message": "Model Scanner (Jorak) - reference-free abliteration detector (initial)",
+   "svd_align_severed": 0.5,
+   "band_align_severed": 0.5,
+   "subspace_severed": 0.5
+  },
+  {
+   "sha": "239fbdbc36c427928e14f983ad3621f56b898b19",
+   "date": "2026-07-15T15:41:41Z",
+   "message": "i18n: translate the terminal UI to English",
+   "svd_align_severed": 0.5,
+   "band_align_severed": 0.5,
+   "subspace_severed": 0.5
+  },
+  {
+   "sha": "0351edafce20bf0c6439ccbde2fd736140f83c96",
+   "date": "2026-07-20T13:30:27Z",
+   "message": "style: apply ruff import fixes and remove dead code",
+   "svd_align_severed": 0.5,
+   "band_align_severed": 0.5,
+   "subspace_severed": 0.5
+  }
+ ],
+ "threshold_ever_changed": false,
+ "CRITICAL_FINDING": "The value 0.35 that the iteration-1/2 papers call 'the published 0.35 separator' of the Jorak scanner DOES NOT APPEAR as a threshold anywhere in the Jorak repository at any commit that touched the classifier. Jorak ships 0.5 for all three weight signals (global u_min alignment, band alignment, bottom-k subspace alignment), calibrated on Qwen2.5-0.5B (censored 0.24 vs abliterated 1.00 global; censored ~0.28 vs abliterated >=0.67 band). The 0.35 is THIS RUN'S OWN pre-registered simulation threshold: iter_1/gen_art/gen_art_experiment_2/flab/config.py line 74 'BSA_PREREG_THRESHOLD: Final[float] = 0.35      # >= flags an edit' under the comment 'Pre-registered SIMULATION thresholds (from the hypothesis-stage simulation)'. The run's BSA_w8 (sliding 8-layer window of MEAN PAIRWISE |cos| between per-layer bottom-1 vectors) is also a different statistic from Jorak's sigma1/||U||_F global alignment and its round(L/6)-window band alignment to a shared axis.",
+ "required_paper_correction": "Replace 'the published 0.35 separator' with: 'our pre-registered, simulation-calibrated threshold of 0.35 for a Jorak-style bottom-subspace alignment statistic (BSA_w8); the Jorak scanner itself (github.com/JolanMc/Jorak @ 8147de3, modelscanner/classifier/scanner.py L48-55) ships a threshold of 0.5 on differently defined global/band/subspace alignment statistics, calibrated on Qwen2.5-0.5B (censored 0.24 vs abliterated 1.00).' The '100% false-positive rate of a published scanner' claim must be withdrawn or re-run with Jorak's own statistic and 0.5 threshold. Note: honest BSA_w8 = 0.565 also exceeds 0.5, but BSA_w8 is not Jorak's statistic, so no FPR for Jorak can be inferred from it.",
+ "grey_literature_note": "Unreviewed GitHub software (no paper, no DOI); cite as @misc with commit SHA."
+}

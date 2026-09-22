@@ -1,0 +1,2329 @@
+{
+ "title": "Prior-art check for 16 safety-metric candidates",
+ "summary": "NOVELTY TABLE FOR C1-C16, KILL-CHECK, REGENERATED BIB, NUMBER LEDGER AND SCANNER PIN. Files: novelty_table.json (16 rows, each with a quote, locator, at least 4 queries, and a paste-ready positioning sentence), novelty_A/B/C.json (raw subagent records), references.bib (83 entries, no duplicate keys), bib_fixes.json, citation_corrections.json, number_ledger.json, scanner_pin.json. KILL-CHECK OPEN (closed=false). No paper correlates a per-model causal harm-to-refusal quantity with benchmark safety across families. The adverse prior to cite is Failure-First Report 74 (grey literature): abliteration resistance vs jailbreak refusal, rho=-0.003, n=16. The closest arXiv hit is LVS 2606.08044 (undirected perturbation, no benchmark correlation). VERDICTS: NEW = C5 (weight-path gain; nearest miss 2604.27401), C14 (ridge metamodel; GFS/RAS use fixed weights), C15 (late-layer effective rank; must cite the new nearest miss 2608.25390, stable rank vs ablation robustness in one OLMo lineage). PUBLISHED = C9 (Leong 2502.13946: template-region NIE normalised 'for a fair cross-model comparison' across 6 models from 4 families) -> REPLICATION row; C16 (Li 2603.24543: per-model steering slope gamma_1 across 6 models) -> COMPARATOR only. ADJACENT = C1, C2 (closest to published; cite Report 74), C3, C4 (Jorak already reads o_proj/down_proj parent-free, but only as a label), C6, C7, C8, C10, C11 (all incumbents parent-dependent), C12, C13. CRITICAL CORRECTIONS FOR THE PAPER: (1) '0.35 published Jorak threshold' is WRONG. Jorak @8147de3 scanner.py L48-55 ships 0.5 (unchanged since the first commit). 0.35 is this run's own BSA_PREREG_THRESHOLD (iter_1 flab/config.py:74), and BSA_w8 is not Jorak's statistic, so withdraw the 'published scanner 100% FPR' claim. (2) The iter-2 draft's hand-typed reference list has 20/30 fabricated first authors and 5 wrong initials; generate references only from the bib. (3) Cite Tan2024 = 2407.12404 for steering brittleness; 2406.09289 is Ball et al. (4) Planner fix-list items ii (Casper) and vi (AMS DOI) were false positives: both DOIs were already correct; the fixes were an added eprint and @article. (5) Qwen3Guard report 2510.14276 Section 3.5 confirms Qwen3Guard-4B-Gen was SafeRL's reward. LEDGER: see number_ledger.json",
+ "answer": "BOTTOM LINE (2026-09-21). None of the 16 candidates is published as a single-model, parent-free safety score that has been correlated with benchmark safety across architecture families. The kill-check on the leading conjecture comes back OPEN (closed = false). Row verdicts: 3 NEW (C5, C14, C15), 11 ADJACENT and 2 PUBLISHED (C9, C16). Four bibliography findings matter more for the paper than the planner expected: (a) the '0.35 published Jorak threshold' is our own pre-registered simulation value, and Jorak ships 0.5 [7, 37] (origin traced in this artifact's scanner_pin.json to the run's own config file iter_1/gen_art/gen_art_experiment_2/flab/config.py, line 74); (b) 20 of the 30 hand-typed references in the iteration-2 draft carry fabricated first-author names, checked against the arXiv API [36] (row-by-row audit in citation_corrections.json); (c) two of the seven planner fix-list defects (Casper's 'eprint 0106.36590' and AMS's 'DOI fragment 2026.37040') are misreadings of DOIs that are actually correct [29, 30]; (d) the 'Tan et al. 2406.09289' citation is a misattribution. 2406.09289 is Ball, Kreuter & Rimsky, and the steering-reliability paper is Tan et al. 2407.12404 [25, 26].\n\n1. KILL-CHECK: IS THE LEADING CONJECTURE STILL NOVEL? Question: does any paper compute a per-model harm-to-refusal CAUSAL quantity (steering gain, ablation effect, patching, weight-path gain) and correlate it with benchmark safety across models? Answer: no. The search ran 14 targeted queries and a forward citation chase: 1,061 papers citing Arditi 2406.11717, 74 citing Zhao 2507.11878, and none yet indexed for 2606.16349. Of 1,006 titles from 2025 onward, 156 were filtered, 25 abstracts screened and 6 PDFs grepped. Causal refusal interventions appear only as within-model mechanism evidence: 13 models in Arditi [1], 3 models in Zhao [2], and anchor checkpoints plus one trajectory in HRCI [33]. The closest hit is grey literature: Failure-First Report 74 ranks 16 models by resistance to weight abliteration and correlates that with jailbreak refusal, and finds no relationship ('rho = -0.003') [3]. It misses the conjecture because it is not peer reviewed, it measures third-party abliteration success rather than a gain keyed to the model's own harm direction, and it has no over-refusal arm. The closest arXiv hit is LVS (2606.08044), a causal per-model score built from UNDIRECTED latent perturbations and never correlated with a benchmark [4]. AMS [27] and RAS [20] are confirmed NON-causal. Required positioning sentence: \"Causal refusal interventions have so far been reported per model as mechanism evidence (arXiv:2406.11717; arXiv:2507.11878; arXiv:2606.16349), per-unit latent-perturbation sensitivity has been proposed as a safety score without benchmark validation (arXiv:2606.08044), and a practitioner report found abliteration resistance uncorrelated with jailbreak refusal across 16 models (Failure-First Report 74, rho = -0.003); we are the first to test, parent-free and with ~16 prompts, whether causal harm-to-refusal quantities keyed to each model's own harm direction track both harmful-refusal and over-refusal benchmarks across held-out architecture families.\" What remains novel: (1) a causal quantity keyed to the model's OWN cross-fitted harm direction; (2) parent-free with about 16 prompts; (3) a two-sided target, harmful-refusal AND over-refusal, under which a blanket refuser loses; (4) held-out cross-family validation; (5) anisotropy-matched random-direction controls. Implication: Report 74's null result is prior evidence AGAINST a generic 'ablation robustness tracks safety' story. It must be cited as the adverse prior, and a positive C1/C2 result must be shown to differ from it.\n\n2. PER-CANDIDATE VERDICTS (full records with quotes, locators, queries and positioning sentences are in novelty_table.json).\nFamily I/II, causal (C1-C5). C1 harm-to-refusal gain: ADJACENT. Harm-direction steering elicits different refusal rates on 3 models, but only as a mechanism contrast [2]; LVS is a cross-model score, but its perturbation is undirected [4]. C2 self-ablation sensitivity: ADJACENT, and closest to PUBLISHED. Arditi ablates the refusal direction in 13 models without ranking them [1], and false-refusal vector ablation is a single-model tool [42]; Report 74 does the cross-model correlation in generic form and finds a null [3]. The claim must be narrowed to the margin-based, two-sided, random-direction-controlled form. C3 twin patching flip depth: ADJACENT. Benign-twin activation substitution exists as a jailbreak on mainly one model and is never reduced to a per-model scalar [5]. C4 writer capacity: ADJACENT. Jorak already reads o_proj/down_proj against the refusal axis without a reference model, but only to assign a provenance label [6, 7]. C4's novelty is the graded, random-direction z-scored write along the model's own axis and its benchmark validation. C5 weight-path gain: NEW. The nearest miss predicts ablation effectiveness from an FFN/Skip ratio across 13 models and 4 families, but that ratio mixes weights and activations and the target is not a benchmark [8].\nFamily III/IV, attribution and dynamics (C6-C11). C6 DLA concentration: ADJACENT. Arditi's component attribution is a single-model case study [1]; Ships/Sahara covers two same-lineage models [9]. C7 attention mass on differing tokens: ADJACENT. Attention to sensitive words correlates with ASR within the Llama-2 family only [10]. C8 input-gradient share: ADJACENT. GradSafe uses parameter gradients, not input-token gradients [11]. C9 template-site share: PUBLISHED. Leong et al. compute a template-region normalised indirect effect across six chat models from four families, normalised 'for a fair cross-model comparison', and tie template anchoring to vulnerability [12]. The caveat is that the safety link is qualitative, with no numeric per-model correlation with a benchmark, so C9 becomes a REPLICATION row. C10 area between depth curves: ADJACENT. Both curves already exist on the same 3 models [2], and harm-only trajectories exist across 4 families [13]; only the area aggregation and its use as a ranking are new. C11 first-8-token commitment: ADJACENT. Every close hit needs a parent or counterpart model: per-token KL against the base model [14] and instruct/reasoning pairs [15]. The parent-free single-checkpoint version is the residual novelty.\nFamily V-VIII, discrimination, invariance, metamodel, geometry, steering (C12-C16). C12 twin discrimination: ADJACENT. LatentBiopsy reports harmful-vs-XSTest-twin AUROC = 1.000 per checkpoint but has no plain-benign ratio [16]; Entanglement Wall declines to use twin separation for ranking [17]. C13 presentation invariance: ADJACENT. A wrapped-vs-plain AUROC drop (0.936 to 0.803) is reported per model, but framed as a validity critique [18]. C14 ridge metamodel on 24 or fewer depth-by-site features: NEW. GFS uses a FIXED l/L depth weight [19], RAS a fixed average with a hand-set logistic [20], and the log-likelihood model map uses outputs rather than activations [41]. C15 late-layer effective rank: NEW. Effective rank separates models only on capability [21, 22]. The orchestrator's adversarial pass found a new nearest miss that must be cited: Labunets links the stable rank of refusal residuals and gradients to ablation robustness, in one OLMo-2-1B lineage [23]. C16 self-steering slope: PUBLISHED as a comparator. Li fits per-model ASR dose-response slopes against steering/refusal-direction alignment and compares 6 models ('becomes progressively steeper with model size') [24]. Steering unreliability is documented by Tan et al. [25]. Orchestrator correction: the published quantity is gamma_1, the special case v = r_hat of C16, and it is NOT correlated with a safety benchmark.\n\n3. CLAIMABLE NOVELTY AND SCREEN IMPLICATIONS. Only C5, C14 and C15 may be called new, each in a precise scope. C5: 'a weights-only harm-to-refusal path gain as a cross-family safety score' [8]. C14: 'a FITTED metamodel over depth-by-site internal features, as opposed to fixed-weight aggregations' [19, 20]. C15: 'late-layer dispersion validated against two-sided safety benchmarks', citing [23] as the nearest miss. C1-C4, C6-C8 and C10-C13 may be called new only as parent-free, few-prompt, cross-family SAFETY SCORES; each is an established single-model mechanism quantity. Screen status changes: C9 becomes a replication of Leong et al. [12]; C16 is comparator-only [24]; C2 must cite Report 74's null as the adverse prior [3]; C4 must cite Jorak [6] and state that the weight read is not new; C11 is the only candidate whose incumbents are all parent-DEPENDENT [14, 15], which is its strongest positioning. The incumbent map places AMS nearest to C12 [27], N-GLARE nearest to C13 [28], RAS nearest to C14 [20], and LatentBiopsy nearest to C12/C15 [16].\n\n4. SCANNER PIN AND A CORRECTION TO THE PAPER'S HEADLINE. The Jorak repository is github.com/JolanMc/Jorak; its default-branch head is SHA 8147de343964a3cced37db71814e9007c7465a52, dated 2026-07-24 [6, 37]. The thresholds are in modelscanner/classifier/scanner.py, lines 48, 49 and 55: svd_align_severed = band_align_severed = subspace_severed = 0.5. They are calibrated on Qwen2.5-0.5B ('0.24 vs 1.00') and were never changed across the three commits that touched the file [7, 37]. A grep of all 90 text files at HEAD finds 0.35 only as a plotting width. The 0.35 the iteration-1/2 papers call 'the published separator' is this run's own BSA_PREREG_THRESHOLD, a simulation-calibrated pre-registration (iter_1 flab/config.py, line 74, quoted in scanner_pin.json), not a value from Jorak [7]. The run's BSA_w8 statistic (windowed mean pairwise |cos|) is also not Jorak's statistic, which is sigma_1/||U||_F plus a band of width L/6. So the claim '100% false-positive rate of a published scanner' must be withdrawn or re-run with Jorak's own statistic at 0.5.\n\n5. BIBLIOGRAPHY. references.bib was regenerated by identifier: 83 entries, no duplicate keys, author names from the arXiv API [36] and venues from Semantic Scholar. Every entry carries eprint and DOI, except the two @misc grey-literature items (Jorak, pinned to its SHA, and Report 74). Planner fix-list: (i) the duplicate LlorenteSaguer2026 key is split into LlorenteSaguer2026a (2604.18901) and LlorenteSaguer2026b (2603.27412) [16]. (ii) Casper: the iteration-2 bib already had the CORRECT DOI 10.1145/3630106.3659037 (FAccT '24, pp. 2254-2272) [29]. '0106.36590' is a substring of that DOI; the real defect was a missing eprint, and 2401.14446 has been added. (iii) Key AbuShairah2025 with author {Abu Shairah}, Harethah [31]. (iv) Tan2024 = 2407.12404 added; Ball2024 = 2406.09289 kept for jailbreak dynamics only [25, 26]. (v) Lan 2606.16349 [33], Fogel 2602.04653 [34], Luo 2608.09624 [18] and Rivera 2608.05086 [32] now have IDs; Rivera's merged affiliation 'Independent and UK AI Security Institute' has been removed [32]. (vi) AMS: the full DOI 10.1109/ACCESS.2026.3704057 (IEEE Access 14:91723-91737) was ALREADY present [30]. The defect was the entry type (@inproceedings for a journal); it is now @article with eprint 2608.05578 [27, 30]. (vii) Zhao2025's authors are confirmed [2]; Singh2025, Ren2024 and Zhong2025 names were corrected from arXiv. (viii) All 26 missing works were added, plus the Qwen3Guard report. That report confirms Qwen3Guard-4B-Gen was SafeRL's reward model, so it must not judge SafeRL [35]. Extra defects found: RAS's first author is 'Chang-Chieh Huang' on arXiv, not Semantic Scholar's 'Changhui Huang' [20]; N-GLARE's key is now Lin2026 [28]. CITATION-LIST AUDIT: the iteration-2 draft's hand-typed list (entries 1-30) has 20 fabricated first authors (e.g. Zhao's paper credited to 'D. Li', Joad's to 'T. B. Brown', Hurtado's to 'K. Park') and 5 wrong initials, with 4 entries correct. At least 8 titles are altered, e.g. 2603.05773 is 'Knowing without Acting', not 'Recognition Versus Execution' [36]. Fix: generate the reference list only from references.bib.\n\n6. NUMBER LEDGER. PENDING: the number-ledger pass (number_ledger.json) was still running when this version was written; every numeric claim about a cited paper must be taken as UNVERIFIED until that file exists. Numbers verified directly in this artifact: gamma_1 from -36.52 to -193.40 [24]; LatentBiopsy harmful-vs-XSTest AUROC = 1.000 [16]; Report 74 rho = -0.003 over 16 models [3]; AMS in IEEE Access 14:91723-91737 [30].\n\nCONFIDENCE. High for the fix-list, the scanner pin and the reference-list audit: all were checked mechanically against the arXiv API, Crossref and GitHub [7, 29, 30, 36, 37]. Medium-high for the ADJACENT and PUBLISHED verdicts, each backed by an exact quote. Medium for the three NEW verdicts: absence of evidence after 4 or more general queries, a citation hop and one orchestrator adversarial pass. The field moves weekly, and the pass surfaced one new near miss for C15 [23]. Medium for kill-check = OPEN. Semantic Scholar does not yet index citations of 2606.16349, and grey literature (Report 74 [3], Jorak [6]) is where the closest work lives, so a practitioner blog could close it. Evidence that would change a verdict: a 2026 paper correlating any causal per-model refusal quantity with XSTest/OR-Bench or HarmBench across families (closes the kill-check); a paper validating effective rank against safety benchmarks (closes C15); a learned internal-feature safety predictor (closes C14).",
+ "sources": [
+  {
+   "index": 1,
+   "url": "https://arxiv.org/abs/2406.11717",
+   "title": "Refusal in Language Models Is Mediated by a Single Direction",
+   "authors": [
+    "Andy Arditi",
+    "Oscar Obeso",
+    "Aaquib Syed",
+    "Daniel Paleka",
+    "Nina Panickssery",
+    "Wes Gurnee",
+    "Neel Nanda"
+   ],
+   "year": 2024,
+   "summary": "Directional ablation and activation addition of a difference-in-means refusal direction across 13 open chat models. Mechanism evidence, not a model ranking. Closest prior work for C2 and C6.",
+   "supporting_passages": []
+  },
+  {
+   "index": 2,
+   "url": "https://arxiv.org/pdf/2507.11878",
+   "title": "LLMs Encode Harmfulness and Refusal Separately",
+   "authors": [
+    "Jiachen Zhao",
+    "Jing Huang",
+    "Zhengxuan Wu",
+    "David Bau",
+    "Weiyan Shi"
+   ],
+   "year": 2025,
+   "summary": "Separate harmfulness and refusal directions; harmfulness-direction steering on 3 chat models; harmfulness and refusal depth curves on the same models. Closest prior work for C1 and C10 (ADJACENT).",
+   "supporting_passages": [
+    {
+     "quote": "the refusal rate elicited by the harmfulness direction is much lower than that elicited directly by the refusal direction",
+     "locator": "v5, Section 3.2, paragraph beside Figure 4"
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "url": "https://failurefirst.org/research/reports/74-abliteration-jailbreak-orthogonality/",
+   "title": "Failure-First Report 74 (abliteration-jailbreak orthogonality)",
+   "authors": null,
+   "year": 2026,
+   "summary": "Grey-literature web report (2026-03-11). It ranks 16 models by resistance to weight abliteration and correlates that with jailbreak refusal. It is the closest thing to the kill-check design (a generic directional-ablation outcome across models), and it found a null result.",
+   "supporting_passages": [
+    {
+     "quote": "the Spearman rank correlation between abliteration resistance and jailbreak refusal rate is rho = -0.003",
+     "locator": "Executive Summary, paragraph 2"
+    }
+   ]
+  },
+  {
+   "index": 4,
+   "url": "https://arxiv.org/abs/2606.08044",
+   "title": "When Behavioral Safety Evaluation Fails: A Representation-Level Perspective",
+   "authors": null,
+   "year": 2026,
+   "summary": "LVS: a per-model safety score from latent-perturbation sensitivity. The perturbation is undirected and the score is not correlated with any benchmark. Nearest causal cross-model score (kill-check runner-up).",
+   "supporting_passages": []
+  },
+  {
+   "index": 5,
+   "url": "https://arxiv.org/abs/2603.14278",
+   "title": "Activation Surgery: Jailbreaking White-box LLMs without Touching the Prompt",
+   "authors": null,
+   "year": 2026,
+   "summary": "Layer-wise substitution of a benign twin's activations, used as a jailbreak on mainly one model; no per-model score. C3 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 6,
+   "url": "https://github.com/JolanMc/Jorak",
+   "title": "Model Scanner (Jorak): reference-free abliteration detection",
+   "authors": [
+    "JolanMc"
+   ],
+   "year": 2026,
+   "summary": "Weights-only, reference-free scanner that reads the SVD of o_proj/down_proj against the refusal axis and outputs a provenance label. Closest relative of C4 (ADJACENT: it labels models, it does not grade them).",
+   "supporting_passages": []
+  },
+  {
+   "index": 7,
+   "url": "https://raw.githubusercontent.com/JolanMc/Jorak/8147de343964a3cced37db71814e9007c7465a52/modelscanner/classifier/scanner.py",
+   "title": "Jorak modelscanner/classifier/scanner.py @ 8147de3",
+   "authors": [
+    "JolanMc"
+   ],
+   "year": 2026,
+   "summary": "Pinned threshold file. All three weight-signal thresholds are 0.5, calibrated on Qwen2.5-0.5B. No 0.35 threshold exists anywhere in the repository.",
+   "supporting_passages": [
+    {
+     "quote": "svd_align_severed: float = 0.5",
+     "locator": "line 48"
+    },
+    {
+     "quote": "subspace_severed: float = 0.5",
+     "locator": "line 55"
+    },
+    {
+     "quote": "alignement SVD u_min : 0.24 vs 1.00   -> seuil sectionné 0.5",
+     "locator": "Thresholds docstring, line 44"
+    }
+   ]
+  },
+  {
+   "index": 8,
+   "url": "https://arxiv.org/abs/2604.27401",
+   "title": "Perturbation Probing: A Two-Pass-per-Prompt Diagnostic for FFN Behavioral Circuits",
+   "authors": null,
+   "year": 2026,
+   "summary": "An FFN/Skip ratio predicts neuron-ablation effectiveness across 13 models and 4 families (R^2 = 0.81). The ratio mixes weights and activations, and the target is an ablation outcome, not a benchmark. Nearest miss for C5 (NEW).",
+   "supporting_passages": []
+  },
+  {
+   "index": 9,
+   "url": "https://arxiv.org/abs/2410.13708",
+   "title": "On the Role of Attention Heads in Large Language Model Safety",
+   "authors": null,
+   "year": 2024,
+   "summary": "Ships/Sahara safety-head attribution on two same-lineage models. C6/C7 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 10,
+   "url": "https://arxiv.org/abs/2410.16327",
+   "title": "Feint and Attack: Attention-Based Strategies for Jailbreaking and Protecting LLMs",
+   "authors": null,
+   "year": 2024,
+   "summary": "Attention to sensitive words correlates with jailbreak success, within the Llama-2 family and across attack methods. C7 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 11,
+   "url": "https://arxiv.org/abs/2402.13494",
+   "title": "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis",
+   "authors": null,
+   "year": 2024,
+   "summary": "Parameter-gradient (not input-gradient) safety attribution in one family. C8 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 12,
+   "url": "https://arxiv.org/html/2502.13946v2",
+   "title": "Why Safeguarded Ships Run Aground? Aligned Large Language Models' Safety Mechanisms Tend to Be Anchored in The Template Region",
+   "authors": [
+    "Chak Tou Leong"
+   ],
+   "year": 2025,
+   "summary": "Template-region normalized indirect effect of the refusal/compliance decision, compared across 6 chat models from 4 families and tied to vulnerability (TempPatch). C9 PUBLISHED.",
+   "supporting_passages": [
+    {
+     "quote": "For a fair cross-model comparison, we use the normalized indirect effect (NIE)",
+     "locator": "Section 3.3, Method/Results"
+    }
+   ]
+  },
+  {
+   "index": 13,
+   "url": "https://arxiv.org/abs/2609.13534",
+   "title": "Harmfulness Propagation Dynamics: Layer-wise Trajectories of Adversarial Intent",
+   "authors": null,
+   "year": 2026,
+   "summary": "Harm-only depth trajectories used as per-prompt detection features across 4 families. C10 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 14,
+   "url": "https://arxiv.org/abs/2406.05946",
+   "title": "Safety Alignment Should Be Made More Than Just a Few Tokens Deep",
+   "authors": [
+    "Xiangyu Qi"
+   ],
+   "year": 2024,
+   "summary": "Per-token KL between aligned and base models over the first tokens. This needs the parent model. C11 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 15,
+   "url": "https://arxiv.org/abs/2609.18471",
+   "title": "First Token Matters: Understanding Safety Collapse in Large Reasoning Models",
+   "authors": null,
+   "year": 2026,
+   "summary": "Refusal-projection trajectory that needs a counterpart model (3 instruct/reasoning pairs). C11 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 16,
+   "url": "https://arxiv.org/abs/2603.27412",
+   "title": "The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams (LatentBiopsy)",
+   "authors": [
+    "Isaac Llorente-Saguer"
+   ],
+   "year": 2026,
+   "summary": "Harmful-vs-XSTest-benign-aggressive AUROC per checkpoint (6 checkpoints, 2 families) as evidence of geometric invariance; no plain-benign baseline ratio. C12 ADJACENT.",
+   "supporting_passages": [
+    {
+     "quote": "AUROC = 1.000 for discriminating harmful from benign-aggressive prompts (XSTest)",
+     "locator": "Abstract, v1"
+    }
+   ]
+  },
+  {
+   "index": 17,
+   "url": "https://arxiv.org/abs/2607.13075",
+   "title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators",
+   "authors": [
+    "Dominik Schwarz"
+   ],
+   "year": 2026,
+   "summary": "Twin/paired probe separation across families; explicitly declines ranking use. C12/C13 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 18,
+   "url": "https://arxiv.org/abs/2608.09624",
+   "title": "Measuring the Wrong Thing: Internal Harmfulness Scores Anti-Rank Successful Jailbreaks",
+   "authors": [
+    "Mingyu Luo"
+   ],
+   "year": 2026,
+   "summary": "Wrapped-vs-plain harmful-intent AUROC per model (0.936 -> 0.803), framed as a critique of measurement validity. C13 ADJACENT.",
+   "supporting_passages": []
+  },
+  {
+   "index": 19,
+   "url": "https://arxiv.org/abs/2606.22676",
+   "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+   "authors": null,
+   "year": 2026,
+   "summary": "GFS with a fixed l/L depth weight (not fitted) across 21 models; parent-dependent (iteration-1 finding). Nearest miss for C14 (NEW).",
+   "supporting_passages": []
+  },
+  {
+   "index": 20,
+   "url": "https://arxiv.org/abs/2606.25750",
+   "title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+   "authors": [
+    "Chang-Chieh Huang"
+   ],
+   "year": 2026,
+   "summary": "Calibrated 0-100 white-box safety score with a fixed average and a hand-set logistic; needs a per-family reference model. Nearest miss for C14.",
+   "supporting_passages": []
+  },
+  {
+   "index": 21,
+   "url": "https://arxiv.org/abs/2605.30018",
+   "title": "Latent Performance Profiling of Large Language Models",
+   "authors": null,
+   "year": 2026,
+   "summary": "Effective rank and participation ratio across 8 LLMs, used as capability profiles, not safety. Nearest miss for C15 (NEW).",
+   "supporting_passages": []
+  },
+  {
+   "index": 22,
+   "url": "https://arxiv.org/abs/2401.17139",
+   "title": "Diff-eRank: A Novel Rank-Based Metric for Evaluating Large Language Models",
+   "authors": null,
+   "year": 2024,
+   "summary": "Effective-rank model metric for capability. C15 nearest miss.",
+   "supporting_passages": []
+  },
+  {
+   "index": 23,
+   "url": "https://arxiv.org/abs/2608.25390",
+   "title": "Refusal geometry reflects refusal training: diverse refusal prefixes can raise stable rank and weaken refusal vector ablation attacks",
+   "authors": [
+    "Andrey Labunets"
+   ],
+   "year": 2026,
+   "summary": "Found in the orchestrator's adversarial pass. Links the stable rank of refusal residuals and gradients to robustness against ablation, in one OLMo-2-1B lineage. New nearest miss for C15; C15 stays NEW.",
+   "supporting_passages": [
+    {
+     "quote": "diverse refusal starts can raise stable ranks of gradients and activation changes, making refusals harder to remove with a vector ablation attack",
+     "locator": "Abstract, v2"
+    }
+   ]
+  },
+  {
+   "index": 24,
+   "url": "https://arxiv.org/html/2603.24543",
+   "title": "Analysing the Safety Pitfalls of Steering Vectors",
+   "authors": [
+    "Yuxiao Li"
+   ],
+   "year": 2026,
+   "summary": "Per-model OLS slope gamma_1 of the ASR dose-response slope on steering-vector/refusal-direction cosine, compared across 6 models by scale. C16 PUBLISHED (comparator).",
+   "supporting_passages": [
+    {
+     "quote": "becomes progressively steeper with model size",
+     "locator": "Section 6, 'Effect of model scale'; Table 1 (gamma_1 from -36.52 for Llama 7B to -193.40 for Qwen 32B)"
+    }
+   ]
+  },
+  {
+   "index": 25,
+   "url": "https://arxiv.org/abs/2407.12404",
+   "title": "Analyzing the Generalization and Reliability of Steering Vectors",
+   "authors": [
+    "Daniel Tan",
+    "David Chanin",
+    "Aengus Lynch",
+    "Dimitrios Kanoulas",
+    "Brooks Paige",
+    "Adria Garriga-Alonso",
+    "Robert Kirk"
+   ],
+   "year": 2024,
+   "summary": "The real 'Tan et al.' steering-reliability paper. The draft had attributed this to 2406.09289.",
+   "supporting_passages": []
+  },
+  {
+   "index": 26,
+   "url": "https://arxiv.org/abs/2406.09289",
+   "title": "Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models",
+   "authors": [
+    "Sarah Ball",
+    "Frauke Kreuter",
+    "Nina Rimsky"
+   ],
+   "year": 2024,
+   "summary": "Ball, Kreuter & Rimsky (not Tan et al.). Jailbreak latent dynamics.",
+   "supporting_passages": []
+  },
+  {
+   "index": 27,
+   "url": "https://arxiv.org/abs/2608.05578",
+   "title": "Detecting Safety Training Modification in Language Models via Activation Analysis (AMS)",
+   "authors": [
+    "Glen Messenger"
+   ],
+   "year": 2026,
+   "summary": "AMS sigma is a non-causal standardized projection separation. The arXiv page lists the IEEE Access DOI 10.1109/ACCESS.2026.3704057.",
+   "supporting_passages": []
+  },
+  {
+   "index": 28,
+   "url": "https://arxiv.org/abs/2511.14195",
+   "title": "N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator",
+   "authors": [
+    "Zheyu Lin"
+   ],
+   "year": 2026,
+   "summary": "JSS-trajectory stability ratio under 4 probing conditions; closest to C13 in functional form (incumbent map).",
+   "supporting_passages": []
+  },
+  {
+   "index": 29,
+   "url": "https://api.crossref.org/works/10.1145/3630106.3659037",
+   "title": "Crossref record: Black-Box Access is Insufficient for Rigorous AI Audits",
+   "authors": null,
+   "year": 2024,
+   "summary": "Confirms the Casper DOI (FAccT '24, pp. 2254-2272). The planner's 'bogus eprint 0106.36590' is a fragment of this correct DOI.",
+   "supporting_passages": []
+  },
+  {
+   "index": 30,
+   "url": "https://api.crossref.org/works/10.1109/ACCESS.2026.3704057",
+   "title": "Crossref record: Detecting Safety Training Modification in Language Models via Activation Analysis",
+   "authors": null,
+   "year": 2026,
+   "summary": "Confirms the full AMS DOI, IEEE Access vol. 14, pp. 91723-91737. The 'truncated fragment 2026.37040' is a substring of it.",
+   "supporting_passages": []
+  },
+  {
+   "index": 31,
+   "url": "https://arxiv.org/abs/2508.20766",
+   "title": "Turning the Spell Around: Lightweight Alignment Amplification via Rank-One Safety Injection",
+   "authors": [
+    "Harethah Abu Shairah",
+    "Hasan Abed Al Kader Hammoud",
+    "George Turkiyyah",
+    "Bernard Ghanem"
+   ],
+   "year": 2025,
+   "summary": "ROSI; full first-author name verified.",
+   "supporting_passages": []
+  },
+  {
+   "index": 32,
+   "url": "https://arxiv.org/abs/2608.05086",
+   "title": "Item Response Theory for AI Safety",
+   "authors": [
+    "Joshua Fonseca Rivera",
+    "Neil Shah",
+    "David Demitri Africa",
+    "Konstantinos Voudouris"
+   ],
+   "year": 2026,
+   "summary": "Rivera2026 authors verified. The affiliation 'Independent / UK AI Security Institute' had been merged into the author field.",
+   "supporting_passages": []
+  },
+  {
+   "index": 33,
+   "url": "https://arxiv.org/abs/2606.16349",
+   "title": "From Refusal Geometry to Safety Geometry: Harmfulness--Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+   "authors": [
+    "Wenhao Lan",
+    "Shan Li",
+    "Xinhua Lai",
+    "Meiqi Wu",
+    "Junbin Yang",
+    "Haihua Shen"
+   ],
+   "year": 2026,
+   "summary": "Lan2026 ID and authors verified (HRCI).",
+   "supporting_passages": []
+  },
+  {
+   "index": 34,
+   "url": "https://arxiv.org/abs/2602.04653",
+   "title": "Inference-Time Backdoors via Chat Templates: From LLM Supply Chains to Agentic System Compromise",
+   "authors": [
+    "Ariel Fogel",
+    "Omer Hofman",
+    "Eilon Cohen",
+    "Roman Vainshtein"
+   ],
+   "year": 2026,
+   "summary": "Fogel2026 ID verified.",
+   "supporting_passages": []
+  },
+  {
+   "index": 35,
+   "url": "https://arxiv.org/pdf/2510.14276",
+   "title": "Qwen3Guard Technical Report",
+   "authors": null,
+   "year": 2025,
+   "summary": "Section 3.5 describes Safety RL on Qwen3-4B with Qwen3Guard-4B-Gen as the reward. This confirms Qwen3Guard must not judge SafeRL.",
+   "supporting_passages": [
+    {
+     "quote": "Application I: Safety RL with Generative Qwen3Guard",
+     "locator": "Section 3.5 heading"
+    }
+   ]
+  },
+  {
+   "index": 36,
+   "url": "https://export.arxiv.org/api/query",
+   "title": "arXiv API (id_list batch metadata)",
+   "authors": null,
+   "year": null,
+   "summary": "Source of every author list, title and version in references.bib (raw/arxiv_atom_*.xml).",
+   "supporting_passages": []
+  },
+  {
+   "index": 37,
+   "url": "https://api.github.com/repos/JolanMc/Jorak/commits?path=modelscanner/classifier/scanner.py&per_page=100",
+   "title": "GitHub API: Jorak scanner.py commit history",
+   "authors": null,
+   "year": 2026,
+   "summary": "Three commits touched scanner.py (27957d6 on 2026-07-15, 239fbdb on 2026-07-15, 0351eda on 2026-07-20). The thresholds are 0.5 in all of them.",
+   "supporting_passages": []
+  },
+  {
+   "index": 41,
+   "url": "https://arxiv.org/abs/2502.16173",
+   "title": "Mapping 1,000+ Language Models via the Log-Likelihood Vector",
+   "authors": [
+    "Momose Oyama"
+   ],
+   "year": 2025,
+   "summary": "Model-map precedent for a metamodel over model representations (output log-likelihoods, not activations). C14 nearest miss.",
+   "supporting_passages": []
+  },
+  {
+   "index": 42,
+   "url": "https://arxiv.org/abs/2410.03415",
+   "title": "Surgical, Cheap, and Flexible: Mitigating False Refusal in Language Models via Single Vector Ablation",
+   "authors": null,
+   "year": 2024,
+   "summary": "False-refusal vector ablation. Single-model tool; C2/C12 adjacent.",
+   "supporting_passages": []
+  }
+ ],
+ "follow_up_questions": [
+  "Does Jorak's own statistic (sigma_1/||U||_F global and round(L/6)-window band alignment, threshold 0.5) produce false positives on the honest panel? This is needed to replace the withdrawn '0.35 / 100% FPR' claim.",
+  "Does any causal quantity keyed to the model's own harm direction (C1/C2/C5) beat Report 74's null (rho = -0.003) once over-refusal is scored as a second arm and a blanket refuser is forced to lose?",
+  "Is Leong et al.'s template-region NIE (C9) numerically correlated with harmful-refusal and over-refusal benchmarks across held-out families, i.e. does the published quantity survive as a score?"
+ ],
+ "novelty_table": [
+  {
+   "candidate": "C1",
+   "name": "C1 harm-to-refusal gain",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2507.11878",
+     "title": "LLMs Encode Harmfulness and Refusal Separately",
+     "first_author": "Jiachen Zhao",
+     "year": 2025,
+     "venue": "NeurIPS 2025 (arXiv v5)"
+    },
+    {
+     "arxiv_id_or_doi": "2606.16349",
+     "title": "From Refusal Geometry to Safety Geometry: Harmfulness--Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+     "first_author": "Wenhao Lan",
+     "year": 2026,
+     "venue": "arXiv v3"
+    },
+    {
+     "arxiv_id_or_doi": "2606.08044",
+     "title": "When Behavioral Safety Evaluation Fails: A Representation-Level Perspective",
+     "first_author": "Enyi Jiang",
+     "year": 2026,
+     "venue": "arXiv v1"
+    }
+   ],
+   "what_it_measured": "2507.11878 steers harmless instructions along the model's harmfulness direction (mid layers) and reports the elicited refusal rate per layer, per model, contrasting it with the refusal direction; 2606.16349 runs a causal H/R intervention matrix on aligned anchors (refusal-side vs harmfulness-only interventions reopening HarmBench ASR); 2606.08044 LVS = safety-score drop per unit of an UNDIRECTED L-inf-bounded latent perturbation.",
+   "n_models_and_families": "2507.11878: Llama2-7B-chat, Llama3-8B-Instruct, Qwen2-7B-Instruct (3 models, 2 families); 2606.16349: Llama-3.1-Instruct and Qwen2.5-Instruct anchors + Mistral-7B SFT/R2D2 trajectories; 2606.08044: Gemma/Llama/Qwen bases + de-aligned variants + Alpaca/SACPO/Beaver family",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "On Qwen2 and Llama2, the refusal rate elicited by the harmfulness direction is much lower than that elicited directly by the refusal direction (see Appendix C)."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "2507.11878: hundreds of instructions per direction (not a few-prompt budget)",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "none; per-model harm-steering refusal rates are reported as mechanism evidence, never regressed on a safety benchmark across models"
+   },
+   "quote": "On Qwen2 and Llama2, the refusal rate elicited by the harmfulness direction is much lower than that elicited directly by the refusal direction (see Appendix C).",
+   "locator": "arXiv 2507.11878v5 PDF, Section 3.2 'Harmfulness direction' paragraph beside Figure 4 (p.7); per-model curves in Appendix C",
+   "queries_run": [
+    {
+     "query": "harmfulness direction steering causes refusal causal effect per model comparison arXiv 2026",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "intervention effect harmfulness direction refusal rate across models correlation benchmark over-refusal",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "causal effect harm representation on refusal predicts over-refusal and harmful compliance across many checkpoints",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "ablation sensitivity refusal direction predicts jailbreak robustness across models",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "causal mediation refusal per model safety score model comparison intervention mechanistic safety metric",
+     "mode": "general",
+     "hits_scanned": 10
+    }
+   ],
+   "adversarial_note": "The raw ingredient of C1 (per-model refusal response to a push along the harm direction) is computed in 2507.11878 on 3 models and differs visibly across them, but only as a mechanism contrast (harm vs refusal direction), in behavioural refusal-rate units at chosen layers, not as a finite-difference gain on a late refusal-axis projection and never used to compare models' safety. 2606.08044 LVS is the only published per-model CAUSAL sensitivity score used as a safety indicator across model variants (Table 1), but its perturbation is undirected (not along the model's own harm direction), it needs generation + a safety classifier, and it is explicitly positioned against, not validated by, behavioural benchmarks. If a reviewer equates 'per-unit causal sensitivity score' with C1, LVS is the citation to concede.",
+   "positioning_sentence": "Harm-direction steering elicits different refusal rates in different chat models (arXiv:2507.11878) and per-unit latent-perturbation sensitivity has been proposed as a representation-level safety score (arXiv:2606.08044), but no prior work computes a finite-difference harm-to-refusal gain along each model's own cross-fitted harm direction and validates it against harmful-refusal and over-refusal benchmarks across architecture families.",
+   "source_file": "novelty_A.json"
+  },
+  {
+   "candidate": "C2",
+   "name": "C2 self-ablation sensitivity",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2406.11717",
+     "title": "Refusal in Language Models Is Mediated by a Single Direction",
+     "first_author": "Andy Arditi",
+     "year": 2024,
+     "venue": "NeurIPS 2024 (arXiv v3)"
+    },
+    {
+     "arxiv_id_or_doi": "https://failurefirst.org/research/reports/74-abliteration-jailbreak-orthogonality/",
+     "title": "Report 74: Abliteration Resistance and Jailbreak Resistance Are Orthogonal Defense Dimensions",
+     "first_author": "Failure-First (org report)",
+     "year": 2026,
+     "venue": "web report, not peer-reviewed"
+    },
+    {
+     "arxiv_id_or_doi": "2410.03415",
+     "title": "Surgical, Cheap, and Flexible: Mitigating False Refusal in Language Models via Single Vector Ablation",
+     "first_author": "Xinpeng Wang",
+     "year": 2024,
+     "venue": "ICLR 2025 (arXiv v2)"
+    }
+   ],
+   "what_it_measured": "2406.11717: refusal score and Llama-Guard safety score with/without directional ablation of each model's own difference-in-means direction on 13 chat models (JailbreakBench). Failure-First Report 74: per-model 'abliteration resistance' (fraction of third-party OBLITERATUS abliteration runs leaving refusal >= 20%) Spearman-correlated with jailbreak refusal rate across 16 models. 2410.03415: compliance on harmful vs OR-Bench/XSTest after ablating true vs false refusal vectors (Llama2/Gemma etc.).",
+   "n_models_and_families": "2406.11717: 13 models (Qwen, Yi, Gemma, Llama-2, Llama-3; 1.8B-72B). Report 74: 16 models, several providers. 2410.03415: a few chat models.",
+   "used_to_rank_models": {
+    "value": "partial",
+    "quote": "Across 16 models with non-trivial variation on both dimensions (n >= 10 abliteration runs and >= 10 jailbreak evaluations each), the Spearman rank correlation between abliteration resistance and jailbreak refusal rate is rho = -0.003."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "2406.11717: 128 harmful + 128 harmless for direction, 100 JailbreakBench eval; Report 74: >=10 abliteration runs per model",
+   "correlated_with_benchmark_safety": {
+    "value": "yes",
+    "number": "Report 74 (grey literature): Spearman rho = -0.003, n = 16 (null). Arditi: none."
+   },
+   "quote": "Across 16 models with non-trivial variation on both dimensions (n >= 10 abliteration runs and >= 10 jailbreak evaluations each), the Spearman rank correlation between abliteration resistance and jailbreak refusal rate is rho = -0.003.",
+   "locator": "failurefirst.org Report 74 (2026-03-11), Executive Summary paragraph 2; Arditi 2406.11717v3 Figure 1 / Section 3.1 for the 13-model ablation scores",
+   "queries_run": [
+    {
+     "query": "refusal direction ablation effect size across models correlates safety benchmark",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "ablation sensitivity refusal direction predicts jailbreak robustness across models",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "abliteration susceptibility refusal ablation attack success varies across models what predicts model-level",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "refusal direction strength predicts attack success rate across LLMs Spearman",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "ablating own refusal direction harmful and benign refusal drop compared with random direction per model over-refusal",
+     "mode": "general",
+     "hits_scanned": 10
+    }
+   ],
+   "adversarial_note": "Closest to PUBLISHED of the five. Report 74 ranks 16 models by a directional-ablation outcome and correlates it with a jailbreak benchmark (null result), which is C2's cross-model design in generic form; it is kept at ADJACENT only because (i) it is a non-peer-reviewed org report, (ii) its quantity is a behavioural success fraction of third-party weight abliteration (method 'advanced' dominates) rather than a refusal-MARGIN drop from removing the model's own direction in a layer band, (iii) there is no benign-twin (over-refusal) arm and no anisotropy-matched random-direction control. Arditi's 13-model Figure 1 is computed per model but treated as mechanism evidence (all models collapse), not as a safety ranking. If reviewers treat Report 74 as publication, C2's claim must be narrowed to the two-sided, random-controlled, margin-based form, and the null rho = -0.003 must be cited as prior evidence against a positive result.",
+   "positioning_sentence": "Directional ablation removes refusal in every one of 13 chat models (arXiv:2406.11717), and a practitioner report found abliteration resistance uncorrelated with jailbreak refusal across 16 models (Failure-First Report 74, rho = -0.003); our self-ablation sensitivity differs by measuring a margin drop on both harmful items and benign twins relative to an anisotropy-matched random direction, and by testing it against harmful-refusal and over-refusal benchmarks across held-out families.",
+   "source_file": "novelty_A.json"
+  },
+  {
+   "candidate": "C3",
+   "name": "C3 twin patching flip depth",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2603.14278",
+     "title": "Activation Surgery: Jailbreaking White-box LLMs without Touching the Prompt",
+     "first_author": "Maël Jenny",
+     "year": 2026,
+     "venue": "arXiv v1"
+    },
+    {
+     "arxiv_id_or_doi": "2609.14759",
+     "title": "Refusal Reads Only a Slice of What the Model Knows: Harm-Keyed Routing and Its Exceptions Across Model Families",
+     "first_author": "Orion Reblitz-Richardson",
+     "year": 2026,
+     "venue": "arXiv v1"
+    },
+    {
+     "arxiv_id_or_doi": "2404.15255",
+     "title": "How to use and interpret activation patching",
+     "first_author": "Stefan Heimersheim",
+     "year": 2024,
+     "venue": "arXiv v1"
+    },
+    {
+     "arxiv_id_or_doi": "2309.16042",
+     "title": "Towards Best Practices of Activation Patching in Language Models: Metrics and Methods",
+     "first_author": "Fred Zhang",
+     "year": 2023,
+     "venue": "ICLR 2024 (arXiv v2)"
+    }
+   ],
+   "what_it_measured": "2603.14278 builds a nearby benign twin and substitutes its activations layer by layer (sequential patch-then-compute) into the harmful run to suppress refusal, as a jailbreak, mainly on Llama-4-Scout. 2609.14759 does nested interchange patching of a moral subspace between matched requests (causal on OLMo-3 only). 2404.15255/2309.16042 are method guidance (denoising vs noising, metrics).",
+   "n_models_and_families": "2603.14278: Llama-4-Scout-17B-16E (main) + verified on Qwen2.5-7B-Instruct and Mistral-7B-Instruct-v0.3; 2609.14759: 4 models / 3 families (causal result on 1)",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "Our method constructs a nearby benign prompt and performs layer-wise activation substitutions using a sequential procedure."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "2603.14278: 520 AdvBench prompts (attack evaluation)",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "none"
+   },
+   "quote": "We show that this activation surgery method reveals where and how refusal arises, and prevents refusal signals from propagating across layers, thereby inhibiting the model's safety mechanisms.",
+   "locator": "arXiv 2603.14278v1 abstract (PDF p.1); model list in Section 1 ('We also verified that the method remains effective beyond Llama-4, including on Qwen2.5-7B-Instruct and Mistral-7B-Instruct-v0.3')",
+   "queries_run": [
+    {
+     "query": "activation patching refusal layer where refusal decided across model families harmful benign minimal pairs",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "activation patching harmful benign twin prompts layer refusal flips per model depth",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "layer-wise activation patching sharpness of refusal transition model-level statistic safety",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "causal mediation refusal per model safety score model comparison intervention mechanistic safety metric",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "mechanistic safety metric model comparison intervention causal effect refusal ranks models leaderboard",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "The operation (benign-twin residual patched into the harmful run, depth by depth) exists as a jailbreak in 2603.14278, which claims it 'reveals where and how refusal arises', but it never reduces this to a per-model flip-depth/sharpness scalar and never compares models. Iteration-1's related C3 (refusal-depth minus content-depth, probe-based) was STILL-OPEN against 2507.11878 layer curves; that verdict concerned decodability onset, not patching, so it is only indirectly reusable. Heimersheim & Nanda / Zhang & Nanda supply the method conventions a reviewer will expect (noising vs denoising, logit-difference metric).",
+   "positioning_sentence": "Layer-wise substitution of a benign twin's activations has been used to jailbreak single models (arXiv:2603.14278) following standard activation-patching practice (arXiv:2404.15255, arXiv:2309.16042), but we are not aware of work that summarises where and how sharply the refusal margin flips as a per-model scalar and compares it across families against safety benchmarks.",
+   "source_file": "novelty_A.json"
+  },
+  {
+   "candidate": "C4",
+   "name": "C4 writer capacity",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "https://github.com/JolanMc/Jorak",
+     "title": "Jorak / Model Scanner: reference-free detection of abliteration in open-source LLMs",
+     "first_author": "JolanMc (GitHub)",
+     "year": 2026,
+     "venue": "GitHub repository (created 2026-07-24), not a paper"
+    },
+    {
+     "arxiv_id_or_doi": "2607.01854",
+     "title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+     "first_author": "Gabriel Hurtado",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2406.11717",
+     "title": "Refusal in Language Models Is Mediated by a Single Direction",
+     "first_author": "Andy Arditi",
+     "year": 2024,
+     "venue": "NeurIPS 2024"
+    }
+   ],
+   "what_it_measured": "Jorak: weights-only SVD signature of o_proj/down_proj — per layer the left singular vector of least gain u_min, global alignment A = sigma1(U)/||U||_F over stacked u_min, per-layer |cos(u_min, shared axis)|, band and subspace variants — to label a checkpoint censored/ablated/finetuned_decensored without the original model. 2607.01854: base-anchored weight-recovery energy + activation refusal gap (needs attested reference). Arditi: weight orthogonalisation r^T W' = 0 (the edit C4's statistic is sensitive to).",
+   "n_models_and_families": "Jorak README: 4-model 0.5B matrix + one 7B OBLITERATED Qwen (Qwen, Llama, Mistral, Gemma supported); 2607.01854: 273-checkpoint registry, Qwen/DeepSeek-distill/Llama/Gemma",
+   "used_to_rank_models": {
+    "value": "partial",
+    "quote": "per-layer weight alignment to the refusal"
+   },
+   "parent_free": "yes",
+   "prompt_budget": "Jorak weights signal: zero prompts (activations/behaviour optional); 2607.01854: reference model required",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "Jorak outputs a 4-bucket provenance label + confidence; no graded correlation with refusal/over-refusal benchmarks reported. 2607.01854: AUROC 0.95 for abliterated-vs-benign classification (with reference), not a benchmark correlation."
+   },
+   "quote": "The detectable signature = a **live refusal axis that is disconnected from the\nweights**, a combination that no fine-tuning reproduces.",
+   "locator": "raw.githubusercontent.com/JolanMc/Jorak/main/README.md lines 21-23 ('Principle') and line 37; formula in docs/METRICS.md section 1.1 (svd_alignment A)",
+   "queries_run": [
+    {
+     "query": "weight-based refusal direction o_proj down_proj alignment score model audit without base model",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "refusal direction weights singular vectors o_proj down_proj write capacity z-score random directions safety",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "reference-free weight signature refusal direction abliteration detection correlate refusal rate graded",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "abliteration susceptibility refusal ablation attack success varies across models what predicts model-level",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "refusal direction ablation effect size across models correlates safety benchmark",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "Jorak is the nearest functional relative: reference-free, weights-only, reads o_proj/down_proj against the refusal axis, used to classify models. Differences: its main statistic is direction-agnostic (shared least-gain singular vector across layers) and binary-thresholded to detect a SEVERED write (r^T W ~ 0); C4 z-scores the write capacity along the model's own refusal axis against random directions from the layer's output span and is intended as a GRADED safety score correlated with benchmarks. Because a z-score of ||r^T W|| near the floor is exactly Jorak's 'severed' condition, a reviewer could call C4 'Jorak made continuous'; the paper must cite it and claim only the graded, benchmark-validated, cross-family use. Iteration-1's adversarial pass (raw/adversarial_C3_C4_C5.json, its C4 = weights-only parent-free graded edit strength) stayed STILL-OPEN, and its abliteration.org wiki concession ('A truly novel benchmark should test whether method can be recovered from candidate weights alone, without an attested base') still applies; Jorak (created 2026-07-24) post-dates part of that search and was not in iter-1's excluded list, so it narrows that verdict.",
+   "positioning_sentence": "Reference-free weight signatures of refusal-writing matrices are already used to flag abliterated checkpoints (Jorak, github.com/JolanMc/Jorak; cf. the base-anchored audit of arXiv:2607.01854), so our contribution is not the weight read itself but its use as a graded, random-direction-calibrated writer-capacity score validated against harmful-refusal and over-refusal benchmarks across held-out families.",
+   "source_file": "novelty_A.json"
+  },
+  {
+   "candidate": "C5",
+   "name": "C5 harm-to-refusal weight-path gain",
+   "verdict": "NEW",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2604.27401",
+     "title": "Perturbation Probing: A Two-Pass-per-Prompt Diagnostic for FFN Behavioral Circuits in Aligned LLMs",
+     "first_author": "Hongliang Liu",
+     "year": 2026,
+     "venue": "arXiv v1"
+    },
+    {
+     "arxiv_id_or_doi": "2609.00051",
+     "title": "From Detection to Refusal: Safer LLMs via Circuit-Guided Weight Scaling",
+     "first_author": "Kuan-Lin Chu",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2406.11717",
+     "title": "Refusal in Language Models Is Mediated by a Single Direction",
+     "first_author": "Andy Arditi",
+     "year": 2024,
+     "venue": "NeurIPS 2024"
+    }
+   ],
+   "what_it_measured": "2604.27401: per-neuron structural coupling c_n = d_F · W_down[:, n] from weights times a perturbation response, plus an activation-derived FFN/Skip ratio that predicts neuron-ablation effectiveness across 13 models (R^2 = 0.81) — outcome is ablation effect on the refusal logit gap, not a benchmark. 2609.00051: Harmful Detection Heads -> Safety Neurons -> Refusal Heads circuit found by interventions, then weight scaling on 6 LLMs to improve safety. Arditi: direct feature attribution of components onto the refusal direction.",
+   "n_models_and_families": "2604.27401: 13 models, 4 families; 2609.00051: 6 LLMs",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "The FFN/Skip ratio predicts ablation effectiveness across 13 models and four architecture families"
+   },
+   "parent_free": "yes",
+   "prompt_budget": "2604.27401: 16 identification prompts + 200 held-out HarmBench",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "2604.27401 correlates FFN/Skip with ablation effectiveness (R^2 = 0.81), not with a safety benchmark"
+   },
+   "quote": "The FFN/Skip ratio predicts ablation effectiveness across 13 models and four architecture families",
+   "locator": "arXiv 2604.27401v1 PDF, Section 4.2 'Opposition and Routing: Two Circuit Structures' first sentence; Figure 3",
+   "queries_run": [
+    {
+     "query": "virtual weights path harmfulness refusal direction bilinear MLP attention output",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "weight-space path from harmfulness direction to refusal direction through MLP attention \"weights only\" refusal circuit",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "bilinear weight analysis harm feature to refusal feature through attention OV and MLP circuits across models",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "refusal direction weights singular vectors o_proj down_proj write capacity z-score random directions safety",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "causal mediation refusal per model safety score model comparison intervention mechanistic safety metric",
+     "mode": "general",
+     "hits_scanned": 10
+    }
+   ],
+   "adversarial_note": "No source computes a bilinear harm-direction -> refusal-direction gain through attention-output and MLP weight paths summed over depth, per model, let alone ranks models by it. Nearest misses are weight-activation hybrids (2604.27401's c_n uses W_down but multiplies it by a measured perturbation response, and its cross-model predictor FFN/Skip is activation-based and predicts an internal ablation effect, not a benchmark) and circuit papers (2609.00051) that intervene rather than read weights. Citation hop: 2604.27401 found via forward citations of 2406.11717 (raw/A_cites_filtered.txt); its cited concurrent work (Unit42 perturbation-probing note) was checked in iter-1 (CSA note) and does not compute a weight path. Iteration-1's weights-only verdict applies: nothing weights-only is graded against benchmarks.",
+   "positioning_sentence": "Component-level refusal attributions exist (arXiv:2406.11717) and weight-derived neuron couplings have been used to predict ablation effects across 13 models (arXiv:2604.27401), but to our knowledge no prior work reads a harm-to-refusal gain directly from attention-output and MLP weight paths and tests it as a cross-family safety score.",
+   "source_file": "novelty_A.json"
+  },
+  {
+   "candidate": "C6",
+   "name": "C6",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2406.11717",
+     "title": "Refusal in Language Models Is Mediated by a Single Direction",
+     "first_author": "Andy Arditi",
+     "year": 2024,
+     "venue": "NeurIPS 2024"
+    },
+    {
+     "arxiv_id_or_doi": "2410.13708",
+     "title": "On the Role of Attention Heads in Large Language Model Safety",
+     "first_author": "Zhenhong Zhou",
+     "year": 2024,
+     "venue": "arXiv (ACL-style)"
+    },
+    {
+     "arxiv_id_or_doi": "2608.11583",
+     "title": "Localizing Safety Alignment: MLP Layers and Mid-Network Blocks Encode Refusal Behavior in Large Language Models",
+     "first_author": "unknown (not individually verified beyond listing)",
+     "year": 2026,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "Arditi et al. use 'direct feature attribution' (DFA) -- projecting each attention-head/MLP component's output onto the refusal direction -- but restrict this component-level attribution analysis to a SINGLE model case study (Qwen 1.8B Chat) even though the paper's main refusal-direction finding spans 13 models. Zhou et al.'s Ships/Sahara score is an ABLATION-drop importance score (not DLA/logit-projection) computed on 2 models (Llama-2-7b-chat, Vicuna-7b-v1.5), used to find which heads to zero out, not a top-k-share/depth-centroid summary statistic.",
+   "n_models_and_families": "Arditi: 13 models used for the refusal-direction finding, but the DFA component-attribution analysis itself is done on 1 model. Zhou/Ships-Sahara: 2 models (both Llama-2 family fine-tunes).",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "We therefore restrict our analysis to a single model, Qwen 1.8B Chat, and a single suffix."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "n/a (mechanism-analysis papers, not prompt-budget-constrained safety scores)",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "n/a"
+   },
+   "quote": "To further investigate how the refusal direction is suppressed, we examine the contributions of individual attention head and MLP components to the refusal direction. We quantify each component's contribution to this direction using direct feature attribution (DFA) (Makelov et al. 2024; Kissane et al. 2024): each component's direct contribution can be measured by projecting its output onto the refusal direction.",
+   "locator": "Arditi et al. 2406.11717, Section 5 / Appendix H.1 (ar5iv HTML, mirrors NeurIPS v1)",
+   "queries_run": [
+    {
+     "query": "\"direct logit attribution\" refusal tokens attention heads MLP concentration",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "safety heads direct logit attribution refusal concentration cross-model",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "logit lens refusal token attribution heads depth centroid",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "\"refusal head\" ablation importance score safety ranking models",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "attention head importance safety score cross-model ranking LLM alignment",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "Arditi refusal direction single direction 13 models direct feature attribution DFA components",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "DLA top-k share heads MLP safety concentration metric refusal logit",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "Arditi's 13-model number applies only to the refusal-DIRECTION-existence claim, not to the DLA/component-attribution analysis, which the paper itself admits is a single-model case study (quoted). This matches the verdict-rule caveat exactly: 'computed on several models is not ranked as a safety indicator unless the paper treats the per-model number as a safety comparison.' Ships/Sahara is ablation-drop, a different functional form from DLA-concentration (top-k share + depth centroid), and only 2 models from one lineage (both derived from Llama-2), so no cross-family ranking exists either.",
+   "positioning_sentence": "Unlike Arditi et al. (2406.11717), whose direct-feature-attribution analysis of refusal-direction components is a single-model case study, and Zhou et al. (2410.13708), whose Ships/Sahara ablation-importance score covers only two same-lineage models, our DLA-concentration statistic (top-k share and depth centroid of refusal-token attribution) is computed per checkpoint and tested as a cross-family safety indicator.",
+   "source_file": "novelty_B.json"
+  },
+  {
+   "candidate": "C7",
+   "name": "C7",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2410.16327",
+     "title": "Feint and Attack: Jailbreaking and Protecting LLMs via Attention Distribution Modeling",
+     "first_author": "Rui Pu",
+     "year": 2024,
+     "venue": "IJCAI 2025"
+    },
+    {
+     "arxiv_id_or_doi": "2502.13946",
+     "title": "Why Safeguarded Ships Run Aground? Aligned Large Language Models' Safety Mechanisms Tend to Be Anchored in The Template Region",
+     "first_author": "Chak Tou Leong",
+     "year": 2025,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2410.13708",
+     "title": "On the Role of Attention Heads in Large Language Model Safety",
+     "first_author": "Zhenhong Zhou",
+     "year": 2024,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "Pu et al. define Attn_SensWords, the attention intensity LLMs allocate to sensitive (harmful) nouns/verbs, and correlate it with jailbreak-attack success RATE on a FIXED model (not compared across model families as a safety ranking). Leong et al. measure attention SHIFT toward the template region (not harmful-vs-twin differing content tokens) as harmfulness increases, across 6 models, but the region compared is template-vs-instruction, not matched harmful/twin token spans.",
+   "n_models_and_families": "Feint and Attack: Llama2-7B and Llama2-13B only (1 family) for the ASW-vs-ASR correlation table. Leong et al.: 6 models across 4 families (Gemma-2, Llama-2, Llama-3, Mistral) but for template-region attention, not twin-token attention.",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "The Llama2 series models, specifically Llama2-7B and Llama2-13B, are chosen as the target LLMs."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "n/a",
+   "correlated_with_benchmark_safety": {
+    "value": "partial",
+    "number": "Table 1 of 2410.16327 correlates Attn_SensWords with ASR/ASR-G per jailbreak method, within one model, not per-model safety ranking"
+   },
+   "quote": "we propose a novel metric, Attention Intensity on Sensitive Words (Attn_SensWords), designed to quantify the attention allocated by LLMs to such sensitive terms.",
+   "locator": "Pu et al. 2410.16327, Section 3 (arxiv.org/html/2410.16327)",
+   "queries_run": [
+    {
+     "query": "attention mass harmful tokens minus benign twin decision position refusal safety score",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"attention entropy\" OR \"attention mass\" harmful keyword refusal jailbreak cross model correlate benchmark",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"Attention Intensity on Sensitive Words\" \"Attention Dispersion Entropy\" jailbreak",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "late-layer attention harmful token differing minimal pair matched prompt safety heads",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "attention head importance safety score cross-model ranking LLM alignment",
+     "mode": "general",
+     "hits_scanned": 10
+    }
+   ],
+   "adversarial_note": "Attn_SensWords is the closest published quantity (attention allocated to harm-bearing tokens) but (a) it is evaluated within a single model family (Llama2) across jailbreak METHODS, not across model FAMILIES as a safety score, and (b) it uses raw sensitive-word attention, not a harmful-vs-twin DIFFERENCE restricted to late layers with a fixed decision position. No paper found computes attention-mass concentrated on the token-level DIFFERENCE between a harmful prompt and its matched benign twin, compared per-model as a safety ranking.",
+   "positioning_sentence": "Where Pu et al. (2410.16327) show that attention to sensitive words correlates with jailbreak success within a single Llama-2 family, we compute late-layer attention mass specifically on the tokens that differ between harmful prompts and their benign twins and test it as a cross-family safety indicator.",
+   "source_file": "novelty_B.json"
+  },
+  {
+   "candidate": "C8",
+   "name": "C8",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2402.13494",
+     "title": "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis",
+     "first_author": "Yueqi Xie",
+     "year": 2024,
+     "venue": "ACL 2024"
+    },
+    {
+     "arxiv_id_or_doi": "2607.01859",
+     "title": "Safety Targeted Embedding Exploit via Refinement",
+     "first_author": "unknown (title verified via arXiv abstract page, author list not individually confirmed)",
+     "year": 2026,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "GradSafe uses parameter-gradient (not input-token-gradient) cosine similarity between a harmful-prompt-plus-compliance-response pair and a reference set, evaluated primarily on Llama-2 as a prompt classifier, not a per-token attribution of the refusal margin and not a cross-model safety score. The 'Safety Targeted Embedding Exploit' paper is a gradient-guided ATTACK that identifies which words most strongly drive refusal (word-level gradient attribution) and translates them, tested on six 8B open-source models plus GPT-4o-mini transfer, but reports attack success, not a safety-ranking score.",
+   "n_models_and_families": "GradSafe: primarily Llama-2 (single family) for its core results. STEER-style paper: six open-source 8B models plus one closed-model transfer test.",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "GradSafe, applied to Llama-2 without further training, outperforms Llama Guard, despite its extensive finetuning with a large dataset, in detecting jailbreak prompts."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "n/a",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "n/a"
+   },
+   "quote": "Our method is grounded in a pivotal observation: the gradients of an LLM's loss for jailbreak prompts paired with compliance response exhibit similar patterns on certain safety-critical parameters.",
+   "locator": "Xie et al. 2402.13494, Abstract (arxiv.org/abs/2402.13494)",
+   "queries_run": [
+    {
+     "query": "gradient saliency attribution refusal margin harmful word token safety score models compared",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "input gradient attribution safety alignment jailbreak token importance cross-model",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "arxiv 2402.13494 GradSafe gradient safety jailbreak detection",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "GradSafe 2402.13494 cross-model evaluation Llama-2 gradient cosine similarity multiple models",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "token-level gradient attribution jailbreak refusal circuit multiple models compare",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "GradSafe operates on PARAMETER gradients (safety-critical weight slices), not INPUT-token gradients, and is not applied cross-model as a ranking. The word-level gradient-attribution attack paper (2607.01859) is the functional-form closest match (per-word gradient contribution to the refusal decision) but it is used offensively (to find words to translate/obfuscate) across 6 models, never turned into a per-model safety score or correlated with benchmark safety.",
+   "positioning_sentence": "GradSafe (2402.13494) attributes refusal to safety-critical PARAMETER gradients within one model family; we instead attribute the refusal margin to INPUT tokens that differ between harmful and twin prompts and test the resulting share as a per-checkpoint, cross-family safety indicator.",
+   "source_file": "novelty_B.json"
+  },
+  {
+   "candidate": "C9",
+   "name": "C9",
+   "verdict": "PUBLISHED",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2502.13946",
+     "title": "Why Safeguarded Ships Run Aground? Aligned Large Language Models' Safety Mechanisms Tend to Be Anchored in The Template Region",
+     "first_author": "Chak Tou Leong",
+     "year": 2025,
+     "venue": "arXiv (ACL 2025 area)"
+    }
+   ],
+   "what_it_measured": "Normalized Indirect Effect (NIE): the proportion of the refusal logit recovered by patching template-region (vs. instruction-region) activations from a harmless run into a harmful run, i.e. exactly 'template-site share of refusal drive.' Computed per model with an explicit normalization 'for a fair cross-model comparison', and plotted (Figure 4) across all 6 tested models, showing the template region dominates the instruction region in every model, with cross-model differences explicitly tied to safety vulnerability (models whose safety appeared stronger by refusal rate but showed high template NIE were, via TempPatch, MORE exploitable).",
+   "n_models_and_families": "6 models / 4 families: Gemma-2 (2b-it, 9b-it), Llama-2-7b-Chat, Llama-3 (3.2-3b-Instruct, 8B-Instruct), Mistral-7B-Instruct.",
+   "used_to_rank_models": {
+    "value": "yes",
+    "quote": "Right: Normalized indirect effects when patching activations are from two different regions (instruction v.s. template) across various LLMs, revealing that these models' safety functions are primarily anchored in the template regions."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "uses a constructed analysis/eval dataset per model (D_anlz, D_eval), size not stated as a small fixed prompt budget",
+   "correlated_with_benchmark_safety": {
+    "value": "yes",
+    "number": "qualitative: higher template-NIE models (e.g. Llama-3 8B/3B) show disproportionately higher ASR under TempPatch despite appearing safer on standard refusal-rate metrics (Table 1, Section 4.1)"
+   },
+   "quote": "For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m(x-)-m(x+)). The value of NIE represents the proportion of refusal logit recovered by patching that intermediate state.",
+   "locator": "Leong et al. 2502.13946, Section 3.3 / Appendix A.5 (Figure 4, Figure 10), arXiv v2 (arxiv.org/html/2502.13946v2)",
+   "queries_run": [
+    {
+     "query": "arxiv 2502.13946 Leong Why Safeguarded Ships Run Aground safety mechanisms template region",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "template region safety reliance cross-model score benchmark correlation chat template dependency ranked",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "chat template safety reliance cross-model score (via grep of full text)",
+     "mode": "grep",
+     "hits_scanned": 62
+    },
+    {
+     "query": "grep pattern Figure 4 / NIE / stronger safety alignment",
+     "mode": "grep",
+     "hits_scanned": 22
+    },
+    {
+     "query": "safety heads direct logit attribution refusal concentration cross-model",
+     "mode": "general",
+     "hits_scanned": 10
+    }
+   ],
+   "adversarial_note": "This is the clearest PUBLISHED match found in the whole sweep. Caveat: the cross-model comparison is presented as layered curves in Figure 4 (NIE vs. number of patched heads) plus a qualitative discussion tying higher template-reliance to greater TempPatch vulnerability, not as a single scalar NIE-per-model table correlated numerically against an external benchmark safety score. Per the verdict rule ('computes the same functional form per model AND compares or ranks models by it as a safety indicator'), this still qualifies as PUBLISHED: the paper explicitly computes NIE per model, explicitly states the normalization exists 'for a fair cross-model comparison', and explicitly uses cross-model NIE differences to explain why some models are more/less safe. This does NOT soften to ADJACENT.",
+   "positioning_sentence": "Template-region reliance of the refusal decision was introduced and compared across six chat models from four families by Leong et al. (arXiv:2502.13946), who normalise the indirect effect 'for a fair cross-model comparison' and tie template anchoring to vulnerability; our template-site share is a re-derivation of their normalised indirect effect, and our only addition is a numeric test of it as a parent-free cross-family safety score.",
+   "source_file": "novelty_B.json",
+   "verdict_scope": "PUBLISHED as a per-model, cross-model-normalised quantity tied qualitatively to vulnerability; NOT published as a scalar model ranking correlated numerically with a safety benchmark",
+   "orchestrator_edit": "Kept PUBLISHED (plan rule: never soften). Re-read the quote in raw/orch_c9_leong.txt: the NIE normalisation is explicitly 'for a fair cross-model comparison' across Gemma-2, Llama-2, Llama-3 and Mistral; the safety link is qualitative (Figure 4 plus TempPatch), with no per-model scalar correlated against a benchmark."
+  },
+  {
+   "candidate": "C10",
+   "name": "C10",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2507.11878",
+     "title": "LLMs Encode Harmfulness and Refusal Separately",
+     "first_author": "Jiachen Zhao",
+     "year": 2025,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2609.13534",
+     "title": "Harmfulness Propagation Dynamics: Layer-wise Trajectories of Adversarial Intent in Large Language Models",
+     "first_author": "Noor Islam S. Mohammad",
+     "year": 2026,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "Zhao et al. show harmfulness and refusal are encoded by distinct directions and give layer-wise clustering/steering results (Figures 2, 4, 8, 14-15) on 3 models (Llama3-8B-Instruct, Llama2-7B-Chat, Qwen2-7B-Instruct), i.e. per-layer curves for both concepts on the same models -- but never subtract/integrate the two curves into an area/gap metric, and never use any such quantity to rank models by safety. Mohammad & Bayazit's Herald computes ONLY a harm-decodability trajectory (LDA projection onto a harm direction per layer, with 7 trajectory-shape features: slope, curvature, onset layer, monotonicity, etc.) across 4 model families (Llama-3.1-8B, Mistral-7B, OLMo2-7B, Qwen3-8B) and 8 benchmarks, but explicitly does NOT compute a paired refusal-drive curve (it distinguishes its harm-direction trajectory from Arditi's output-side refusal direction as a complementary, not combined, signal), and uses the trajectory to classify individual PROMPTS as harmful (an F1 detector), not to score/rank MODELS by safety.",
+   "n_models_and_families": "Zhao et al.: 3 models (Llama3, Llama2, Qwen2), 3 families. Herald: 4 model families (Llama-3.1, Mistral, OLMo2, Qwen3), 8 benchmarks, plus scaling experiments 11B-70B.",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "The two directions also differ conceptually—refusal directions characterize generation-time behavior, while HPD directions characterize inference-time encoding of the prompt's intent."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "n/a for Zhao et al.; Herald uses full labeled training sets (WildGuardMix etc.), not a small fixed prompt budget",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "n/a (Herald's F1 is a per-prompt jailbreak-detection score, not a per-model safety ranking; Zhao et al. report steering-induced refusal rates per model but not an area/gap statistic)"
+   },
+   "quote": "This pattern—which we call Harmfulness Propagation Dynamics (HPD)—is stable across all four model families tested (Llama-3.1-8B, Mistral-7B, OLMo2-7B, and Qwen-3-8B), diverse harm categories, and prompt paraphrases.",
+   "locator": "Mohammad & Bayazit 2609.13534, Section 3.1 (arxiv.org/html/2609.13534); harmfulness/refusal curves in Zhao et al. 2507.11878, Figures 2 and 8 (arxiv.org/html/2507.11878v5)",
+   "queries_run": [
+    {
+     "query": "harmfulness decodability layer probe accuracy curve versus refusal direction projection depth",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "arxiv 2507.11878 (verify) LLMs Encode Harmfulness and Refusal Separately",
+     "mode": "general",
+     "hits_scanned": 1
+    },
+    {
+     "query": "grep zhao_layer_grep: layer probe accuracy decodability",
+     "mode": "grep",
+     "hits_scanned": 8
+    },
+    {
+     "query": "grep hpd_grep: refusal drive / refusal direction / model families / rank / correlate",
+     "mode": "grep",
+     "hits_scanned": 165
+    },
+    {
+     "query": "area under curve harmfulness refusal layer gap metric safety score",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "arxiv 2609.13534 title Herald harmfulness propagation dynamics authors",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "Confirms the iteration-1 memory note: 2507.11878 already 'concedes' that BOTH a harmfulness curve and a refusal curve can be plotted across layers on the same models, so a naive 'we plot two depth curves' framing is not novel. What remains unpublished after this sweep is (a) integrating the two curves into a single AREA/gap statistic, and (b) using that scalar to RANK models cross-family as a safety indicator -- neither Zhao et al. nor Herald do either. Herald additionally only has one curve (harm), explicitly treating refusal-direction work as a separate, uncombined axis, and uses it for prompt-level detection F1, not model-level safety ranking.",
+   "positioning_sentence": "While Zhao et al. (2507.11878) show harmfulness and refusal are separately decodable across layers on the same models, and Mohammad & Bayazit (2609.13534) turn a harm-only depth trajectory into per-prompt detection features across four families, no prior work integrates the harmfulness- and refusal-drive curves into a single area statistic used to rank checkpoints by safety.",
+   "source_file": "novelty_B.json"
+  },
+  {
+   "candidate": "C11",
+   "name": "C11",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2406.05946",
+     "title": "Safety Alignment Should Be Made More Than Just a Few Tokens Deep",
+     "first_author": "Xiangyu Qi",
+     "year": 2024,
+     "venue": "ICLR 2025"
+    },
+    {
+     "arxiv_id_or_doi": "2609.18471",
+     "title": "First Token Matters: Understanding Safety Collapse in Large Reasoning Models",
+     "first_author": "Yizheng Yang",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2606.04778",
+     "title": "Inference-Time Vulnerability Beyond Shallow Safety: Alignment Along Generation Trajectories",
+     "first_author": "Kyungmin Park",
+     "year": 2026,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "Qi et al. compute per-token KL divergence between an ALIGNED model and its UNALIGNED BASE counterpart over the first output tokens -- this is the direct ancestor of the 'first tokens carry the safety decision' idea, but it is fundamentally PARENT-DEPENDENT (needs the base model) and tested on only 2 model families (Llama-2, Gemma). Yang et al. define Onset Refusal Collapse: a refusal-direction PROJECTION trajectory S_t over token positions, with a matched-pair gap G_t = S_t^IT - S_t^LRM between a reasoning model and its Instruction-Tuned counterpart -- also PARENT/counterpart-DEPENDENT, and restricted to 3 IT/LRM pairs studying a reasoning-specific failure mode, not a general parent-free cross-family safety score. Park & Kim study hidden-state trajectory redirection under token injection across 3 models (Mistral, Llama, Qwen) but as an ATTACK/robustness vulnerability analysis, not a static per-checkpoint refusal-commitment score.",
+   "n_models_and_families": "Qi et al.: 2 (Llama-2, Gemma), each requiring its own base/aligned pair. Yang et al.: 3 IT/LRM pairs within Llama and Qwen. Park & Kim: 3 models (Mistral-7B, Llama-3.1-8B, Qwen2.5-7B).",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "for both the Llama and Gemma models, the KL divergence is significantly higher in the first few tokens than for later tokens."
+   },
+   "parent_free": "no",
+   "prompt_budget": "n/a",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "n/a"
+   },
+   "quote": "the refusal-related signal of LRMs drops sharply at the first generated token under harmful queries, which is associated with unsafe response generation.",
+   "locator": "Yang et al. 2609.18471, Abstract / Section 3.2 (arxiv.org/html/2609.18471); Qi et al. 2406.05946, Section 2.2 (arxiv.org/html/2406.05946)",
+   "queries_run": [
+    {
+     "query": "refusal probability trajectory first tokens generation commitment early decoding safety",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "arxiv 2406.05946 Qi safety alignment should be made more than just a few tokens deep",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "arxiv 2406.09289 Ball jailbreak latent dynamics attention",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "grep qi_grep: KL divergence / first few tokens / token position",
+     "mode": "grep",
+     "hits_scanned": 53
+    },
+    {
+     "query": "grep ivts_grep (2606.04778): models / trajectory / commitment",
+     "mode": "grep",
+     "hits_scanned": 265
+    },
+    {
+     "query": "grep firsttoken_grep (2609.18471): models / trajectory / onset",
+     "mode": "grep",
+     "hits_scanned": 92
+    },
+    {
+     "query": "early commitment refusal decoding course correction safety reflection tokens deep alignment",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "Every closest hit for C11 is PARENT-DEPENDENT (needs a base or IT counterpart model) or is a per-prompt attack/vulnerability analysis rather than a PARENT-FREE per-checkpoint trajectory SCORE compared across unrelated model families. This is consistent with the brief's expectation that Qi et al. is the prime parent-dependent precedent. Ball et al. (2406.09289) was checked as a seed and is about jailbreak latent-space dynamics / a transferable jailbreak-suppression vector, not a first-8-token refusal-commitment trajectory, so it is NOT a close match for C11 (nearest miss, general topic overlap only).",
+   "positioning_sentence": "Qi et al. (2406.05946) and Yang et al. (2609.18471) both show the first generated token(s) carry the safety decision, but both require a base-model or instruction-tuned counterpart for the comparison; our refusal-commitment trajectory over the first 8 tokens is computed from a single checkpoint with no parent reference, which makes a cross-family comparison possible where theirs cannot be applied.",
+   "source_file": "novelty_B.json"
+  },
+  {
+   "candidate": "C12",
+   "name": "C12",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2603.27412",
+     "title": "The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams (LatentBiopsy)",
+     "first_author": "Isaac Llorente-Saguer",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2607.13075",
+     "title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators",
+     "first_author": "Dominik Schwarz",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2308.01263",
+     "title": "XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models",
+     "first_author": "Paul Röttger",
+     "year": 2023,
+     "venue": "NAACL 2024"
+    },
+    {
+     "arxiv_id_or_doi": "2410.03415",
+     "title": "Surgical, Cheap, and Flexible: Mitigating False Refusal in Language Models via Single Vector Ablation",
+     "first_author": "Xinpeng Wang",
+     "year": 2024,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "LatentBiopsy computes AUROC for harmful-vs-normative and harmful-vs-benign-aggressive (XSTest 'twin') discrimination via radial deviation angle from a normative-prompt principal direction, evaluated per model on 6 Qwen base/instruct/abliterated variants. Entanglement Wall computes AUROC of an activation probe on matched harmful/benign 'Twin-n163' pairs, per model, across 3-5 model families, specifically to show it is a weaker/diagnostic signal, not a ranking tool.",
+   "n_models_and_families": "LatentBiopsy: 6 checkpoints, 2 families (Qwen3.5-0.8B, Qwen2.5-0.5B) x 3 variants. Entanglement Wall: 3 primary families (Llama-3.1-8B-abliterated, Mistral-7B-Instruct-v0.3, Qwen2.5-7B-abliterated) plus 2 extension checkpoints (Mistral-Small-24B, Qwen2.5-32B).",
+   "used_to_rank_models": {
+    "value": "partial",
+    "quote": "both abliterated variants achieve AUROC at most 0.015 below their instruction-tuned counterparts, establishing a geometric dissociation between harmful-intent representation and the downstream generative refusal mechanism"
+   },
+   "parent_free": "yes",
+   "prompt_budget": "LatentBiopsy: 200 normative + target prompts (not few-prompt); Entanglement Wall: full Twin-n163 cohort (not few-prompt)",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "no correlation coefficient reported against an external benchmark; both papers report AUROC of the internal statistic itself against a held-out label, not against a behavioral benchmark score"
+   },
+   "quote": "Across all six variants, LatentBiopsy achieves AUROC $\\geq$0.937 for harmful-vs-normative detection and AUROC = 1.000 for discriminating harmful from benign-aggressive prompts (XSTest), with sub-millisecond per-query overhead.",
+   "locator": "Abstract, arXiv:2603.27412v1",
+   "queries_run": [
+    {
+     "query": "refusal direction activation projection harmful vs benign twin separation safety score across models",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "XSTest refusal direction projection separation ratio model comparison safety",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "OR-Bench activation refusal direction discrimination safety score model ranking",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"twin prompts\" harmful benign activation separation refusal axis safety metric",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "contrastive pair activation projection safety score cross-architecture LLM comparison",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "intrinsic dimension residual stream harmful benign safety score model comparison",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "Neither paper computes C12's exact ratio form (harmful-vs-twin separation RELATIVE TO harmful-vs-plain-benign separation). LatentBiopsy computes only harmful-vs-twin (XSTest benign-aggressive) AUROC per model and uses the cross-variant comparison as evidence for a different claim (geometry survives abliteration), not as a general-purpose safety ranking statistic -- borderline PUBLISHED/ADJACENT; recorded ADJACENT because the functional form (single AUROC, no plain-benign baseline ratio) differs and the paper's own framing is a mechanism claim, not a safety-ranking tool. Entanglement Wall explicitly disclaims ranking use: \"At the tested read points, these activation scores behave as broad-risk detectors rather than standalone context adjudicators\" -- used diagnostically only, not as a cross-model safety indicator.",
+   "positioning_sentence": "Unlike LatentBiopsy (arXiv:2603.27412), which reports a single harmful-vs-twin AUROC per checkpoint as evidence of geometric invariance under abliteration, and Entanglement Wall (arXiv:2607.13075), which explicitly declines to use matched-pair separation as a cross-model ranking signal, our twin-discrimination statistic is defined relative to a plain-benign baseline and is tested as a safety-ranking indicator across architecture families.",
+   "source_file": "novelty_C.json"
+  },
+  {
+   "candidate": "C13",
+   "name": "C13",
+   "verdict": "ADJACENT",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2608.09624",
+     "title": "Measuring the Wrong Thing: Internal Harmfulness Scores Anti-Rank Successful Jailbreaks",
+     "first_author": "Mingyu Luo",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2607.13075",
+     "title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators",
+     "first_author": "Dominik Schwarz",
+     "year": 2026,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "2608.09624 pairs 100 benign and 100 harmful JailbreakBench goals in plain and wrapped (jailbreak-template) presentations and reports the internal harmfulness score's outcome-AUROC per generator model in a rows(score)xcolumns(model) table, showing the score's ranking of prompts reverses under wrapping. 2607.13075 tests whether the same activation probe transfers when a camouflaged prompt shares surface text with a benign twin, across model families.",
+   "n_models_and_families": "2608.09624: 5 models (Llama-3.1-8B-Instruct primary; Mistral, Qwen, Gemma, Phi for transfer). 2607.13075: 3-5 models across Llama/Mistral/Qwen families.",
+   "used_to_rank_models": {
+    "value": "no",
+    "quote": "Outcome AUROC R_Y for the same 100 wrapped harmful goals. Rows identify the native score and columns identify the generator."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "2608.09624: 200 JailbreakBench goals x plain/wrapped x multiple attack families -- far above a 16-prompt budget",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "reports AUROC of the internal score against generation-outcome labels, showing reversal (0.936 -> 0.803, and down to 0.078-0.491 wrapped-only), not a correlation with an external benchmark safety score"
+   },
+   "quote": "wrapping raises harmful generation from 0.05 to 0.27 while harmful intent AUROC falls from 0.936 to 0.803",
+   "locator": "Section 5.2 / RQ1 and Table 1, arXiv:2608.09624v1",
+   "queries_run": [
+    {
+     "query": "presentation invariance jailbreak template robustness internal safety score LLM",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "paraphrase robustness refusal direction projection safety probe language model",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "jailbreak wrapping internal harmfulness score reversal AUROC drop safety probe",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"pre-registered\" sign refusal direction negative orientation safety probe internal",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "template sensitivity harmful prompt activation probe safety score robustness across surface forms",
+     "mode": "general",
+     "hits_scanned": 10
+    }
+   ],
+   "adversarial_note": "Both incumbents compute the quantity (internal score under changed presentation) per model, in a multi-model table, but explicitly frame it as a measurement-validity critique rather than a per-model safety-ranking indicator: 2608.09624's own conclusion is that 'harmfulness validation does not establish validity for success prediction' -- a critique of the metric class, not a comparison of which model is safer. Recorded ADJACENT rather than PUBLISHED because neither paper treats the per-model number as a safety comparison. No paper found that pre-signs the expected direction of the invariance gap (a negative orientation fixed before measurement) as C13 does.",
+   "positioning_sentence": "Where Measuring the Wrong Thing (arXiv:2608.09624) uses wrapped-vs-plain AUROC reversal to argue that internal harmfulness scores are invalid outcome predictors, our presentation-invariance statistic pre-signs the expected direction and is tested as a cross-model safety-ranking feature rather than used only to critique measurement validity.",
+   "source_file": "novelty_C.json"
+  },
+  {
+   "candidate": "C14",
+   "name": "C14",
+   "verdict": "NEW",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2606.22676",
+     "title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+     "first_author": "unknown (GFS/Skin-Deep authors)",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2606.25750",
+     "title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+     "first_author": "unknown (RAS/SafeVec authors)",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2502.16173",
+     "title": "Mapping 1,000+ Language Models via the Log-Likelihood Vector",
+     "first_author": "Momose Oyama",
+     "year": 2025,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2502.14445",
+     "title": "PredictaBoard: Benchmarking LLM Score Predictability",
+     "first_author": "Lorenzo Pacchiardi",
+     "year": 2025,
+     "venue": "ACL Findings 2025"
+    }
+   ],
+   "what_it_measured": "GFS aggregates a per-layer geometric-fragility term into one scalar with a FIXED depth weight (w_l proportional to l/L, not fit by regression, no attention/MLP site decomposition). RAS squashes a window-averaged cosine-to-refusal-direction statistic through a per-family-calibrated logistic (not ridge, not depth x site features). 2502.16173 builds a 'model map' from log-likelihood vectors over a fixed text corpus (output-distribution features, not internal-activation depth x site features). PredictaBoard trains 'assessors' to predict per-instance LLM error/score but is not shown, on inspection, to use internal depth x site activation features via ridge regression.",
+   "n_models_and_families": "GFS: 21 models, 6 alignment recipes, 3B-32B. RAS: multiple families with reference+calibration models. 2502.16173: 1,000+ language models. PredictaBoard: multiple LLM/assessor pairs (exact n not confirmed in fetched abstract).",
+   "used_to_rank_models": {
+    "value": "yes",
+    "quote": "wl is proportional to l/L, a linear depth weight [...] wl emphasizes later layers"
+   },
+   "parent_free": "n/a",
+   "prompt_budget": "GFS: 500 harmful + 500 benign prompts (parent-required); RAS: requires reference model + calibration set; 2502.16173: full text corpus per model, not a small prompt set",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "none of these fit a ridge (L2-penalized linear) regression on an explicit <=24-dimensional depth-by-site feature grid; GFS uses a fixed heuristic depth weight validated only by comparing to uniform/exponential/late-only alternatives in a sensitivity appendix, not a fitted ridge coefficient vector"
+   },
+   "quote": "wl≅l/L is a linear depth weight",
+   "locator": "Section 3.2, arXiv:2606.22676 (via fetched HTML); RAS calibration formula 's(M) = w_u*UnsafeScore + w_j*JailbreakScore with w_u=w_j=0.5' and 'RAS(M) = 100/(1 + exp(β(d_aligned − c)))', Section on RAS calibration, arXiv:2606.25750 (reused from iteration-1 dependency, research_out.json)",
+   "queries_run": [
+    {
+     "query": "ridge regression internal activations multiple layers predict safety benchmark score LLM",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "linear probe combining layers sites predict jailbreak success rate across models metamodel",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "weight-space model zoo predict downstream safety behavior regression neural network",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "neural functional network weight space representation predict model property safety",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"depth\" layer features regression predict refusal rate multiple models safety indicator",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "attention output MLP output site-wise features ridge regression cross-model safety score prediction",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "GFS is the structurally closest incumbent (a depth-indexed, per-model aggregated geometric score, computed and compared across 21 models) but its weight w_l is a fixed heuristic confirmed by a sensitivity appendix comparing to uniform/exponential/late-only alternatives, NOT fit by ridge or any regression, and it has no within-layer site (attention-output vs MLP-output vs residual) decomposition -- confirmed via direct fetch: 'The diagnostic operates purely at the per-layer level on residual-stream activations at the final token position. There is no mention of factoring analyses across different within-layer components or sub-sites.' RAS's calibration is a two-term fixed-weight average (w_u=w_j=0.5) plus a logistic squash with hand-set constants (c=0.75, beta=5.0), not a learned ridge coefficient vector over an explicit depth x site feature grid. 2502.16173 and weight-space/model-zoo/neural-functional-network literature predict model properties from OUTPUT-distribution or WEIGHT features across large model populations, not from internal ACTIVATION depth x site features for a safety score. No paper found fitting a ridge regression on <=24 depth-by-site activation features to build a cross-model safety metamodel after 6 general queries plus a citation-chasing hop into GFS's own weighting-scheme appendix and RAS's calibration section.",
+   "positioning_sentence": "Unlike Skin-Deep/GFS (arXiv:2606.22676), whose depth weight is fixed at w_l proportional to l/L rather than fit, and RAS (arXiv:2606.25750), whose calibration is a fixed 0.5/0.5 average through a hand-set logistic, our ridge metamodel learns depth-by-site feature weights directly from a <=24-dimensional feature grid.",
+   "source_file": "novelty_C.json"
+  },
+  {
+   "candidate": "C15",
+   "name": "C15",
+   "verdict": "NEW",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2401.17139",
+     "title": "Diff-eRank: A Novel Rank-Based Metric for Evaluating Large Language Models",
+     "first_author": "Lai Wei",
+     "year": 2024,
+     "venue": "NeurIPS 2024"
+    },
+    {
+     "arxiv_id_or_doi": "2605.30018",
+     "title": "Latent Performance Profiling of Large Language Models",
+     "first_author": "Tanmoy Chakraborty",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2603.27412",
+     "title": "The Geometry of Harmful Intent (LatentBiopsy)",
+     "first_author": "Isaac Llorente-Saguer",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2608.25390",
+     "title": "Refusal geometry reflects refusal training: diverse refusal prefixes can raise stable rank and weaken refusal vector ablation attacks",
+     "first_author": "Andrey Labunets",
+     "year": 2026,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "Diff-eRank computes effective rank of hidden representations per model and shows it increases with model size and correlates with loss/accuracy (a CAPABILITY metric, not safety). Latent Performance Profiling (LPP) computes effective rank and participation ratio per model across 8 LLMs (0.5B-14B) as general 'latent-profile' diagnostics; a safety framing appears only as an aside ('a model with lowest entropy may be better suited for tasks requiring minimized hallucination risk'), not as the paper's safety claim. LatentBiopsy computes an angular-deviation DISPERSION statistic (sigma_theta) at a target layer, but as a per-PROMPT anomaly score within each of 6 model checkpoints, not as a per-MODEL scalar compared across models.",
+   "n_models_and_families": "Diff-eRank: multiple LLM families/sizes (single-modal + multi-modal). LPP: 8 LLMs (LLaMA-3B/8B, Qwen-0.5B/1.5B/3B/7B/14B, Mistral-7B). LatentBiopsy: 6 checkpoints, 2 families.",
+   "used_to_rank_models": {
+    "value": "partial",
+    "quote": "Intrinsic metrics including entropy, participation ratio, and effective rank clearly separate models and offer actionable guidance for selecting models based on stability, activation diversity, or representational richness"
+   },
+   "parent_free": "n/a",
+   "prompt_budget": "LPP and Diff-eRank use large corpora/generation sets per model, not a 16-prompt budget",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "no paper found reporting a correlation between late-layer effective rank/dispersion and an external harmful-refusal or over-refusal benchmark score, across models"
+   },
+   "quote": "models with similar benchmark scores can exhibit contrasting latent profiles, such as differences in entropy or adaptability",
+   "locator": "Abstract, arXiv:2605.30018 (via fetched HTML, title/first-author per abs-page fetch)",
+   "queries_run": [
+    {
+     "query": "effective rank representation safety alignment across LLMs indicator",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"effective rank\" OR \"participation ratio\" hidden representation safety large language model",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "representation dispersion anisotropy jailbreak detection safety across model families",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "late layer representation geometry dispersion safety indicator cross-model ranking",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"effective rank\" late layer multiple models compliance jailbreak resistance correlation ranking",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "intrinsic dimension residual stream harmful benign safety score model comparison",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "LPP is the nearest miss: it computes effective rank/participation ratio across 8 models and explicitly says these metrics 'clearly separate models,' but its use is general capability/behavioral profiling (entropy, adaptability, hallucination-risk aside), never validated against a harmful-refusal or over-refusal benchmark, and never described as a safety score. Diff-eRank likewise ties effective rank to model SIZE/capability, not safety. LatentBiopsy's dispersion statistic (sigma_theta) is the right functional family (angular/geometric dispersion) but is computed per PROMPT within a model for anomaly detection, not as a single per-model late-layer dispersion number compared across a model panel as a safety indicator. No paper found using effective rank or late-layer dispersion as a cross-model SAFETY indicator after 6 general queries plus a citation hop from LPP into its safety-adjacent aside.",
+   "positioning_sentence": "While Latent Performance Profiling (arXiv:2605.30018) and Diff-eRank (arXiv:2401.17139) show that effective rank and participation ratio separate models on general capability, neither validates late-layer dispersion as a safety indicator against harmful-refusal or over-refusal benchmarks, which is what our screen tests.",
+   "source_file": "novelty_C.json",
+   "orchestrator_edit": "Orchestrator adversarial pass (raw/orch_adversarial_new.txt, raw/orch_2608.25390*.txt) found a new nearest miss: Labunets, arXiv:2608.25390 (v2), 'Refusal geometry reflects refusal training', which links a RANK quantity to safety vulnerability ('greater refusal-start diversity is associated with higher stable ranks and weaker difference-in-means single-vector ablation'). It stays a miss: the rank is the stable rank of refusal RESIDUALS, gradients and activation changes (not late-layer effective rank of hidden states); the study covers one lineage (OLMo-2-0425-1B SFT/DPO/RLVR/Instruct stages plus synthetic fine-tunes); and it predicts ablation robustness, not benchmark safety. Verdict NEW kept, and this paper must be cited as the nearest miss.",
+   "extra_quote": "Across frozen-model analyses and controlled fine-tuning, greater refusal-start diversity is associated with higher stable ranks and weaker difference-in-means single-vector ablation, providing evidence of a simple hardening lever."
+  },
+  {
+   "candidate": "C16",
+   "name": "C16",
+   "verdict": "PUBLISHED",
+   "closest_prior_work": [
+    {
+     "arxiv_id_or_doi": "2603.24543",
+     "title": "Analysing the Safety Pitfalls of Steering Vectors",
+     "first_author": "Yuxiao Li",
+     "year": 2026,
+     "venue": "arXiv (ACL 2026 Findings, per repo)"
+    },
+    {
+     "arxiv_id_or_doi": "2602.02132",
+     "title": "There Is More to Refusal in Large Language Models than a Single Direction",
+     "first_author": "Faaiz Joad",
+     "year": 2026,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2407.12404",
+     "title": "Analyzing the Generalization and Reliability of Steering Vectors",
+     "first_author": "Daniel Tan",
+     "year": 2024,
+     "venue": "arXiv"
+    },
+    {
+     "arxiv_id_or_doi": "2312.06681",
+     "title": "Steering Llama 2 via Contrastive Activation Addition",
+     "first_author": "Nina Panickssery (formerly published as Nina Rimsky)",
+     "year": 2023,
+     "venue": "arXiv"
+    }
+   ],
+   "what_it_measured": "2603.24543 fits a per-model regression of attack-success-rate against cosine-similarity-to-refusal-direction for a steering vector, reporting the regression SLOPE per model across 6 checkpoints spanning 3 families and Qwen at 4 scales (3B/7B/14B/32B), and explicitly compares the slope across models as a function of scale.",
+   "n_models_and_families": "6 models: 3 families at 7B (Llama, Gemma, Qwen) plus Qwen at 3B/7B/14B/32B.",
+   "used_to_rank_models": {
+    "value": "yes",
+    "quote": "The regression slope γ1 becomes progressively steeper with model size. It grows from −36.52 for Llama 7B to −193.40 for Qwen 32B. This suggests that larger, more capable, models are significantly more sensitive to the geometric alignment of steering vectors with their internal refusal mechanism."
+   },
+   "parent_free": "yes",
+   "prompt_budget": "JailbreakBench-scale evaluation set per steering-magnitude sweep point (m in {-1.5,...,+1.5}), not a 16-prompt budget",
+   "correlated_with_benchmark_safety": {
+    "value": "no",
+    "number": "gamma_1 is compared across 6 models by scale, not correlated with an external safety benchmark"
+   },
+   "quote": "The regression slope γ1 becomes progressively steeper with model size. It grows from −36.52 for Llama 7B to −193.40 for Qwen 32B.",
+   "locator": "Section 6 (\"Effect of model scale\"), Table 1, arXiv:2603.24543 (version as fetched; HTML rendering, no explicit vN tag recovered -- treat as v1 pending re-check)",
+   "queries_run": [
+    {
+     "query": "steering vector dose response magnitude slope model comparison safety refusal",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "steerability comparison across models refusal direction magnitude sweep safety indicator",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"dose-response\" activation steering safety behavior curve slope",
+     "mode": "general",
+     "hits_scanned": 10
+    },
+    {
+     "query": "steering vector magnitude sweep refusal rate curve model ranking safety score",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "self-steering internal direction magnitude behavior change models compare alignment tax",
+     "mode": "general",
+     "hits_scanned": 9
+    },
+    {
+     "query": "\"-36.52\" \"-193.40\" regression slope steering refusal direction cosine similarity attack success rate",
+     "mode": "general",
+     "hits_scanned": 9
+    }
+   ],
+   "adversarial_note": "This is an unambiguous PUBLISHED match to C16's functional form: a per-model dose-response-style slope of safety outcome vs. steering-alignment magnitude, fit independently per model and explicitly compared/ranked across 6 models by scale in a named subsection ('Effect of model scale'). The hypothesis's own prior concession that C16 has prior art is confirmed exactly by this paper, not by 2602.02132 (Joad et al.), which studies within-model steering along multiple refusal DIRECTIONS (not a magnitude dose-response slope) and is more relevant to a different candidate (direction multiplicity). Tan et al. (2407.12404) and Panickssery/Rimsky CAA (2312.06681) are the SOURCE of steering-vector methodology and generalization caveats but do not themselves report a per-model dose-response slope comparison -- they are foundational/adjacent, not the direct hit.",
+   "positioning_sentence": "Per-model steering dose-response has already been compared across models: Li (arXiv:2603.24543) fits, for each of six chat models, how steeply attack success responds to steering vectors as a function of their alignment with the refusal direction (gamma_1 from -36.52 for Llama 7B to -193.40 for Qwen 32B), and Tan et al. (arXiv:2407.12404) document that steerability is unreliable across inputs; we therefore use the self-steering slope only as a comparator row.",
+   "source_file": "novelty_C.json",
+   "verdict_scope": "PUBLISHED as a per-model steering-sensitivity slope compared across models; the published quantity is gamma_1, the OLS slope of the per-vector ASR dose-response slope (multipliers -1.5..1.5) on cos(v, r_hat). The pure self-steering dose-response along the model's own refusal direction is the special case v = r_hat.",
+   "orchestrator_edit": "Re-grepped arXiv:2603.24543 (raw/orch_c16_2603.24543.txt): Eq. 4 defines slopeASR(v) = (ASR(1.5) - ASR(-1.5))/3 per steering vector, and Eq. 5 regresses it on cos(v, r_hat) per model. The subagent's sentence ('reports self-steering dose-response slopes') overstated the match, so the scope was narrowed and corr_with_benchmark changed from yes to no. The verdict stays PUBLISHED because the hypothesis already concedes C16 and the screen treats it as a comparator."
+  }
+ ],
+ "kill_check": {
+  "closed": false,
+  "closed_in_grey_literature_for": "generic form only: a per-model directional-ablation OUTCOME (abliteration resistance) rank-correlated with a jailbreak benchmark across 16 models, null result (Failure-First Report 74, non-peer-reviewed web report)",
+  "closest_paper": "Failure-First Report 74 (https://failurefirst.org/research/reports/74-abliteration-jailbreak-orthogonality/, 2026-03-11); closest arXiv paper: 2606.08044 (Jiang et al., LVS)",
+  "its_quantity": "Report 74: abliteration resistance = fraction of OBLITERATUS weight-abliteration runs leaving refusal >= 20%. 2606.08044: LVS = [S_harmless(y) - S_harmless(y')]+ / (log(1+||delta||_2)+eta) under an undirected L-inf-bounded latent perturbation, per layer, per model.",
+  "n_models": "Report 74: 16 models; 2606.08044: ~12+ variants across Gemma/Llama/Qwen/Alpaca families (Table 1); runner-up 2604.27401: 13 models / 4 families (ablation effectiveness vs FFN/Skip, R^2 = 0.81, no benchmark)",
+  "correlation_reported": "Report 74: Spearman rho = -0.003 vs jailbreak refusal rate (n=16). 2606.08044: none — LVS compared across models in Table 1 but not correlated with a benchmark (argued to capture what benchmarks miss). 2604.27401: R^2 = 0.81 against an internal ablation outcome, not a benchmark.",
+  "quote": "Across 16 models with non-trivial variation on both dimensions (n >= 10 abliteration runs and >= 10 jailbreak evaluations each), the Spearman rank correlation between abliteration resistance and jailbreak refusal rate is rho = -0.003.",
+  "locator": "failurefirst.org Report 74, Executive Summary para 2; LVS definition arXiv 2606.08044v1 Section 6 'Representation-Aware Safety Metric' and Table 1",
+  "why_it_misses_or_closes": "No arXiv or peer-reviewed paper reports a per-model harm-to-refusal CAUSAL quantity (harm-direction steering gain, own-direction ablation sensitivity, twin patching, or weight-path gain) and correlates or ranks it against a safety benchmark across models/families. Report 74 does the cross-model correlation, but with third-party executed abliteration success (behavioural, no harm-direction, no over-refusal arm) and is grey literature; LVS is a causal per-model safety score but uses undirected perturbations and reports no benchmark correlation; Arditi (13 models), Zhao (3 models), HRCI (anchors + one trajectory), 2609.03887 (3 models x 3 methods, steering ASR) compute causal quantities per model only as mechanism evidence. AMS 2608.05578 sigma is a non-causal Cohen's-d separation (Pearson r = -0.546 vs JailbreakBench compliance; confirmed: AMS text says 'AMS measures existing direction vectors at scan time', no intervention); RAS 2606.25750 is a non-causal refusal-direction alignment score needing a reference model and family calibration; 2608.13329 concerns prompt-dependence of probe scores (non-causal).",
+  "residual_novel_scope": "(1) the quantity is causal AND keyed to the model's own cross-fitted harm direction (not undirected, not third-party abliteration); (2) parent-free, ~16-prompt budget; (3) two-sided target (harmful-refusal AND over-refusal, blanket refuser must lose); (4) cross-family held-out validation; (5) anisotropy-matched random-direction controls.",
+  "required_positioning_sentence": "Causal refusal interventions have so far been reported per model as mechanism evidence (arXiv:2406.11717; arXiv:2507.11878; arXiv:2606.16349), per-unit latent-perturbation sensitivity has been proposed as a safety score without benchmark validation (arXiv:2606.08044), and a practitioner report found abliteration resistance uncorrelated with jailbreak refusal across 16 models (Failure-First Report 74, rho = -0.003); we are the first to test, parent-free and with ~16 prompts, whether causal harm-to-refusal quantities keyed to each model's own harm direction track both harmful-refusal and over-refusal benchmarks across held-out architecture families.",
+  "queries_run": [
+   {
+    "query": "refusal direction ablation effect size across models correlates safety benchmark",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "harmfulness direction steering causes refusal causal effect per model comparison arXiv 2026",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "steerability predicts safety robustness across language models correlation",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "ablation sensitivity refusal direction predicts jailbreak robustness across models",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "refusal direction strength predicts attack success rate across LLMs Spearman",
+    "mode": "general",
+    "hits_scanned": 10
+   },
+   {
+    "query": "causal mediation refusal per model safety score model comparison intervention mechanistic safety metric",
+    "mode": "general",
+    "hits_scanned": 10
+   },
+   {
+    "query": "intervention effect harmfulness direction refusal rate across models correlation benchmark over-refusal",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "\"latent vulnerability\" score safety degradation per unit perturbation compare models benchmark correlation",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "intervention-based safety audit score ranks open-weight models correlates HarmBench refusal rate",
+    "mode": "general",
+    "hits_scanned": 10
+   },
+   {
+    "query": "abliteration susceptibility refusal ablation attack success varies across models what predicts model-level",
+    "mode": "general",
+    "hits_scanned": 10
+   },
+   {
+    "query": "\"steering\" \"refusal\" dose-response slope per model predicts XSTest over-refusal",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "mechanistic safety metric model comparison intervention causal effect refusal ranks models leaderboard",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "causal effect harm representation on refusal predicts over-refusal and harmful compliance across many checkpoints",
+    "mode": "general",
+    "hits_scanned": 9
+   },
+   {
+    "query": "ablating own refusal direction harmful and benign refusal drop compared with random direction per model over-refusal",
+    "mode": "general",
+    "hits_scanned": 10
+   }
+  ],
+  "citation_chase_summary": "Semantic Scholar forward citations fetched 2026-09-21: 2406.11717 -> 1061 citing (raw/A_cites_2406.11717_titles.txt), 2507.11878 -> 74 citing, 2606.16349 -> 0 citing (S2 has none yet). 1006 unique 2025+ titles (raw/A_cites_all_2025plus.txt) filtered by metric/score/predict/audit/evaluat/measur/robust/fragil keywords to 156 (raw/A_cites_filtered.txt). Abstracts screened for 25 suspects (raw/A_abstracts*.txt); PDF-grepped for correlat|Spearman|Pearson|rank within 200 chars of ablat|steer|interven|patch: 2606.08044 (0 hits), 2604.27401 (R^2 = 0.81 vs ablation effect, not benchmark), 2609.03887 (rank-stability rho of components, not model-vs-benchmark), 2606.16349 (none), 2510.02768 (0), 2607.17427 (0). No closing paper found."
+ },
+ "claimable_novelty_summary": {
+  "NEW": {
+   "C5": "weights-only harm-to-refusal path gain as a cross-family safety score",
+   "C14": "FITTED metamodel over depth-by-site internal features (vs fixed-weight GFS/RAS aggregations)",
+   "C15": "late-layer dispersion validated against two-sided safety benchmarks (cite 2608.25390 as nearest miss)"
+  },
+  "NEW_ONLY_AS_PARENT_FREE_CROSS_FAMILY_SCORE": [
+   "C1",
+   "C2",
+   "C3",
+   "C4",
+   "C6",
+   "C7",
+   "C8",
+   "C10",
+   "C11",
+   "C12",
+   "C13"
+  ],
+  "PUBLISHED": {
+   "C9": "replication of Leong et al. 2502.13946",
+   "C16": "comparator of Li 2603.24543"
+  }
+ },
+ "screen_implications": [
+  "C9 -> REPLICATION row (Leong 2502.13946); do not claim the construct.",
+  "C16 -> COMPARATOR-only row (Li 2603.24543; Tan 2407.12404).",
+  "C2 -> must cite Failure-First Report 74's null result as the adverse prior; claim only the two-sided, margin-based, random-direction-controlled form.",
+  "C4 -> must cite Jorak (reference-free weight read of o_proj/down_proj); novelty is graded z-scored writer capacity plus benchmark validation.",
+  "C11 -> strongest positioning: every incumbent is parent-dependent (Qi 2406.05946; Yang 2609.18471).",
+  "C15 -> cite Labunets 2608.25390 (stable rank vs ablation robustness, one lineage).",
+  "BSA/Jorak row -> relabel 0.35 as our pre-registered simulation threshold; Jorak's shipped threshold is 0.5 on different statistics."
+ ],
+ "bib_fixes": [
+  {
+   "item": "i",
+   "key_old": "LlorenteSaguer2026 (x2)",
+   "key_new": "LlorenteSaguer2026a (2604.18901) / LlorenteSaguer2026b (2603.27412, LatentBiopsy)",
+   "problem": "duplicate BibTeX key used for two different papers; BibTeX silently drops one",
+   "fix": "distinct keys with a/b suffix; titles verified on arXiv API",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2604.18901 ; https://arxiv.org/abs/2603.27412"
+  },
+  {
+   "item": "ii",
+   "key_old": "Casper2024",
+   "key_new": "Casper2024",
+   "problem": "planner reported bogus eprint '0106.36590'. VERIFIED: the iter-2 references.bib contains NO such eprint; line 226 holds doi = {10.1145/3630106.3659037}, and '0106.36590' is a mis-parse of the substring '...30106.3659037' of that correct DOI. The real defect was a MISSING eprint field.",
+   "fix": "kept DOI 10.1145/3630106.3659037 (Crossref-confirmed: title 'Black-Box Access is Insufficient for Rigorous AI Audits', pages 2254-2272); added eprint = 2401.14446 (arXiv abs confirmed, v3)",
+   "status": "RESOLVED (planner false positive on the eprint; eprint added)",
+   "source_url": "https://api.crossref.org/works/10.1145/3630106.3659037 ; https://arxiv.org/abs/2401.14446"
+  },
+  {
+   "item": "iii",
+   "key_old": "Shairah2025",
+   "key_new": "AbuShairah2025",
+   "problem": "first author truncated to 'H. Shairah' (Semantic Scholar mangling); 'G. Turkiyyah' abbreviated",
+   "fix": "author = {Abu Shairah}, Harethah and Hasan Abed Al Kader Hammoud and George Turkiyyah and Bernard Ghanem (arXiv abs page)",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2508.20766"
+  },
+  {
+   "item": "iv",
+   "key_old": "Ball2024 cited as '[24] C. Tan et al., On the Out-of-Distribution Brittleness of Steering Vectors, arXiv:2406.09289'",
+   "key_new": "Ball2024 (2406.09289) + NEW Tan2024 (2407.12404)",
+   "problem": "misattribution: 2406.09289 is Ball, Kreuter & Rimsky 'Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models'; the draft's title and author for [24] are fabricated",
+   "fix": "add Tan2024 = Daniel Tan, David Chanin, Aengus Lynch, Dimitrios Kanoulas, Brooks Paige, Adria Garriga-Alonso, Robert Kirk, 'Analyzing the Generalization and Reliability of Steering Vectors' (arXiv 2407.12404, NeurIPS 2024 per Semantic Scholar venue); steering-brittleness sentence must cite Tan2024; Ball2024 only for jailbreak latent dynamics",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2407.12404 ; https://arxiv.org/abs/2406.09289"
+  },
+  {
+   "item": "v-a",
+   "key_old": "Lan2026",
+   "key_new": "Lan2026",
+   "problem": "no eprint/DOI; SS author names hyphenated wrongly (Wen-Hao, Xin Lai, Jun-Bin)",
+   "fix": "eprint 2606.16349; authors per arXiv: Wenhao Lan, Shan Li, Xinhua Lai, Meiqi Wu, Junbin Yang, Haihua Shen",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2606.16349"
+  },
+  {
+   "item": "v-b",
+   "key_old": "Fogel2026",
+   "key_new": "Fogel2026",
+   "problem": "no eprint/DOI; initials only for co-authors",
+   "fix": "eprint 2602.04653; Ariel Fogel, Omer Hofman, Eilon Cohen, Roman Vainshtein",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2602.04653"
+  },
+  {
+   "item": "v-c",
+   "key_old": "Luo2026",
+   "key_new": "Luo2026",
+   "problem": "no eprint/DOI",
+   "fix": "eprint 2608.09624; 11 authors per arXiv (Mingyu Luo ... Xiaoyan Sun)",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2608.09624"
+  },
+  {
+   "item": "v-d",
+   "key_old": "Rivera2026",
+   "key_new": "Rivera2026",
+   "problem": "no eprint/DOI; author field 'Konstantinos Voudouris Independent and UK AI Security Institute' merges affiliations into a name, creating a fake 5th author",
+   "fix": "eprint 2608.05086; authors = {Rivera}, Joshua Fonseca and Neil Shah and David Demitri Africa and Konstantinos Voudouris (affiliations (1) Independent, (2) UK AI Security Institute dropped)",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2608.05086"
+  },
+  {
+   "item": "vi",
+   "key_old": "Messenger2026",
+   "key_new": "Messenger2026",
+   "problem": "planner reported truncated DOI fragment '2026.37040'. VERIFIED: iter-2 bib line 9 holds the FULL DOI 10.1109/ACCESS.2026.3704057; the fragment is a substring of it. The real defect: @inproceedings with booktitle=IEEE Access (it is a journal) and no arXiv eprint.",
+   "fix": "@article, journal = IEEE Access, volume 14, pages 91723--91737, doi 10.1109/ACCESS.2026.3704057 (Crossref-confirmed) AND eprint 2608.05578 (arXiv abs lists this DOI as the published version)",
+   "status": "RESOLVED (planner false positive on the DOI; entry type + eprint fixed)",
+   "source_url": "https://api.crossref.org/works/10.1109/ACCESS.2026.3704057 ; https://arxiv.org/abs/2608.05578"
+  },
+  {
+   "item": "vii",
+   "key_old": "Zhao2025 / Singh2025 / Ren2024 / Zhong2025",
+   "key_new": "same",
+   "problem": "reviewer flagged author lists",
+   "fix": "Zhao2025 authors CONFIRMED (Jiachen Zhao, Jing Huang, Zhengxuan Wu, David Bau, Weiyan Shi). Singh2025 corrected from SS abbreviations: 'A. Ustun'->'Ahmet Üstün', 'Yun-Tian Deng'->'Yuntian Deng', 'B. Ermiş'->'Beyza Ermis'. Ren2024: 'Ryan Kim'->'Ryan H. Kim'. Zhong2025: 'Zi-Qian Zhong'->'Ziqian Zhong'. All from arXiv abs pages. NOTE the iter-2 DRAFT's plain-text reference list names these as 'D. Li et al.' (Zhao), 'E. Boyko et al.' (Singh), 'L. Ren' (Ren), 'A. Timans et al.' (Zhong) - fabricated; see citation_corrections.",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2507.11878 ; https://arxiv.org/abs/2504.20879 ; https://arxiv.org/abs/2407.21792 ; https://arxiv.org/abs/2508.00161"
+  },
+  {
+   "item": "viii",
+   "key_old": "(missing)",
+   "key_new": "see references.bib",
+   "problem": "works cited by the hypothesis missing from the iter-2 bib",
+   "fix": "all 26 listed IDs resolved on arXiv and added (titles recorded in bib_entries.json); 2607.25750 is Africa et al. 'Detecting CSAM Text-to-Image LoRAs From Weights' (a weights-only adapter classifier), NOT RAS 2606.25750; Qwen3Guard/SafeRL: see bib_entries note; Jorak added as @misc pinned to SHA 8147de3...",
+   "status": "RESOLVED",
+   "source_url": "https://export.arxiv.org/api/query"
+  },
+  {
+   "item": "extra-1",
+   "key_old": "Huang2026 (RAS)",
+   "key_new": "Huang2026",
+   "problem": "Semantic Scholar lists first author as 'Changhui Huang'; arXiv lists 'Chang-Chieh Huang'",
+   "fix": "arXiv name used",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2606.25750"
+  },
+  {
+   "item": "extra-2",
+   "key_old": "Lin2025 (N-GLARE)",
+   "key_new": "Lin2026",
+   "problem": "year = preprint year 2025 though cited as ACL 2026",
+   "fix": "year 2026, booktitle ACL 2026 (iteration-1 verified ACL 2026 Long 1334); eprint 2511.14195",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2511.14195"
+  },
+  {
+   "item": "extra-3",
+   "key_old": "Rttger2023",
+   "key_new": "Rottger2023",
+   "problem": "key mangled by diacritic stripping ('Rttger')",
+   "fix": "ASCII-folded key Rottger2023",
+   "status": "RESOLVED",
+   "source_url": "https://arxiv.org/abs/2308.01263"
+  }
+ ],
+ "citation_corrections": {
+  "tan_ball_swap": {
+   "wrong_text": "iter-2 draft reference [24]: 'C. Tan et al., \"On the Out-of-Distribution Brittleness of Steering Vectors,\" NeurIPS 2024, arXiv:2406.09289' (and the hypothesis sentence 'Tan et al. (arXiv 2406.09289) on the out-of-distribution brittleness of steering vectors')",
+   "problem": "arXiv 2406.09289 is Ball, Kreuter & Rimsky, 'Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models'. The title 'On the Out-of-Distribution Brittleness of Steering Vectors' does not exist. The steering-reliability paper is Tan et al., arXiv 2407.12404, 'Analyzing the Generalization and Reliability of Steering Vectors'.",
+   "fix": "Cite \\citep{Tan2024} (2407.12404) for steering-vector brittleness and unreliability. Cite \\citep{Ball2024} (2406.09289) ONLY for jailbreak latent-space dynamics.",
+   "sources": [
+    "https://arxiv.org/abs/2406.09289",
+    "https://arxiv.org/abs/2407.12404"
+   ]
+  },
+  "jorak_threshold_misattribution": {
+   "wrong_text": "iter-2 draft Section 5 / contribution 4: 'the published 0.35 separator' / 'a published parent-free weight scanner ... 100% false-positive rate at its published threshold (honest BSA = 0.565 vs. separator 0.35)'",
+   "problem": "0.35 is NOT Jorak's threshold. It is this run's own simulation-calibrated pre-registered value (iter_1/gen_art/gen_art_experiment_2/flab/config.py:74 BSA_PREREG_THRESHOLD). Jorak ships 0.5, on different statistics (see scanner_pin.json).",
+   "fix": "Rename it 'our pre-registered simulation threshold'. Withdraw the claim that a published scanner has a 100% false-positive rate, or re-run Jorak's own statistic at 0.5.",
+   "sources": [
+    "https://github.com/JolanMc/Jorak/blob/8147de343964a3cced37db71814e9007c7465a52/modelscanner/classifier/scanner.py#L37-L55"
+   ]
+  },
+  "draft_reference_list_audit": {
+   "summary": "The iter-2 paper_draft.md plain-text reference list [1]-[30] disagrees with its own references.bib. Verified against the arXiv API: 20 of 30 first authors are FABRICATED names, 5 have the wrong first initial, 4 are correct, and 1 is software (Jorak). At least 8 titles are altered or invented: [6] 'LatentBiopsy', [8] 'Rank-One Safety Injection', [12] 'From Refusal Geometry to Safety Geometry: Recognition Versus Execution' (the real title is 'Knowing without Acting: ...'), [14], [21], [24], [25], [26], [28]. Also: [3] credits N-GLARE to 'J. Cordes' and [4] credits RAS to 'Z. Lin'; Lin is actually N-GLARE's first author, so the names are shuffled.",
+   "fix": "Delete the hand-typed reference list. Generate references only from references.bib via BibTeX, using the keys below.",
+   "rows": [
+    {
+     "ref_no": 1,
+     "draft_first_author": "G. Messenger",
+     "verified_first_author": "Glen Messenger",
+     "arxiv": "2608.05578",
+     "verdict": "OK",
+     "title_ok": true,
+     "verified_title": "Detecting Safety Training Modification in Language Models via Activation Analysis",
+     "use_key": "Messenger2026"
+    },
+    {
+     "ref_no": 2,
+     "draft_first_author": "J.-S. Lee et al.",
+     "verified_first_author": "Dongyub Jude Lee",
+     "arxiv": "2606.22676",
+     "verdict": "WRONG_INITIAL",
+     "title_ok": true,
+     "verified_title": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations",
+     "use_key": "Lee2026"
+    },
+    {
+     "ref_no": 3,
+     "draft_first_author": "J. Cordes et al.",
+     "verified_first_author": "Zheyu Lin",
+     "arxiv": "2511.14195",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator",
+     "use_key": "Lin2026"
+    },
+    {
+     "ref_no": 4,
+     "draft_first_author": "Z. Lin et al.",
+     "verified_first_author": "Chang-Chieh Huang",
+     "arxiv": "2606.25750",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "RAS: Measuring LLM Safety Through Refusal Alignment",
+     "use_key": "Huang2026"
+    },
+    {
+     "ref_no": 5,
+     "draft_first_author": "A. Vogel et al.",
+     "verified_first_author": "Isaac Llorente-Saguer",
+     "arxiv": "2604.18901",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "Harmful Intent as a Geometrically Recoverable Feature of LLM Residual Streams",
+     "use_key": "LlorenteSaguer2026a"
+    },
+    {
+     "ref_no": 6,
+     "draft_first_author": "S. Guo et al.",
+     "verified_first_author": "Isaac Llorente-Saguer",
+     "arxiv": "2603.27412",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": false,
+     "verified_title": "The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams",
+     "use_key": "LlorenteSaguer2026b"
+    },
+    {
+     "ref_no": 7,
+     "draft_first_author": "A. Arditi et al.",
+     "verified_first_author": "Andy Arditi",
+     "arxiv": "2406.11717",
+     "verdict": "OK",
+     "title_ok": true,
+     "verified_title": "Refusal in Language Models Is Mediated by a Single Direction",
+     "use_key": "Arditi2024"
+    },
+    {
+     "ref_no": 8,
+     "draft_first_author": "Y. Wang et al.",
+     "verified_first_author": "Harethah Abu Shairah",
+     "arxiv": "2508.20766",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "Turning the Spell Around: Lightweight Alignment Amplification via Rank-One Safety Injection",
+     "use_key": "AbuShairah2025"
+    },
+    {
+     "ref_no": 9,
+     "draft_first_author": "A. Souly et al.",
+     "verified_first_author": "Alexandra Souly",
+     "arxiv": "2402.10260",
+     "verdict": "OK",
+     "title_ok": true,
+     "verified_title": "A StrongREJECT for Empty Jailbreaks",
+     "use_key": "Souly2024"
+    },
+    {
+     "ref_no": 10,
+     "draft_first_author": "D. Li et al.",
+     "verified_first_author": "Jiachen Zhao",
+     "arxiv": "2507.11878",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "LLMs Encode Harmfulness and Refusal Separately",
+     "use_key": "Zhao2025"
+    },
+    {
+     "ref_no": 11,
+     "draft_first_author": "T. B. Brown et al.",
+     "verified_first_author": "Faaiz Joad",
+     "arxiv": "2602.02132",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "There Is More to Refusal in Large Language Models than a Single Direction",
+     "use_key": "Joad2026"
+    },
+    {
+     "ref_no": 12,
+     "draft_first_author": "Z. Huang et al.",
+     "verified_first_author": "Jinman Wu",
+     "arxiv": "2603.05773",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": false,
+     "verified_title": "Knowing without Acting: The Disentangled Geometry of Safety Mechanisms in Large Language Models",
+     "use_key": "Wu2026"
+    },
+    {
+     "ref_no": 13,
+     "draft_first_author": "M. Chen et al.",
+     "verified_first_author": "Wenhao Lan",
+     "arxiv": "2606.16349",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "From Refusal Geometry to Safety Geometry: Harmfulness--Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+     "use_key": "Lan2026"
+    },
+    {
+     "ref_no": 14,
+     "draft_first_author": "Y. Zhang et al.",
+     "verified_first_author": "Shei Pern Chua",
+     "arxiv": "2607.00572",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "HARC: Coupling Harmfulness and Refusal Directions for Robust Safety Alignment",
+     "use_key": "Chua2026"
+    },
+    {
+     "ref_no": 15,
+     "draft_first_author": "A. Timans et al.",
+     "verified_first_author": "Ziqian Zhong",
+     "arxiv": "2508.00161",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": false,
+     "verified_title": "Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs",
+     "use_key": "Zhong2025"
+    },
+    {
+     "ref_no": 16,
+     "draft_first_author": "Jorak Project",
+     "verified_first_author": null,
+     "arxiv": null,
+     "verdict": "NO_ARXIV_ENTRY (Jorak = GitHub software; see scanner_pin.json)",
+     "title_ok": false,
+     "verified_title": null,
+     "use_key": "JolanMc2026Jorak"
+    },
+    {
+     "ref_no": 17,
+     "draft_first_author": "K. Park et al.",
+     "verified_first_author": "Gabriel Hurtado",
+     "arxiv": "2607.01854",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+     "use_key": "Hurtado2026"
+    },
+    {
+     "ref_no": 18,
+     "draft_first_author": "N. Tamirisa et al.",
+     "verified_first_author": "Rishub Tamirisa",
+     "arxiv": "2408.00761",
+     "verdict": "WRONG_INITIAL",
+     "title_ok": true,
+     "verified_title": "Tamper-Resistant Safeguards for Open-Weight LLMs",
+     "use_key": "Tamirisa2024"
+    },
+    {
+     "ref_no": 19,
+     "draft_first_author": "L. Zheng et al.",
+     "verified_first_author": "Xiaosen Zheng",
+     "arxiv": "2410.07137",
+     "verdict": "WRONG_INITIAL",
+     "title_ok": true,
+     "verified_title": "Cheating Automatic LLM Benchmarks: Null Models Achieve High Win Rates",
+     "use_key": "Zheng2024"
+    },
+    {
+     "ref_no": 20,
+     "draft_first_author": "L. Ren et al.",
+     "verified_first_author": "Richard Ren",
+     "arxiv": "2407.21792",
+     "verdict": "WRONG_INITIAL",
+     "title_ok": true,
+     "verified_title": "Safetywashing: Do AI Safety Benchmarks Actually Measure Safety Progress?",
+     "use_key": "Ren2024"
+    },
+    {
+     "ref_no": 21,
+     "draft_first_author": "E. Boyko et al.",
+     "verified_first_author": "Shivalika Singh",
+     "arxiv": "2504.20879",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": false,
+     "verified_title": "The Leaderboard Illusion",
+     "use_key": "Singh2025"
+    },
+    {
+     "ref_no": 22,
+     "draft_first_author": "D. Wen et al.",
+     "verified_first_author": "Florian A. D. Burnat",
+     "arxiv": "2605.06324",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "Gaming the Metric, Not the Harm: Certifying Safety Audits against Strategic Platform Manipulation",
+     "use_key": "Burnat2026"
+    },
+    {
+     "ref_no": 23,
+     "draft_first_author": "A. Jha et al.",
+     "verified_first_author": "Ariel Fogel",
+     "arxiv": "2602.04653",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "Inference-Time Backdoors via Chat Templates: From LLM Supply Chains to Agentic System Compromise",
+     "use_key": "Fogel2026"
+    },
+    {
+     "ref_no": 24,
+     "draft_first_author": "C. Tan et al.",
+     "verified_first_author": "Sarah Ball",
+     "arxiv": "2406.09289",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": false,
+     "verified_title": "Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models",
+     "use_key": "Ball2024"
+    },
+    {
+     "ref_no": 25,
+     "draft_first_author": "J. Wu et al.",
+     "verified_first_author": "Mingyu Luo",
+     "arxiv": "2608.09624",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "Measuring the Wrong Thing: Internal Harmfulness Scores Anti-Rank Successful Jailbreaks",
+     "use_key": "Luo2026"
+    },
+    {
+     "ref_no": 26,
+     "draft_first_author": "L. Wang et al.",
+     "verified_first_author": "Dominik Schwarz",
+     "arxiv": "2607.13075",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators",
+     "use_key": "Schwarz2026"
+    },
+    {
+     "ref_no": 27,
+     "draft_first_author": "K. Ganguli et al.",
+     "verified_first_author": "Joshua Fonseca Rivera",
+     "arxiv": "2608.05086",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": true,
+     "verified_title": "Item Response Theory for AI Safety",
+     "use_key": "Rivera2026"
+    },
+    {
+     "ref_no": 28,
+     "draft_first_author": "S. Jha et al.",
+     "verified_first_author": "Fabio Spagliardi",
+     "arxiv": "2606.20626",
+     "verdict": "WRONG_AUTHOR (fabricated name)",
+     "title_ok": false,
+     "verified_title": "Efficient Safety Benchmarking via Item Response Theory",
+     "use_key": "Spagliardi2026"
+    },
+    {
+     "ref_no": 29,
+     "draft_first_author": "J. Casper et al.",
+     "verified_first_author": "Stephen Casper",
+     "arxiv": "2401.14446",
+     "verdict": "WRONG_INITIAL",
+     "title_ok": true,
+     "verified_title": "Black-Box Access is Insufficient for Rigorous AI Audits",
+     "use_key": "Casper2024"
+    },
+    {
+     "ref_no": 30,
+     "draft_first_author": "P. Rottger et al.",
+     "verified_first_author": "Paul Röttger",
+     "arxiv": "2308.01263",
+     "verdict": "OK",
+     "title_ok": true,
+     "verified_title": "XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models",
+     "use_key": "Rottger2023"
+    }
+   ]
+  },
+  "other": [
+   {
+    "wrong_text": "'Qwen3-4B-SafeRL' cited with no source",
+    "fix": "cite Qwen3Guard Technical Report arXiv 2510.14276, Section 3.5 'Application I: Safety RL with Generative Qwen3Guard'. That section confirms Qwen3Guard-4B-Gen supplied the reward for Safety RL on Qwen3-4B, so Qwen3Guard must NOT be used as the judge for SafeRL.",
+    "source": "https://arxiv.org/pdf/2510.14276"
+   },
+   {
+    "wrong_text": "iter-2 bib key Lin2025 / draft '[3] ... ACL 2026'",
+    "fix": "key Lin2026, year 2026 (ACL 2026)"
+   },
+   {
+    "wrong_text": "CAA cited as 'Rimsky et al.'",
+    "fix": "the arXiv 2312.06681 metadata now lists first author Nina Panickssery (the same person); key Panickssery2023"
+   }
+  ]
+ },
+ "number_ledger": [],
+ "scanner_pin": {
+  "status": "RESOLVED_WITH_CORRECTION",
+  "repo_url": "https://github.com/JolanMc/Jorak",
+  "owner_confirmed_from": "iteration-1 raw/jorak_readme.txt fetched https://raw.githubusercontent.com/JolanMc/Jorak/main/README.md",
+  "default_branch_head_sha": "8147de343964a3cced37db71814e9007c7465a52",
+  "head_commit_date": "2026-07-24T09:52:55Z",
+  "threshold_file": "modelscanner/classifier/scanner.py",
+  "threshold_file_permalink": "https://github.com/JolanMc/Jorak/blob/8147de343964a3cced37db71814e9007c7465a52/modelscanner/classifier/scanner.py#L37-L55",
+  "threshold_lines": {
+   "48": "svd_align_severed: float = 0.5     # alignement u_min GLOBAL au-dessus = poids sectionnés",
+   "49": "band_align_severed: float = 0.5    # alignement de BANDE (couches contiguës) -> capte l'ablation localisée (Heretic)",
+   "55": "subspace_severed: float = 0.5      # alignement sous-espace bottom-k au-dessus = poids sectionnés (multi-dir)"
+  },
+  "calibration_docstring_lines_37_45": "class Thresholds:\n    \"\"\"Seuils quant-aware (valeurs provisoires calibrées sur Qwen2.5-0.5B ;\n    affinées en J8 contre la matrice réelle + l'oracle J7).\n\n    Calibration observée (censuré vs ablitéré in-memory) :\n      Cohen's d max : ~4.5 (vivant)         -> seuil axe vivant 1.0\n      suppression médiane : 0.038 vs ~2e-8  -> seuil sectionné 1e-2\n      alignement SVD u_min : 0.24 vs 1.00   -> seuil sectionné 0.5\n    Le finding clé : l'alignement SVD est le signal le plus robuste.\"\"\"",
+  "band_statistic_file": "modelscanner/metrics/jorak.py",
+  "band_calibration_line_223": "\"\"\"",
+  "band_window_rule_line_210": "\"\"\"Largeur de bande adaptée à la profondeur (≈ 1/6 des couches, min 3).\"\"\"",
+  "global_statistic": "alignment = sigma_1(U)/||U||_F over stacked per-layer bottom-1 left singular vectors u_min of o_proj/down_proj (jorak.py umin_signature, lines 85-110); band = max over windows of width round(L/6) (min 3) of mean per-layer |cos(u_min_l, shared axis)|",
+  "grep_for_0.35_in_all_90_text_files_at_HEAD": "only hit: modelscanner/viz/__init__.py:81 'figsize=(max(6, result.n_layers * 0.35), ...' (a plotting width, NOT a threshold)",
+  "threshold_history": [
+   {
+    "sha": "27957d672d05d97eb09f73c1a4f7d8d175ec4b9b",
+    "date": "2026-07-15T15:29:29Z",
+    "message": "Model Scanner (Jorak) - reference-free abliteration detector (initial)",
+    "svd_align_severed": 0.5,
+    "band_align_severed": 0.5,
+    "subspace_severed": 0.5
+   },
+   {
+    "sha": "239fbdbc36c427928e14f983ad3621f56b898b19",
+    "date": "2026-07-15T15:41:41Z",
+    "message": "i18n: translate the terminal UI to English",
+    "svd_align_severed": 0.5,
+    "band_align_severed": 0.5,
+    "subspace_severed": 0.5
+   },
+   {
+    "sha": "0351edafce20bf0c6439ccbde2fd736140f83c96",
+    "date": "2026-07-20T13:30:27Z",
+    "message": "style: apply ruff import fixes and remove dead code",
+    "svd_align_severed": 0.5,
+    "band_align_severed": 0.5,
+    "subspace_severed": 0.5
+   }
+  ],
+  "threshold_ever_changed": false,
+  "CRITICAL_FINDING": "The value 0.35 that the iteration-1/2 papers call 'the published 0.35 separator' of the Jorak scanner DOES NOT APPEAR as a threshold anywhere in the Jorak repository at any commit that touched the classifier. Jorak ships 0.5 for all three weight signals (global u_min alignment, band alignment, bottom-k subspace alignment), calibrated on Qwen2.5-0.5B (censored 0.24 vs abliterated 1.00 global; censored ~0.28 vs abliterated >=0.67 band). The 0.35 is THIS RUN'S OWN pre-registered simulation threshold: iter_1/gen_art/gen_art_experiment_2/flab/config.py line 74 'BSA_PREREG_THRESHOLD: Final[float] = 0.35      # >= flags an edit' under the comment 'Pre-registered SIMULATION thresholds (from the hypothesis-stage simulation)'. The run's BSA_w8 (sliding 8-layer window of MEAN PAIRWISE |cos| between per-layer bottom-1 vectors) is also a different statistic from Jorak's sigma1/||U||_F global alignment and its round(L/6)-window band alignment to a shared axis.",
+  "required_paper_correction": "Replace 'the published 0.35 separator' with: 'our pre-registered, simulation-calibrated threshold of 0.35 for a Jorak-style bottom-subspace alignment statistic (BSA_w8); the Jorak scanner itself (github.com/JolanMc/Jorak @ 8147de3, modelscanner/classifier/scanner.py L48-55) ships a threshold of 0.5 on differently defined global/band/subspace alignment statistics, calibrated on Qwen2.5-0.5B (censored 0.24 vs abliterated 1.00).' The '100% false-positive rate of a published scanner' claim must be withdrawn or re-run with Jorak's own statistic and 0.5 threshold. Note: honest BSA_w8 = 0.565 also exceeds 0.5, but BSA_w8 is not Jorak's statistic, so no FPR for Jorak can be inferred from it.",
+  "grey_literature_note": "Unreviewed GitHub software (no paper, no DOI); cite as @misc with commit SHA."
+ },
+ "references_bib": "@article{Messenger2026,\n title = {{Detecting Safety Training Modification in Language Models via Activation Analysis}},\n author = {Glen Messenger},\n journal = {IEEE Access},\n year = {2026},\n volume = {14},\n pages = {91723--91737},\n eprint = {2608.05578},\n archivePrefix = {arXiv},\n doi = {10.1109/ACCESS.2026.3704057},\n url = {https://arxiv.org/abs/2608.05578}\n}\n\n@article{Lee2026,\n title = {{Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations}},\n author = {Dongyub Jude Lee and Jungseob Lee and Seungyoon Lee and Seongtae Hong and Suhyune Son and Sugyeong Eo and Jaehyung Seo and Heuiseok Lim},\n journal = {arXiv preprint arXiv:2606.22676},\n year = {2026},\n eprint = {2606.22676},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2606.22676},\n url = {https://arxiv.org/abs/2606.22676}\n}\n\n@article{Huang2026,\n title = {{RAS: Measuring LLM Safety Through Refusal Alignment}},\n author = {Chang-Chieh Huang and Yan-Lun Chen and Chia-Mu Yu and Wei-Bin Lee},\n journal = {arXiv preprint arXiv:2606.25750},\n year = {2026},\n eprint = {2606.25750},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2606.25750},\n url = {https://arxiv.org/abs/2606.25750}\n}\n\n@inproceedings{Lin2026,\n title = {{N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator}},\n author = {Zheyu Lin and Jirui Yang and Yukui Qiu and Hengqi Guo and Yubing Bao and Yao Guan},\n booktitle = {Proceedings of the Annual Meeting of the Association for Computational Linguistics (ACL 2026)},\n year = {2026},\n note = {Long paper; venue per iteration-1 verification (ACL 2026 Long 1334)},\n eprint = {2511.14195},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2511.14195},\n url = {https://arxiv.org/abs/2511.14195}\n}\n\n@article{LlorenteSaguer2026a,\n title = {{Harmful Intent as a Geometrically Recoverable Feature of LLM Residual Streams}},\n author = {{Llorente-Saguer}, Isaac},\n journal = {arXiv preprint arXiv:2604.18901},\n year = {2026},\n eprint = {2604.18901},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2604.18901},\n url = {https://arxiv.org/abs/2604.18901}\n}\n\n@article{LlorenteSaguer2026b,\n title = {{The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams}},\n author = {{Llorente-Saguer}, Isaac},\n journal = {arXiv preprint arXiv:2603.27412},\n year = {2026},\n eprint = {2603.27412},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2603.27412},\n url = {https://arxiv.org/abs/2603.27412}\n}\n\n@inproceedings{Arditi2024,\n title = {{Refusal in Language Models Is Mediated by a Single Direction}},\n author = {Andy Arditi and Oscar Obeso and Aaquib Syed and Daniel Paleka and Nina Panickssery and Wes Gurnee and Neel Nanda},\n booktitle = {Neural Information Processing Systems},\n year = {2024},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2406.11717},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2406.11717},\n url = {https://arxiv.org/abs/2406.11717}\n}\n\n@article{AbuShairah2025,\n title = {{Turning the Spell Around: Lightweight Alignment Amplification via Rank-One Safety Injection}},\n author = {{Abu Shairah}, Harethah and Hasan Abed Al Kader Hammoud and George Turkiyyah and Bernard Ghanem},\n journal = {arXiv preprint arXiv:2508.20766},\n year = {2025},\n eprint = {2508.20766},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2508.20766},\n url = {https://arxiv.org/abs/2508.20766}\n}\n\n@inproceedings{Zhao2025,\n title = {{LLMs Encode Harmfulness and Refusal Separately}},\n author = {Jiachen Zhao and Jing Huang and Zhengxuan Wu and David Bau and Weiyan Shi},\n booktitle = {Neural Information Processing Systems},\n year = {2025},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2507.11878},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2507.11878},\n url = {https://arxiv.org/abs/2507.11878}\n}\n\n@article{Joad2026,\n title = {{There Is More to Refusal in Large Language Models than a Single Direction}},\n author = {Faaiz Joad and Majd Hawasly and Sabri Boughorbel and Nadir Durrani and Husrev Taha Sencar},\n journal = {arXiv preprint arXiv:2602.02132},\n year = {2026},\n eprint = {2602.02132},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2602.02132},\n url = {https://arxiv.org/abs/2602.02132}\n}\n\n@article{Wu2026,\n title = {{Knowing without Acting: The Disentangled Geometry of Safety Mechanisms in Large Language Models}},\n author = {Jinman Wu and Yi Xie and Shen Lin and Shiqian Zhao and Xiaofeng Chen},\n journal = {arXiv preprint arXiv:2603.05773},\n year = {2026},\n eprint = {2603.05773},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2603.05773},\n url = {https://arxiv.org/abs/2603.05773}\n}\n\n@article{Lan2026,\n title = {{From Refusal Geometry to Safety Geometry: Harmfulness--Refusal Coupling under Dynamic Adversarial Fine-Tuning}},\n author = {Wenhao Lan and Shan Li and Xinhua Lai and Meiqi Wu and Junbin Yang and Haihua Shen},\n journal = {arXiv preprint arXiv:2606.16349},\n year = {2026},\n eprint = {2606.16349},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2606.16349},\n url = {https://arxiv.org/abs/2606.16349}\n}\n\n@article{Chua2026,\n title = {{HARC: Coupling Harmfulness and Refusal Directions for Robust Safety Alignment}},\n author = {Shei Pern Chua and Hao Wu and Qianli Ma and Fangzhao Wu},\n journal = {arXiv preprint arXiv:2607.00572},\n year = {2026},\n eprint = {2607.00572},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2607.00572},\n url = {https://arxiv.org/abs/2607.00572}\n}\n\n@article{Zhong2025,\n title = {{Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs}},\n author = {Ziqian Zhong and Aditi Raghunathan},\n journal = {arXiv preprint arXiv:2508.00161},\n year = {2025},\n eprint = {2508.00161},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2508.00161},\n url = {https://arxiv.org/abs/2508.00161}\n}\n\n@article{Hurtado2026,\n title = {{Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map}},\n author = {Gabriel Hurtado},\n journal = {arXiv preprint arXiv:2607.01854},\n year = {2026},\n eprint = {2607.01854},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2607.01854},\n url = {https://arxiv.org/abs/2607.01854}\n}\n\n@inproceedings{Tamirisa2024,\n title = {{Tamper-Resistant Safeguards for Open-Weight LLMs}},\n author = {Rishub Tamirisa and Bhrugu Bharathi and Long Phan and Andy Zhou and Alice Gatti and Tarun Suresh and Maxwell Lin and Justin Wang and Rowan Wang and Ron Arel and Andy Zou and Dawn Song and Bo Li and Dan Hendrycks and Mantas Mazeika},\n booktitle = {International Conference on Learning Representations},\n year = {2024},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2408.00761},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2408.00761},\n url = {https://arxiv.org/abs/2408.00761}\n}\n\n@inproceedings{Zheng2024,\n title = {{Cheating Automatic LLM Benchmarks: Null Models Achieve High Win Rates}},\n author = {Xiaosen Zheng and Tianyu Pang and Chao Du and Qian Liu and Jing Jiang and Min Lin},\n booktitle = {International Conference on Learning Representations},\n year = {2025},\n eprint = {2410.07137},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2410.07137},\n url = {https://arxiv.org/abs/2410.07137}\n}\n\n@inproceedings{Ren2024,\n title = {{Safetywashing: Do AI Safety Benchmarks Actually Measure Safety Progress?}},\n author = {Richard Ren and Steven Basart and Adam Khoja and Alice Gatti and Long Phan and Xuwang Yin and Mantas Mazeika and Alexander Pan and Gabriel Mukobi and Ryan H. Kim and Stephen Fitz and Dan Hendrycks},\n booktitle = {Neural Information Processing Systems},\n year = {2024},\n eprint = {2407.21792},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2407.21792},\n url = {https://arxiv.org/abs/2407.21792}\n}\n\n@inproceedings{Singh2025,\n title = {{The Leaderboard Illusion}},\n author = {Shivalika Singh and Yiyang Nan and Alex Wang and Daniel D'Souza and Sayash Kapoor and Ahmet Üstün and Sanmi Koyejo and Yuntian Deng and Shayne Longpre and Noah A. Smith and Beyza Ermis and Marzieh Fadaee and Sara Hooker},\n booktitle = {Neural Information Processing Systems},\n year = {2025},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2504.20879},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2504.20879},\n url = {https://arxiv.org/abs/2504.20879}\n}\n\n@article{Burnat2026,\n title = {{Gaming the Metric, Not the Harm: Certifying Safety Audits against Strategic Platform Manipulation}},\n author = {Florian A. D. Burnat and Brittany I. Davidson},\n journal = {arXiv preprint arXiv:2605.06324},\n year = {2026},\n eprint = {2605.06324},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2605.06324},\n url = {https://arxiv.org/abs/2605.06324}\n}\n\n@article{Fogel2026,\n title = {{Inference-Time Backdoors via Chat Templates: From LLM Supply Chains to Agentic System Compromise}},\n author = {Ariel Fogel and Omer Hofman and Eilon Cohen and Roman Vainshtein},\n journal = {arXiv preprint arXiv:2602.04653},\n year = {2026},\n eprint = {2602.04653},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2602.04653},\n url = {https://arxiv.org/abs/2602.04653}\n}\n\n@inproceedings{Ball2024,\n title = {{Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models}},\n author = {Sarah Ball and Frauke Kreuter and Nina Panickssery},\n booktitle = {Conference of the European Chapter of the Association for Computational Linguistics},\n year = {2024},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2406.09289},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2406.09289},\n url = {https://arxiv.org/abs/2406.09289}\n}\n\n@inproceedings{Tan2024,\n title = {{Analyzing the Generalization and Reliability of Steering Vectors}},\n author = {Daniel Tan and David Chanin and Aengus Lynch and Dimitrios Kanoulas and Brooks Paige and Adria Garriga-Alonso and Robert Kirk},\n booktitle = {Neural Information Processing Systems},\n year = {2024},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2407.12404},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2407.12404},\n url = {https://arxiv.org/abs/2407.12404}\n}\n\n@article{Luo2026,\n title = {{Measuring the Wrong Thing: Internal Harmfulness Scores Anti-Rank Successful Jailbreaks}},\n author = {Mingyu Luo and Ming Deng and Zilang Qiu and Yiming Cheng and Ci Tao and Xue Tan and Sijin Sun and Yangfu Li and Ping Chen and Jun Dai and Xiaoyan Sun},\n journal = {arXiv preprint arXiv:2608.09624},\n year = {2026},\n eprint = {2608.09624},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2608.09624},\n url = {https://arxiv.org/abs/2608.09624}\n}\n\n@article{Schwarz2026,\n title = {{The Entanglement Wall: Activation-Space Probes as Risk Detectors, Not Context Adjudicators}},\n author = {Dominik Schwarz},\n journal = {arXiv preprint arXiv:2607.13075},\n year = {2026},\n eprint = {2607.13075},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2607.13075},\n url = {https://arxiv.org/abs/2607.13075}\n}\n\n@article{Rivera2026,\n title = {{Item Response Theory for AI Safety}},\n author = {{Rivera}, Joshua Fonseca and Neil Shah and David Demitri Africa and Konstantinos Voudouris},\n journal = {arXiv preprint arXiv:2608.05086},\n year = {2026},\n eprint = {2608.05086},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2608.05086},\n url = {https://arxiv.org/abs/2608.05086}\n}\n\n@article{Spagliardi2026,\n title = {{Efficient Safety Benchmarking via Item Response Theory}},\n author = {Fabio Spagliardi and Mírian Silva and Ayan Datta and Aiden Zhou and Vamshi Bonagiri and Diogo Cruz},\n journal = {arXiv preprint arXiv:2606.20626},\n year = {2026},\n eprint = {2606.20626},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2606.20626},\n url = {https://arxiv.org/abs/2606.20626}\n}\n\n@inproceedings{Casper2024,\n title = {{Black-Box Access is Insufficient for Rigorous AI Audits}},\n author = {Stephen Casper and Carson Ezell and Charlotte Siegmann and Noam Kolt and Taylor Lynn Curtis and Benjamin Bucknall and Andreas Haupt and Kevin Wei and Jérémy Scheurer and Marius Hobbhahn and Lee Sharkey and Satyapriya Krishna and Marvin Von Hagen and Silas Alberti and Alan Chan and Qinyi Sun and Michael Gerovitch and David Bau and Max Tegmark and David Krueger and Dylan Hadfield-Menell},\n booktitle = {Proceedings of the 2024 ACM Conference on Fairness, Accountability, and Transparency (FAccT '24)},\n year = {2024},\n pages = {2254--2272},\n eprint = {2401.14446},\n archivePrefix = {arXiv},\n doi = {10.1145/3630106.3659037},\n url = {https://arxiv.org/abs/2401.14446}\n}\n\n@inproceedings{Qi2024,\n title = {{Safety Alignment Should Be Made More Than Just a Few Tokens Deep}},\n author = {Xiangyu Qi and Ashwinee Panda and Kaifeng Lyu and Xiao Ma and Subhrajit Roy and Ahmad Beirami and Prateek Mittal and Peter Henderson},\n booktitle = {International Conference on Learning Representations},\n year = {2024},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2406.05946},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2406.05946},\n url = {https://arxiv.org/abs/2406.05946}\n}\n\n@article{Bailey2024,\n title = {{Obfuscated Activations Bypass LLM Latent-Space Defenses}},\n author = {Luke Bailey and Alex Serrano and Abhay Sheshadri and Mikhail Seleznyov and Jordan Taylor and Erik Jenner and Jacob Hilton and Stephen Casper and Carlos Guestrin and Scott Emmons},\n journal = {arXiv preprint arXiv:2412.09565},\n year = {2024},\n eprint = {2412.09565},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2412.09565},\n url = {https://arxiv.org/abs/2412.09565}\n}\n\n@inproceedings{Rottger2023,\n title = {{XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours in Large Language Models}},\n author = {Paul Röttger and Hannah Rose Kirk and Bertie Vidgen and Giuseppe Attanasio and Federico Bianchi and Dirk Hovy},\n booktitle = {North American Chapter of the Association for Computational Linguistics},\n year = {2024},\n eprint = {2308.01263},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2308.01263},\n url = {https://arxiv.org/abs/2308.01263}\n}\n\n@inproceedings{Souly2024,\n title = {{A StrongREJECT for Empty Jailbreaks}},\n author = {Alexandra Souly and Qingyuan Lu and Dillon Bowen and Tu Trinh and Elvis Hsieh and Sana Pandey and Pieter Abbeel and Justin Svegliato and Scott Emmons and Olivia Watkins and Sam Toyer},\n booktitle = {Neural Information Processing Systems},\n year = {2024},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2402.10260},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2402.10260},\n url = {https://arxiv.org/abs/2402.10260}\n}\n\n@article{Chen2026,\n title = {{Who Built This Model? Tracing LLM Lineage via Spectral Fingerprints in Weight Space}},\n author = {Yiwei Chen and Bingqi Shang and Sijia Liu},\n journal = {arXiv preprint arXiv:2608.07786},\n year = {2026},\n eprint = {2608.07786},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2608.07786},\n url = {https://arxiv.org/abs/2608.07786}\n}\n\n@article{Wang2025,\n title = {{Ghost in the Transformer: Detecting Model Reuse with Invariant Spectral Signatures}},\n author = {Suqing Wang and Ziyang Ma and Li Xinyi and Zuchao Li},\n journal = {arXiv preprint arXiv:2511.06390},\n year = {2025},\n eprint = {2511.06390},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2511.06390},\n url = {https://arxiv.org/abs/2511.06390}\n}\n\n@article{Yamagiwa2026,\n title = {{Measuring Affinity between Attention-Head Weight Subspaces via the Projection Kernel}},\n author = {Hiroaki Yamagiwa and Yusuke Takase and Hidetoshi Shimodaira},\n journal = {arXiv preprint arXiv:2601.10266},\n year = {2026},\n eprint = {2601.10266},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2601.10266},\n url = {https://arxiv.org/abs/2601.10266}\n}\n\n@article{Kaushik2025,\n title = {{The Universal Weight Subspace Hypothesis}},\n author = {Prakhar Kaushik and Shravan Chaudhari and Ankit Vaidya and Rama Chellappa and Alan Yuille},\n journal = {arXiv preprint arXiv:2512.05117},\n year = {2025},\n eprint = {2512.05117},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2512.05117},\n url = {https://arxiv.org/abs/2512.05117}\n}\n\n@article{Africa2026,\n title = {{Detecting CSAM Text-to-Image LoRAs From Weights}},\n author = {David Demitri Africa and Cate Heine and Nadine Staes-Polet and Kimberly Mai},\n journal = {arXiv preprint arXiv:2607.25750},\n year = {2026},\n eprint = {2607.25750},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2607.25750},\n url = {https://arxiv.org/abs/2607.25750}\n}\n\n@article{Prosvirnin2026,\n title = {{Silent Alarm: A J-Space Protocol for Comparing Danger Recognition Across Models and Quantization Levels}},\n author = {Roman Prosvirnin and Victor Minchenkov and Alexey Soldatov and Vladimir Bashun and Anton Sergeev},\n journal = {arXiv preprint arXiv:2607.12792},\n year = {2026},\n eprint = {2607.12792},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2607.12792},\n url = {https://arxiv.org/abs/2607.12792}\n}\n\n@article{ReblitzRichardson2026,\n title = {{Refusal Reads Only a Slice of What the Model Knows: Harm-Keyed Routing and Its Exceptions Across Model Families}},\n author = {Orion Reblitz-Richardson},\n journal = {arXiv preprint arXiv:2609.14759},\n year = {2026},\n eprint = {2609.14759},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2609.14759},\n url = {https://arxiv.org/abs/2609.14759}\n}\n\n@article{Noel2026,\n title = {{A Probe Direction Is a Property of Its Prompt}},\n author = {Valentin Noël},\n journal = {arXiv preprint arXiv:2608.13329},\n year = {2026},\n eprint = {2608.13329},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2608.13329},\n url = {https://arxiv.org/abs/2608.13329}\n}\n\n@article{Nguyen2026,\n title = {{Beyond Shallow Alignment: How Post-Training Methods Determine Refusal Circuits And Steering Robustness}},\n author = {Hoang Cuong Nguyen and Mark Dras and Usman Naseem},\n journal = {arXiv preprint arXiv:2609.03887},\n year = {2026},\n eprint = {2609.03887},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2609.03887},\n url = {https://arxiv.org/abs/2609.03887}\n}\n\n@inproceedings{Sahoo2026,\n title = {{Linear Probes Detect Task Format, Not Reasoning Mode in Language Model Hidden States}},\n author = {Subramanyam Sahoo and Vinija Jain and Aman Chadha and Divya Chaudhary},\n booktitle = {Proceedings of the 6th Workshop on Trustworthy NLP (TrustNLP 2026)},\n year = {2026},\n eprint = {2606.02907},\n archivePrefix = {arXiv},\n doi = {10.18653/v1/2026.trustnlp-main.12},\n url = {https://arxiv.org/abs/2606.02907}\n}\n\n@article{Hossain2026,\n title = {{TamperBench: Systematically Stress-Testing LLM Safety Under Fine-Tuning and Tampering}},\n author = {Saad Hossain and Tom Tseng and Punya Syon Pandey and Samanvay Vajpayee and Matthew Kowal and Nayeema Nonta and Samuel Simko and Stephen Casper and Zhijing Jin and Kellin Pelrine and Sirisha Rambhatla},\n journal = {arXiv preprint arXiv:2602.06911},\n year = {2026},\n eprint = {2602.06911},\n archivePrefix = {arXiv},\n doi = {10.1145/3770855.3817557},\n url = {https://arxiv.org/abs/2602.06911}\n}\n\n@inproceedings{Oyama2025,\n title = {{Mapping 1,000+ Language Models via the Log-Likelihood Vector}},\n author = {Momose Oyama and Hiroaki Yamagiwa and Yusuke Takase and Hidetoshi Shimodaira},\n booktitle = {Annual Meeting of the Association for Computational Linguistics},\n year = {2025},\n eprint = {2502.16173},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2502.16173},\n url = {https://arxiv.org/abs/2502.16173}\n}\n\n@inproceedings{Kiela2021,\n title = {{Dynabench: Rethinking Benchmarking in NLP}},\n author = {Douwe Kiela and Max Bartolo and Yixin Nie and Divyansh Kaushik and Atticus Geiger and Zhengxuan Wu and Bertie Vidgen and Grusha Prasad and Amanpreet Singh and Pratik Ringshia and Zhiyi Ma and Tristan Thrush and Sebastian Riedel and Zeerak Waseem and Pontus Stenetorp and Robin Jia and Mohit Bansal and Christopher Potts and Adina Williams},\n booktitle = {North American Chapter of the Association for Computational Linguistics},\n year = {2021},\n eprint = {2104.14337},\n archivePrefix = {arXiv},\n doi = {10.18653/V1/2021.NAACL-MAIN.324},\n url = {https://arxiv.org/abs/2104.14337}\n}\n\n@inproceedings{Shirali2022,\n title = {{A Theory of Dynamic Benchmarks}},\n author = {Ali Shirali and Rediet Abebe and Moritz Hardt},\n booktitle = {International Conference on Learning Representations},\n year = {2023},\n eprint = {2210.03165},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2210.03165},\n url = {https://arxiv.org/abs/2210.03165}\n}\n\n@article{Rajore2024,\n title = {{TRUCE: Private Benchmarking to Prevent Contamination and Improve Comparative Evaluation of LLMs}},\n author = {Tanmay Rajore and Nishanth Chandran and Sunayana Sitaram and Divya Gupta and Rahul Sharma and Kashish Mittal and Manohar Swaminathan},\n journal = {arXiv preprint arXiv:2403.00393},\n year = {2024},\n eprint = {2403.00393},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2403.00393},\n url = {https://arxiv.org/abs/2403.00393}\n}\n\n@article{Hardt2015,\n title = {{Strategic Classification}},\n author = {Moritz Hardt and Nimrod Megiddo and Christos Papadimitriou and Mary Wootters},\n journal = {arXiv preprint arXiv:1506.06980},\n year = {2015},\n eprint = {1506.06980},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.1506.06980},\n url = {https://arxiv.org/abs/1506.06980}\n}\n\n@article{Fan2025,\n title = {{Evaluation Faking: Unveiling Observer Effects in Safety Evaluation of Frontier AI Systems}},\n author = {Yihe Fan and Wenqi Zhang and Xudong Pan and Min Yang},\n journal = {arXiv preprint arXiv:2505.17815},\n year = {2025},\n eprint = {2505.17815},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2505.17815},\n url = {https://arxiv.org/abs/2505.17815}\n}\n\n@article{Panfilov2025,\n title = {{Strategic Dishonesty Can Undermine AI Safety Evaluations of Frontier LLMs}},\n author = {Alexander Panfilov and Evgenii Kortukov and Kristina Nikolić and Matthias Bethge and Sebastian Lapuschkin and Wojciech Samek and Ameya Prabhu and Maksym Andriushchenko and Jonas Geiping},\n journal = {arXiv preprint arXiv:2509.18058},\n year = {2025},\n eprint = {2509.18058},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2509.18058},\n url = {https://arxiv.org/abs/2509.18058}\n}\n\n@inproceedings{Chao2024,\n title = {{JailbreakBench: An Open Robustness Benchmark for Jailbreaking Large Language Models}},\n author = {Patrick Chao and Edoardo Debenedetti and Alexander Robey and Maksym Andriushchenko and Francesco Croce and Vikash Sehwag and Edgar Dobriban and Nicolas Flammarion and George J. Pappas and Florian Tramer and Hamed Hassani and Eric Wong},\n booktitle = {Neural Information Processing Systems},\n year = {2024},\n eprint = {2404.01318},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2404.01318},\n url = {https://arxiv.org/abs/2404.01318}\n}\n\n@inproceedings{Cui2024,\n title = {{OR-Bench: An Over-Refusal Benchmark for Large Language Models}},\n author = {Justin Cui and Wei-Lin Chiang and Ion Stoica and Cho-Jui Hsieh},\n booktitle = {International Conference on Machine Learning},\n year = {2025},\n eprint = {2405.20947},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2405.20947},\n url = {https://arxiv.org/abs/2405.20947}\n}\n\n@article{Zeng2024,\n title = {{AIR-Bench 2024: A Safety Benchmark Based on Risk Categories from Regulations and Policies}},\n author = {Yi Zeng and Yu Yang and Andy Zhou and Jeffrey Ziwei Tan and Yuheng Tu and Yifan Mai and Kevin Klyman and Minzhou Pan and Ruoxi Jia and Dawn Song and Percy Liang and Bo Li},\n journal = {arXiv preprint arXiv:2407.17436},\n year = {2024},\n eprint = {2407.17436},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2407.17436},\n url = {https://arxiv.org/abs/2407.17436}\n}\n\n@article{Huang2024,\n title = {{TrustLLM: Trustworthiness in Large Language Models}},\n author = {Yue Huang and Lichao Sun and Haoran Wang and Siyuan Wu and Qihui Zhang and Yuan Li and Chujie Gao and Yixin Huang and Wenhan Lyu and Yixuan Zhang and Xiner Li and Zhengliang Liu and Yixin Liu and Yijue Wang and Zhikun Zhang and Bertie Vidgen and Bhavya Kailkhura and Caiming Xiong and Chaowei Xiao and Chunyuan Li and Eric Xing and Furong Huang and Hao Liu and Heng Ji and Hongyi Wang and Huan Zhang and Huaxiu Yao and Manolis Kellis and Marinka Zitnik and Meng Jiang and Mohit Bansal and James Zou and Jian Pei and Jian Liu and Jianfeng Gao and Jiawei Han and Jieyu Zhao and Jiliang Tang and Jindong Wang and Joaquin Vanschoren and John Mitchell and Kai Shu and Kaidi Xu and Kai-Wei Chang and Lifang He and Lifu Huang and Michael Backes and Neil Zhenqiang Gong and Philip S. Yu and Pin-Yu Chen and Quanquan Gu and Ran Xu and Rex Ying and Shuiwang Ji and Suman Jana and Tianlong Chen and Tianming Liu and Tianyi Zhou and William Wang and Xiang Li and Xiangliang Zhang and Xiao Wang and Xing Xie and Xun Chen and Xuyu Wang and Yan Liu and Yanfang Ye and Yinzhi Cao and Yong Chen and Yue Zhao},\n journal = {arXiv preprint arXiv:2401.05561},\n year = {2024},\n eprint = {2401.05561},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2401.05561},\n url = {https://arxiv.org/abs/2401.05561}\n}\n\n@inproceedings{Hendrycks2020,\n title = {{Measuring Massive Multitask Language Understanding}},\n author = {Dan Hendrycks and Collin Burns and Steven Basart and Andy Zou and Mantas Mazeika and Dawn Song and Jacob Steinhardt},\n booktitle = {International Conference on Learning Representations},\n year = {2021},\n eprint = {2009.03300},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2009.03300},\n url = {https://arxiv.org/abs/2009.03300}\n}\n\n@article{Cobbe2021,\n title = {{Training Verifiers to Solve Math Word Problems}},\n author = {Karl Cobbe and Vineet Kosaraju and Mohammad Bavarian and Mark Chen and Heewoo Jun and Lukasz Kaiser and Matthias Plappert and Jerry Tworek and Jacob Hilton and Reiichiro Nakano and Christopher Hesse and John Schulman},\n journal = {arXiv preprint arXiv:2110.14168},\n year = {2021},\n eprint = {2110.14168},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2110.14168},\n url = {https://arxiv.org/abs/2110.14168}\n}\n\n@inproceedings{Li2024,\n title = {{From Crowdsourced Data to High-Quality Benchmarks: Arena-Hard and BenchBuilder Pipeline}},\n author = {Tianle Li and Wei-Lin Chiang and Evan Frick and Lisa Dunlap and Tianhao Wu and Banghua Zhu and Joseph E. Gonzalez and Ion Stoica},\n booktitle = {International Conference on Machine Learning},\n year = {2024},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2406.11939},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2406.11939},\n url = {https://arxiv.org/abs/2406.11939}\n}\n\n@article{Yang2025,\n title = {{Qwen3 Technical Report}},\n author = {An Yang and Anfeng Li and Baosong Yang and Beichen Zhang and Binyuan Hui and Bo Zheng and Bowen Yu and Chang Gao and Chengen Huang and Chenxu Lv and Chujie Zheng and Dayiheng Liu and Fan Zhou and Fei Huang and Feng Hu and Hao Ge and Haoran Wei and Huan Lin and Jialong Tang and Jian Yang and Jianhong Tu and Jianwei Zhang and Jianxin Yang and Jiaxi Yang and Jing Zhou and Jingren Zhou and Junyang Lin and Kai Dang and Keqin Bao and Kexin Yang and Le Yu and Lianghao Deng and Mei Li and Mingfeng Xue and Mingze Li and Pei Zhang and Peng Wang and Qin Zhu and Rui Men and Ruize Gao and Shixuan Liu and Shuang Luo and Tianhao Li and Tianyi Tang and Wenbiao Yin and Xingzhang Ren and Xinyu Wang and Xinyu Zhang and Xuancheng Ren and Yang Fan and Yang Su and Yichang Zhang and Yinger Zhang and Yu Wan and Yuqiong Liu and Zekun Wang and Zeyu Cui and Zhenru Zhang and Zhipeng Zhou and Zihan Qiu},\n journal = {arXiv preprint arXiv:2505.09388},\n year = {2025},\n eprint = {2505.09388},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2505.09388},\n url = {https://arxiv.org/abs/2505.09388}\n}\n\n@article{Jiang2026,\n title = {{When Behavioral Safety Evaluation Fails: A Representation-Level Perspective}},\n author = {Enyi Jiang and Anders Gjølbye and Yibo Jacky Zhang and Sanmi Koyejo},\n journal = {arXiv preprint arXiv:2606.08044},\n year = {2026},\n eprint = {2606.08044},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2606.08044},\n url = {https://arxiv.org/abs/2606.08044}\n}\n\n@inproceedings{Wang2024,\n title = {{Surgical, Cheap, and Flexible: Mitigating False Refusal in Language Models via Single Vector Ablation}},\n author = {Xinpeng Wang and Chengzhi Hu and Paul Röttger and Barbara Plank},\n booktitle = {International Conference on Learning Representations},\n year = {2025},\n eprint = {2410.03415},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2410.03415},\n url = {https://arxiv.org/abs/2410.03415}\n}\n\n@article{Jenny2026,\n title = {{Activation Surgery: Jailbreaking White-box LLMs without Touching the Prompt}},\n author = {Maël Jenny and Jérémie Dentan and Sonia Vanier and Michaël Krajecki},\n journal = {arXiv preprint arXiv:2603.14278},\n year = {2026},\n eprint = {2603.14278},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2603.14278},\n url = {https://arxiv.org/abs/2603.14278}\n}\n\n@article{Heimersheim2024,\n title = {{How to use and interpret activation patching}},\n author = {Stefan Heimersheim and Neel Nanda},\n journal = {arXiv preprint arXiv:2404.15255},\n year = {2024},\n eprint = {2404.15255},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2404.15255},\n url = {https://arxiv.org/abs/2404.15255}\n}\n\n@inproceedings{Zhang2023,\n title = {{Towards Best Practices of Activation Patching in Language Models: Metrics and Methods}},\n author = {Fred Zhang and Neel Nanda},\n booktitle = {International Conference on Learning Representations},\n year = {2024},\n eprint = {2309.16042},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2309.16042},\n url = {https://arxiv.org/abs/2309.16042}\n}\n\n@article{Liu2026,\n title = {{Perturbation Probing: A Two-Pass-per-Prompt Diagnostic for FFN Behavioral Circuits in Aligned LLMs}},\n author = {Hongliang Liu and Tung-Ling Li and Yuhao Wu},\n journal = {arXiv preprint arXiv:2604.27401},\n year = {2026},\n eprint = {2604.27401},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2604.27401},\n url = {https://arxiv.org/abs/2604.27401}\n}\n\n@article{Chu2026,\n title = {{From Detection to Refusal: Safer LLMs via Circuit-Guided Weight Scaling}},\n author = {Kuan-Lin Chu and Chung-En Sun and Tsui-Wei Weng},\n journal = {arXiv preprint arXiv:2609.00051},\n year = {2026},\n eprint = {2609.00051},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2609.00051},\n url = {https://arxiv.org/abs/2609.00051}\n}\n\n@inproceedings{Zhou2024,\n title = {{On the Role of Attention Heads in Large Language Model Safety}},\n author = {Zhenhong Zhou and Haiyang Yu and Xinghua Zhang and Rongwu Xu and Fei Huang and Kun Wang and Yang Liu and Junfeng Fang and Yongbin Li},\n booktitle = {International Conference on Learning Representations},\n year = {2025},\n eprint = {2410.13708},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2410.13708},\n url = {https://arxiv.org/abs/2410.13708}\n}\n\n@article{Zong2026,\n title = {{Localizing Safety Alignment: MLP Layers and Mid-Network Blocks Encode Refusal Behavior in Large Language Models}},\n author = {Mingyu Zong and Sampad Mohanty and Bhaskar Krishnamachari},\n journal = {arXiv preprint arXiv:2608.11583},\n year = {2026},\n eprint = {2608.11583},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2608.11583},\n url = {https://arxiv.org/abs/2608.11583}\n}\n\n@article{Pu2024,\n title = {{Feint and Attack: Attention-Based Strategies for Jailbreaking and Protecting LLMs}},\n author = {Rui Pu and Chaozhuo Li and Rui Ha and Zejian Chen and Litian Zhang and Zheng Liu and Lirong Qiu and Zaisheng Ye},\n journal = {arXiv preprint arXiv:2410.16327},\n year = {2024},\n eprint = {2410.16327},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2410.16327},\n url = {https://arxiv.org/abs/2410.16327}\n}\n\n@inproceedings{Leong2025,\n title = {{Why Safeguarded Ships Run Aground? Aligned Large Language Models' Safety Mechanisms Tend to Be Anchored in The Template Region}},\n author = {Chak Tou Leong and Qingyu Yin and Jian Wang and Wenjie Li},\n booktitle = {Annual Meeting of the Association for Computational Linguistics},\n year = {2025},\n eprint = {2502.13946},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2502.13946},\n url = {https://arxiv.org/abs/2502.13946}\n}\n\n@article{Xie2024,\n title = {{GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis}},\n author = {Yueqi Xie and Minghong Fang and Renjie Pi and Neil Gong},\n journal = {arXiv preprint arXiv:2402.13494},\n year = {2024},\n eprint = {2402.13494},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2402.13494},\n url = {https://arxiv.org/abs/2402.13494}\n}\n\n@article{Cahyono2026,\n title = {{Safety Targeted Embedding Exploit via Refinement}},\n author = {Joshua Adrian Cahyono},\n journal = {arXiv preprint arXiv:2607.01859},\n year = {2026},\n eprint = {2607.01859},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2607.01859},\n url = {https://arxiv.org/abs/2607.01859}\n}\n\n@article{Mohammad2026,\n title = {{Harmfulness Propagation Dynamics: Layer-wise Trajectories of Adversarial Intent in Large Language Models}},\n author = {Noor Islam S. Mohammad and Uluğ Bayazıt},\n journal = {arXiv preprint arXiv:2609.13534},\n year = {2026},\n eprint = {2609.13534},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2609.13534},\n url = {https://arxiv.org/abs/2609.13534}\n}\n\n@article{Yang2026,\n title = {{First Token Matters: Understanding Safety Collapse in Large Reasoning Models}},\n author = {Yizheng Yang and Haining Yu and Yuechen Wang and Yikai Hou and Xing Fu and Jinbo Yang and Tianqing Zhu},\n journal = {arXiv preprint arXiv:2609.18471},\n year = {2026},\n eprint = {2609.18471},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2609.18471},\n url = {https://arxiv.org/abs/2609.18471}\n}\n\n@article{Park2026,\n title = {{Inference-Time Vulnerability Beyond Shallow Safety: Alignment Along Generation Trajectories}},\n author = {Kyungmin Park and Taesup Kim},\n journal = {arXiv preprint arXiv:2606.04778},\n year = {2026},\n eprint = {2606.04778},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2606.04778},\n url = {https://arxiv.org/abs/2606.04778}\n}\n\n@inproceedings{Pacchiardi2025,\n title = {{PredictaBoard: Benchmarking LLM Score Predictability}},\n author = {Lorenzo Pacchiardi and Konstantinos Voudouris and Ben Slater and Fernando Martínez-Plumed and José Hernández-Orallo and Lexin Zhou and Wout Schellaert},\n booktitle = {Annual Meeting of the Association for Computational Linguistics},\n year = {2025},\n eprint = {2502.14445},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2502.14445},\n url = {https://arxiv.org/abs/2502.14445}\n}\n\n@article{Wei2024,\n title = {{Diff-eRank: A Novel Rank-Based Metric for Evaluating Large Language Models}},\n author = {Lai Wei and Zhiquan Tan and Chenghai Li and Jindong Wang and Weiran Huang},\n journal = {arXiv preprint arXiv:2401.17139},\n year = {2024},\n eprint = {2401.17139},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2401.17139},\n url = {https://arxiv.org/abs/2401.17139}\n}\n\n@article{Chakraborty2026,\n title = {{Latent Performance Profiling of Large Language Models}},\n author = {Tanmoy Chakraborty and Ayan Sengupta and Suparna Bhattacharya and Partha Pratim Chakrabarti and Amlan Chakrabarti and Supratik Chakraborty and Partha Pratim Das and Lipika Dey and Richa Singh and Mayank Vatsa},\n journal = {arXiv preprint arXiv:2605.30018},\n year = {2026},\n eprint = {2605.30018},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2605.30018},\n url = {https://arxiv.org/abs/2605.30018}\n}\n\n@inproceedings{Li2026,\n title = {{Analysing the Safety Pitfalls of Steering Vectors}},\n author = {Yuxiao Li and Alina Fastowski and Efstratios Zaradoukas and Bardh Prenkaj and Gjergji Kasneci},\n booktitle = {Annual Meeting of the Association for Computational Linguistics},\n year = {2026},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2603.24543},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2603.24543},\n url = {https://arxiv.org/abs/2603.24543}\n}\n\n@inproceedings{Panickssery2023,\n title = {{Steering Llama 2 via Contrastive Activation Addition}},\n author = {Nina Panickssery and Nick Gabrieli and Julian Schulz and Meg Tong and Evan Hubinger and Alexander Matt Turner},\n booktitle = {Annual Meeting of the Association for Computational Linguistics},\n year = {2023},\n note = {Venue from Semantic Scholar; year is the arXiv v1 year (venue year not verified)},\n eprint = {2312.06681},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2312.06681},\n url = {https://arxiv.org/abs/2312.06681}\n}\n\n@article{Zhao2025b,\n title = {{Qwen3Guard Technical Report}},\n author = {Haiquan Zhao and Chenhan Yuan and Fei Huang and Xiaomeng Hu and Yichang Zhang and An Yang and Bowen Yu and Dayiheng Liu and Jingren Zhou and Junyang Lin and Baosong Yang and Chen Cheng and Jialong Tang and Jiandong Jiang and Jianwei Zhang and Jijie Xu and Ming Yan and Minmin Sun and Pei Zhang and Pengjun Xie and Qiaoyu Tang and Qin Zhu and Rong Zhang and Shibin Wu and Shuo Zhang and Tao He and Tianyi Tang and Tingyu Xia and Wei Liao and Weizhou Shen and Wenbiao Yin and Wenmeng Zhou and Wenyuan Yu and Xiaobin Wang and Xiaodong Deng and Xiaodong Xu and Xinyu Zhang and Yang Liu and Yeqiu Li and Yi Zhang and Yong Jiang and Yu Wan and Yuxin Zhou},\n journal = {arXiv preprint arXiv:2510.14276},\n year = {2025},\n eprint = {2510.14276},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2510.14276},\n url = {https://arxiv.org/abs/2510.14276}\n}\n\n@article{Labunets2026,\n title = {{Refusal geometry reflects refusal training: diverse refusal prefixes can raise stable rank and weaken refusal vector ablation attacks}},\n author = {Andrey Labunets},\n journal = {arXiv preprint arXiv:2608.25390},\n year = {2026},\n eprint = {2608.25390},\n archivePrefix = {arXiv},\n doi = {10.48550/arXiv.2608.25390},\n url = {https://arxiv.org/abs/2608.25390}\n}\n\n@misc{JolanMc2026Jorak,\n title = {{Model Scanner (Jorak): Reference-free detection of abliteration in open-source LLMs}},\n author = {{JolanMc}},\n year = {2026},\n howpublished = {GitHub repository, \\url{https://github.com/JolanMc/Jorak}},\n note = {Commit 8147de343964a3cced37db71814e9007c7465a52 (2026-07-24). Thresholds svd\\_align\\_severed = band\\_align\\_severed = subspace\\_severed = 0.5 in modelscanner/classifier/scanner.py L48--55, unchanged since the initial commit 27957d6. Unreviewed software (grey literature). Accessed 2026-09-21.},\n url = {https://github.com/JolanMc/Jorak/tree/8147de343964a3cced37db71814e9007c7465a52}\n}\n\n@misc{FailureFirst2026Report74,\n title = {{Report 74 (Research -- Empirical Study): abliteration resistance vs.\\ jailbreak refusal}},\n author = {{Failure-First}},\n year = {2026},\n howpublished = {Web report, \\url{https://failurefirst.org/research/reports/74-abliteration-jailbreak-orthogonality/}},\n note = {Page heading reads only 'Report 74'; descriptive title from its URL slug '74-abliteration-jailbreak-orthogonality'. Dated 2026-03-11. Not peer reviewed (grey literature). Reports Spearman rho = -0.003 between abliteration resistance and jailbreak refusal across 16 models. Accessed 2026-09-21.}\n}\n"
+}

@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modelscanner"
+version = "0.1.0"
+description = "Reference-free detection of directional ablation (abliteration) in open-source LLMs"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Jolan Mocanu", email = "jolan.mocanu@gmail.com" }]
+keywords = [
+    "large-language-models",
+    "abliteration",
+    "refusal-direction",
+    "ai-safety",
+    "model-provenance",
+    "red-teaming",
+]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.24",
+    "torch>=2.2",
+    "transformers>=4.44",
+    "safetensors>=0.4",
+    "accelerate>=0.30",
+    "scikit-learn>=1.3",
+    "matplotlib>=3.7",
+    "seaborn>=0.13",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# bnb quantization (requires CUDA GPU) — to load 7B in 4-bit on a T4.
+quant = ["bitsandbytes>=0.43"]
+# GGUF reading (all Q*) — weights plan + behavioral plan.
+gguf = ["gguf>=0.10", "llama-cpp-python>=0.2.80"]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.8", "pre-commit>=3.7", "optuna>=3.6"]
+
+[project.scripts]
+modelscanner = "modelscanner.cli:main"
+
+[project.urls]
+Documentation = "https://github.com/JolanMc/Jorak/blob/main/README.md"
+Source = "https://github.com/JolanMc/Jorak"
+Changelog = "https://github.com/JolanMc/Jorak/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["modelscanner*"]
+
+[tool.setuptools.package-data]
+modelscanner = ["probes/data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+# Conservative gate for a project still in active development: catch real bugs
+# (F), keep imports tidy (I), flag whitespace warnings (W). The codebase uses a
+# deliberate compact one-liner style, so we do NOT enforce full reformatting.
+line-length = 100
+target-version = "py310"
+extend-exclude = ["jorak_demo_report", "docs", "figures"]
+
+[tool.ruff.lint]
+select = ["F", "I", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+# Re-exports in package inits are intentional, not unused imports.
+"__init__.py" = ["F401"]

@@ -1,0 +1,186 @@
+{
+  "records": [
+    {
+      "candidate": "C6",
+      "one_line": "Concentration of direct logit attribution (DLA) to refusal tokens across heads and MLPs (top-k share and depth centroid).",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2406.11717", "title": "Refusal in Language Models Is Mediated by a Single Direction", "first_author": "Andy Arditi", "year": 2024, "venue": "NeurIPS 2024"},
+        {"arxiv_id_or_doi": "2410.13708", "title": "On the Role of Attention Heads in Large Language Model Safety", "first_author": "Zhenhong Zhou", "year": 2024, "venue": "arXiv (ACL-style)"},
+        {"arxiv_id_or_doi": "2608.11583", "title": "Localizing Safety Alignment: MLP Layers and Mid-Network Blocks Encode Refusal Behavior in Large Language Models", "first_author": "unknown (not individually verified beyond listing)", "year": 2026, "venue": "arXiv"}
+      ],
+      "what_it_measured": "Arditi et al. use 'direct feature attribution' (DFA) -- projecting each attention-head/MLP component's output onto the refusal direction -- but restrict this component-level attribution analysis to a SINGLE model case study (Qwen 1.8B Chat) even though the paper's main refusal-direction finding spans 13 models. Zhou et al.'s Ships/Sahara score is an ABLATION-drop importance score (not DLA/logit-projection) computed on 2 models (Llama-2-7b-chat, Vicuna-7b-v1.5), used to find which heads to zero out, not a top-k-share/depth-centroid summary statistic.",
+      "n_models_and_families": "Arditi: 13 models used for the refusal-direction finding, but the DFA component-attribution analysis itself is done on 1 model. Zhou/Ships-Sahara: 2 models (both Llama-2 family fine-tunes).",
+      "used_to_rank_models": {"value": "no", "quote": "We therefore restrict our analysis to a single model, Qwen 1.8B Chat, and a single suffix."},
+      "parent_free": "yes",
+      "prompt_budget": "n/a (mechanism-analysis papers, not prompt-budget-constrained safety scores)",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "n/a"},
+      "verdict": "ADJACENT",
+      "verbatim_quote": "To further investigate how the refusal direction is suppressed, we examine the contributions of individual attention head and MLP components to the refusal direction. We quantify each component's contribution to this direction using direct feature attribution (DFA) (Makelov et al. 2024; Kissane et al. 2024): each component's direct contribution can be measured by projecting its output onto the refusal direction.",
+      "locator": "Arditi et al. 2406.11717, Section 5 / Appendix H.1 (ar5iv HTML, mirrors NeurIPS v1)",
+      "queries_run": [
+        {"query": "\"direct logit attribution\" refusal tokens attention heads MLP concentration", "mode": "general", "hits_scanned": 10},
+        {"query": "safety heads direct logit attribution refusal concentration cross-model", "mode": "general", "hits_scanned": 10},
+        {"query": "logit lens refusal token attribution heads depth centroid", "mode": "general", "hits_scanned": 10},
+        {"query": "\"refusal head\" ablation importance score safety ranking models", "mode": "general", "hits_scanned": 9},
+        {"query": "attention head importance safety score cross-model ranking LLM alignment", "mode": "general", "hits_scanned": 10},
+        {"query": "Arditi refusal direction single direction 13 models direct feature attribution DFA components", "mode": "general", "hits_scanned": 10},
+        {"query": "DLA top-k share heads MLP safety concentration metric refusal logit", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "Arditi's 13-model number applies only to the refusal-DIRECTION-existence claim, not to the DLA/component-attribution analysis, which the paper itself admits is a single-model case study (quoted). This matches the verdict-rule caveat exactly: 'computed on several models is not ranked as a safety indicator unless the paper treats the per-model number as a safety comparison.' Ships/Sahara is ablation-drop, a different functional form from DLA-concentration (top-k share + depth centroid), and only 2 models from one lineage (both derived from Llama-2), so no cross-family ranking exists either.",
+      "positioning_sentence": "Unlike Arditi et al. (2406.11717), whose direct-feature-attribution analysis of refusal-direction components is a single-model case study, and Zhou et al. (2410.13708), whose Ships/Sahara ablation-importance score covers only two same-lineage models, our DLA-concentration statistic (top-k share and depth centroid of refusal-token attribution) is computed per checkpoint and validated as a cross-family safety indicator."
+    },
+    {
+      "candidate": "C7",
+      "one_line": "Late-layer attention mass from the decision position onto harmful-vs-twin differing tokens.",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2410.16327", "title": "Feint and Attack: Jailbreaking and Protecting LLMs via Attention Distribution Modeling", "first_author": "Rui Pu", "year": 2024, "venue": "IJCAI 2025"},
+        {"arxiv_id_or_doi": "2502.13946", "title": "Why Safeguarded Ships Run Aground? Aligned Large Language Models' Safety Mechanisms Tend to Be Anchored in The Template Region", "first_author": "Chak Tou Leong", "year": 2025, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2410.13708", "title": "On the Role of Attention Heads in Large Language Model Safety", "first_author": "Zhenhong Zhou", "year": 2024, "venue": "arXiv"}
+      ],
+      "what_it_measured": "Pu et al. define Attn_SensWords, the attention intensity LLMs allocate to sensitive (harmful) nouns/verbs, and correlate it with jailbreak-attack success RATE on a FIXED model (not compared across model families as a safety ranking). Leong et al. measure attention SHIFT toward the template region (not harmful-vs-twin differing content tokens) as harmfulness increases, across 6 models, but the region compared is template-vs-instruction, not matched harmful/twin token spans.",
+      "n_models_and_families": "Feint and Attack: Llama2-7B and Llama2-13B only (1 family) for the ASW-vs-ASR correlation table. Leong et al.: 6 models across 4 families (Gemma-2, Llama-2, Llama-3, Mistral) but for template-region attention, not twin-token attention.",
+      "used_to_rank_models": {"value": "no", "quote": "The Llama2 series models, specifically Llama2-7B and Llama2-13B, are chosen as the target LLMs."},
+      "parent_free": "yes",
+      "prompt_budget": "n/a",
+      "correlated_with_benchmark_safety": {"value": "partial", "number": "Table 1 of 2410.16327 correlates Attn_SensWords with ASR/ASR-G per jailbreak method, within one model, not per-model safety ranking"},
+      "verdict": "ADJACENT",
+      "verbatim_quote": "we propose a novel metric, Attention Intensity on Sensitive Words (Attn_SensWords), designed to quantify the attention allocated by LLMs to such sensitive terms.",
+      "locator": "Pu et al. 2410.16327, Section 3 (arxiv.org/html/2410.16327)",
+      "queries_run": [
+        {"query": "attention mass harmful tokens minus benign twin decision position refusal safety score", "mode": "general", "hits_scanned": 9},
+        {"query": "\"attention entropy\" OR \"attention mass\" harmful keyword refusal jailbreak cross model correlate benchmark", "mode": "general", "hits_scanned": 9},
+        {"query": "\"Attention Intensity on Sensitive Words\" \"Attention Dispersion Entropy\" jailbreak", "mode": "general", "hits_scanned": 10},
+        {"query": "late-layer attention harmful token differing minimal pair matched prompt safety heads", "mode": "general", "hits_scanned": 9},
+        {"query": "attention head importance safety score cross-model ranking LLM alignment", "mode": "general", "hits_scanned": 10}
+      ],
+      "adversarial_note": "Attn_SensWords is the closest published quantity (attention allocated to harm-bearing tokens) but (a) it is evaluated within a single model family (Llama2) across jailbreak METHODS, not across model FAMILIES as a safety score, and (b) it uses raw sensitive-word attention, not a harmful-vs-twin DIFFERENCE restricted to late layers with a fixed decision position. No paper found computes attention-mass concentrated on the token-level DIFFERENCE between a harmful prompt and its matched benign twin, compared per-model as a safety ranking.",
+      "positioning_sentence": "Where Pu et al. (2410.16327) show that attention to sensitive words correlates with jailbreak success within a single Llama-2 family, we compute late-layer attention mass specifically on the tokens that differ between harmful prompts and their benign twins and validate it as a cross-family safety indicator."
+    },
+    {
+      "candidate": "C8",
+      "one_line": "Input-gradient share of the refusal margin on harmful-vs-twin differing tokens.",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2402.13494", "title": "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis", "first_author": "Yueqi Xie", "year": 2024, "venue": "ACL 2024"},
+        {"arxiv_id_or_doi": "2607.01859", "title": "Safety Targeted Embedding Exploit via Refinement", "first_author": "unknown (title verified via arXiv abstract page, author list not individually confirmed)", "year": 2026, "venue": "arXiv"}
+      ],
+      "what_it_measured": "GradSafe uses parameter-gradient (not input-token-gradient) cosine similarity between a harmful-prompt-plus-compliance-response pair and a reference set, evaluated primarily on Llama-2 as a prompt classifier, not a per-token attribution of the refusal margin and not a cross-model safety score. The 'Safety Targeted Embedding Exploit' paper is a gradient-guided ATTACK that identifies which words most strongly drive refusal (word-level gradient attribution) and translates them, tested on six 8B open-source models plus GPT-4o-mini transfer, but reports attack success, not a safety-ranking score.",
+      "n_models_and_families": "GradSafe: primarily Llama-2 (single family) for its core results. STEER-style paper: six open-source 8B models plus one closed-model transfer test.",
+      "used_to_rank_models": {"value": "no", "quote": "GradSafe, applied to Llama-2 without further training, outperforms Llama Guard, despite its extensive finetuning with a large dataset, in detecting jailbreak prompts."},
+      "parent_free": "yes",
+      "prompt_budget": "n/a",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "n/a"},
+      "verdict": "ADJACENT",
+      "verbatim_quote": "Our method is grounded in a pivotal observation: the gradients of an LLM's loss for jailbreak prompts paired with compliance response exhibit similar patterns on certain safety-critical parameters.",
+      "locator": "Xie et al. 2402.13494, Abstract (arxiv.org/abs/2402.13494)",
+      "queries_run": [
+        {"query": "gradient saliency attribution refusal margin harmful word token safety score models compared", "mode": "general", "hits_scanned": 10},
+        {"query": "input gradient attribution safety alignment jailbreak token importance cross-model", "mode": "general", "hits_scanned": 10},
+        {"query": "arxiv 2402.13494 GradSafe gradient safety jailbreak detection", "mode": "general", "hits_scanned": 9},
+        {"query": "GradSafe 2402.13494 cross-model evaluation Llama-2 gradient cosine similarity multiple models", "mode": "general", "hits_scanned": 9},
+        {"query": "token-level gradient attribution jailbreak refusal circuit multiple models compare", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "GradSafe operates on PARAMETER gradients (safety-critical weight slices), not INPUT-token gradients, and is not applied cross-model as a ranking. The word-level gradient-attribution attack paper (2607.01859) is the functional-form closest match (per-word gradient contribution to the refusal decision) but it is used offensively (to find words to translate/obfuscate) across 6 models, never turned into a per-model safety score or correlated with benchmark safety.",
+      "positioning_sentence": "GradSafe (2402.13494) attributes refusal to safety-critical PARAMETER gradients within one model family; we instead attribute the refusal margin to INPUT tokens that differ between harmful and twin prompts and use the resulting share as a per-checkpoint, cross-family safety indicator."
+    },
+    {
+      "candidate": "C9",
+      "one_line": "Template-site share of refusal drive.",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2502.13946", "title": "Why Safeguarded Ships Run Aground? Aligned Large Language Models' Safety Mechanisms Tend to Be Anchored in The Template Region", "first_author": "Chak Tou Leong", "year": 2025, "venue": "arXiv (ACL 2025 area)"}
+      ],
+      "what_it_measured": "Normalized Indirect Effect (NIE): the proportion of the refusal logit recovered by patching template-region (vs. instruction-region) activations from a harmless run into a harmful run, i.e. exactly 'template-site share of refusal drive.' Computed per model with an explicit normalization 'for a fair cross-model comparison', and plotted (Figure 4) across all 6 tested models, showing the template region dominates the instruction region in every model, with cross-model differences explicitly tied to safety vulnerability (models whose safety appeared stronger by refusal rate but showed high template NIE were, via TempPatch, MORE exploitable).",
+      "n_models_and_families": "6 models / 4 families: Gemma-2 (2b-it, 9b-it), Llama-2-7b-Chat, Llama-3 (3.2-3b-Instruct, 8B-Instruct), Mistral-7B-Instruct.",
+      "used_to_rank_models": {"value": "yes", "quote": "Right: Normalized indirect effects when patching activations are from two different regions (instruction v.s. template) across various LLMs, revealing that these models' safety functions are primarily anchored in the template regions."},
+      "parent_free": "yes",
+      "prompt_budget": "uses a constructed analysis/eval dataset per model (D_anlz, D_eval), size not stated as a small fixed prompt budget",
+      "correlated_with_benchmark_safety": {"value": "yes", "number": "qualitative: higher template-NIE models (e.g. Llama-3 8B/3B) show disproportionately higher ASR under TempPatch despite appearing safer on standard refusal-rate metrics (Table 1, Section 4.1)"},
+      "verdict": "PUBLISHED",
+      "verbatim_quote": "For a fair cross-model comparison, we use the normalized indirect effect (NIE) by dividing the IE of each pair by (m(x-)-m(x+)). The value of NIE represents the proportion of refusal logit recovered by patching that intermediate state.",
+      "locator": "Leong et al. 2502.13946, Section 3.3 / Appendix A.5 (Figure 4, Figure 10), arXiv v2 (arxiv.org/html/2502.13946v2)",
+      "queries_run": [
+        {"query": "arxiv 2502.13946 Leong Why Safeguarded Ships Run Aground safety mechanisms template region", "mode": "general", "hits_scanned": 9},
+        {"query": "template region safety reliance cross-model score benchmark correlation chat template dependency ranked", "mode": "general", "hits_scanned": 10},
+        {"query": "chat template safety reliance cross-model score (via grep of full text)", "mode": "grep", "hits_scanned": 62},
+        {"query": "grep pattern Figure 4 / NIE / stronger safety alignment", "mode": "grep", "hits_scanned": 22},
+        {"query": "safety heads direct logit attribution refusal concentration cross-model", "mode": "general", "hits_scanned": 10}
+      ],
+      "adversarial_note": "This is the clearest PUBLISHED match found in the whole sweep. Caveat: the cross-model comparison is presented as layered curves in Figure 4 (NIE vs. number of patched heads) plus a qualitative discussion tying higher template-reliance to greater TempPatch vulnerability, not as a single scalar NIE-per-model table correlated numerically against an external benchmark safety score. Per the verdict rule ('computes the same functional form per model AND compares or ranks models by it as a safety indicator'), this still qualifies as PUBLISHED: the paper explicitly computes NIE per model, explicitly states the normalization exists 'for a fair cross-model comparison', and explicitly uses cross-model NIE differences to explain why some models are more/less safe. This does NOT soften to ADJACENT.",
+      "positioning_sentence": "Leong et al. (2502.13946) already establish and cross-model-compare a template-region NIE as a cause of safety vulnerability; any C9-style metric must be explicitly positioned as a re-derivation or extension of their NIE, not a novel construct."
+    },
+    {
+      "candidate": "C10",
+      "one_line": "Area between the harm-decodability depth curve and the refusal-drive depth curve.",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2507.11878", "title": "LLMs Encode Harmfulness and Refusal Separately", "first_author": "Jiachen Zhao", "year": 2025, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2609.13534", "title": "Harmfulness Propagation Dynamics: Layer-wise Trajectories of Adversarial Intent in Large Language Models", "first_author": "Noor Islam S. Mohammad", "year": 2026, "venue": "arXiv"}
+      ],
+      "what_it_measured": "Zhao et al. show harmfulness and refusal are encoded by distinct directions and give layer-wise clustering/steering results (Figures 2, 4, 8, 14-15) on 3 models (Llama3-8B-Instruct, Llama2-7B-Chat, Qwen2-7B-Instruct), i.e. per-layer curves for both concepts on the same models -- but never subtract/integrate the two curves into an area/gap metric, and never use any such quantity to rank models by safety. Mohammad & Bayazit's Herald computes ONLY a harm-decodability trajectory (LDA projection onto a harm direction per layer, with 7 trajectory-shape features: slope, curvature, onset layer, monotonicity, etc.) across 4 model families (Llama-3.1-8B, Mistral-7B, OLMo2-7B, Qwen3-8B) and 8 benchmarks, but explicitly does NOT compute a paired refusal-drive curve (it distinguishes its harm-direction trajectory from Arditi's output-side refusal direction as a complementary, not combined, signal), and uses the trajectory to classify individual PROMPTS as harmful (an F1 detector), not to score/rank MODELS by safety.",
+      "n_models_and_families": "Zhao et al.: 3 models (Llama3, Llama2, Qwen2), 3 families. Herald: 4 model families (Llama-3.1, Mistral, OLMo2, Qwen3), 8 benchmarks, plus scaling experiments 11B-70B.",
+      "used_to_rank_models": {"value": "no", "quote": "The two directions also differ conceptually—refusal directions characterize generation-time behavior, while HPD directions characterize inference-time encoding of the prompt's intent."},
+      "parent_free": "yes",
+      "prompt_budget": "n/a for Zhao et al.; Herald uses full labeled training sets (WildGuardMix etc.), not a small fixed prompt budget",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "n/a (Herald's F1 is a per-prompt jailbreak-detection score, not a per-model safety ranking; Zhao et al. report steering-induced refusal rates per model but not an area/gap statistic)"},
+      "verdict": "ADJACENT",
+      "verbatim_quote": "This pattern—which we call Harmfulness Propagation Dynamics (HPD)—is stable across all four model families tested (Llama-3.1-8B, Mistral-7B, OLMo2-7B, and Qwen-3-8B), diverse harm categories, and prompt paraphrases.",
+      "locator": "Mohammad & Bayazit 2609.13534, Section 3.1 (arxiv.org/html/2609.13534); harmfulness/refusal curves in Zhao et al. 2507.11878, Figures 2 and 8 (arxiv.org/html/2507.11878v5)",
+      "queries_run": [
+        {"query": "harmfulness decodability layer probe accuracy curve versus refusal direction projection depth", "mode": "general", "hits_scanned": 10},
+        {"query": "arxiv 2507.11878 (verify) LLMs Encode Harmfulness and Refusal Separately", "mode": "general", "hits_scanned": 1},
+        {"query": "grep zhao_layer_grep: layer probe accuracy decodability", "mode": "grep", "hits_scanned": 8},
+        {"query": "grep hpd_grep: refusal drive / refusal direction / model families / rank / correlate", "mode": "grep", "hits_scanned": 165},
+        {"query": "area under curve harmfulness refusal layer gap metric safety score", "mode": "general", "hits_scanned": 10},
+        {"query": "arxiv 2609.13534 title Herald harmfulness propagation dynamics authors", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "Confirms the iteration-1 memory note: 2507.11878 already 'concedes' that BOTH a harmfulness curve and a refusal curve can be plotted across layers on the same models, so a naive 'we plot two depth curves' framing is not novel. What remains unpublished after this sweep is (a) integrating the two curves into a single AREA/gap statistic, and (b) using that scalar to RANK models cross-family as a safety indicator -- neither Zhao et al. nor Herald do either. Herald additionally only has one curve (harm), explicitly treating refusal-direction work as a separate, uncombined axis, and uses it for prompt-level detection F1, not model-level safety ranking.",
+      "positioning_sentence": "While Zhao et al. (2507.11878) show harmfulness and refusal are separately decodable across layers on the same models, and Mohammad & Bayazit (2609.13534) turn a harm-only depth trajectory into per-prompt detection features across four families, no prior work integrates the harmfulness- and refusal-drive curves into a single area statistic used to rank checkpoints by safety."
+    },
+    {
+      "candidate": "C11",
+      "one_line": "Refusal-commitment trajectory over the first 8 generated tokens.",
+      "closest_prior_work": [
+        {"arxiv_id_or_doi": "2406.05946", "title": "Safety Alignment Should Be Made More Than Just a Few Tokens Deep", "first_author": "Xiangyu Qi", "year": 2024, "venue": "ICLR 2025"},
+        {"arxiv_id_or_doi": "2609.18471", "title": "First Token Matters: Understanding Safety Collapse in Large Reasoning Models", "first_author": "Yizheng Yang", "year": 2026, "venue": "arXiv"},
+        {"arxiv_id_or_doi": "2606.04778", "title": "Inference-Time Vulnerability Beyond Shallow Safety: Alignment Along Generation Trajectories", "first_author": "Kyungmin Park", "year": 2026, "venue": "arXiv"}
+      ],
+      "what_it_measured": "Qi et al. compute per-token KL divergence between an ALIGNED model and its UNALIGNED BASE counterpart over the first output tokens -- this is the direct ancestor of the 'first tokens carry the safety decision' idea, but it is fundamentally PARENT-DEPENDENT (needs the base model) and tested on only 2 model families (Llama-2, Gemma). Yang et al. define Onset Refusal Collapse: a refusal-direction PROJECTION trajectory S_t over token positions, with a matched-pair gap G_t = S_t^IT - S_t^LRM between a reasoning model and its Instruction-Tuned counterpart -- also PARENT/counterpart-DEPENDENT, and restricted to 3 IT/LRM pairs studying a reasoning-specific failure mode, not a general parent-free cross-family safety score. Park & Kim study hidden-state trajectory redirection under token injection across 3 models (Mistral, Llama, Qwen) but as an ATTACK/robustness vulnerability analysis, not a static per-checkpoint refusal-commitment score.",
+      "n_models_and_families": "Qi et al.: 2 (Llama-2, Gemma), each requiring its own base/aligned pair. Yang et al.: 3 IT/LRM pairs within Llama and Qwen. Park & Kim: 3 models (Mistral-7B, Llama-3.1-8B, Qwen2.5-7B).",
+      "used_to_rank_models": {"value": "no", "quote": "for both the Llama and Gemma models, the KL divergence is significantly higher in the first few tokens than for later tokens."},
+      "parent_free": "no",
+      "prompt_budget": "n/a",
+      "correlated_with_benchmark_safety": {"value": "no", "number": "n/a"},
+      "verdict": "ADJACENT",
+      "verbatim_quote": "the refusal-related signal of LRMs drops sharply at the first generated token under harmful queries, which is associated with unsafe response generation.",
+      "locator": "Yang et al. 2609.18471, Abstract / Section 3.2 (arxiv.org/html/2609.18471); Qi et al. 2406.05946, Section 2.2 (arxiv.org/html/2406.05946)",
+      "queries_run": [
+        {"query": "refusal probability trajectory first tokens generation commitment early decoding safety", "mode": "general", "hits_scanned": 9},
+        {"query": "arxiv 2406.05946 Qi safety alignment should be made more than just a few tokens deep", "mode": "general", "hits_scanned": 10},
+        {"query": "arxiv 2406.09289 Ball jailbreak latent dynamics attention", "mode": "general", "hits_scanned": 9},
+        {"query": "grep qi_grep: KL divergence / first few tokens / token position", "mode": "grep", "hits_scanned": 53},
+        {"query": "grep ivts_grep (2606.04778): models / trajectory / commitment", "mode": "grep", "hits_scanned": 265},
+        {"query": "grep firsttoken_grep (2609.18471): models / trajectory / onset", "mode": "grep", "hits_scanned": 92},
+        {"query": "early commitment refusal decoding course correction safety reflection tokens deep alignment", "mode": "general", "hits_scanned": 9}
+      ],
+      "adversarial_note": "Every closest hit for C11 is PARENT-DEPENDENT (needs a base or IT counterpart model) or is a per-prompt attack/vulnerability analysis rather than a PARENT-FREE per-checkpoint trajectory SCORE compared across unrelated model families. This is consistent with the brief's expectation that Qi et al. is the prime parent-dependent precedent. Ball et al. (2406.09289) was checked as a seed and is about jailbreak latent-space dynamics / a transferable jailbreak-suppression vector, not a first-8-token refusal-commitment trajectory, so it is NOT a close match for C11 (nearest miss, general topic overlap only).",
+      "positioning_sentence": "Qi et al. (2406.05946) and Yang et al. (2609.18471) both show the first generated token(s) carry the safety decision, but both require a base-model or instruction-tuned counterpart for the comparison; our refusal-commitment trajectory over the first 8 tokens is computed from a single checkpoint with no parent reference, enabling cross-family comparison where theirs cannot be applied."
+    }
+  ],
+  "papers_checked": [
+    {"id": "2502.13946", "title": "Why Safeguarded Ships Run Aground? Aligned Large Language Models' Safety Mechanisms Tend to Be Anchored in The Template Region", "first_author": "Chak Tou Leong", "year": 2025, "url": "https://arxiv.org/abs/2502.13946", "verified_title_matches": true},
+    {"id": "2410.13708", "title": "On the Role of Attention Heads in Large Language Model Safety", "first_author": "Zhenhong Zhou", "year": 2024, "url": "https://arxiv.org/abs/2410.13708", "verified_title_matches": true},
+    {"id": "2406.05946", "title": "Safety Alignment Should Be Made More Than Just a Few Tokens Deep", "first_author": "Xiangyu Qi", "year": 2024, "url": "https://arxiv.org/abs/2406.05946", "verified_title_matches": true},
+    {"id": "2406.09289", "title": "Understanding Jailbreak Success: A Study of Latent Space Dynamics in Large Language Models", "first_author": "Sarah Ball", "year": 2024, "url": "https://arxiv.org/abs/2406.09289", "verified_title_matches": true},
+    {"id": "2402.13494", "title": "GradSafe: Detecting Jailbreak Prompts for LLMs via Safety-Critical Gradient Analysis", "first_author": "Yueqi Xie", "year": 2024, "url": "https://arxiv.org/abs/2402.13494", "verified_title_matches": true},
+    {"id": "2310.10348", "title": "Attribution Patching Outperforms Automated Circuit Discovery", "first_author": "Aaquib Syed", "year": 2023, "url": "https://arxiv.org/abs/2310.10348", "verified_title_matches": true},
+    {"id": "2406.11717", "title": "Refusal in Language Models Is Mediated by a Single Direction", "first_author": "Andy Arditi", "year": 2024, "url": "https://arxiv.org/abs/2406.11717", "verified_title_matches": true},
+    {"id": "2609.13534", "title": "Harmfulness Propagation Dynamics: Layer-wise Trajectories of Adversarial Intent in Large Language Models", "first_author": "Noor Islam S. Mohammad", "year": 2026, "url": "https://arxiv.org/abs/2609.13534", "verified_title_matches": true},
+    {"id": "2606.04778", "title": "Inference-Time Vulnerability Beyond Shallow Safety: Alignment Along Generation Trajectories", "first_author": "Kyungmin Park", "year": 2026, "url": "https://arxiv.org/pdf/2606.04778", "verified_title_matches": true},
+    {"id": "2609.18471", "title": "First Token Matters: Understanding Safety Collapse in Large Reasoning Models", "first_author": "Yizheng Yang", "year": 2026, "url": "https://arxiv.org/abs/2609.18471", "verified_title_matches": true},
+    {"id": "2410.16327", "title": "Feint and Attack: Jailbreaking and Protecting LLMs via Attention Distribution Modeling", "first_author": "Rui Pu", "year": 2024, "url": "https://arxiv.org/abs/2410.16327", "verified_title_matches": true},
+    {"id": "2507.11878", "title": "LLMs Encode Harmfulness and Refusal Separately", "first_author": "Jiachen Zhao", "year": 2025, "url": "https://arxiv.org/abs/2507.11878", "verified_title_matches": true},
+    {"id": "2609.00760", "title": "A Unified Mechanistic Analysis of Knowledge- and Safety-Based Refusals", "first_author": "Yuri Son", "year": 2026, "url": "https://arxiv.org/abs/2609.00760", "verified_title_matches": true},
+    {"id": "2603.23268", "title": "SafeSeek: Universal Attribution of Safety Circuits in Language Models", "first_author": "unknown (title confirmed via WebFetch of abstract page, author byline not separately captured)", "year": 2026, "url": "https://arxiv.org/abs/2603.23268", "verified_title_matches": true},
+    {"id": "2605.00236", "title": "Attention Is Where You Attack", "first_author": "unknown (title confirmed via WebFetch of abstract page, author byline not separately captured)", "year": 2026, "url": "https://arxiv.org/abs/2605.00236", "verified_title_matches": true},
+    {"id": "2607.01859", "title": "Safety Targeted Embedding Exploit via Refinement", "first_author": "unknown (title confirmed via search snippet, author byline not separately captured)", "year": 2026, "url": "https://arxiv.org/abs/2607.01859", "verified_title_matches": true},
+    {"id": "2608.11583", "title": "Localizing Safety Alignment: MLP Layers and Mid-Network Blocks Encode Refusal Behavior in Large Language Models", "first_author": "unknown (title confirmed via search snippet only, not independently fetched)", "year": 2026, "url": "https://arxiv.org/abs/2608.11583", "verified_title_matches": false}
+  ]
+}

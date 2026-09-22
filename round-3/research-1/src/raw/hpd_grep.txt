@@ -1,0 +1,146 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/html/2609.13534
+Type: HTML
+Pattern: refusal.drive|refusal.direction|models?\s+(we|were|tested|evaluate)|families|Llama|Qwen|Gemma|Mistral|rank|correlat|Table\s+\d (165 matches in 101079 chars)
+
+--- Content ---
+
+6037:... KB for a 32-layer, d=4096d{=}4096 model), requires no gradient computation during training, and adds only 2.6×10−62.6{\times}10^{-6} prefill FLOPs at inference. Across eight prompt-harmfulness benchmarks and four model families, Herald achieves an average F1 of 89.389.3 on OLMo2-7B, surpassing all tested guard models on adversarial jailbreak detection (98.498.4 vs. 96.996.9 F1) and outperforming prior latent-based methods by 2.32.3-4.14.1 F1 p...
+--
+10987:...els and full-covariance latent methods.
+
+  * •
+
+Herald surpasses all tested guard models on adversarial jailbreak detection and outperforms all latent-based baselines on average F1 across eight benchmarks and four model families, with 2.32.3–4.14.1 F1 improvements over prior latent methods.
+
+  * •
+
+We show that trajectory features provide _category-specific interpretability_ : jailbreaks exhibit early onset (l^∗≈7\hat{l}^{*}{\approx}7) and high...
+--
+13419:...: we learn _separate_ LDA directions per layer and classify the resulting cross-layer trajectory rather than the projection at any fixed depth.
+
+#### Refusal and safety directions.
+
+Park et al. (2024) identify a linear ”refusal direction” in residual streams and show that ablating it removes safety behavior. This is complementary to our work: we monitor the _input_ side by tracking how a harmful direction accumulates projection mass across layers, rather than intervening on the _output_ side. The two directions also differ conceptually—refusal directions characterize generation-time behavior, while HPD directions characterize inference-time encoding of the prompt’s intent.
+
+#### Trajectory and time-series methods for anomaly detection.
+
+Time-series features such as slo...
+--
+15376:...l}\|},\;\frac{\mathbf{v}_{l}}{\|\mathbf{v}_{l}\|}\right\rangle\in[-1,1]. |  | (1)  
+---|---|---|---  
+  
+The sequence {pl}l=1L\\{p_{l}\\}_{l=1}^{L} is the harm trajectory of prompt xx.
+
+#### Empirical observation.
+
+On a Llama-3.1-8B-Instruct backbone trained with WildGuardMix, harmful prompts produce trajectories with three characteristic phases: (i) near-zero projections in early layers (l≲8l\lesssim 8), (ii) a steady monotonic rise through...
+--
+15917:...gn prompts produce flat or oscillatory trajectories with a mean projection near zero and no systematic directional drift. This pattern—which we call Harmfulness Propagation Dynamics (HPD)—is stable across all four model families tested (Llama-3.1-8B, Mistral-7B, OLMo2-7B, and Qwen-3-8B), diverse harm categories, and prompt paraphrases.
+
+### 3.2 Theoretical Grounding
+
+HPD is consistent with the layered computation hypothesis for transformers (Jawahar et al., 2019; Tenney et al., 2019): early layer...
+--
+17353:... et al., 2021). Assumption (ii) is validated by the direction stability analysis in Appendix H: pairwise cosine similarity of 𝐯l\mathbf{v}_{l} learning on independent splits exceeds 0.970.97 at every layer and backbone (Table 12), confirming that LDA converges to a stable population direction rather than fitting sampling noise.
+
+#### Why the trajectory, not just the terminal value?
+
+The final projection pLp_{L} is indeed informative (Table 3). However, two prompts can share similar pLp_{L} values while differing markedly in trajectory shape: a jailbreak that reveals harmful intent gradually (early-onset, monotone rise) and a borderline prompt that happens t...
+--
+19484:...\mathrm{tr}(\mathbf{S}_{W}^{(l)})}{d}\mathbf{I}, where α\alpha is computed analytically. This is critical when d≫ntraind\gg n_{\mathrm{train}}: without regularization, F1 degrades by up to 27 points at low data regimes (Table 10).
+
+Why LDA over simpler alternatives? The class-mean difference 𝝁lharm−𝝁lsafe\boldsymbol{\mu}_{l}^{\mathrm{harm}}-\boldsymbol{\mu}_{l}^{\mathrm{safe}} ignores within-class variation: prompts with the same label differ ...
+--
+19958:...torical style, producing substantial within-class scatter. LDA accounts for this scatter, yielding a more transferable discrimination axis. Empirically, LDA outperforms the mean-difference direction by 0.50.5–0.80.8 F1 (Table 4). Each layer retains only 𝐯l∈ℝd\mathbf{v}_{l}\in\mathbb{R}^{d} (≈8{\approx}8 KB at d=4096d{=}4096 half precision; scatter matrices are discarded after training.
+
+### 4.2 Trajectory Feature Extraction
+
+Given layer-wise p...
+--
+21673:...\Delta^{2}\mathbf{p}), consistency (mono⁡(𝐩)\mathrm{mono}(\mathbf{p})), and emergence timing (l^∗\hat{l}^{*}, pl^∗p_{\hat{l}^{*}}). Empirically, logistic regression achieves performance within 1.01.0 F1 of the full MLP (Table 9), indicating that ϕ\boldsymbol{\phi} is close to linearly separable and that predictive power is primarily encoded in trajectory geometry rather than classifier complexity.
+
+### 4.3 Trajectory Classifier
+
+A two-layer ML...
+--
+22388:...})+b_{2}\bigr). |  | (5)  
+---|---|---|---  
+  
+The MLP has 288288 parameters and trains on CPU in seconds. Larger architectures (hidden size 6464-128128, two hidden layers) provide no statistically significant benefit (Table 9), confirming that the bottleneck is representation quality rather than classifier capacity.
+
+Algorithm 1 Herald: Training and Inference
+
+Input: LLM ff with LL layers; labeled dataset 𝒟={(xi,yi)}\mathcal{D}=\\{(x_{i},y_{...
+--
+24806:...ed F1 to account for class imbalance. This multi-benchmark protocol captures variability across harm types, distribution shifts, and adversarial prompt constructions.
+
+Backbones. We consider four instruction-tuned model families: Llama-3.1-8B-Instruct, Mistral-7B-Instruct, OLMo2-7B-Instruct, and Qwen3-8B-Instruct, with additional scaling experiments spanning 11B to 7070B parameters.
+
+Baselines. _Latent-based:_ (i) Embed. Clf., a linear classifier over embedding-layer representations; (ii) Act. Delta, which uses diff...
+--
+25579:...reporting. All results report the mean macro-F1 over three random seeds. Improvements of ≥0.5\geq 0.5 F1 are statistically significant (p<0.05p<0.05) under a paired bootstrap test over evaluation samples.
+
+## 6 Results
+
+Table 1 and Figure 1 report per-dataset and average F1 scores. Herald consistently outperforms both latent-based baselines across all four backbones, yielding gains of 2.32.3–4.14.1 average F1. On OLMo2-7B, it achieves the best...
+--
+26559:...ms the strongest guard model by 22–44 F1, suggesting that standalone classifiers may better capture certain surface-level or dataset-specific patterns. We analyze this performance gap and its implications in Section 8.
+
+Table 1: Average F1 on eight prompt-harmfulness benchmarks. Green text marks the top result within each group. Herald outperforms all latent-based baselines on every backbone and surpasses all guard models on adversarial jailbr...
+--
+27158:...pace. Method | Backbone | Aegis | HarmB | OAI | SimpST | TChat | WGMix | WJB | XSTest | Avg F1  
+---|---|---|---|---|---|---|---|---|---|---  
+Latent-based methods (lightweight; use backbone activations)  
+Embed. Clf. | Llama-8B | 79.3 | 93.1 | 63.7 | 96.4 | 52.8 | 77.9 | 79.4 | 89.6 | 79.0  
+Act. Delta | Llama-8B | 81.6 | 92.4 | 65.2 | 97.1 | 57.3 | 83.5 | 90.8 | 87.9 | 82.0  
+Herald (ours) | Llama-8B | 84.1 | 97.6 | 69.5 | 98.4 | 64.9 | 86.3 | 95.8 | 93.7 | 86.3  
+Embed. Clf. | Mistral-7B | 77.4 | 88.5 | 72.6 | 96.8 | 61.0 | 80.6 | 84.7 | 91.8 | 81.7  
+Act. Delta | Mistral-7B | 81.9 | 94.7 | 62.3 | 96.3 | 55.4 | 82.9 | 88.4 | 91.3 | 81.6  
+Herald (ours) | Mistral-7B | 85.7 | 97.9 | 68.4 | 98.9 | 63.6 | 86.7 | 94.3 | 94.9 | 86.3  
+Embed. Clf. | OLMo2-7B | 85.6 | 93.8 | 65.4 | 98.6 | 63.1 | 85.7 | 94.2 | 91.5 | 84.7  
+Act. Delta | OLMo2-7B | 81.4 | 90.7 | 72.9 | 97.4 | 70.8 | 83.6 | 91.0 | 92.2 | 85.0  
+Herald (ours) | OLMo2-7B | 88.7 | 97.4 | 73.1 | 99.5 | 74.6 | 87.9 | 98.4 | 95.8 | 89.3  
+Embed. Clf. | Qwen3-8B | 77.8 | 88.3 | 71.9 | 93.6 | 66.4 | 78.2 | 79.6 | 87.9 | 80.5  
+Act. Delta | Qwen3-8B | 81.3 | 96.9 | 66.2 | 95.7 | 58.7 | 82.6 | 87.8 | 85.7 | 81.9  
+Herald (ours) | Qwen3-8B | 82.4 | 98.6 | 70.3 | 95.9 | 62.7 | 84.9 | 92.1 | 90.8 | 84.7  
+Guard models (standalone classifiers; no backbone access required)  
+Guard A | NE | 70.2 | 97.6 | 77.4 | 98.3 | 52.9 | 74.8 | 66.1 | 86.9 | 78.0  
+Gua...
+--
+29862:...ng the _path_ by which it was reached. On ToxicChat and OpenAI Moderation, Herald trails the best guard by 22–44 F1, a gap we attribute to the diffuse, culturally contingent nature of those harm categories (Section 8).
+
+Table 2: WildGuardMix F1 at varying training set sizes. Herald approaches plateau at 1,0001{,}000 samples per class and leads by >2>2 F1 at 100100 samples on all backbones. Backbone | Method | F1@100 | F1@1k | F1@10k | F1@Full  
+---|---|---|---|---|---  
+Llama-8B | Embed. Clf. | 79.3 | 81.6 | 82.9 | 83.6  
+Act. Delta | 77.8 | 80.4 | 82.1 | 82.7  
+Herald | 79.6 | 84.1 | 85.9 | 86.3  
+Mistral-7B | Embed. Clf. | 74.7 | 79.3 | 82.0 | 83.1  
+Act. Delta | 71.2 | 77.1 | 80.6 | 81.4  
+Herald | 77.3 | 83.5 | 85.8 | 86.7  
+OLMo2-7B | Embed. Clf. | 83.1 | 84.9 | 85.6 | 85.7  
+Act. Delta | 81.0 | 83.6 | 85.1 | 85.9  
+Herald | 83.7 | 86.5 | 88.0 | 87.9  
+  
+### 6.2 Data Efficiency and OOD Generalization
+
+Table 2 shows that Herald approaches a plateau at 1,0001{,}000 samples per class, matching latent baselines in final performance while achieving comparable F1 with 10×10\times fewer samples at the 100100 sample mark. OOD evalua...
+--
+33254:...nsions; trajectory features compress the discriminative information into seven interpretable scalars with geometric meaning (slope, onset, monotonicity) that is stable across random splits (cosine similarity >0.97>0.97, Table 12). Trajectory shape is an independent source of interpretability: Even setting accuracy aside, the per-layer trajectory provides qualitatively distinct information. Table 13 shows that harm categories differ systematically in onset layer and monotonicity: jailbreaks exhibit early onset (l^∗≈7\hat{l}^{*}{\approx}7) and high monotonicity (0.830.83), while social stereotypes onset late (l^∗≈1...
+--
+34684:...atures, LDA-based harm directions, and other architectural choices, highlighting which elements drive gains and which have minimal effect on overall robustness and generalization.
+
+### 7.1 Trajectory Feature Components
+
+Table 3 adds trajectory features cumulatively. The final projection pLp_{L} is a strong but incomplete predictor. Adding mean p¯\bar{p}, total rise, monotonicity, curvature, and onset layer each improve performance; onset layer...
+--
+35150:...vides the largest single gain, especially on WildJailbreak (+0.5+0.5 F1 on the full model, +1.3+1.3 F1 incrementally). Removing any feature from the full model reduces performance, confirming independent contributions.
+
+Table 3: Trajectory feature ablation. Features are added cumulatively, green text marking the full model. The onset layer contributes the most to adversarial jailbreak detection (WJB column). Feature configuration | Llama-8B | Mistral-7B | OLMo2-7B | WJB (OLMo2)  
+---|---|---|---|---  
+pLp_{L} only | 84.7 | 84.4 | 87.8 | 96.3  
+++ mean p¯\bar{p} | 85.0 | 84.7 | 88.1 | 96.6  
+++ total rise (pL−p1)(p_{L}-p_{1}) | 85.5 | 85.2 | 88.5 | 97.1  
+++ monotoni...
+--
+[125 more matches not shown]

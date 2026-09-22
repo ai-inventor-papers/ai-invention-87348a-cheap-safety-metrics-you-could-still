@@ -1,0 +1,72 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2410.03415
+Type: PDF
+Pattern: ablat[^.]{0,150}(across|models)|XSTest|OR-Bench (41 matches in 74310 chars)
+
+--- Content ---
+
+6894:...l weights,
+without causing additional computation at inference time. We refer readers to Appendix D for a
+detailed explanation on the equivalence between inference time steering and model weights editing.
+3
+MITIGATING FALSE REFUSAL VIA SINGLE VECTOR ABLATION
+We aim to reduce unwanted false refusal behaviour of language models with minimal effect on true
+refusal behaviour and performance on general tasks. This requires us to find false refusal related
+features that have minimal overlap with those associated with true refusal and general tasks. We
+first show that simply us...
+--
+8860:... activation stream, we see an increase in
+compliance rate for both the harmful and harmless data, similar to ablating the true refusal vector
+ˆr. In our preliminary experiments, this issue was validated with different pseudo-harmful datasets
+such as OR-Bench-Hard (Cui et al., 2024b), XSTest(R¨ottger et al., 2024) and OKTest (Shi et al.,
+2024). This means that ablating the raw diff-in-means vector is insufficient, and most importantly,
+the true refusal vector ˆv and false refusal vector ˆw are not independent of each other. To tease the...
+--
+9758:...ow compliance rate on harmful data, while the
+compliance on harmless data increases substantially compared to the original model, showing the
+effectiveness of the orthogonalization operation for teasing the vectors apart.
+Operation
+Harmful
+ORBench-H
+XSTest-S
+CR ↓
+CR ↑
+CR ↑
+LLAMA2-7B-CHAT
+-
+2.3
+14.8
+13.6
+- ˆr
+ablating true refusal vector
+93.0
+100
+93.0
+- ˆw
+ablating false refusal vector
+46.1
+100
+90.0
+- ˆw′
+ablating orthogonalized false refusal vector
+3.1
+65.6
+57.6
+Table 1: Extracting a diff-in-means ref...
+--
+12547:...DVBENCH (Zou et al., 2023b), MA-
+LICIOUSINSTRUCT (Huang et al., 2023), and TDC2023 (Mazeika et al., 2024; 2023). The harmless
+data Dharmless are sampled from ALPACA (Taori et al., 2023). For false refusal vector construction,
+we use the samples from OR-BENCH-HARD (Cui et al., 2024b) which is a challenging false refusal
+test for state-of-the-art LLMs. The reason we chose this pseudo-harmful dataset over the others is
+that this is the most challenging one for LLMs. This leads to a more effective vector th...
+--
+14260:...(Chao et al., 2024) composed of 100 harmful queries serving as out of distribution
+test. For the false refusal tests, we use one in-distribution dataset Dtest
+pseudo harmful (ORB-H) and two
+out-of-distribution datasets: OKTEST (Shi et al., 2024) and XSTEST (R¨ottger et al., 2024). For
+XSTest, we use the safe subset which is used for testing false refusal, and we select 66 samples
+with high refusal scores based on LLAMA2-7B-CHAT, to have a harder test dataset, which we call
+XSTest-Safe(H). We adopt the...
+--
+[35 more matches not shown]

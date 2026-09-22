@@ -1,0 +1,107 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2608.05578
+Type: PDF
+Pattern: ablat|steer|interven|causal (13 matches in 71601 chars)
+
+--- Content ---
+
+7257:...discuss implications for
+the broader research direction.
+Our approach draws on representation engineering [3],
+which demonstrates that high-level concepts are encoded as
+linear directions in LLM activation space. We extend this
+insight from behavior steering to safety-modification detection:
+rather than adding vectors to modify behavior, we measure
+existing vectors and their stability across model variants to
+assess what training-time modifications have been applied.1
+II. RELATED WORK
+a) Uncensored a...
+--
+9680:...al identity via activation geometry
+without requiring behavioral queries.
+d) Representation Engineering and Probing: Zou et al.
+[3] demonstrate that high-level concepts are encoded linearly
+in LLM activation space. Turner et al. [4] show that adding
+steering vectors modifies behavior. Marks and Tegmark [15]
+find that truth-related concepts form linear subspaces in LLM
+representations, supporting the hypothesis that safety concepts
+may be similarly structured. Meng et al. [16] demonstrate that
+factual...
+--
+10398:...Liu et al. [17] (ABS) scan
+neural networks for backdoors via artificial brain stimulation,
+a related model-level structural scanning approach applied to
+image classifiers.
+e) Differentiation
+from
+Probing,
+Mechanistic
+Interpretability, and Activation Steering:
+Three adjacent
+research
+traditions
+deserve
+explicit
+positioning.
+Probing
+classifiers [13] train supervised models on labeled activation
+data
+to
+extract
+specific
+features
+(e.g.,
+part-of-speech,
+sentiment). AMS differs from probing in three respec...
+--
+11513:... circuits, neurons, or directions; AMS consumes
+outputs of this tradition (refusal directions [1], safety layers
+[12]) but does not itself decompose model computation—it
+treats activations as observable signals for modification
+detection. Activation steering [4] adds steering vectors at
+inference time to modify behavior; AMS measures existing
+direction vectors at scan time to assess modification. The
+relationship is dual: steering tells us a direction is causally
+active, AMS tells us how stable that direction is across model
+variants. We rely on the steering literature for evidence that
+the directions we measure are behaviorally meaningful, and
+contribute the inverse: measurement of those directions as a
+structural signal of training-time safety modification.
+f) Safety Benchmarks: Benchmarks like Har...
+--
+38998:...-2-9b-it-abliterated exemplifies
+this class. The uploader explicitly reports that standard or-
+thogonalization “did not produce the same results” on Gemma
+2 due to its RMSNorm-before-residual-merge architecture,
+and substituted TransformerLens-style interventions with an
+embedding-layer rescaling step. The resulting signature is
+mild: mean per-layer cosine similarity 0.84, minimum 0.70,
+∆-norm averaging 0.52—far from the orthogonal limit. Cluster
+separation is preserved at σ = 4.54. Tier 1 misses this c...
+--
+40527:...ning. The modification
+leaves both magnitude and direction of the refusal vector
+substantially intact while modifying behavioral output via fine-
+tuning that re-weights the refusal-conditional generation dis-
+tribution rather than via any structural ablation. aifeifei79
+8/DarkIdol-Llama-3.1-8B-Instruct-1.2-Uncen
+sored exemplifies this class. σharmful = 5.45 across all swept
+layers (Section VII-F). The refusal direction is preserved;
+the contrastive cluster is preserved; yet the model complies
+with 19...
+--
+42007:...irection shift between each base/abliterated
+pair.
+Model card audit. mlabonne/Meta-Llama-3.1-8B-
+Instruct-abliterated credits FailSpy’s original ablit-
+eration implementation and applies the standard recipe: find
+refusal direction, apply directional ablation via weight orthog-
+onalization, no post-training. IlyaGusev/gemma-2-9b-
+it-abliterated states explicitly that “orthogonalization
+did not produce the same results as regular interventions since
+there are RMSNorm layers before merging activations into the
+residual stream” and that the only major difference from the
+Llama-style code is “scaling the embedding layer back.” The
+two models are not products of the same procedure—they a...
+--
+[1 more matches not shown]

@@ -1,0 +1,94 @@
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+URL: https://arxiv.org/pdf/2607.01854
+Type: PDF
+Pattern: 0\.95\b|AUROC (21 matches in 41580 chars)
+
+--- Content ---
+
+845:...sal-specificity and the weight energy supplies recall. On a 273-
+checkpoint registry spanning Qwen, DeepSeek-distilled Qwen, Llama, and
+Gemma, their z-sum separates 57 public abliterations from 37 benign fine-
+tunes, merges, and instruction-tunes at AUROC 0.95, significantly above
+either signal alone (0.84, 0.90), and a Youden-calibrated threshold transfers
+to held-out families at balanced accuracy 0.89 (FPR 0.11), missing only 4
+of 57. We then map two failures, in order of severity: a spoofed reference
+e...
+--
+2538:... audit, then map where it nonetheless fails.
+Contributions.
+1. An effective checkpoint-triage detector.
+Standardizing and summing a reference-
+anchored activation refusal-gap and the WeightWatch weight-recovery energy gives a
+threshold-free score at AUROC 0.95, significantly above either signal alone, that trans-
+fers across unseen families (leave-one-family-out balanced accuracy 0.89). The signals
+are complementary: the gap is refusal-specific but misses multi-direction removal; the
+weight energy catches...
+--
+9162:...overs the 59 with cached generations). Hardware and decoding details are in App. D.
+Q1: Does the audit separate abliterations from benign edits?
+In-family, yes (Table 1).
+The combined z-sum is significantly more separable than either signal (paired ∆AUROC
++0.10 over ρ, 95% CI [.04, .18]; +0.04 over E1, [.005, .09]), at a Youden operating point of 0.93
+TPR / 0.14 FPR (J=0.80). Excluding each test point from the reference moments leaves the
+in-sample AUROC unchanged (0.948 leave-one-out vs. 0.948 pooled), so the transductive
+standardization does not leak.
+in-sample
+held-out (leave-one-family-out)
+Detector
+AUROC ↑
+PR ↑
+det. ↑
+FPR ↓
+bal. acc. ↑
+Combined z-sum (ours)
+0.95 [.90,.98] 0.97 [.94,.99] 0.90 [.81,.96] 0.11 [.03,.22] 0.89 [.83,.95]
+activation gap ρ
+0.84 [.75,.92] 0.89 [.82,.95] 0.83 [.72,.91] 0.27 [.14,.43] 0.78 [.69,.86]
+weight energy E1
+0.90 [.84,.96] 0.95 [.91,.98] 0.72 [.60,.82] 0.11 [.03,.22] 0.81 [.73,.88]
+AMS Tier 2 (Messenger, 2026) 0.66 [.55,.77] 0.81 [.73,.87] 0.42 [.30,.56] 0.20 [.09,.34] 0.61 [.52,.70]
+AMS Tier 1 (Messenger, 2026)
+n/a
+n/a 0.35 [.23,.47] 0.06 [.00,.14] 0.65 [.57,.72]
+Table 1:...
+--
+11306:...vaded side by design. Axes are the two signals: activation gap ρ and weight-recovery
+energy E1.
+The two signals are negatively correlated (r=−0.41 across the set) and complementary, so
+their z-sum is significantly more separable than either: paired ∆AUROC +0.10 over the
+activation gap (95% CI [0.04, 0.18]) and +0.04 over E1 ([0.005, 0.09]), both bootstrap CIs
+excluding 0, and a fitted 2-D logistic does not improve on the threshold-free sum. The
+uncensored labels themselves are robust to the choice of...
+--
+12365:...anchored ratio. The weight energy E1 then supplies the
+recall on multi-direction recipes the gap misses (§5, Fig. 2).
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+false-positive rate  (37 benign)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+true-positive rate  (57 uncensored)
+activation 
+  (AUROC 0.84)
+WeightWatch E1  (AUROC 0.90)
+combined z-sum  (AUROC 0.95)
+AMS absolute- baseline
+Figure 2: ROC for the two signals and their z-sum; the absolute-σ AMS Tier-1 baseline
+(■) sits well below. In-sample AUROC 0.95 (z-sum) vs. 0.90 (E1) and 0.84 (ρ); the z-sum is
+significantly above both (Table 1).
+4
+
+Preprint - Under review
+Q3: Do the two signals complement each other?
+Yes, and it is why the combined z-sum
+is significantly more separable than either sign...
+--
+[6 more matches not shown]
