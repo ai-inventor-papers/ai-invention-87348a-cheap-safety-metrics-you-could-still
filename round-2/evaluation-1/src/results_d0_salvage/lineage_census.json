@@ -1,0 +1,473 @@
+{
+  "counts_by_class": {
+    "base": {
+      "n_checkpoints": 7,
+      "n_lineages": 7,
+      "lineages": [
+        "OLMo2::OLMo-2-0425-1B",
+        "Qwen2.5::Qwen2.5-1.5B",
+        "Qwen3::Qwen3-0.6B",
+        "Qwen3::Qwen3-1.7B",
+        "Qwen3::Qwen3-4B",
+        "SmolLM2::SmolLM2-1.7B",
+        "TinyLlama::TinyLlama-1.1B"
+      ]
+    },
+    "instruct": {
+      "n_checkpoints": 11,
+      "n_lineages": 11,
+      "lineages": [
+        "Gemma2::gemma-2-2b",
+        "OLMo2::OLMo-2-0425-1B",
+        "Phi4::Phi-4-mini",
+        "Qwen2.5::Qwen2.5-1.5B",
+        "Qwen2.5::Qwen2.5-3B",
+        "Qwen3::Qwen3-0.6B",
+        "Qwen3::Qwen3-1.7B",
+        "Qwen3::Qwen3-4B",
+        "SmolLM2::SmolLM2-1.7B",
+        "SmolLM3::SmolLM3-3B",
+        "TinyLlama::TinyLlama-1.1B"
+      ]
+    },
+    "safety": {
+      "n_checkpoints": 7,
+      "n_lineages": 3,
+      "lineages": [
+        "Gemma2::gemma-2-2b",
+        "Qwen3::Qwen3-4B",
+        "TinyLlama::TinyLlama-1.1B"
+      ]
+    },
+    "abliterated": {
+      "n_checkpoints": 7,
+      "n_lineages": 6,
+      "lineages": [
+        "Phi4::Phi-4-mini",
+        "Qwen2.5::Qwen2.5-1.5B",
+        "Qwen3::Qwen3-0.6B",
+        "Qwen3::Qwen3-1.7B",
+        "Qwen3::Qwen3-4B",
+        "SmolLM2::SmolLM2-1.7B"
+      ]
+    }
+  },
+  "resampling_unit": "LINEAGE = the PARENT model (parent x tuning run); never the repo",
+  "collapse_rule": "strip -epoch\\d+ / -step\\d+ / -ckpt\\d+ / trailing dates; count unique (uploader, collapsed-name); -v\\d+ is NOT collapsed",
+  "hub_search_census": {
+    "collapse_rule": "(-epoch[-_]?\\d+|-step[-_]?\\d+|-ckpt\\d+|-\\d{4}-\\d{2}-\\d{2}|_\\d{6,})$",
+    "collapse_rule_notes": "Regex applied repeatedly (right-to-left) to the repo name (part after '/'), stripping ONE matching trailing-suffix pattern per pass until no more match: -epoch[-_]?N, -step[-_]?N, -ckptN, -YYYY-MM-DD, or _NNNNNN+ (>=6 digit trailing numeric/timestamp run). Trailing -vN (e.g. -v1, -v2) is explicitly EXCLUDED from the regex and is therefore NEVER stripped, so distinct named versions remain distinct after collapse. Collapsed key = (author, collapsed_name).",
+    "arm_A_abliterated_uncensored_heretic": {
+      "per_term_result_counts": {
+        "heretic": 1000,
+        "uncensored": 1000,
+        "abliterated": 1000
+      },
+      "per_term_capped_at_1000": {
+        "heretic": true,
+        "uncensored": true,
+        "abliterated": true
+      },
+      "raw_unique_repo_count": 2879,
+      "raw_top10_uploaders": [
+        [
+          "DavidAU",
+          113
+        ],
+        [
+          "hereticness",
+          79
+        ],
+        [
+          "mlx-community",
+          77
+        ],
+        [
+          "Zoyd",
+          77
+        ],
+        [
+          "TheBloke",
+          64
+        ],
+        [
+          "roleplaiapp",
+          62
+        ],
+        [
+          "featherless-ai-quants",
+          62
+        ],
+        [
+          "bartowski",
+          61
+        ],
+        [
+          "nightmedia",
+          42
+        ],
+        [
+          "ChiKoi7",
+          41
+        ]
+      ],
+      "raw_top5_uploader_share": 0.1424,
+      "collapsed_unique_pair_count": 2879,
+      "collapsed_top10_uploaders": [
+        [
+          "DavidAU",
+          113
+        ],
+        [
+          "hereticness",
+          79
+        ],
+        [
+          "Zoyd",
+          77
+        ],
+        [
+          "mlx-community",
+          77
+        ],
+        [
+          "TheBloke",
+          64
+        ],
+        [
+          "featherless-ai-quants",
+          62
+        ],
+        [
+          "roleplaiapp",
+          62
+        ],
+        [
+          "bartowski",
+          61
+        ],
+        [
+          "nightmedia",
+          42
+        ],
+        [
+          "ChiKoi7",
+          41
+        ]
+      ],
+      "collapsed_top5_uploader_share": 0.1424,
+      "top5_uploader_names_raw": [
+        "DavidAU",
+        "hereticness",
+        "mlx-community",
+        "Zoyd",
+        "TheBloke"
+      ]
+    },
+    "arm_B_safety_tuned": {
+      "per_term_result_counts": {
+        "safety-tuned": 7,
+        "SafeRLHF": 293,
+        "safe-rl": 360,
+        "safety-aligned": 2,
+        "safety-finetuned": 4,
+        "harmless-dpo": 72
+      },
+      "per_term_capped_at_1000": {
+        "safety-tuned": false,
+        "SafeRLHF": false,
+        "safe-rl": false,
+        "safety-aligned": false,
+        "safety-finetuned": false,
+        "harmless-dpo": false
+      },
+      "raw_unique_repo_count": 445,
+      "raw_top10_uploaders": [
+        [
+          "vectorzhou",
+          141
+        ],
+        [
+          "living-box",
+          115
+        ],
+        [
+          "CharlesLi",
+          53
+        ],
+        [
+          "jackf857",
+          40
+        ],
+        [
+          "W-61",
+          30
+        ],
+        [
+          "promotion",
+          9
+        ],
+        [
+          "APTO-001",
+          6
+        ],
+        [
+          "lindafei001",
+          4
+        ],
+        [
+          "ajagota71",
+          4
+        ],
+        [
+          "ZDCSlab",
+          4
+        ]
+      ],
+      "raw_top5_uploader_share": 0.8517,
+      "collapsed_unique_pair_count": 245,
+      "collapsed_top10_uploaders": [
+        [
+          "CharlesLi",
+          53
+        ],
+        [
+          "jackf857",
+          40
+        ],
+        [
+          "W-61",
+          30
+        ],
+        [
+          "living-box",
+          28
+        ],
+        [
+          "vectorzhou",
+          28
+        ],
+        [
+          "promotion",
+          9
+        ],
+        [
+          "APTO-001",
+          6
+        ],
+        [
+          "ZDCSlab",
+          4
+        ],
+        [
+          "ajagota71",
+          4
+        ],
+        [
+          "lindafei001",
+          4
+        ]
+      ],
+      "collapsed_top5_uploader_share": 0.7306,
+      "top5_uploader_names_raw": [
+        "vectorzhou",
+        "living-box",
+        "CharlesLi",
+        "jackf857",
+        "W-61"
+      ]
+    },
+    "arm_B_under_4B_non_top5_uploader_candidates": [
+      {
+        "repo_id": "ZDCSlab/ripd-anthropic-saferlhf-gemma-2b-uncensored-v1-seed-bt",
+        "author": "ZDCSlab",
+        "downloads": 235,
+        "inferred_size_b_params": 2.0,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "gemma2",
+          "text-generation",
+          "alignment",
+          "evaluation",
+          "preference-learning",
+          "ripd",
+          "conversational",
+          "dataset:ZDCSlab/ripd-dataset",
+          "arxiv:2602.13576",
+          "base_model:sirev/Gemma-2b-Uncensored-v1",
+          "base_model:finetune:sirev/Gemma-2b-Uncensored-v1",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "ZDCSlab/ripd-anthropic-saferlhf-gemma-2b-uncensored-v1-biased-bt",
+        "author": "ZDCSlab",
+        "downloads": 225,
+        "inferred_size_b_params": 2.0,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "gemma2",
+          "text-generation",
+          "alignment",
+          "evaluation",
+          "preference-learning",
+          "ripd",
+          "conversational",
+          "dataset:ZDCSlab/ripd-dataset",
+          "arxiv:2602.13576",
+          "base_model:sirev/Gemma-2b-Uncensored-v1",
+          "base_model:finetune:sirev/Gemma-2b-Uncensored-v1",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "AIPlans/tinyllama-1.1b-dpo-pku-saferlhf",
+        "author": "AIPlans",
+        "downloads": 19,
+        "inferred_size_b_params": 1.1,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "trl",
+          "dpo",
+          "generated_from_trainer",
+          "conversational",
+          "base_model:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "base_model:finetune:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "license:apache-2.0",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "AIPlans/TinyLlama-1.1B-IPO-PKU-SafeRLHF",
+        "author": "AIPlans",
+        "downloads": 19,
+        "inferred_size_b_params": 1.1,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "trl",
+          "dpo",
+          "generated_from_trainer",
+          "conversational",
+          "base_model:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "base_model:finetune:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "license:apache-2.0",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "AIPlans/tinyllama-1.1b-dpo-pku-saferlhf_2",
+        "author": "AIPlans",
+        "downloads": 16,
+        "inferred_size_b_params": 1.1,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "trl",
+          "dpo",
+          "generated_from_trainer",
+          "conversational",
+          "base_model:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "base_model:finetune:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "license:apache-2.0",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "Shortmund09/MLDM-TinyLlama-1.1b-gcpo-ocra-saferlhf",
+        "author": "Shortmund09",
+        "downloads": 13,
+        "inferred_size_b_params": 1.1,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "conversational",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "Shortmund09/MLDM-TinyLlama-1.1b-ppo-lag-ocra-saferlhf",
+        "author": "Shortmund09",
+        "downloads": 12,
+        "inferred_size_b_params": 1.1,
+        "tags": [
+          "transformers",
+          "pytorch",
+          "llama",
+          "text-generation",
+          "conversational",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "AIPlans/TinyLlama-1.1B-ORPO-PKU-SafeRLHF",
+        "author": "AIPlans",
+        "downloads": 9,
+        "inferred_size_b_params": 1.1,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "generated_from_trainer",
+          "trl",
+          "orpo",
+          "conversational",
+          "arxiv:2403.07691",
+          "base_model:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "base_model:finetune:TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "repo_id": "Robust-Decoding/gemma2-2b-it-hh-dpo-harmless-step-6000",
+        "author": "Robust-Decoding",
+        "downloads": 8,
+        "inferred_size_b_params": 2.0,
+        "tags": [
+          "transformers",
+          "safetensors",
+          "gemma2",
+          "text-generation",
+          "arxiv:1910.09700",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      }
+    ],
+    "size_inference_method": "best-effort regex over the repo-name substring for a pattern like '<number>[bB]' (e.g. '1.5b', '3B'); repos with no parseable size token in the name are excluded from the candidate list (no per-repo config.json fetch was done for the full census, per scope).",
+    "generated_by": "HF Hub search API (api/models?search=<term>&filter=text-generation&limit=1000&full=false), 3 terms per arm for A, 6 for B, deduplicated by repo id across terms within an arm",
+    "api_page_limit_note": "limit=1000 is the max the Hub search endpoint accepts; terms abliterated/uncensored/heretic each returned exactly 1000 (capped) so raw_unique_repo_count for arm A is a LOWER BOUND on the true corpus size, not exhaustive. All arm-B terms returned well under 1000 (max 360), so arm B counts are exhaustive for these 6 terms."
+  },
+  "independent_safety_tuned_lineages": 3,
+  "branch": "F1_TWO_WAY_PRIMARY",
+  "f1_note": "Fewer than 5 independent safety-tuned lineages. The PRIMARY claim is demoted to the TWO-WAY held-out claim (ordinary-instruct vs abliterated), which is fully powered; the three-way is reported only where all three arms exist, with the lineage count printed. THE SCARCITY IS ITSELF THE RESULT: the models a downloader is most likely to meet are exactly the ones with no safety-tuned sibling and no published safety number, which is the entire reason a cheap metric is wanted."
+}

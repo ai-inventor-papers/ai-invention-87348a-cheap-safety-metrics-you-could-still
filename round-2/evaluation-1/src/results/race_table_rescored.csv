@@ -1,0 +1,51 @@
+metric_id,name,family,functional_form_class_id,inputs,n_prompts,candidate,incumbent,baseline,predicted_gap_rank,held_out_balacc_3way,tuned_balacc_3way,gap,held_out_balacc_2way,tuned_balacc_2way,auroc_2way,n_used,n_lineages
+b_card_regex_termswept,"Model-card regex, TERM-SWEPT (B3)",LEVEL-BEHAVIOUR-STRUCTURE,keyword_score,text,0,,,B3,1,0.5666666666666667,1.0,0.43333333333333335,1.0,1.0,1.0,13,4
+w_down_botgap_min,BOTGAP on mlp.down_proj,LEVEL-BEHAVIOUR-STRUCTURE,min_over_layers_of_spectral_ratio_mlp,weights,0,C4,,,1,0.48333333333333334,0.6666666666666666,0.1833333333333333,1.0,1.0,1.0,13,4
+w_bsa_w8_k1,BSA_w8 (bottom-1 subspace alignment),LEVEL-BEHAVIOUR-STRUCTURE,windowed_mean_projector_leading_eigenvalue,weights,0,C4,,,1,0.4166666666666667,0.6,0.1833333333333333,0.625,0.75,0.9375,13,4
+w_bsa_w8_k4,BSA_w8 at k=4,LEVEL-BEHAVIOUR-STRUCTURE,windowed_mean_projector_leading_eigenvalue_k4,weights,0,C4,,,1,0.4166666666666667,0.6,0.1833333333333333,0.625,0.75,0.75,13,4
+x_residual_dispersion,Residual scale of the g~p fit,ACROSS-ITEM,residual_standard_deviation,activations+logits,160,,,,2,0.39999999999999997,0.5166666666666667,0.11666666666666675,0.875,0.875,1.0,13,4
+x_presentation_invariance,Invariance across presentation renderings,ACROSS-ITEM,rendering_invariance,logits,320,,,,2,0.3833333333333333,0.5166666666666667,0.13333333333333341,0.5416666666666666,0.5416666666666666,0.6666666666666666,12,4
+b_first_token_entropy,First-token predictive entropy,LEVEL-BEHAVIOUR-STRUCTURE,mean_predictive_entropy,logits,160,,,,1,0.3333333333333333,0.45,0.1166666666666667,0.625,0.625,0.6875,13,4
+w_crosslayer_cos,Cross-layer bottom-direction cosine,LEVEL-BEHAVIOUR-STRUCTURE,mean_pairwise_absolute_cosine,weights,0,C4,,,1,0.31666666666666665,0.5,0.18333333333333335,0.625,0.75,0.8125,13,4
+w_tsa_band_max,TSA swept over spectral rank bands,LEVEL-BEHAVIOUR-STRUCTURE,band_swept_projector_eigenvalue,weights,0,C4,,,1,0.25,0.5166666666666667,0.2666666666666667,0.375,0.5,0.5625,13,4
+w_spectral_entropy,Mean spectral entropy,LEVEL-BEHAVIOUR-STRUCTURE,normalised_spectral_entropy,weights,0,,,,1,0.25,0.5166666666666667,0.2666666666666667,0.375,0.625,0.5,13,4
+b_logit_gap_harmful,Logit gap on harmful items,LEVEL-BEHAVIOUR-STRUCTURE,mean_log_odds_margin_subset,logits,64,,,,1,0.25,0.6166666666666667,0.3666666666666667,0.625,0.875,1.0,13,4
+x_category_dispersion,Per-harm-category dispersion of refusal drive,ACROSS-ITEM,between_category_dispersion,logits,160,,,,2,0.2333333333333333,0.43333333333333335,0.20000000000000004,0.375,0.5,0.625,13,4
+b_refusal_token_mass,Refusal token probability mass,LEVEL-BEHAVIOUR-STRUCTURE,mean_probability_mass,logits,160,,,,1,0.2333333333333333,0.5,0.2666666666666667,0.5,0.75,0.75,13,4
+b_refusal_rate_probe,Greedy refusal rate on a DISJOINT probe set (B2),LEVEL-BEHAVIOUR-STRUCTURE,empirical_rate,text,24,,,B2,1,0.2333333333333333,0.5,0.2666666666666667,0.5,0.75,0.8125,13,4
+w_tsa_top1_w8,TSA at the top of the spectrum,LEVEL-BEHAVIOUR-STRUCTURE,windowed_mean_projector_leading_eigenvalue_top,weights,0,C4,,,1,0.2333333333333333,0.5,0.2666666666666667,0.375,0.5,0.6875,13,4
+x_g_iqr,Refusal-drive quantile spread,ACROSS-ITEM,interquartile_range,logits,160,,,,2,0.2333333333333333,0.5166666666666667,0.28333333333333344,0.375,0.625,0.5625,13,4
+x_c5_ridge,"C5 metamodel, ridge on pooled hidden states",ACROSS-ITEM,metamodel_held_out_accuracy,activations,160,C5,,,2,0.2333333333333333,1.0,0.7666666666666667,nan,nan,nan,0,0
+k_harm_probe_depth_frac,Harm-content decodability depth,LEVEL-KNOWLEDGE,first_crossing_depth_fraction,activations,160,,,,3,0.16666666666666666,0.43333333333333335,0.2666666666666667,0.5,0.625,0.625,13,4
+k_harm_dir_norm,Harm direction magnitude,LEVEL-KNOWLEDGE,normalised_vector_norm,activations,160,,,,3,0.16666666666666666,0.43333333333333335,0.2666666666666667,0.5,0.75,0.6875,13,4
+x_c1_r2,"C1 coupling, R-SQUARED",ACROSS-ITEM,coefficient_of_determination,activations+logits,160,C1,,,2,0.16666666666666666,0.43333333333333335,0.2666666666666667,0.625,0.75,0.9375,13,4
+x_mutual_info,Mutual information between harm estimate and refusal drive,ACROSS-ITEM,mutual_information,activations+logits,160,,,,2,0.16666666666666666,0.43333333333333335,0.2666666666666667,0.5,0.75,0.8125,13,4
+x_calibration_slope,Refusal calibration slope,ACROSS-ITEM,logistic_calibration_slope,activations+text,96,,,,2,0.16666666666666666,0.47222222222222215,0.30555555555555547,nan,nan,nan,8,4
+x_twin_delta,Matched-twin paired contrast,ACROSS-ITEM,paired_mean_difference,logits,64,,,,2,0.16666666666666666,0.5166666666666667,0.3500000000000001,0.75,0.75,0.9375,13,4
+x_c1_slope,"C1 coupling, REGRESSION SLOPE (primary form)",ACROSS-ITEM,ols_regression_slope,activations+logits,160,C1,,,2,0.16666666666666666,0.5333333333333333,0.3666666666666667,0.25,0.5,0.6875,13,4
+x_twin_auroc_g,Matched-twin AUROC of refusal drive,ACROSS-ITEM,matched_pair_auroc,logits,64,,,,2,0.16666666666666666,0.5333333333333333,0.3666666666666667,0.75,0.75,0.9375,13,4
+x_c1_auroc_items,"C1 coupling, AUROC-OVER-ITEMS",ACROSS-ITEM,auroc_over_items,activations+logits,160,C1,,,2,0.16666666666666666,0.5499999999999999,0.3833333333333333,0.625,0.875,0.875,13,4
+x_c1_spearman,"C1 coupling, RANK form (F2 fallback)",ACROSS-ITEM,spearman_rank_correlation,activations+logits,160,C1,,,2,0.16666666666666666,0.6,0.43333333333333335,0.625,0.75,0.8125,13,4
+x_c1_kendall,"C1 coupling, CONCORDANCE form",ACROSS-ITEM,kendall_tau_concordance,activations+logits,160,C1,,,2,0.16666666666666666,0.6,0.43333333333333335,0.625,0.875,0.8125,13,4
+b_logit_gap_mean,First-token logit-gap margin (B1),LEVEL-BEHAVIOUR-STRUCTURE,mean_log_odds_margin,logits,160,,,B1,1,0.16666666666666666,0.7000000000000001,0.5333333333333334,0.875,1.0,1.0,13,4
+x_decision_spread,Decision spread,ACROSS-ITEM,across_item_standard_deviation,logits,160,C1,,,2,0.15,0.43333333333333335,0.2833333333333333,0.25,0.375,0.5,13,4
+b_logit_gap_alarming,Logit gap on benign-but-alarming items,LEVEL-BEHAVIOUR-STRUCTURE,mean_log_odds_margin_subset,logits,32,,,,1,0.08333333333333333,0.3,0.21666666666666667,0.875,1.0,1.0,13,4
+k_harm_proj_gap,Cross-fitted harm-projection gap,LEVEL-KNOWLEDGE,mean_difference_of_projections,activations,160,C1-support,,,3,0.08333333333333333,0.35000000000000003,0.2666666666666667,0.375,0.75,0.625,13,4
+k_ams_sep_insample,"AMS separation, IN-SAMPLE (as published)",LEVEL-KNOWLEDGE,standardised_mean_separation_in_sample,activations,32,,I1_AMS_2608.05578,,3,0.08333333333333333,0.35000000000000003,0.2666666666666667,0.5,0.5,0.625,13,4
+k_harm_probe_auroc,Harm probe AUROC at L*,LEVEL-KNOWLEDGE,held_out_probe_auroc,activations,160,,,,3,0.08333333333333333,0.43333333333333335,0.35000000000000003,0.25,0.5,0.5625,13,4
+k_harm_probe_auroc_max,"Harm probe AUROC, best layer",LEVEL-KNOWLEDGE,max_over_layers_of_auroc,activations,160,,,,3,0.08333333333333333,0.43333333333333335,0.35000000000000003,0.25,0.5,0.5625,13,4
+k_ams_sep_cf,"AMS separation, CROSS-FITTED (ours)",LEVEL-KNOWLEDGE,standardised_mean_separation,activations,32,,I1_AMS_2608.05578,,3,0.08333333333333333,0.43333333333333335,0.35000000000000003,0.5,0.5,0.75,13,4
+k_twin_probe_auroc,Harm probe AUROC on MATCHED XSTest twins,LEVEL-KNOWLEDGE,matched_pair_probe_auroc,activations,64,,,,3,0.08333333333333333,0.43333333333333335,0.35000000000000003,0.125,0.375,0.5,13,4
+w_botgap_min,"BOTGAP, minimum over layers",LEVEL-BEHAVIOUR-STRUCTURE,min_over_layers_of_spectral_ratio,weights,0,C4,,,1,0.08333333333333333,0.43333333333333335,0.35000000000000003,0.25,0.625,0.5625,13,4
+w_botgap_frac_below,"BOTGAP, fraction of layers collapsed",LEVEL-BEHAVIOUR-STRUCTURE,fraction_of_layers_below_threshold,weights,0,C4,,,1,0.08333333333333333,0.43333333333333335,0.35000000000000003,0.25,0.5,0.5625,13,4
+w_botgap_bf16_min,BOTGAP as shipped in bf16,LEVEL-BEHAVIOUR-STRUCTURE,min_over_layers_of_spectral_ratio_bf16,weights,0,C4,,,1,0.08333333333333333,0.43333333333333335,0.35000000000000003,0.25,0.625,0.5625,13,4
+x_jss_nglare,N-GLARE Jensen-Shannon Separability (best effort),ACROSS-ITEM,jensen_shannon_separability,activations,120,,I3_NGLARE_2511.14195,,2,0.06666666666666667,0.35000000000000003,0.2833333333333334,0.375,0.625,0.5,13,4
+b_card_regex_namefree,"Model-card regex, NAME-FREE de-biased (B3')",LEVEL-BEHAVIOUR-STRUCTURE,keyword_score_debiased,text,0,,,B3prime,1,0.0,0.26666666666666666,0.26666666666666666,0.625,0.75,0.65625,13,4
+k_ams_layer_frac,AMS argmax depth,LEVEL-KNOWLEDGE,argmax_depth_fraction,activations,32,,I1_AMS_2608.05578,,3,0.0,0.4166666666666667,0.4166666666666667,0.125,0.625,0.65625,13,4
+x_c5_lineage_gap,C5 metamodel minus LINEAGE-IDENTITY probe,ACROSS-ITEM,metamodel_identity_gap,activations,160,C5,,,2,-0.2666666666666667,0.5,0.7666666666666667,nan,nan,nan,0,0
+k_hrci_repr,HRCI_repr (harm-refusal coupling index),LEVEL-KNOWLEDGE,subspace_coupling_index,activations,160,,I4_HRCI_2606.16349,,3,nan,nan,nan,nan,nan,nan,5,0
+k_hrci_cca,HRCI subspace term,LEVEL-KNOWLEDGE,mean_squared_canonical_correlation,activations,160,,I4_HRCI_2606.16349,,3,nan,nan,nan,nan,nan,nan,5,0
+k_refusal_probe_auroc,Refusal probe AUROC at L*,LEVEL-KNOWLEDGE,held_out_probe_auroc_behavioural,activations,96,,,,3,nan,nan,nan,nan,nan,nan,5,0
+b_massive_act_depth,Massive-activation carrier depth,LEVEL-BEHAVIOUR-STRUCTURE,first_crossing_depth_fraction_activation,activations,160,,,,1,nan,nan,nan,nan,nan,nan,0,0
+gfs_parent_anchored,Geometric Fragility Score (reference-anchored),LEVEL-BEHAVIOUR-STRUCTURE,depth_weighted_effect_size_sum,activations,160,,I2_GFS_2606.22676,,1,nan,nan,nan,nan,nan,nan,0,0
+x_c3_depth_gap,C3 refusal-minus-content decodability depth,ACROSS-ITEM,depth_difference_fraction,activations,160,C3,,,2,nan,nan,nan,nan,nan,nan,5,0

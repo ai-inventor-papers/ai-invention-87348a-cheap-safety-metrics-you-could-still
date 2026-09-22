@@ -1,0 +1,33 @@
+{
+  "stage0_crossfitting": {
+    "check": "cross_fitting_on_pure_noise",
+    "d": 2560,
+    "n_items": 64,
+    "in_sample_auroc": 1.0,
+    "cross_fitted_auroc": 0.376953125,
+    "expected": "in-sample ~1.000, cross-fitted ~0.507",
+    "pass": true
+  },
+  "stage0_weight_instrument": {
+    "check": "weight_instrument_on_synthetic_edits",
+    "d": 256,
+    "fan_in": 1024,
+    "n_layers": 28,
+    "window": 8,
+    "bsa_w8_honest_gaussian": 0.17141478384894152,
+    "botgap_honest_gaussian": 0.9526252003989356,
+    "bsa_w8_honest_heavy_tailed": 0.2421277472218839,
+    "botgap_honest_heavy_tailed": 0.06419325546735238,
+    "bsa_w8_abliterated_full_strength": 1.0,
+    "bsa_w8_abliterated_weight_0p7": 0.9688068918081251,
+    "bsa_w8_abliterated_50pct_band": 0.9999999999999997,
+    "bsa_w8_per_layer_random_edit": 0.16570008124214874,
+    "per_layer_random_note": "BLIND by construction, and expected: BSA reads SHARING across layers, so a per-layer-random edit is invisible to it.  BOTGAP catches it instead.",
+    "botgap_projected_fp32": 1.5329193209539053e-07,
+    "botgap_projected_bf16": 0.002604197710752487,
+    "botgap_per_layer_random_edit": 0.0,
+    "pass": true,
+    "spectrum_invariance_note": "The honest BSA_w8 must be the SAME for a Gaussian and a heavy-tailed spectrum. That invariance is the whole reason this statistic replaced the raw Gram, whose honest value swings with the spectrum."
+  },
+  "all_pass": true
+}

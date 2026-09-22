@@ -1,0 +1,123 @@
+{
+  "n_queries_used": 14,
+  "backends_used": ["general_web_search", "arxiv_abs_fetch"],
+  "backend_note": "Scholarly-mode (OpenAlex/Crossref) was deliberately NOT used, per instructions that it was previously found unusable for this field. All 14 discovery queries used general web search (the aii-web-tools free-first stack: ddgs/marginalia general engines, exa/Serper fallback). All arXiv-ID verification (12 pre-seeded IDs + 2 new IDs this pass introduces) was done by fetching https://arxiv.org/abs/<id> directly, which is a fetch, not a search, and so is not counted against the 15-query budget.",
+  "q1": {
+    "question": "Has anyone reported that linear-probe or difference-in-means directions in LLM residual streams FAIL to beat ANISOTROPY-MATCHED (not isotropic-Gaussian) random directions, specifically for safety readouts on a PER-CHECKPOINT axis (one score per model checkpoint used to rank/classify checkpoints), with the null drawn from the checkpoint's own residual covariance / item span?",
+    "verdict": "OPEN",
+    "reason": "The covariance/anisotropy-matched-null mechanic exists in the literature (2605.12726, 2608.12652, and newly-found 2609.14759), and the random-direction-control method itself is well established (2406.11717) and negative results about baseline construction for abliteration exist (2603.22061). But in every case found, the anisotropic/covariance null is applied either (a) within one model to diagnose a probe's failure mode, or (b) to a different task (benchmark contamination, or a moral-subspace projection compared across model families), never to a PER-CHECKPOINT safety score used to rank or classify checkpoints against each other. No paper reports a safety probe/diff-in-means direction LOSING to a covariance- or item-span-matched null when the axis is 'one score per checkpoint'.",
+    "nearest": [
+      {
+        "arxiv_id": "2605.12726",
+        "title": "Before the Last Token: Diagnosing Final-Token Safety Probe Failures",
+        "url": "https://arxiv.org/abs/2605.12726",
+        "relation": "Closest covariance-matched-null mechanic (contrasts isotropic-random vs covariance-random perturbations for a diff-of-means safety probe), but it is a within-model prefill-time failure diagnosis on SafeSwitch-style probes across 3 models, not a cross-checkpoint ranking score, and the probe does not lose to the null in this paper.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2608.12652",
+        "title": "Excess Separability: Nuisance-Controlled Residual-Stream Probing for Benchmark Contamination Detection",
+        "url": "https://arxiv.org/abs/2608.12652",
+        "relation": "Same isotropic-vs-anisotropic null machinery (explicitly names 'anisotropy' as a nuisance the null must match) and even reports a negative result (the correction that survives measurement carries MORE variance than the null it is tested against), but the application is benchmark-contamination detection, not safety, and not a per-checkpoint ranking axis.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2603.22061",
+        "title": "On the Failure of Topic-Matched Contrast Baselines in Multi-Directional Refusal Abliteration",
+        "url": "https://arxiv.org/abs/2603.22061",
+        "relation": "A genuine baseline-construction negative result in the refusal-abliteration space (topic-matched contrast pairs for building abliteration directions on Qwen 3.5 2B), but the baseline being tested is a topic-matched CONTRAST PAIR, not an anisotropy/covariance-matched RANDOM-DIRECTION null, and it is about direction construction, not a per-checkpoint probe score.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2406.11717",
+        "title": "Refusal in Language Models Is Mediated by a Single Direction",
+        "url": "https://arxiv.org/abs/2406.11717",
+        "relation": "Establishes the random-direction-control method itself for refusal directions (Arditi et al., NeurIPS 2024); the refusal direction beats this (isotropic, not covariance-matched) control by a wide margin, so this is the positive result the narrow question is asking whether anyone has since overturned on a covariance-matched, per-checkpoint axis -- nobody has.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2609.14759",
+        "title": "Refusal Reads Only a Slice of What the Model Knows: Harm-Keyed Routing and Its Exceptions Across Model Families",
+        "url": "https://arxiv.org/abs/2609.14759",
+        "relation": "New find this pass: explicitly reports a 'covariance-matched null q95 0.291' for a projection score, extending the covariance-null-mechanic evidence base beyond the two pre-seeded papers -- but the score is a WITHIN-MODEL projection onto a moral subspace compared ACROSS four model families (interchange-rank causal patching), not a per-checkpoint safety score used to rank/classify a population of checkpoints, so it does not close the narrow gap.",
+        "upheld_or_overturned": "NEW"
+      }
+    ],
+    "gap_we_fill": "No paper tests whether a diff-in-means/linear-probe safety direction, scored once per checkpoint across a population of checkpoints for ranking/classification, survives a null built from that checkpoint's own residual covariance or item span rather than an isotropic Gaussian; the covariance-matched-null tooling exists (2605.12726, 2608.12652, 2609.14759) but has never been pointed at the per-checkpoint safety-ranking use case."
+  },
+  "q2": {
+    "question": "Has anyone related a recovered ABLATION STRENGTH (parent-free, recovered from the weights of an unknown checkpoint) to MEASURED harmful compliance as a graded, monotone read rather than a binary tamper flag?",
+    "verdict": "PARTIAL",
+    "reason": "The pieces still exist only separately. Weight-forensic audits that are parent-free and work on unknown checkpoints (2607.01854, 2508.00161) report BINARY classification (abliterated vs not), never a graded strength-to-compliance regression. Papers that DO report graded/dose-response links between an internal signal and measured compliance (2608.05578 AMS: r=-0.546 activation-geometry severity vs compliance, n=14; 2510.02768: dose-response over 0.3-1.2 ablation weights; and a newly-found adjacent result, 2604.08844: rho=0.72 geometry-to-behavior rank correlation) either use activation geometry rather than a weight-space strength scalar, or use EXPERIMENTER-SET/manufactured strengths rather than a strength RECOVERED from an unknown checkpoint's weights, or (2604.08844) explicitly fail to generalize their weight-geometry severity signal across method families (AUC~0.00 going from DPO adapters to steering-derived adapters), which is direct evidence that a transferable recovered-strength-to-compliance read for arbitrary unknown checkpoints remains unbuilt. An independent industry survey (abliteration.org, Aug 2026) corroborates this from the practitioner side: it states plainly that binary abliteration detection is 'roughly solved' (AUROC ~0.95) but that no published work outputs even a discrete multi-class method label from weights alone, let alone a continuous graded strength.",
+    "nearest": [
+      {
+        "arxiv_id": "2607.01854",
+        "title": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map",
+        "url": "https://arxiv.org/abs/2607.01854",
+        "relation": "Recovers a parent-free weight-recovery-energy signal from an unknown checkpoint's weights, closest to the 'recovered ablation strength' half of Q2, but reports it as a BINARY audit (AUROC 0.95, balanced accuracy 0.89 over 273 checkpoints) and never regresses the signal against measured harmful-compliance rate.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2608.05578",
+        "title": "Detecting Safety Training Modification in Language Models via Activation Analysis (AMS)",
+        "url": "https://arxiv.org/abs/2608.05578",
+        "relation": "Gives the graded half: activation-severity correlates with measured jailbreak compliance (r=-0.546, p=0.043, n=14), but the recovered signal is activation geometry over labelled prompts, not a parent-free weight-space strength scalar recovered from an unknown checkpoint.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2510.02768",
+        "title": "A Granular Study of Safety Pretraining under Model Abliteration",
+        "url": "https://arxiv.org/abs/2510.02768",
+        "relation": "Establishes genuine dose-response (ablation weights 0.3/0.5/0.8/1.0/1.2 give graded REFUSE/EVASIVE/COMPLY; zero-refusal arms at 92-98% harmful compliance), but the strengths are EXPERIMENTER-SET during the ablation, not recovered post hoc from an unknown checkpoint's weights.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2508.00161",
+        "title": "Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs",
+        "url": "https://arxiv.org/abs/2508.00161",
+        "relation": "Same weight-forensics family as 2607.01854 (unsupervised, distribution-free monitoring of fine-tuned/backdoored LLMs from weights alone) but never correlates any recovered signal with measured compliance rate at all, graded or binary.",
+        "upheld_or_overturned": "UPHELD"
+      },
+      {
+        "arxiv_id": "2604.08844",
+        "title": "Spectral Geometry of LoRA Adapters Encodes Training Objective and Predicts Harmful Compliance",
+        "url": "https://arxiv.org/abs/2604.08844",
+        "relation": "New find this pass, closest single result to Q2's exact phrase ('predicts harmful compliance'): a pre-registered study on 38 manufactured Llama-3.2-3B LoRA adapters shows spectral weight-geometry severity has near-perfect dose-response with DPO training intensity (rho=0.986) and a rho=0.72 geometry-to-behavior rank correlation with HEx-PHI harmful-compliance ASR -- but this is LoRA fine-tuning-objective geometry, not directional-ABLATION strength, requires known manufactured adapters rather than an unknown in-the-wild checkpoint, and the paper explicitly reports its classifier's cross-method generalization to steering/ablation-style adapters FAILS COMPLETELY (AUC~0.00), i.e. it does not transfer to the ablation-strength setting Q2 asks about.",
+        "upheld_or_overturned": "NEW"
+      }
+    ],
+    "gap_we_fill": "No paper takes a parent-free ablation-strength scalar recovered from an UNKNOWN checkpoint's weights (as opposed to an experimenter-set dial, a LoRA-fine-tuning-objective geometry signal, or an activation-geometry severity score) and regresses it against measured harmful-compliance rate as a graded, monotone read; the closest attempt at exactly that regression (2604.08844) is confined to LoRA/DPO adapters and explicitly fails to generalize to the ablation/steering method family."
+  },
+  "id_resolvability": [
+    {"id": "2604.18901", "resolves": true, "title_found": "Harmful Intent as a Geometrically Recoverable Feature of LLM Residual Streams", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2608.05578", "resolves": true, "title_found": "Detecting Safety Training Modification in Language Models via Activation Analysis", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2603.27412", "resolves": true, "title_found": "The Geometry of Harmful Intent: Training-Free Anomaly Detection via Angular Deviation in LLM Residual Streams", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2607.01854", "resolves": true, "title_found": "Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2511.14195", "resolves": true, "title_found": "N-GLARE: An Non-Generative Latent Representation-Efficient LLM Safety Evaluator", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2606.22676", "resolves": true, "title_found": "Skin-Deep: A Geometric Diagnostic for Alignment Fragility in Large Language Model Representations", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2605.12726", "resolves": true, "title_found": "Before the Last Token: Diagnosing Final-Token Safety Probe Failures", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2608.12652", "resolves": true, "title_found": "Excess Separability: Nuisance-Controlled Residual-Stream Probing for Benchmark Contamination Detection", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2603.22061", "resolves": true, "title_found": "On the Failure of Topic-Matched Contrast Baselines in Multi-Directional Refusal Abliteration", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2406.11717", "resolves": true, "title_found": "Refusal in Language Models Is Mediated by a Single Direction", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2510.02768", "resolves": true, "title_found": "A Granular Study of Safety Pretraining under Model Abliteration", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2508.00161", "resolves": true, "title_found": "Watch the Weights: Unsupervised monitoring and control of fine-tuned LLMs", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2609.14759", "resolves": true, "title_found": "Refusal Reads Only a Slice of What the Model Knows: Harm-Keyed Routing and Its Exceptions Across Model Families", "title_matches_attribution": true, "verdict": "OK"},
+    {"id": "2604.08844", "resolves": true, "title_found": "Spectral Geometry of LoRA Adapters Encodes Training Objective and Predicts Harmful Compliance", "title_matches_attribution": true, "verdict": "OK"}
+  ],
+  "queries_log": [
+    {"n": 1, "query": "anisotropy-matched null direction safety probe checkpoint ranking residual stream", "backend": "general_web_search", "useful": true},
+    {"n": 2, "query": "covariance-matched random direction baseline refusal safety classifier checkpoint", "backend": "general_web_search", "useful": true},
+    {"n": 3, "query": "diff-in-means safety direction fails to beat covariance-matched random baseline LLM", "backend": "general_web_search", "useful": false},
+    {"n": 4, "query": "abliteration strength recovered from weights correlate harmful compliance graded", "backend": "general_web_search", "useful": false},
+    {"n": 5, "query": "parent-free weight forensics abliteration magnitude monotone jailbreak compliance rate", "backend": "general_web_search", "useful": false},
+    {"n": 6, "query": "recovered ablation coefficient predicts harmful compliance rate unknown checkpoint", "backend": "general_web_search", "useful": false},
+    {"n": 7, "query": "safety probe checkpoint audit random direction control matched activation covariance", "backend": "general_web_search", "useful": true},
+    {"n": 8, "query": "weight-recovery energy dose response harmful compliance correlation abliterated checkpoints", "backend": "general_web_search", "useful": false},
+    {"n": 9, "query": "isotropic null overestimates safety probe separability item-span null residual stream", "backend": "general_web_search", "useful": false},
+    {"n": 10, "query": "unknown checkpoint abliteration strength scalar regression harmful compliance graded read", "backend": "general_web_search", "useful": false},
+    {"n": 11, "query": "per-checkpoint safety score fails to beat anisotropic random direction null model ranking", "backend": "general_web_search", "useful": false},
+    {"n": 12, "query": "linear probe residual stream direction beats random baseline checkpoint classification abliterated vs benign", "backend": "general_web_search", "useful": false},
+    {"n": 13, "query": "weight scar magnitude predicts harmful compliance rate open-weight checkpoint forensic", "backend": "general_web_search", "useful": true},
+    {"n": 14, "query": "recovered orthogonalization strength refusal direction weight scar correlates jailbreak success rate real-world checkpoints", "backend": "general_web_search", "useful": false}
+  ]
+}
