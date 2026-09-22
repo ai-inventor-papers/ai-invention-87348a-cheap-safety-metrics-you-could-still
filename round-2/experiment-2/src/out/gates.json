@@ -1,0 +1,138 @@
+{
+ "G1_rank_zero_exactness": {
+  "exact_arm_fp32": {
+   "level_mean": {
+    "before": 0.199902505576551,
+    "after": 0.10307578829701303,
+    "abs_change": 0.09682671727953798
+   },
+   "across_sd": {
+    "before": 1.0094320030260056,
+    "after": 1.0094320030260056,
+    "abs_change": 0.0
+   },
+   "across_corr": {
+    "before": -0.02346018149193194,
+    "after": -0.023460181491931933,
+    "abs_change": 6.938893903907228e-18
+   }
+  },
+  "split_half_tolerances": {
+   "level_mean": 0.3238887713784875,
+   "across_sd": 0.2432387523724945,
+   "across_corr": 0.3227112302545527
+  },
+  "rmsnorm_drift": [
+   {
+    "offset_multiple": 0.5,
+    "across_sd": {
+     "drift": 0.14545105472525421,
+     "tol_m": 0.2432387523724945,
+     "drift_over_tol": 0.5979764873259639
+    },
+    "across_corr": {
+     "drift": 0.01553040860487947,
+     "tol_m": 0.3227112302545527,
+     "drift_over_tol": 0.04812478509852036
+    }
+   },
+   {
+    "offset_multiple": 2.0,
+    "across_sd": {
+     "drift": 0.5573578901066063,
+     "tol_m": 0.2432387523724945,
+     "drift_over_tol": 2.291402519829864
+    },
+    "across_corr": {
+     "drift": 0.055288945652337065,
+     "tol_m": 0.3227112302545527,
+     "drift_over_tol": 0.17132637624270305
+    }
+   },
+   {
+    "offset_multiple": 8.0,
+    "across_sd": {
+     "drift": 0.8635613181095664,
+     "tol_m": 0.2432387523724945,
+     "drift_over_tol": 3.550262076608226
+    },
+    "across_corr": {
+     "drift": 0.07167683068540315,
+     "tol_m": 0.3227112302545527,
+     "drift_over_tol": 0.22210826263735817
+    }
+   }
+  ],
+  "bf16_gap_across_sd": 0.000129058104843649,
+  "pass_exact": true,
+  "note": "Tolerance is PER-METRIC split-half variability tol_m = 2*sd(metric(half1)-metric(half2)) over 200 random halvings, NOT a global 0.05."
+ },
+ "G2_bsa_synthetic_null": {
+  "gaussian": {
+   "bsa_w8": 0.16840514336630444,
+   "fullstack": 0.05965861220900405,
+   "xlayer_cos": 0.04903008675048842,
+   "botgap_min": 0.8039805982574354
+  },
+  "heavy": {
+   "bsa_w8": 0.1634973350348486,
+   "fullstack": 0.057901156241605946,
+   "xlayer_cos": 0.04909401997929987,
+   "botgap_min": 0.9972640201090299
+  },
+  "iter1_reference": {
+   "null_gaussian_bsa_w8": 0.16359,
+   "null_heavy_bsa_w8": 0.18021
+  },
+  "pass": true
+ },
+ "G3_gate1_band50_correction": {
+  "check": "band50_windowing_gain",
+  "n_layers": 28,
+  "n_shared_layers": 14,
+  "formula": "lambda_max(sum_l B_l B_l^T) / (n_layers * K)",
+  "derivation": "14 identical rank-1 projectors contribute lambda_max = 14; the remaining 14 are independent and contribute O(1). Hence 14/28 = 0.500.",
+  "pre_registered_value": 0.105,
+  "algebraic_value": 0.5,
+  "iter1_measured_value": 0.5021575568991681,
+  "correction_accepted": true,
+  "iter1_windowed_value": 1.0000001677994885,
+  "windowing_gain_corrected": 0.5000001677994885,
+  "windowing_gain_as_claimed": 0.895,
+  "verdict": "GATE 1 REPRODUCES with one corrected expectation. The 0.105 figure is algebraically impossible under the stated formula and is not quoted anywhere in this artifact. The windowing advantage on a 50%-band edit is REAL but SMALLER than the hypothesis claimed.",
+  "does_not_affect": "The independent real-weight finding (honest BSA 0.565 vs a 0.35 separator, FPR 1.0) is measured, not simulated, and stands."
+ },
+ "G4_key_shape_sanity": {
+  "clean_flag": false,
+  "explicit_bias_flag": true,
+  "merged_lora_flag": false,
+  "pass": true,
+  "note": "A merged LoRA restores EXACTLY the base key set and shapes, so the key/shape screen is structurally blind to it. When F3/F4 come back undetectable that CONFIRMS the already-published claim (AMS arXiv 2608.05578: behavioural fine-tuning is undetectable by activation-only probing) and is not our discovery."
+ },
+ "G5_botgap_bf16": {
+  "honest_botgap": 0.9498029050940181,
+  "projected_fp32_botgap": 6.591388474218507e-07,
+  "projected_bf16_botgap": 0.0035772674143562323,
+  "iter1_reference_bf16": 0.00682,
+  "pass": true,
+  "note": "Use a bf16-realistic separator (~0.01), never an exact zero."
+ },
+ "_summary": {
+  "G1_pass": true,
+  "G2_pass": true,
+  "G3_correction_accepted": true,
+  "G4_pass": true,
+  "G5_pass": true,
+  "policy": "A failed gate DEGRADES the affected metric class (marked ASSUMPTION_FAILED in every downstream row); it never aborts the run.",
+  "seconds": 43.35,
+  "G6_pass": true
+ },
+ "G6_gram_update_identities": {
+  "gram_max_abs_err": 0.0,
+  "rosi_rel_err": 6.138745491409013e-16,
+  "rosi_delta_norm_err": 4.440892098500626e-16,
+  "column_rel_err": 2.425066380946725e-16,
+  "pass": true,
+  "what": "ROSI and carrier edits are applied as EXACT O(d^2) updates of the cached float64 Gram; this gate checks both identities and the dsyrk Gram against dense recomputation on a random 40x90 matrix"
+ }
+}

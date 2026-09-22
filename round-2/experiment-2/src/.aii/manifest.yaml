@@ -1,0 +1,21 @@
+entries:
+  - path: pyenv/
+    delete: regenerable
+    source: "uv venv pyenv --python 3.12 && uv pip install --python pyenv/bin/python --index-strategy unsafe-best-match --extra-index-url https://download.pytorch.org/whl/cpu torch==2.14.0 transformers==5.17.0 accelerate==1.15.0 safetensors==0.8.0 huggingface-hub==1.32.0 numpy==2.5.3 scipy==1.18.1 scikit-learn==1.9.1 pandas==3.0.6 statsmodels loguru==0.7.3 requests==2.34.2 certifi tokenizers==0.23.2 jinja2 pyyaml psutil jsonschema"
+  - path: .venv/
+    delete: regenerable
+    source: "partial remnant of a venv an external cleanup deleted mid-run (bin/ already gone); superseded by pyenv/ -- rebuild with the pyenv/ command above"
+  - path: .venv_broken_1789974232/
+    delete: regenerable
+    source: "partial remnant of the first venv an external cleanup deleted mid-run (bin/ already gone); superseded by pyenv/ -- rebuild with the pyenv/ command above"
+  - path: cache/
+    delete: regenerable
+    source: "OMP_NUM_THREADS=1 pyenv/bin/python method.py --stages ladder2 --passes 1,2,3  (rebuilds cache/grams/<host>/ float64 Gram stacks from the HF cache)"
+  - path: __pycache__/
+    delete: regenerable
+    source: "regenerated automatically by Python on the next import"
+  - path: "**/__pycache__/"
+    delete: regenerable
+    source: "regenerated automatically by Python on the next import"
+  - path: out/bcells/
+    keep: behavioural ladder cells (greedy generations + last-prompt/first-generated residuals at every layer) -- hours of contended CPU, the per-cell ground truth rests on them

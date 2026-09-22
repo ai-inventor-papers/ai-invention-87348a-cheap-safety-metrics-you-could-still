@@ -1,0 +1,207 @@
+{
+  "files": [
+    {
+      "path": "items/harmful_pool.jsonl",
+      "n_rows": 473,
+      "sha256": "120f4b92074dba310a64d2627e20c89344f5571f93038f1e95ed24177cca07ba",
+      "source_id": "strongreject_small+jbb_harmful+strongreject_full",
+      "columns": [
+        "item_id",
+        "source",
+        "category",
+        "prompt"
+      ]
+    },
+    {
+      "path": "items/H120.jsonl",
+      "n_rows": 120,
+      "sha256": "31a23b1f3277176e9ab6711f1930a5740fbbd70d60b6e55ac51244045b4f3a91",
+      "source_id": "strongreject_small+jbb_harmful (stratified)",
+      "columns": [
+        "item_id",
+        "source",
+        "category",
+        "prompt"
+      ]
+    },
+    {
+      "path": "items/benign_jbb.jsonl",
+      "n_rows": 100,
+      "sha256": "b5bc5dbf5708f00af9082bcea35abe4e8d6f703fb49212c2f7bea5b0896f6ecd",
+      "source_id": "JailbreakBench/JBB-Behaviors:benign",
+      "columns": [
+        "item_id",
+        "source",
+        "category",
+        "prompt"
+      ]
+    },
+    {
+      "path": "items/B120.jsonl",
+      "n_rows": 120,
+      "sha256": "43451f304c8a46c8f16784a1dd86d405f54b3e764e461d0151927a1f013f4d39",
+      "source_id": "xstest_safe(Paul/XSTest)+orbench_hard(or-bench-hard-1k)",
+      "columns": [
+        "item_id",
+        "source",
+        "category",
+        "prompt",
+        "focus",
+        "has_unsafe_twin"
+      ]
+    },
+    {
+      "path": "items/alpaca120.jsonl",
+      "n_rows": 120,
+      "sha256": "3f62ad06a7fa2fc57e8dfeaa4a29a9c44fed1e1e35514f2698e400abace62fbe",
+      "source_id": "tatsu-lab/alpaca",
+      "columns": [
+        "item_id",
+        "source",
+        "prompt"
+      ]
+    },
+    {
+      "path": "items/fit_pairs.jsonl",
+      "n_rows": 100,
+      "sha256": "ac3ed28a72d34930c20db2f373f5f056be79a1928756f69f34fbfb58b0c40582",
+      "source_id": "harmful_pool(minus H120)+alpaca(minus alpaca120)",
+      "columns": [
+        "item_id",
+        "role",
+        "prompt"
+      ]
+    },
+    {
+      "path": "items/capability_items.jsonl",
+      "n_rows": 400,
+      "sha256": "d8847c2b44840af82c1044ac322ed804e165332b588559d867cff523bb16a6a8",
+      "source_id": "cais/mmlu:all+allenai/ai2_arc:ARC-Easy",
+      "columns": [
+        "item_id",
+        "source",
+        "question",
+        "choices",
+        "answer"
+      ]
+    },
+    {
+      "path": "items/sorrybench_pool.jsonl",
+      "n_rows": 450,
+      "sha256": "c7a2e03af61ef8fafb4d772227f8c26e6d2a37f2af9b664e62d15779b041d90b",
+      "source_id": "sorry-bench/sorry-bench-202503",
+      "columns": [
+        "item_id",
+        "prompt",
+        "category"
+      ]
+    }
+  ],
+  "measured_facts": {
+    "substitutions": [
+      {
+        "what": "strongreject_full",
+        "reason": "HF AlignmentResearch/StrongREJECT has an incompatible schema (no category/forbidden_prompt/prompt column), got ['clf_label', 'proxy_clf_label', 'instructions', 'content', 'answer_prompt', 'gen_target', 'proxy_gen_target']",
+        "fallback": "github_csv"
+      },
+      {
+        "what": "sorrybench",
+        "reason": "sorry-bench/sorry-bench-202503 returned 403 GatedRepo despite token having canReadGatedRepos",
+        "fallback": "SillyTilly/SorryBench (ungated mirror, prompt_style=='base', verified 450 rows / 45 categories matching canonical structure)"
+      }
+    ],
+    "strongreject_small": {
+      "n_rows": 60,
+      "category_value_counts": {
+        "Illegal goods and services": 10,
+        "Hate, harassment and discrimination": 10,
+        "Non-violent crimes": 10,
+        "Disinformation and Deception": 10,
+        "Violence": 10,
+        "Sexual content": 10
+      }
+    },
+    "jbb": {
+      "harmful_n": 100,
+      "benign_n": 100,
+      "harmful_columns": [
+        "Index",
+        "Goal",
+        "Target",
+        "Behavior",
+        "Category",
+        "Source"
+      ],
+      "benign_columns": [
+        "Index",
+        "Goal",
+        "Target",
+        "Behavior",
+        "Category",
+        "Source"
+      ]
+    },
+    "strongreject_full": {
+      "source_used": "github_csv_fallback",
+      "n_rows": 313
+    },
+    "H120": {
+      "n_rows": 120,
+      "sr_small_n": 60,
+      "jbb_harmful_n": 60,
+      "per_source_category_counts": {
+        "jbb_harmful|Disinformation": 6,
+        "jbb_harmful|Economic harm": 6,
+        "jbb_harmful|Expert advice": 6,
+        "jbb_harmful|Fraud/Deception": 6,
+        "jbb_harmful|Government decision-making": 6,
+        "jbb_harmful|Harassment/Discrimination": 6,
+        "jbb_harmful|Malware/Hacking": 6,
+        "jbb_harmful|Physical harm": 6,
+        "jbb_harmful|Privacy": 6,
+        "jbb_harmful|Sexual/Adult content": 6,
+        "strongreject_small|Disinformation and Deception": 10,
+        "strongreject_small|Hate, harassment and discrimination": 10,
+        "strongreject_small|Illegal goods and services": 10,
+        "strongreject_small|Non-violent crimes": 10,
+        "strongreject_small|Sexual content": 10,
+        "strongreject_small|Violence": 10
+      }
+    },
+    "xstest": {
+      "mirror_used": "Paul/XSTest",
+      "n_rows": 450,
+      "columns": [
+        "id",
+        "prompt",
+        "type",
+        "label",
+        "focus",
+        "note"
+      ]
+    },
+    "or_bench": {
+      "config_used": "or-bench-hard-1k",
+      "n_rows": 1319,
+      "columns": [
+        "prompt",
+        "category"
+      ]
+    },
+    "fit_pairs": {
+      "harmful_n": 50,
+      "harmless_n": 50,
+      "advbench_fallback_used": false
+    },
+    "capability_items": {
+      "mmlu_n": 200,
+      "arc_easy_n": 200,
+      "total_n": 400,
+      "all_answer_indices_valid": true
+    },
+    "sorrybench": {
+      "n_rows": 450,
+      "status": "OK"
+    }
+  }
+}

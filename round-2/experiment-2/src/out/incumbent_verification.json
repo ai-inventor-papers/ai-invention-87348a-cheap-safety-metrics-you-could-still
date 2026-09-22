@@ -1,0 +1,135 @@
+{
+  "verified_at": "2026-09-21",
+  "source_files": [
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_1/gen_art/gen_art_research_1/research_out.json",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_1/gen_art/gen_art_research_1/spec_table.json",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_1/gen_art/gen_art_research_1/research_verification.json",
+    "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_1/gen_art/gen_art_research_1/research_report.md"
+  ],
+  "claims": [
+    {
+      "id": 1,
+      "claim": "AMS = arXiv 2608.05578, published in IEEE Access volume 14, pages 91723-91737. Its statistic is sigma = (mu+ - mu-)/sigma_pooled on final-token residual streams. It reports 71% (10/14) leave-one-out, and that leave-one-out held out ONLY THE THRESHOLD - direction, layer sweep and prompt set were never held out, and the authors concede the coupling.",
+      "verdict": "SUPPORTED",
+      "evidence": "venue = 'IEEE Access 14:91723-91737'; statistic formula_prose gives sigma = (mu_plus - mu_minus)/sigma_pooled on the residual stream at the FINAL TOKEN; report text: 'The decisive extraction: what the 71% (10/14) actually held out. Only the classification threshold... The direction, the in-sample layer sweep and the fixed 16-pair prompt set were never held out.' Quoted: 'held-out model, we recompute the midpoint thresholds using only the remaining 13 models and classify the held-out model with those thresholds', and 'even the LOOCV reframing does not fully decouple calibration from evaluation.'",
+      "source": "spec_table.json:incumbents[AMS].venue/statistic; research_out.json:answer (Incumbent 1 section); research_verification.json:passages (both quotes marked valid)",
+      "correction": null
+    },
+    {
+      "id": 2,
+      "claim": "AMS reports r = -0.546 (p = .043, n = 14 models) but Spearman rho = -0.423 (p = .13, not significant); median bootstrap 95% CI width 3.36 sigma against a 2.0-3.5 band.",
+      "verdict": "SUPPORTED",
+      "evidence": "'Pearson r = -0.546 (p = 0.043, n = 14 models) but Spearman rho = -0.423 (p = 0.13, not significant)... a median bootstrap 95% CI width of 3.36 sigma against a 2.0-3.5 decision band, with 26 of 42 cells (62%) crossing the PASS threshold.'",
+      "source": "research_out.json:answer (Incumbent 1 section); spec_table.json:incumbents[AMS].headline_numbers",
+      "correction": null
+    },
+    {
+      "id": 3,
+      "claim": "AMS already publishes that behavioural fine-tuning (its class iv) is UNDETECTABLE.",
+      "verdict": "SUPPORTED",
+      "evidence": "Summary field, verbatim: 'Class (iv) behavioural fine-tuning is ALREADY PUBLISHED as undetectable - cite, do not claim.' Elaborated in answer: 'AMS's class (iv): behavioural fine-tuning preserves both magnitude and direction, sigma_harmful = 5.45, \"with 19 of 20 stratified harmful prompts (97% compliance)\", and neither tier catches it.'",
+      "source": "research_out.json:summary; research_out.json:answer (Incumbent 1 section, last paragraph)",
+      "correction": null
+    },
+    {
+      "id": 4,
+      "claim": "Skin-Deep / GFS = arXiv 2606.22676 is NOT parent-free: Eq 1 cPCA needs the base model's covariance and the code requires --base_model. It needs 1000 prompts. Its retention-prediction claim has NO printed coefficient (a qualitative co-occurrence at n=7).",
+      "verdict": "SUPPORTED",
+      "evidence": "spec_table.json statistic.formula_prose: 'v_cPCA_l = argmax_{||v||=1} v^T (Sigma_inst_l - alpha*Sigma_base_l) v [Eq 1]'; inputs_read: code flags '--instruct_model / --base_model'; n_prompts: 1000 (500 harmful + 500 benign). headline_numbers 'GFS-LoRA retention predictive finding': 'NO Spearman/Kendall correlation coefficient or rank-accuracy percentage is reported. The claim is a QUALITATIVE co-occurrence... n=7 total.'",
+      "source": "spec_table.json:incumbents[SKINDEEP_GFS].statistic; spec_table.json:incumbents[SKINDEEP_GFS].headline_numbers",
+      "correction": null
+    },
+    {
+      "id": 5,
+      "claim": "N-GLARE = arXiv 2511.14195, ACL 2026 Long paper 1334. Parent-free AND generation-free but needs FOUR probing conditions {B,J,R,P} over 7000+ cases. No numeric Kendall tau for the headline claim in either version; Table 2's numeric taus belong to a DIFFERENT robustness check.",
+      "verdict": "SUPPORTED",
+      "evidence": "venue: 'ACL 2026 (Volume 1: Long Papers), pages 28902-28923, Anthology ID 2026.acl-long.1334'. prompt_set: 'Four probing/dialogue conditions per model: Benign (B)... Jailbreak (J)... Ideal Refusal (R)... Plain Query (P)... over 7000 test cases (per Section 4.1.1)'. headline_numbers entry: 'There is no numeric tau for the headline red-team-agreement claim in either the arXiv v2 or the ACL camera-ready; the running text says only that tau \"remains consistently high\"... Table 2 DOES print numeric Kendall and Spearman values... but for a different and weaker claim, the metric's stability under perturbation... Verdict recorded as NOT-PRINTED-IN-RUNNING-TEXT.'",
+      "source": "spec_table.json:incumbents[NGLARE].venue/statistic.prompt_set; spec_table.json:incumbents[NGLARE].headline_numbers (Kendall-tau entry); research_out.json:answer (Incumbent 3 section)",
+      "correction": null
+    },
+    {
+      "id": 6,
+      "claim": "RAS / SafeVec = arXiv 2606.25750: white-box, generation-free, per-checkpoint, calibrated 0-100, 210-217x faster than judge-based, but needs a per-family reference model AND a calibration set AND those models' measured ASR, and states 'family-specific calibration remains necessary'.",
+      "verdict": "SUPPORTED",
+      "evidence": "'RAS is a white-box, generation-free, per-checkpoint, calibrated 0-100 internal safety score that \"separates aligned models from uncensored and abliterated variants\", tracks ASR, and runs 210-217x faster than judge-based scoring (14.13 s vs 2969.14 s average)... Per family it \"assume[s] access to a safety-aligned reference model Mref,a and a small calibration set Ca\"... and its calibration consumes the calibration models' MEASURED ASR... it also already publishes... \"family-specific calibration remains necessary\".'",
+      "source": "research_out.json:answer (Incumbent 4 section); research_verification.json:passages ('family-specific calibration remains necessary' marked valid; 'assume access to a safety-aligned reference model' marked valid)",
+      "correction": null
+    },
+    {
+      "id": 7,
+      "claim": "A per-layer energy ratio on Delta-W reaches AUROC ~0.95 / balanced accuracy 0.89 over 273 checkpoints (57 abliterations vs 37 benign fine-tunes) and is PARENT-DEPENDENT - check whether arXiv 2607.01854 is the right identifier for this and whether those numbers appear.",
+      "verdict": "PARTIAL",
+      "evidence": "arXiv 2607.01854 ('Has This Checkpoint Been Abliterated? A Two-Signal Audit and Its Failure Map') IS confirmed as the right identifier for AUROC 0.95 in-sample / leave-one-family-out balanced accuracy 0.89, over a '273-checkpoint registry', and it IS explicitly flagged PARENT-DEPENDENT ('presumes an attested reference'). BUT: (a) the method is NOT a single 'per-layer energy ratio' - the artifact describes it as a TWO-SIGNAL audit combining 'a reference-anchored activation refusal-gap' with 'the rank-1 weight-recovery energy of the base-to-candidate weight DIFFERENCE', z-standardized and summed (s(Mc) = z(-rho) + z(E1)); only one of the two signals (E1) is a weight-space energy term, and nothing in the artifact calls it 'per-layer'. (b) The '57 abliterations vs 37 benign fine-tunes' breakdown of the 273 checkpoints does NOT appear anywhere in any of the four source files (57+37=94, not 273; no such split is quoted).",
+      "source": "spec_table.json:candidates[C4].top_hits[1].relevance ('273-checkpoint registry'); spec_table.json:candidates[C4].nearest_paper (AUROC 0.95, balanced accuracy 0.89, quote2 on the z-sum construction); research_report.md:[14] reference entry",
+      "correction": "arXiv 2607.01854 is the right paper and the AUROC 0.95 / balanced-accuracy-0.89 / 273-checkpoint / parent-dependent facts all check out, but it is a two-signal (activation-gap + weight-recovery-energy) audit, not a single 'per-layer energy ratio on Delta-W', and no 57-vs-37 checkpoint split is stated in the source artifact."
+    },
+    {
+      "id": 8,
+      "claim": "ROSI = arXiv 2508.20766. Its alpha is NEVER printed in v1 or v2 and there is no public code. Its update is W_out' <- W_out + alpha * s_hat * w_bar^T on o_proj AND down_proj. s_hat = unit-norm difference in means at the LAST PROMPT TOKEN over EXACTLY 50 harmful/harmless pairs; w_bar = MEAN OF THE ROW VECTORS of the original W. Its Table 1 row for Qwen2.5-0.5B-Instruct is harm refusal 90.4 -> 99.3. It was never evaluated on Qwen3.",
+      "verdict": "NOT_FOUND",
+      "evidence": "Zero occurrences of 'ROSI' or '2508.20766' in any of the four source files (research_out.json, spec_table.json, research_verification.json, research_report.md). This research artifact never discusses ROSI at all; it is outside its scope (the artifact covers AMS, Skin-Deep/GFS, N-GLARE, RAS/SafeVec as incumbents, and five OPEN/PARTIAL candidates C1-C5, none of which is ROSI).",
+      "source": "n/a - absent from all four files (grep -c returned 0 for every file)",
+      "correction": null
+    },
+    {
+      "id": 9,
+      "claim": "arXiv 2602.02132 already publishes that refusal-direction steering raises harmful refusal and benign over-refusal IN PARALLEL.",
+      "verdict": "NOT_FOUND",
+      "evidence": "Zero occurrences of '2602.02132' in any of the four source files. This paper/claim is not discussed anywhere in the research artifact.",
+      "source": "n/a - absent from all four files (grep -c returned 0 for every file)",
+      "correction": null
+    },
+    {
+      "id": 10,
+      "claim": "arXiv 2508.00161 Remark 3.2 is a published PARENT-FREE per-layer attempt that reported success varying greatly across models.",
+      "verdict": "PARTIAL",
+      "evidence": "arXiv:2508.00161 ('WeightWatch') appears only twice, both thin/secondary mentions inside candidate C4's top_hits and adversarial-recheck JSON, never as a fully-sourced numbered citation with a quoted passage (it is NOT in the [1]-[29] reference list in research_report.md, and it does NOT appear in research_verification.json's checked-passages list). One mention says: 'WeightWatch, arXiv:2508.00161... the weight-difference primitive both Hurtado and the wiki build on; Remark 3.2 is the published parent-free NEGATIVE' - this partially corroborates the claim (Remark 3.2 = a parent-free attempt, reported as a negative result). A second mention groups WeightWatch's MAIN method among 'parent-dependent graded diagnostics (Skin-Deep 2606.22676, WeightWatch 2508.00161)' and says Skin-Deep 'fails' for the 'same failure mode as WeightWatch' (i.e. requiring the base/parent model M0) - so the source artifact treats WeightWatch's primary method as parent-DEPENDENT while only Remark 3.2 specifically is called out as the parent-free (negative) case. The artifact gives NO supporting text for 'per-layer' or 'success varying greatly across models' - those two specifics are not stated anywhere in the source files.",
+      "source": "spec_table.json:candidates[C4].top_hits[5].relevance ('Remark 3.2 is the published parent-free NEGATIVE'); spec_table.json:candidates[C4].adversarial_recheck.strongest_counterexample.fails_conjuncts and .recommended_margin_rewording",
+      "correction": "The core fact (2508.00161 Remark 3.2 = a published parent-free attempt, reported as negative) is corroborated by a single thin, non-primary-sourced mention. The 'per-layer' description and the 'success varying greatly across models' characterization are NOT supported anywhere in these four files - the artifact never quotes or elaborates Remark 3.2's content, so those specifics should not be asserted on this artifact's authority alone."
+    }
+  ],
+  "additional_incumbents_found": [
+    {
+      "id": "HRCI_repr",
+      "arxiv": "2606.16349",
+      "title": "From Refusal Geometry to Safety Geometry: Harmfulness-Refusal Coupling under Dynamic Adversarial Fine-Tuning",
+      "why_flagged": "Marked as C1's REQUIRED must-beat baseline: 'parent-free, single-checkpoint, implementable in a few lines. A candidate that does not beat a few-line published baseline has no story.' The paper's own authors publish the negative 'Thus low coupling is not a safety score' (SFT reaches low coupling while remaining high-ASR), which forces C1 to be pre-registered as a discriminator only."
+    },
+    {
+      "id": "Jorak / Model Scanner",
+      "arxiv": "community tool (GitHub: JolanMc/Jorak), not an arXiv paper",
+      "title": "Jorak / Model Scanner - reference-free detection of abliteration",
+      "why_flagged": "Marked as C4's REQUIRED must-beat baseline for the binary-discriminator case: 'Jorak subspace_signature() as a binary discriminator'. Conceded prior art establishing binary parent-free abliteration detection is CLOSED; three techniques (SVD global/band/subspace alignment + activation axis health + behavioural refusal rate) producing a four-bucket provenance label."
+    },
+    {
+      "id": "IRT adaptive-item behavioural evaluation (two papers)",
+      "arxiv": "2608.05086 and 2606.20626",
+      "title": "Item Response Theory for AI Safety (2608.05086); Efficient Safety Benchmarking via Item Response Theory, ICML 2026 (2606.20626)",
+      "why_flagged": "Marked as C2's REQUIRED must-beat baselines: 'Any claim that an internal readout is cheaper must be stated against these, not against a full benchmark run.' Report ~10 adaptive items cutting cost 97-99% across 192 models, and >=80% cost reduction rising to 99.9% on AIR-Bench 2024."
+    },
+    {
+      "id": "A Probe Direction Is a Property of Its Prompt",
+      "arxiv": "2608.13329",
+      "title": "A Probe Direction Is a Property of Its Prompt",
+      "why_flagged": "Called 'the most adverse hit of the whole search' - a generalizability-theory decomposition reporting a generalizability coefficient of 0.00002 for cross-family comparison on one prompt wrapper; 'directly constrains the few-prompt cross-family framing' and must be answered by design or conceded, not simply cited."
+    },
+    {
+      "id": "Training Leaves Traces (lineage-identity probe)",
+      "arxiv": "2608.14929",
+      "title": "Training Leaves Traces: Centered Residual Signatures for Language Model Lineage Verification",
+      "why_flagged": "C5's nearest paper and the source of C5's REQUIRED ablation baseline: 'a lineage-identity probe on the same pooled hidden states. If the metamodel does not beat it on held-out lineages, the honest headline is that hidden-state safety prediction is largely lineage recognition.'"
+    },
+    {
+      "id": "2606.02907 (residualization control, established prior art)",
+      "arxiv": "2606.02907",
+      "title": "not separately titled in the extracted text; described only via its method",
+      "why_flagged": "Flagged as ESTABLISHED PRIOR ART for the control method C5 relies on: 'residualizes source identity and drives a 100%-accurate hidden-state probe to chance; Hewitt & Liang control tasks' - C5 must be claimed as running the established control on a new axis, not as inventing the control."
+    },
+    {
+      "id": "Beyond Shallow Alignment (post-training recipe confound)",
+      "arxiv": "2609.03887",
+      "title": "Beyond Shallow Alignment: How Post-Training Methods Determine Refusal Circuits And Steering Robustness, EMNLP 2026 Main",
+      "why_flagged": "Supplies C3's NAMED CONFOUND: post-training method (not just data) reshapes how refusal is computed internally across Llama-3.1-8B, Gemma-2-9B and Qwen3-8B; 'Any depth-based per-checkpoint statistic needs a recipe control.'"
+    }
+  ]
+}
