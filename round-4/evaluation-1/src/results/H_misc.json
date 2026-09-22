@@ -1,0 +1,326 @@
+{
+  "anova": {
+    "by_family": {
+      "B": {
+        "R2": 0.4553517996067367,
+        "adj_R2": 0.3645770995411928,
+        "F": 5.0162853667150635,
+        "p": 0.026103361504501738,
+        "n": 15,
+        "k_groups": 3
+      },
+      "P": {
+        "R2": 0.46888129713298393,
+        "adj_R2": 0.38036151332181456,
+        "F": 5.296909650538718,
+        "p": 0.022446548438447306,
+        "n": 15,
+        "k_groups": 3
+      }
+    },
+    "by_lineage": {
+      "B": {
+        "R2": 0.715682974266906,
+        "adj_R2": 0.5577290710818537,
+        "F": 4.530960994540551,
+        "p": 0.024264533885959724,
+        "n": 15,
+        "k_groups": 6
+      },
+      "P": {
+        "R2": 0.7248405835450424,
+        "adj_R2": 0.571974241070066,
+        "F": 4.741662368638772,
+        "p": 0.02124601554541287,
+        "n": 15,
+        "k_groups": 6
+      }
+    },
+    "n": 15,
+    "families": [
+      "Qwen2.5",
+      "Qwen3",
+      "TinyLlama"
+    ],
+    "n_lineages": 6,
+    "source": "results/A_targets.json:components (hc, fr from iter_2 exp1 prompt_budget.json:targets)",
+    "old_claim": "family explains R2=0.469 of the TARGET variance (n=15, 3 families). Recompute: 0.469 is the one-way family R2 of the PRODUCT target P; under the balanced B it is 0.455, and by lineage (6 groups) 0.716 (B) / 0.725 (P). The 0.469 does not appear in any results JSON (derived number)."
+  },
+  "metamodel": {
+    "n_checkpoints": 10,
+    "feature_widths": [
+      288
+    ],
+    "slugs": [
+      "DreamFast__qwen3-4b-heretic",
+      "Goekdeniz-Guelmez__Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1",
+      "Qwen__Qwen2.5-1.5B-Instruct",
+      "Qwen__Qwen3-0.6B",
+      "Qwen__Qwen3-1.7B",
+      "Qwen__Qwen3-4B",
+      "TinyLlama__TinyLlama-1.1B-Chat-v1.0",
+      "huihui-ai__Huihui-Qwen3-0.6B-abliterated-v2",
+      "huihui-ai__Huihui-Qwen3-1.7B-abliterated-v2",
+      "mlabonne__Qwen3-4B-abliterated"
+    ],
+    "stored": {
+      "lolo": {
+        "held_out": 0.5,
+        "tuned": 1.0,
+        "gap": 0.5,
+        "identity_held_out": 0.14285714285714285,
+        "class_minus_identity": 0.35714285714285715
+      },
+      "lofo": {
+        "held_out": 0.5,
+        "tuned": 1.0,
+        "gap": 0.5,
+        "identity_held_out": 0.0,
+        "class_minus_identity": 0.5
+      },
+      "n": 10
+    },
+    "leave_one_lineage_out": {
+      "role_BA_recomputed": 0.5,
+      "role_BA_stored": 0.5,
+      "identity_BA_recomputed": 0.14285714285714285,
+      "identity_BA_stored": 0.14285714285714285,
+      "n_folds": 5,
+      "n_single_class_role_test_folds": 1,
+      "n_identity_folds_label_absent_from_train": 2,
+      "folds_role": [
+        {
+          "held_out": "Qwen2.5::Qwen2.5-1.5B",
+          "n_test": 2,
+          "test_classes": [
+            "abliterated",
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": false
+        },
+        {
+          "held_out": "Qwen3::Qwen3-0.6B",
+          "n_test": 2,
+          "test_classes": [
+            "abliterated",
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": false
+        },
+        {
+          "held_out": "Qwen3::Qwen3-1.7B",
+          "n_test": 2,
+          "test_classes": [
+            "abliterated",
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": false
+        },
+        {
+          "held_out": "Qwen3::Qwen3-4B",
+          "n_test": 3,
+          "test_classes": [
+            "abliterated",
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": false
+        },
+        {
+          "held_out": "TinyLlama::TinyLlama-1.1B",
+          "n_test": 1,
+          "test_classes": [
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": true
+        }
+      ],
+      "folds_identity": [
+        {
+          "held_out": "Qwen2.5::Qwen2.5-1.5B",
+          "n_test": 2,
+          "test_classes": [
+            "Qwen2.5"
+          ],
+          "test_label_absent_from_train": true,
+          "single_class_test_fold": true
+        },
+        {
+          "held_out": "Qwen3::Qwen3-0.6B",
+          "n_test": 2,
+          "test_classes": [
+            "Qwen3"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": true
+        },
+        {
+          "held_out": "Qwen3::Qwen3-1.7B",
+          "n_test": 2,
+          "test_classes": [
+            "Qwen3"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": true
+        },
+        {
+          "held_out": "Qwen3::Qwen3-4B",
+          "n_test": 3,
+          "test_classes": [
+            "Qwen3"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": true
+        },
+        {
+          "held_out": "TinyLlama::TinyLlama-1.1B",
+          "n_test": 1,
+          "test_classes": [
+            "TinyLlama"
+          ],
+          "test_label_absent_from_train": true,
+          "single_class_test_fold": true
+        }
+      ],
+      "oof_P_instruct": {
+        "DreamFast__qwen3-4b-heretic": 0.0,
+        "Goekdeniz-Guelmez__Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1": 0.06335427200389192,
+        "Qwen__Qwen2.5-1.5B-Instruct": 0.00010779641887672784,
+        "Qwen__Qwen3-0.6B": 0.006940170694802227,
+        "Qwen__Qwen3-1.7B": 0.9998147636800085,
+        "Qwen__Qwen3-4B": 0.0,
+        "TinyLlama__TinyLlama-1.1B-Chat-v1.0": 2.986395917956073e-07,
+        "huihui-ai__Huihui-Qwen3-0.6B-abliterated-v2": 0.0470935468049864,
+        "huihui-ai__Huihui-Qwen3-1.7B-abliterated-v2": 0.9683626530794873,
+        "mlabonne__Qwen3-4B-abliterated": 0.0
+      },
+      "n_with_target": 9,
+      "metamodel_oof_spearman_B": {
+        "rho": 0.11866111313364182,
+        "p": 0.7610840665317586,
+        "p_perm": 0.7702229777022298,
+        "n": 9,
+        "perm_kind": "Monte Carlo (10000 permutations)",
+        "ci95_lineage_boot": {
+          "ci": [
+            -0.818181818181818,
+            0.38297084310253526
+          ],
+          "n_valid": 4780,
+          "n_discarded": 220,
+          "B": 5000,
+          "n_lineages": 5
+        }
+      },
+      "metamodel_oof_spearman_P": {
+        "rho": 0.2034190510862431,
+        "p": 0.5996230639246415,
+        "p_perm": 0.611038896110389,
+        "n": 9,
+        "perm_kind": "Monte Carlo (10000 permutations)",
+        "ci95_lineage_boot": {
+          "ci": [
+            -0.6296296296296297,
+            0.6551724137931034
+          ],
+          "n_valid": 4780,
+          "n_discarded": 220,
+          "B": 5000,
+          "n_lineages": 5
+        }
+      },
+      "identity_family_mean_baseline": {
+        "n_defined": 7,
+        "spearman_B": {
+          "rho": 0.0,
+          "p": 1.0,
+          "p_perm": 1.0,
+          "n": 7,
+          "perm_kind": "exact (5040 permutations)"
+        }
+      }
+    },
+    "leave_one_family_out": {
+      "role_BA_recomputed": 0.5,
+      "role_BA_stored": 0.5,
+      "identity_BA_recomputed": 0.0,
+      "identity_BA_stored": 0.0,
+      "n_folds": 3,
+      "n_single_class_role_test_folds": 1,
+      "n_identity_folds_label_absent_from_train": 3,
+      "folds_role": [
+        {
+          "held_out": "Qwen2.5::Qwen2.5",
+          "n_test": 2,
+          "test_classes": [
+            "abliterated",
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": false
+        },
+        {
+          "held_out": "Qwen3::Qwen3",
+          "n_test": 7,
+          "test_classes": [
+            "abliterated",
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": false,
+          "degenerate_train": true
+        },
+        {
+          "held_out": "TinyLlama::TinyLlama",
+          "n_test": 1,
+          "test_classes": [
+            "instruct"
+          ],
+          "test_label_absent_from_train": false,
+          "single_class_test_fold": true
+        }
+      ],
+      "folds_identity": [
+        {
+          "held_out": "Qwen2.5::Qwen2.5",
+          "n_test": 2,
+          "test_classes": [
+            "Qwen2.5"
+          ],
+          "test_label_absent_from_train": true,
+          "single_class_test_fold": true
+        },
+        {
+          "held_out": "Qwen3::Qwen3",
+          "n_test": 7,
+          "test_classes": [
+            "Qwen3"
+          ],
+          "test_label_absent_from_train": true,
+          "single_class_test_fold": true,
+          "degenerate_train": true
+        },
+        {
+          "held_out": "TinyLlama::TinyLlama",
+          "n_test": 1,
+          "test_classes": [
+            "TinyLlama"
+          ],
+          "test_label_absent_from_train": true,
+          "single_class_test_fold": true
+        }
+      ],
+      "oof_P_instruct": {
+        "Goekdeniz-Guelmez__Josiefied-Qwen2.5-1.5B-Instruct-abliterated-v1": 0.06335427200389192,
+        "Qwen__Qwen2.5-1.5B-Instruct": 0.00010779641887672784,
+        "TinyLlama__TinyLlama-1.1B-Chat-v1.0": 2.986395917956073e-07
+      },
+      "n_with_target": 2
+    },
+    "explanation": "The identity probe predicts FAMILY while holding out a whole lineage (or family). Whenever the held-out family has no other lineage in the training fold its label is absent from training, so every prediction on that fold is necessarily wrong; pooled balanced accuracy over such folds falls BELOW 0.5 (LOFO: identically 0). The sub-chance identity BA is a design artefact, not anti-signal. Role folds that contain a single class (e.g. a lineage with only an instruct checkpoint) cannot contribute a per-fold BA either."
+  }
+}

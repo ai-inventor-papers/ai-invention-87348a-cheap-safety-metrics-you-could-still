@@ -1,0 +1,220 @@
+{
+  "B1_race_nulls": {
+    "null_name": "within-lineage label-permutation null",
+    "null_definition": "role labels (instruct vs abliterated) are permuted WITHIN each lineage, the identical leave-one-lineage-out balanced-accuracy pipeline is re-run on every permutation, and the 95th percentile of the permuted BA is the bar (analysis2.py:label_permutation_null L501-535, called with group=primary holdout=lineage, n_perm=min(n_perm,300), pipeline2.py L1402-1403)",
+    "primary_holdout": "leave-one-LINEAGE-out (gate G2 FAMILY_AXIS_DEGRADED: fewer than 5 families carry an instruct/abliterated pair)",
+    "n_metrics_beating_p95": 3,
+    "rows": [
+      {
+        "metric_id": "b_logit_gap_alarming",
+        "readout": "probe_cf",
+        "primary_ba_lolo": 0.8,
+        "null_type": "within-lineage label-permutation null",
+        "resampling_unit": "role labels permuted within lineage",
+        "holdout": "leave-one-lineage-out",
+        "n_perm_requested": 300,
+        "n_perm_usable": 300,
+        "null_mean": 0.45133333333333336,
+        "p95": 0.7,
+        "p_value": 0.046511627906976744,
+        "status": "BEATS p95",
+        "source": "iter_2/gen_art/gen_art_experiment_1/results/race.json:rows_primary.14.{primary_ba,null_null_p95,null_n_draws_usable,null_p_value}"
+      },
+      {
+        "metric_id": "b_card_regex_termswept",
+        "readout": "probe_cf",
+        "primary_ba_lolo": 0.9166666666666667,
+        "null_type": "within-lineage label-permutation null",
+        "resampling_unit": "role labels permuted within lineage",
+        "holdout": "leave-one-lineage-out",
+        "n_perm_requested": 300,
+        "n_perm_usable": 300,
+        "null_mean": 0.5880050505050505,
+        "p95": 0.7878787878787878,
+        "p_value": 0.046511627906976744,
+        "status": "BEATS p95",
+        "source": "iter_2/gen_art/gen_art_experiment_1/results/race.json:rows_primary.18.{primary_ba,null_null_p95,null_n_draws_usable,null_p_value}"
+      },
+      {
+        "metric_id": "w_bsa_w8_k4",
+        "readout": "probe_cf",
+        "primary_ba_lolo": 0.8257575757575758,
+        "null_type": "within-lineage label-permutation null",
+        "resampling_unit": "role labels permuted within lineage",
+        "holdout": "leave-one-lineage-out",
+        "n_perm_requested": 300,
+        "n_perm_usable": 300,
+        "null_mean": 0.5742171717171717,
+        "p95": 0.8257575757575758,
+        "p_value": 0.13953488372093023,
+        "status": "TIES p95 (does not beat)",
+        "source": "iter_2/gen_art/gen_art_experiment_1/results/race.json:rows_primary.24.{primary_ba,null_null_p95,null_n_draws_usable,null_p_value}"
+      },
+      {
+        "metric_id": "x_presentation_invariance",
+        "readout": "probe_cf",
+        "primary_ba_lolo": 1.0,
+        "null_type": "within-lineage label-permutation null",
+        "resampling_unit": "role labels permuted within lineage",
+        "holdout": "leave-one-lineage-out",
+        "n_perm_requested": 300,
+        "n_perm_usable": 300,
+        "null_mean": 0.4661666666666667,
+        "p95": 0.775,
+        "p_value": 0.046511627906976744,
+        "status": "BEATS p95",
+        "source": "iter_2/gen_art/gen_art_experiment_1/results/race.json:rows_primary.45.{primary_ba,null_null_p95,null_n_draws_usable,null_p_value}"
+      }
+    ],
+    "logo_null_calibration": {
+      "empirical_mean": 0.4029166666666667,
+      "empirical_sd": 0.13143901733419108,
+      "design": "6 groups x 4 checkpoints, balanced random labels, random features, 200 draws",
+      "note": "leave-one-group-out BA on uninformative labels sits near 0.40, not 0.50"
+    },
+    "naming_note": "the per_checkpoint_predictions column called 'anisonull' in race.json is a FEATURE permutation (x values shuffled once, pipeline2.py L1387-1390), used only for display; it is not an anisotropy null and not the null behind any race claim",
+    "old_wording": "family / anisotropy-matched null (paper wording flagged by the iter-3 review)",
+    "new_wording": "within-lineage label-permutation null: role labels (instruct vs abliterated) are permuted WITHIN each lineage, the identical leave-one-lineage-out balanced-accuracy pipeline is re-run on every permutation, and the 95th percentile of the permuted BA is the bar (analysis2.py:label_permutation_null L501-535, called with group=primary holdout=lineage, n_perm=min(n_perm,300), pipeline2.py L1402-1403)",
+    "sources": [
+      "iter_2/gen_art/gen_art_experiment_1/screen/analysis2.py:L501-535",
+      "iter_2/gen_art/gen_art_experiment_1/screen/pipeline2.py:L1387-1403"
+    ]
+  },
+  "B2_direction_nulls": {
+    "table": [
+      {
+        "count": "16/17",
+        "k": 16,
+        "n": 17,
+        "wilson95": [
+          0.7301796914154303,
+          0.9895395991310502
+        ],
+        "readout": "content_last",
+        "contrast": "harmful vs plain_benign, last prompt token (primary read)",
+        "null": "within-span random direction (NULL_span), B=1000",
+        "per_tier_k": {
+          "span": 16,
+          "aniso": 16,
+          "iso": 17,
+          "perm": 17,
+          "white": 16
+        },
+        "source": "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.SURV_span_k"
+      },
+      {
+        "count": "17/17",
+        "k": 17,
+        "n": 17,
+        "wilson95": [
+          0.8156818626193445,
+          1.0
+        ],
+        "readout": "twin_xstest",
+        "contrast": "xstest_contrast vs benign_alarming (twin pairs)",
+        "null": "within-span random direction (NULL_span), B=1000",
+        "per_tier_k": {
+          "span": 17,
+          "aniso": 17,
+          "iso": 17,
+          "perm": 17,
+          "white": 17
+        },
+        "source": "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.twin_xstest.SURV_span_k"
+      },
+      {
+        "count": "9/17",
+        "k": 9,
+        "n": 17,
+        "wilson95": [
+          0.3096323491502231,
+          0.7383489368862088
+        ],
+        "readout": "content_first",
+        "contrast": "harmful vs plain_benign, first token",
+        "null": "within-span random direction (NULL_span), B=1000",
+        "per_tier_k": {
+          "span": 9,
+          "aniso": 9,
+          "iso": 10,
+          "perm": 10,
+          "white": 14
+        },
+        "source": "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_first.SURV_span_k"
+      },
+      {
+        "count": "9/20",
+        "k": 9,
+        "n": 20,
+        "wilson95": [
+          0.25819785703764037,
+          0.6579146589808726
+        ],
+        "readout": "iter-2 exp1 harm direction at depth 0.6 (probe_cf harvest)",
+        "contrast": "harmful vs benign (plain+alarming), exp1 G8 gate",
+        "null": "within-item-span random direction, 1000 draws/tier, sign fixed on train folds",
+        "source": "iter_2/gen_art/gen_art_experiment_1/results/direction_nulls.json:n_fitted_beats_within_span_p95"
+      },
+      {
+        "count": "17/17",
+        "k": 17,
+        "n": 17,
+        "wilson95": [
+          0.8156818626193445,
+          1.0
+        ],
+        "readout": "harm_vs_allbenign",
+        "contrast": "harmful vs all benign incl. contrast",
+        "null": "within-span random direction",
+        "source": "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.harm_vs_allbenign.SURV_span_k"
+      }
+    ],
+    "null_definitions": {
+      "span": "within-item-span random direction: centred TRAIN-fold activations times a Gaussian vector, unit-normed, sign fixed on train folds, scored out of fold (d2_controls.py:_draw 'span')",
+      "aniso": "anisotropy-matched random direction: Ledoit-Wolf covariance square-root applied to an isotropic draw",
+      "iso": "isotropic Gaussian random unit direction",
+      "perm": "label-permutation null on the fitted cross-fitted direction (B_perm=1000)",
+      "white": "LDA-whitened refit scored against its OWN within-span null"
+    },
+    "print_together_note": "16/17, 17/17, 9/17 and 9/20 are always printed together; they are different contrasts/readouts/panels, not replications of one number",
+    "reconciliation": "9/20 (exp1, 20 checkpoints incl. base models, harmful vs ALL benign at probe layer) and 16/17 (eval1, 17 checkpoints, harmful vs plain_benign at fixed depth 0.6, last token) use different panels, contrasts and item sets; the 9/17 is the FIRST-token readout"
+  },
+  "B3_above_chance": {
+    "inputs": {
+      "AUROC_fit_mean": 0.83544921875,
+      "AUROC_span_null_mean": 0.6291021943933822,
+      "AUROC_whitened_mean": 0.7586454503676471,
+      "recomputed_from_per_checkpoint": {
+        "fit": 0.83544921875,
+        "span": 0.6291021943933822,
+        "white": 0.7586454503676471
+      },
+      "sources": [
+        "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.mean_AUROC_xf",
+        "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.mean_null_span_mean (or per_checkpoint NULL_span.null_mean)",
+        "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.mean_AUROC_white_xf"
+      ]
+    },
+    "random_span_share": 0.3848636013357304,
+    "whitening_removal_share": 0.22895795872934321,
+    "formulas": {
+      "random_span_share": "(AUC_span - 0.5)/(AUC_fit - 0.5)",
+      "whitening_removal_share": "(AUC_fit - AUC_white)/(AUC_fit - 0.5)"
+    },
+    "lineage_bootstrap_ci95": {
+      "random_span_share": [
+        0.32926775464265595,
+        0.4103789454806316
+      ],
+      "whitening_removal_share": [
+        0.1308,
+        0.3708896252867704
+      ],
+      "B": 5000,
+      "n_lineages": 4,
+      "n_checkpoints": 17,
+      "note": "only 4 lineages: the CI is a descriptive band, not inference"
+    },
+    "sentence": "About 38% of the harm direction's above-chance AUROC is reachable by a random direction inside the item span, and whitening removes about 23%."
+  }
+}

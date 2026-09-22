@@ -1,0 +1,87 @@
+{
+  "fig2_race_scatter": {
+    "pdf": "figures/fig2_race_scatter.pdf",
+    "png": "figures/fig2_race_scatter.png",
+    "caption": "Race under the corrected target. One point per registry metric: x = leave-one-lineage-out BA, y = checkpoint-level Spearman with the two-sided target (15 judged checkpoints, 3 families, 6 lineages; Josiefied excluded, D12). Open markers fail the blanket-refuser pole rule; stars beat the within-lineage label-permutation null p95. Right panel: product target with arrows to the balanced value.",
+    "data_sources": [
+      "iter_2 exp1 results/race.json:rows_primary",
+      "results/poles.json:metrics_failing_the_pole_rule",
+      "results/A_targets.json:components",
+      "metric_cache probe_cf files"
+    ],
+    "n": {
+      "n_metrics": 46,
+      "n_checkpoints_max": 15
+    }
+  },
+  "fig3_grader_refusal": {
+    "pdf": "figures/fig3_grader_refusal.pdf",
+    "png": "figures/fig3_grader_refusal.png",
+    "caption": "Grader-side refusal. Bars: accuracy and degenerate-grade rate per judge on the iter-3 calibration set (60 known-compliant + 60 known-refusal, stance framing; the only framing stored), and the StrongREJECT-framing 1,1,1 rate on 1,040 iter-2 replies. Inset: StrongREJECT vs stance refusal labels (328 vs 67 discordant). 1,1,1 is also the legitimate output for a true refusal, so the asymmetry is an upper bound on grader-side refusal, not a measurement.",
+    "data_sources": [
+      "results/F_grader.json:step1_calibration",
+      "results/F_grader.json:step2_framing_comparison"
+    ],
+    "n": {
+      "n_calibration": 120,
+      "n_pairs": 1040
+    }
+  },
+  "fig5_prompt_budget": {
+    "pdf": "figures/fig5_prompt_budget.pdf",
+    "png": "figures/fig5_prompt_budget.png",
+    "caption": "Prompt budget. Left: leave-one-lineage-out BA of the internal readout (cross-fitted harm-vs-benign separation at 60% depth) and the black-box first-token logit margin vs k (stored means and 200-draw bands). Middle/right: mean |Spearman| with the balanced (B) and product (P) targets over 20 item draws per k, with 300-draw lineage-cluster bootstrap bands recomputed from budget_raw.json. Panel: 15 judged checkpoints, 3 families, 6 lineages (Josiefied excluded, D12).",
+    "data_sources": [
+      "iter_2 exp1 results/prompt_budget.json:curves",
+      "results/budget_raw.json:rows",
+      "results/A_targets.json:components"
+    ],
+    "n": {
+      "n_checkpoints": 15,
+      "n_lineages": 6
+    }
+  },
+  "fig1_rosi_dose": {
+    "pdf": "figures/fig1_rosi_dose.pdf",
+    "png": "figures/fig1_rosi_dose.png",
+    "caption": "ROSI dose response on Qwen2.5-0.5B-Instruct. Left: balanced B (stored D2) and product P vs multiplier with paired item-bootstrap 95% CI bands (dD2 CI added to the x0 value), the hidden-direction control and a Qwen3-0.6B x4 point. Right: harm refusal and benign-twin false refusal separately. 20-token continuations, gpt-5-mini stance judge, 2 hosts only.",
+    "data_sources": [
+      "results/D_rosi.json:dose_table"
+    ],
+    "n": {
+      "n_items_harmful": 64,
+      "n_items_twin": 32,
+      "n_hosts": 2
+    }
+  },
+  "fig6_power": {
+    "pdf": "figures/fig6_power.pdf",
+    "png": "figures/fig6_power.png",
+    "caption": "Minimum detectable effect (80% power) vs panel size under the lineage-cluster simulation of iter-3 power.py (ICC 0.617, lineage-cluster percentile bootstrap). Crosses: MDE not reached on the grid (rho <= 0.95).",
+    "data_sources": [
+      "results/H_power_sim.json:MDE"
+    ],
+    "n": {
+      "n_list": [
+        15,
+        21,
+        24,
+        30,
+        38,
+        50
+      ]
+    }
+  },
+  "fig4_kappa_band": {
+    "pdf": "figures/fig4_kappa_band.pdf",
+    "png": "figures/fig4_kappa_band.png",
+    "caption": "Parent-free realised-strength estimate kappa_hat vs parent-based true kappa for every edited layer-matrix of real published edits. Blue = inside the validity band |1-kappa| < sigma_min/sigma_rms (the read is exact there), vermilion = outside (the read is blind). Dotted = identity.",
+    "data_sources": [
+      "results/C_kappa_points.json (from iter_2 exp3 results/true_kappa/)"
+    ],
+    "n": {
+      "n_points": 484,
+      "n_in_band": 177
+    }
+  }
+}

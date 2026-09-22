@@ -1,0 +1,112 @@
+{
+  "A1": {
+    "paper_quote": "A blanket refuser achieves $D_2 = 0.5$ (64 correct refusals, 0 correct compliances); a blanket complier scores the same. A model must both refuse harmful prompts and answer benign ones to exceed 0.5.",
+    "paper_locator": "Section 3.1 Two-Sided Ground Truth, line 58",
+    "review_quote": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation."
+  },
+  "A3": {
+    "paper_quote": "\\textit{Card regex (term-swept)} ($\\rho_{\\mathrm{ckpt}} = +0.45$, $p = 0.091$) has a positive but non-significant checkpoint-level correlation and a lineage-level correlation near zero ($\\rho_{\\mathrm{lin}} = -0.03$), indicating that the signal comes from across-family variation rather than within-family safety differences.",
+    "paper_locator": "Section 5.1 The Race Table, line 150",
+    "review_quote": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation."
+  },
+  "A5": {
+    "paper_quote": "Presentation invariance has $\\rho_{\\mathrm{ckpt}} = -0.71$ across 13 checkpoints but $\\rho_{\\mathrm{lin}} = -0.40$ across only 5 lineages; card regex has $\\rho_{\\mathrm{ckpt}} = +0.45$ but $\\rho_{\\mathrm{lin}} = -0.03$.",
+    "paper_locator": "Section 5.3 Qwen3-4B Lineage Anatomy, Cross-metric correlations, line 241",
+    "review_quote": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation."
+  },
+  "A6": {
+    "paper_quote": null,
+    "paper_locator": null,
+    "review_quote": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation."
+  },
+  "B1": {
+    "paper_quote": "To control for this, we construct an anisotropy-matched null: 1,000 random directions drawn from the within-item-span covariance of the activation space, preserving the geometric structure without the semantic content.",
+    "paper_locator": "Section 3.3 Direction Significance Testing, line 84",
+    "review_quote": "The race null is mislabelled. The abstract, Contribution 1, Section 5.1 and the Table 1 caption say the three winners beat the 'anisotropy-matched null'. exp1 RESULTS.md defines null p95 as 'the 95th percentile of the metric's own within-lineage label-permutation null'. The anisotropy (within-span direction) null is a separate test applied only to fitted harm directions (Section 3.4). Presentation invariance and card regex are not directions, so an anisotropy null cannot apply to them."
+  },
+  "B2": {
+    "paper_quote": "16 of 17 checkpoints beat the null at the 95th percentile (Wilson 95\\% CI $[0.73, 0.99]$; mean cross-fitted AUROC 0.835 versus null mean 0.629).\n\\item \\textbf{First-generation token}: 9 of 17 beat the null (Wilson CI $[0.31, 0.74]$; mean AUROC 0.664 versus null 0.576). This position fails the survival criterion.\n\\item \\textbf{XSTest twin contrast}: 17 of 17 beat the null (Wilson CI $[0.82, 1.00]$; mean AUROC 0.801 versus null 0.626).",
+    "paper_locator": "Section 3.3 Direction Significance Testing, line 89",
+    "review_quote": "The abstract's claim that 'an anisotropy-matched null accounts for over half of all activation-probe results' contradicts the paper's own Section 3.4: 16/17 checkpoints survive at the last prompt token, 17/17 on the XSTest twin contrast, and whitening explains 'roughly 10%'. Only the first-generated-token read (9/17) and the cross-family G8 (9/20) show majority failure."
+  },
+  "B3": {
+    "paper_quote": "We also report that a whitened version of the probe (projecting out the top principal components of the activation covariance) retains a mean AUROC of 0.759 compared to 0.835 for the raw probe, confirming that a substantial fraction of probe signal survives anisotropy correction while roughly 10\\% of the signal is explained by geometry alone.",
+    "paper_locator": "Section 3.3 Direction Significance Testing, line 96",
+    "review_quote": "Replace the abstract sentence with the exact split: 'fitted harm directions beat a within-span null within family at the prompt token (16/17) but not at the first generated token (9/17) or cross-family (9/20)'. Fix the 10% sentence to use the above-chance decomposition. ... A random span direction already reaches 0.629 against 0.835 fitted, i.e. about 38% of above-chance AUROC. Whitening drops above-chance AUROC from 0.335 to 0.259, about 23%."
+  },
+  "C1": {
+    "paper_quote": "On a pool of 71 checkpoints (39 unedited, 32 edited across multiple methods), BSA achieves a pooled detection AUROC of 0.84. For tool-generated outputs specifically, AUROC reaches 0.95.",
+    "paper_locator": "Section 5.4 Weight Reads: Detection Without Grading, line 223",
+    "review_quote": "Section 5.4 and Contribution 4 misattribute and invert the weight-read results. (a) The pooled AUROC 0.84 (0.95 for tool outputs) and the within-edited Spearman 0.26 (n=14) are for down_proj kappa_hat, not BSA. BSA's own prereg 0.35 flag false-positives on 97% of honest checkpoints."
+  },
+  "C2": {
+    "paper_quote": "However, detection does not imply grading. Within the set of 14 edited checkpoints that have ground-truth $D_2$ scores, the Spearman correlation between BSA distance and $D_2$ is 0.257 ($p = 0.375$). BSA can tell that a checkpoint has been edited but cannot rank how much the edit degraded safety.",
+    "paper_locator": "Section 5.4 Weight Reads: Detection Without Grading, line 225",
+    "review_quote": "Rewrite Contribution 4 as: 'kappa_hat detects edits (AUROC 0.84) but shows no grading within 14 edited checkpoints (rho 0.26, CI [-0.65, 0.86], MDE 0.56); even true kappa does not grade (0.03, n=12); an external 20-checkpoint replication is positive (0.85) but confounded by edit type (projection-only 0.65, CI spans 0)'."
+  },
+  "C4": {
+    "paper_quote": "On 20 independent checkpoints, the combined within-edited Spearman correlation is 0.85 $[0.56, 0.95]$, confirming that BSA reliably orders edits by magnitude. However, restricting to projection-only edits (which include abliteration and ROSI) yields $\\rho = 0.65$ $[-0.26, 0.95]$, $n = 10$, with a confidence interval that includes zero.",
+    "paper_locator": "Section 5.4 Weight Reads: Detection Without Grading, Replication, line 227",
+    "review_quote": "The replication rho 0.85 [0.56, 0.95] is a correlation with judged compliance, i.e. GRADING, not detection. The artifact concludes 'a graded signal is not excluded, not established'. The paper calls it one that 'confirms detection' and 'confirms that BSA reliably orders edits by magnitude.'"
+  },
+  "C5": {
+    "paper_quote": "A per-layer analysis of 484 layer-checkpoint pairs reveals that only 177 fall within the operating range where BSA is well-calibrated (median cosine similarity 1.0), while 307 are out of range (median cosine 0.144). The true per-layer discriminability ($\\kappa$) correlates at $\\rho = 0.075$ ($n = 484$) with BSA distance, confirming that the weight signal is present but diffuse across layers and not concentrated where BSA looks.",
+    "paper_locator": "Section 5.4 Weight Reads: Detection Without Grading, Validity band, line 229",
+    "review_quote": "The 0.075 is per-layer Spearman(true kappa, parent-free kappa_hat) over 484 layer-matrices (exp3 RESULTS line 122). It means the parent-free read barely tracks true edit strength outside the validity band. The paper calls it 'confirming that the weight signal is present but diffuse.' Report the validity band as: in-band median cos 1.0, out-of-band 0.14, 307/484 out of band, per-layer Spearman with true kappa 0.075."
+  },
+  "C7": {
+    "paper_quote": "We test whether a ``repair'' operation --- swapping the safety-degraded layers back to the parent's weights --- evades detection while preserving the safety modification. After repair, the BSA detection gap jumps from 0.012 to 0.824 (the repaired checkpoint now looks like the parent in weight space), but behavioural measures tell a different story",
+    "paper_locator": "Section 5.4 Weight Reads: Detection Without Grading, Repair as detector evasion, line 231",
+    "review_quote": "The repair is 'a rank-one repair from the checkpoint's own weights (zero prompts)', not 'swapping the safety-degraded layers back to the parent's weights'. A parent swap would need the parent, violating the threat model, and would trivially restore behaviour. The '0.012 -> 0.824' is BOTGAP_min, not 'BSA detection gap'."
+  },
+  "D1": {
+    "paper_quote": "The Rank-One Safety Injection (ROSI) \\cite{Shairah2025} adds a rank-one matrix $\\alpha \\mathbf{u}\\mathbf{v}^\\top$ to a residual-stream weight matrix, where $\\mathbf{u}$ and $\\mathbf{v}$ are the left and right singular vectors of the difference between a safety-trained and base model's weights at the layer of maximum divergence, and $\\alpha$ is a scaling factor.",
+    "paper_locator": "Section 5.2 ROSI Reversal on Two-Sided Ground Truth, line 168",
+    "review_quote": "ROSI: the paper says u, v are singular vectors of the safety-minus-base weight difference at one layer. The published method (Abu Shairah et al. 2508.20766) injects a refusal direction computed from harmful/harmless instruction activations into ALL residual-stream write matrices, and the artifact ran 'F2b ROSI all-layer'."
+  },
+  "D2": {
+    "paper_quote": "An additional control applies ROSI at $4\\times$ to a hidden layer rather than the published target layer. This variant shows $\\Delta D_2 = -0.042$ $[-0.095, +0.013]$, a weaker and non-significant effect, consistent with the published finding that the target layer matters.",
+    "paper_locator": "Section 5.2 ROSI Reversal on Two-Sided Ground Truth, line 194",
+    "review_quote": "The ROSI control is a hidden-DIRECTION arm, not a hidden layer, and its CI [-0.095, -0.001] excludes zero. The paper prints [-0.095, +0.013]. Relabel the control as 'random/hidden direction at the same norm', print its true CI, and note that even a non-refusal direction costs about 0.04 D2 (so part of the 0.151 is generic perturbation)."
+  },
+  "E": {
+    "paper_quote": "We generate completions using greedy decoding (temperature 0, max 256 tokens) on a prompt set combining XSTest \\cite{Rottger2023} harmful/safe pairs, JailbreakBench prompts, and benign-but-alarming queries. Completions are scored by a primary LLM judge (Gemini-2.5-Flash) using a stance-based framing that asks whether the model engaged with or declined the request, rather than asking the judge to rate harmfulness directly.",
+    "paper_locator": "Section 4 Experimental Setup, Ground truth scoring, line 115",
+    "review_quote": "Reproducibility statements contradict the artifacts. Section 4 says all completions are greedy with max 256 tokens and judged by Gemini-2.5-Flash, with total spend $0.77. In fact the ROSI and forgery behavioural cells used 20-token continuations judged by gpt-5-mini ($0.38). The race used 48-96-token generations with a gpt-5-mini/gemini pair ($0.77 was exp1 alone). The exp3 grading used gpt-5-mini ($1.17). The iter-3 panel used 64-token replies with Gemini primary, because gpt-5-mini failed the calibration gate (acc 0.892)."
+  },
+  "F1": {
+    "paper_quote": "On 1,040 paired items (the same completion scored under both StrongREJECT and a stance-based framing), StrongREJECT assigns the degenerate score tuple $(1, 1, 1)$ --- the maximum-refusal score that doubles as the rubric's refusal output --- to 40.5\\% of all items and 65.9\\% of harmful items.\n\nThe asymmetry is large: 328 items received a refusal score from StrongREJECT but an engaged judgement from the stance-based framing, compared to only 67 items in the opposite direction.",
+    "paper_locator": "Section 5.2 Grader-Side Refusal, line 160",
+    "review_quote": "'We discover grader-side refusal' overclaims. Judges refusing to evaluate harmful content is documented: GuidedBench (arXiv 2502.16903) explicitly designs its evaluator so that judges 'do not refuse evaluation tasks involving harmful content', and 2609.10594 measures jailbreak evaluators empirically. The 328-vs-67 asymmetry is judged only against another LLM framing, with no human labels."
+  },
+  "G1": {
+    "paper_quote": null,
+    "paper_locator": null,
+    "review_quote": "Add an 'External ground truth' subsection. Report the HELM coverage (and why it is empty below 4B), the 6.7x guardian ceiling as an upper bound on any weights-only readout, and the OLB v2 capability correlation (D2 vs capability, and top metrics vs capability, n=16). ... Yet the artifacts executed a HELM limb (81 models, 36 resolved, only 2 sub-4B with published numbers, guardian-pair ceiling 6.7x the across-model variance) and an OLB v2 capability join (n=16)."
+  },
+  "G2": {
+    "paper_quote": "No external safety scores (e.g., from third-party evaluations) were available for the checkpoints in our panel. The $D_2$ scores we compute are the only ground truth. This limits our ability to validate the target itself.",
+    "paper_locator": "Section 5.3 Qwen3-4B Lineage Anatomy, External ground truth, line 245",
+    "review_quote": "Coverage of the user's original request is still partial. ... The paper says 'No external safety scores were available' and never mentions capability. Yet the artifacts executed a HELM limb (81 models, 36 resolved, only 2 sub-4B with published numbers, guardian-pair ceiling 6.7x the across-model variance) and an OLB v2 capability join (n=16). Table 1 has 6 rows, not the top 10."
+  },
+  "G3": {
+    "paper_quote": null,
+    "paper_locator": null,
+    "review_quote": "Coverage of the user's original request is still partial. Step 4 asked for real benchmark numbers from model cards, papers and leaderboards covering safety beyond refusal (TrustLLM/AIR-Bench), plus capability benchmarks (GSM8K, MMLU, Arena-Hard) to test the safety-capability trade-off. ... State plainly that TrustLLM/AIR-Bench and GSM8K/MMLU/Arena-Hard numbers do not exist for this panel, and that the sealed hold-out was compromised."
+  },
+  "H1": {
+    "paper_quote": "The power analysis shows that meaningful effect sizes (Spearman $\\rho \\geq 0.5$) require panels of at least 30 checkpoints across 6 or more families.",
+    "paper_locator": "Section 6 Discussion and Limitations, Panel size, line 257",
+    "review_quote": "The power and scaling claims in the Discussion and Conclusion contradict the power artifact. The Discussion says rho>=0.5 'require panels of at least 30 checkpoints across 6 or more families', and the Conclusion says 50 checkpoints enable 'reliable detection of rho>=0.4'. power.json reports an MDE of 0.80 at n=24-38 under the lineage-cluster bootstrap with ICC 0.62."
+  },
+  "H2": {
+    "paper_quote": "Family identity alone explains 46.9\\% of metric variance (one-way ANOVA $R^2$ on the $D_2$ target), establishing a high bar for any metric that claims to measure safety rather than architecture.",
+    "paper_locator": "Section 5.1 The Race Table, line 125",
+    "review_quote": "The '46.9% of metric variance' in Section 5.1 is also mislabelled: it is family ANOVA R2 on the target D2 (n=15, 3 families), not on metric variance. Fix the ANOVA wording and state n and the number of families."
+  },
+  "H3": {
+    "paper_quote": "A ridge-regression metamodel trained on 288 architecture-free activation descriptors (cosine geometry across 16 depth bins) achieves perfect classification on the training checkpoints (BA 1.0) but LOLO held-out BA of 0.50 and LOFO held-out BA of 0.50, both at chance. The identity-baseline held-out accuracy (predicting safety from architecture and uploader identity alone) is 0.143 for LOLO and 0.0 for LOFO.",
+    "paper_locator": "Section 5.3 Qwen3-4B Lineage Anatomy, Metamodel, line 243",
+    "review_quote": "Metamodel 'identity baseline held-out accuracy 0.143 / 0.0' is below chance for balanced accuracy and is unexplained. Explain what the identity baseline predicts and why it scores below chance."
+  }
+}

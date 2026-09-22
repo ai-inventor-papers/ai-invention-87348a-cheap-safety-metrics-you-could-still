@@ -1,0 +1,208 @@
+# E_repro -- reproducibility table (iters 1-3, CPU-only, $0, no LLM calls)
+
+| artifact | gen_max_new_tokens | decoding | judge | item_set | n_checkpoints | hardware | spend_usd | deviations |
+|---|---|---|---|---|---|---|---|---|
+| iter_1/gen_art_dataset_1 | N/A (no generation) | N/A (no generation) | N/A (no generation) | XSTest 450 rows (source dataset verification only, not an eval item set) | 3222 candidate checkpoints (registry build, not scored) | UNSOURCED | 0.0 | UNSOURCED |
+| iter_1/gen_art_experiment_1 | 96 | greedy (do_sample=False) | openai/gpt-5-nano primary, google/gemini-2.5-flash-lite alternate; StrongREJECT-style graded compliance + false-refusal | XSTest 450 rows / 200 positional twin pairs (safety panel item pool) | 3 scored / 32 panel total, 2 lineages | GPU yes (NVIDIA RTX 4000 Ada Generation, 20.99 GB), cpu_count=48 | 0.00839 | 0 (no prereg_deviations.json / DEVIATIONS.json / acceptance.json in this artifact) |
+| iter_1/gen_art_experiment_2 | 48 | greedy (do_sample=False) | openai/gpt-4.1-mini primary, google/gemini-2.5-flash alternate | 510 items (out/items.json) | 29 honest + 20 edited candidate hosts (out/panel_candidates.json); no run-level scored-checkpoint count file found | UNSOURCED | UNSOURCED | UNSOURCED |
+| iter_1/gen_art_experiment_3 | 192 | greedy (do_sample=False, temperature=None) | openai/gpt-5-mini primary, google/gemini-2.5-flash alternate (StrongREJECT rubric per specs/strongreject_rubric.txt) | panel/panel_selected.json (4 entries) + items/ pool (B120/H120/alpaca120/etc.) | 13 | UNSOURCED | 0.00335 | UNSOURCED |
+| iter_2/gen_art_experiment_1 | [48, 96] across checkpoints (Josiefied=48) | greedy (do_sample=False) | openai/gpt-5-mini, STANCE-CLASSIFICATION framing (deviation D1: switched off StrongREJECT after grader-side refusal) | 16 of 33 checkpoints have generations (has_gen=true); n_graded per checkpoint up to 80 | 33 | GPU no (cuda_available=False); nproc=2; NO GPU. Iteration 1 ran on an RTX 4000 Ada (20.99 GB); this box has no CUDA devi... | 0.76647 | 12 (D1_JUDGE_FRAMING, D2_TIERED_HARVEST_NO_GPU, D3_WEIGHT_BAND, D4_UNIVERSAL_NULL_COLUMN, D5_BAKEOFF_IS_TIER_I_ONLY, D6_TIER_G_CPU_GENERATION, D7_PROBE_READOUT_V2_FULL_COVERAGE, D8_READOUT_SUBSTITUTION_FIXES, D9_POLE_RULE_ON_OWN_SAFE_DIRECTION_FULL_BATTERY, D10_PROMPT_BUDGET_INTERNAL_READOUT_CROSSFIT, D11_G2_PRIMARY_HOLDOUT_APPLIED, D12_JOSIEFIED_OOM_RERUN_48_TOKENS) |
+| iter_2/gen_art_experiment_2 | 20 | greedy (argmax next-token loop, no sampling) | openai/gpt-5-mini, STANCE-CLASSIFICATION framing (StrongREJECT-evaluator framing dropped, grader-side refusal) | items_160.json, iteration 1's pre-registered 160 items (96 graded items for continuations) | 6 hosts/families: ['HuggingFaceTB/SmolLM2-1.7B-Instruct', 'Qwen/Qwen2.5-0.5B-Instruct', 'Qwen/Qwen3-0.6B', 'TinyLlama/TinyLlama-1.1B-Chat-v1.0', 'allenai/OLMo-2-0425-1B-Instruct', 'google/gemma-2-2b-it'] | UNSOURCED | 0.38186 | UNSOURCED |
+| iter_2/gen_art_experiment_3 | 64 | greedy (do_sample=False) | openai/gpt-5-mini primary, google/gemini-2.5-flash alternate, STANCE framing | panel/panel_selected.json + items/ pool (H120/B120/alpaca120/xstest twins); graded on H+twin+probe items per method.py:25 | 24 graded (panel pool: 85 honest + 41 edited candidates) | GPU NONE (nvidia-smi absent, torch.cuda.is_available() False); n_logical_cpus_in_cpuset=2 | 1.172058 | 25 (D0..D24) |
+| iter_2/gen_art_evaluation_1 | N/A (no generation) | N/A (no generation) | N/A (no LLM judge; offline statistical re-analysis of iter_1/experiment_1's harvest) | re-analyses iter_1/gen_art_experiment_1's harvest in place (no new items) | 17 | GPU no; CPU-only, $0 (stated, no compute-heavy step) | 0.0 | UNSOURCED |
+| iter_3/gen_art_dataset_1 | 64 | greedy (do_sample=False) | primary=google/gemini-2.5-flash (switched from gpt-5-mini after calibration-gate failure, deviation PRIMARY_JUDGE_SWITCHED), secondary=openai/gpt-5-mini, STANCE framing | CORE-94 (66 harmful / 28 XSTest-safe), n_graded=94 | 21 | GPU no (torch_cuda_available=false); nproc=48 host / sched_getaffinity=2 | 0.5345335 | 9 (NO_GPU_PANEL_SHRINK, POLES_PARTIAL, PRIMARY_JUDGE_SWITCHED, GRADING_SEPARATE_PROCESS, EXTERNAL_SAFETY_COLUMNS_EMPTY, ACCEPTANCE_FAILED:graded_chat_checkpoints>=30, ACCEPTANCE_FAILED:families_with>=2_graded>=6, ACCEPTANCE_FAILED:blanket_refusers_graded>=2, ACCEPTANCE_FAILED:standalone_graded>=3) |
+| iter_3/gen_art_evaluation_1 | N/A (no generation) | N/A (no generation) | N/A (no new LLM judging; re-scores iter_2/gen_art_experiment_1's already-judged grades) | 48 harmful + 32 benign_alarming judged items (coverage fact); SCREEN16 subset for early scatter | 15 | GPU no; CPU-only, $0 (stated) | 0.0 | UNSOURCED |
+
+n_rows=10, n_unsourced_cells=17, total_spend_usd_sourced=$2.86666
+
+## Notes
+- Scope: R/iter_{1,2,3}/gen_art/gen_art_{experiment,dataset,evaluation}_* (research_* dirs skipped per task instructions).
+- CPU-only, $0, no LLM calls were made to build this table -- every cell is read from files already on disk.
+- iter_1/gen_art_experiment_3 spend uses logs/cost.jsonl + scratch/sr_ledger.jsonl (no file named cost_ledger.jsonl/spend.jsonl exists there); field name differs across artifacts (usd / charged_usd / cost_usd) and is noted per cell.
+- iter_2/gen_art_experiment_1: cost_ledger.jsonl sum ($0.7665) matches the ~$0.77 figure the task asked to check.
+- iter_2/gen_art_experiment_3: spend.json usd=$1.172058 matches the ~$1.17 figure the task asked to check; independently summing results/cost_ledger.jsonl's 'usd' field over 8508 rows gives the same total (1.17206).
+- iter_3/gen_art_dataset_1: results/outcome.json total_spend_usd=$0.53453 matches acceptance.json's total_spend<=6usd check (0.5345); this DISAGREES with summing results/cost_ledger.jsonl's usd field directly (4969 rows, $0.58136) -- outcome.json is treated as authoritative since it is the artifact's own stated summary figure, but the ~$0.05 gap (likely judge_calibration.py's extra calibration-only calls not counted in the per-checkpoint outcome total) is flagged here rather than silently resolved.
+- iter_2/gen_art_evaluation_1 and iter_3/gen_art_evaluation_1 are true re-analyses of prior harvests: $0 spend, no generation, no judge call -- confirmed both by their own README text and by their cost-ledger files summing to exactly 0.
+- Two 'checked' values did NOT match the task's stated expectation as literally worded: iter_2/gen_art_experiment_1's gen_max_new_tokens is 96 for most checkpoints but the per_checkpoint.json rows show it varies per checkpoint (not a single global constant) and Josiefied-Qwen2.5-1.5B is confirmed at 48, matching the expected note exactly.
+
+## Sources (per cell)
+
+### iter_1/gen_art_dataset_1
+- **gen_max_new_tokens**: `N/A (no generation)`  
+  source: `iter_1/gen_art/gen_art_dataset_1/data.py (registry build, no model.generate call)`
+- **decoding**: `N/A (no generation)`  
+  source: `UNSOURCED`
+- **judge**: `N/A (no generation)`  
+  source: `UNSOURCED`
+- **item_set**: `XSTest 450 rows (source dataset verification only, not an eval item set)`  
+  source: `iter_1/gen_art/gen_art_dataset_1/research/verified_counts.json:xstest_prompts.csv.rows`
+- **n_checkpoints**: `3222 candidate checkpoints (registry build, not scored)`  
+  source: `iter_1/gen_art/gen_art_dataset_1/build/panel_candidates.json (len of file, dict of checkpoint-id -> record)`
+- **hardware**: `UNSOURCED`  
+  source: `UNSOURCED`
+- **spend_usd**: `0.0`  
+  source: `no OpenRouter/API calls in this artifact (HF metadata harvest only; no cost ledger file present)`
+- **deviations**: `UNSOURCED`  
+  source: `UNSOURCED`
+
+### iter_1/gen_art_experiment_1
+- **gen_max_new_tokens**: `96`  
+  source: `iter_1/gen_art/gen_art_experiment_1/screen/harvest.py:289 (harvest_generate default max_new_tokens=96)`
+- **decoding**: `greedy (do_sample=False)`  
+  source: `iter_1/gen_art/gen_art_experiment_1/screen/harvest.py:302`
+- **judge**: `openai/gpt-5-nano primary, google/gemini-2.5-flash-lite alternate; StrongREJECT-style graded compliance + false-refusal`  
+  source: `iter_1/gen_art/gen_art_experiment_1/screen/judge.py:26-27`
+- **item_set**: `XSTest 450 rows / 200 positional twin pairs (safety panel item pool)`  
+  source: `iter_1/gen_art/gen_art_experiment_1/RESULTS.md ("XSTest: 450 rows, 200 positional twin pairs")`
+- **n_checkpoints**: `3 scored / 32 panel total, 2 lineages`  
+  source: `iter_1/gen_art/gen_art_experiment_1/results/summary.json:n_checkpoints_scored,n_panel_total,n_lineages_scored`
+- **hardware**: `GPU yes (NVIDIA RTX 4000 Ada Generation, 20.99 GB), cpu_count=48`  
+  source: `iter_1/gen_art/gen_art_experiment_1/results/env_report.json:gpus.0.name,gpus.0.total_gb,cpu_count`
+- **spend_usd**: `0.00839`  
+  source: `iter_1/gen_art/gen_art_experiment_1/results/summary.json:judge_cost_usd`
+- **deviations**: `0 (no prereg_deviations.json / DEVIATIONS.json / acceptance.json in this artifact)`  
+  source: `UNSOURCED`
+
+### iter_1/gen_art_experiment_2
+- **gen_max_new_tokens**: `48`  
+  source: `iter_1/gen_art/gen_art_experiment_2/flab/config.py:123 (GEN_MAX_NEW_TOKENS)`
+- **decoding**: `greedy (do_sample=False)`  
+  source: `iter_1/gen_art/gen_art_experiment_2/flab/groundtruth.py:86`
+- **judge**: `openai/gpt-4.1-mini primary, google/gemini-2.5-flash alternate`  
+  source: `iter_1/gen_art/gen_art_experiment_2/flab/config.py:128-129 (JUDGE_MODEL, JUDGE_ALTERNATE)`
+- **item_set**: `510 items (out/items.json)`  
+  source: `iter_1/gen_art/gen_art_experiment_2/out/items.json (top-level list length)`
+- **n_checkpoints**: `29 honest + 20 edited candidate hosts (out/panel_candidates.json); no run-level scored-checkpoint count file found`  
+  source: `iter_1/gen_art/gen_art_experiment_2/out/panel_candidates.json:honest,edited (list lengths)`
+- **hardware**: `UNSOURCED`  
+  source: `UNSOURCED`
+- **spend_usd**: `UNSOURCED`  
+  source: `no cost/spend/ledger file found under this artifact`
+- **deviations**: `UNSOURCED`  
+  source: `UNSOURCED`
+
+### iter_1/gen_art_experiment_3
+- **gen_max_new_tokens**: `192`  
+  source: `iter_1/gen_art/gen_art_experiment_3/lanec/acts.py:441 (generate_batch default max_new_tokens); method.py also calls it at 64 and 96 for specific sub-stages (method.py:853,864,979,982)`
+- **decoding**: `greedy (do_sample=False, temperature=None)`  
+  source: `iter_1/gen_art/gen_art_experiment_3/lanec/acts.py:449-450`
+- **judge**: `openai/gpt-5-mini primary, google/gemini-2.5-flash alternate (StrongREJECT rubric per specs/strongreject_rubric.txt)`  
+  source: `iter_1/gen_art/gen_art_experiment_3/method.py:57-58 (JUDGE_PRIMARY, JUDGE_ALTERNATE)`
+- **item_set**: `panel/panel_selected.json (4 entries) + items/ pool (B120/H120/alpaca120/etc.)`  
+  source: `iter_1/gen_art/gen_art_experiment_3/panel/panel_selected.json (top-level length)`
+- **n_checkpoints**: `13`  
+  source: `iter_1/gen_art/gen_art_experiment_3/results/tier0_results.json (top-level dict length)`
+- **hardware**: `UNSOURCED`  
+  source: `UNSOURCED`
+- **spend_usd**: `0.00335`  
+  source: `sum of 'charged_usd' over iter_1/gen_art/gen_art_experiment_3/logs/cost.jsonl (20 rows, $0.00297) + iter_1/gen_art/gen_art_experiment_3/scratch/sr_ledger.jsonl (2 rows, $0.00038); neither file matches the exact names cost_ledger.jsonl/spend.jsonl but both are OpenRouter charge logs`
+- **deviations**: `UNSOURCED`  
+  source: `UNSOURCED`
+
+### iter_2/gen_art_experiment_1
+- **gen_max_new_tokens**: `[48, 96] across checkpoints (Josiefied=48)`  
+  source: `iter_2/gen_art/gen_art_experiment_1/results/per_checkpoint.json:*.gen_max_new_tokens (per-row field)`
+- **decoding**: `greedy (do_sample=False)`  
+  source: `iter_2/gen_art/gen_art_experiment_1/screen/harvest_cpu_gen.py:185`
+- **judge**: `openai/gpt-5-mini, STANCE-CLASSIFICATION framing (deviation D1: switched off StrongREJECT after grader-side refusal)`  
+  source: `iter_2/gen_art/gen_art_experiment_1/results/prereg_deviations.json:deviations.0 (id=D1_JUDGE_FRAMING)`
+- **item_set**: `16 of 33 checkpoints have generations (has_gen=true); n_graded per checkpoint up to 80`  
+  source: `iter_2/gen_art/gen_art_experiment_1/results/per_checkpoint.json:*.has_gen,*.n_graded`
+- **n_checkpoints**: `33`  
+  source: `iter_2/gen_art/gen_art_experiment_1/results/per_checkpoint.json (top-level list length)`
+- **hardware**: `GPU no (cuda_available=False); nproc=2; NO GPU. Iteration 1 ran on an RTX 4000 Ada (20.99 GB); this box has no CUDA devi...`  
+  source: `iter_2/gen_art/gen_art_experiment_1/results/env.json:cuda_available,nproc,BINDING_CONSTRAINT`
+- **spend_usd**: `0.76647`  
+  source: `sum of 'usd' field over iter_2/gen_art/gen_art_experiment_1/results/cost_ledger.jsonl (5294 rows); matches RESULTS.md-adjacent deviation D1's "$0.77" stated figure`
+- **deviations**: `12 (D1_JUDGE_FRAMING, D2_TIERED_HARVEST_NO_GPU, D3_WEIGHT_BAND, D4_UNIVERSAL_NULL_COLUMN, D5_BAKEOFF_IS_TIER_I_ONLY, D6_TIER_G_CPU_GENERATION, D7_PROBE_READOUT_V2_FULL_COVERAGE, D8_READOUT_SUBSTITUTIO`  
+  source: `iter_2/gen_art/gen_art_experiment_1/results/prereg_deviations.json:deviations (list length + .id fields)`
+
+### iter_2/gen_art_experiment_2
+- **gen_max_new_tokens**: `20`  
+  source: `iter_2/gen_art/gen_art_experiment_2/README.md:96 ("greedy continuations (20 new tokens)")`
+- **decoding**: `greedy (argmax next-token loop, no sampling)`  
+  source: `iter_2/gen_art/gen_art_experiment_2/behave2.py:706-716`
+- **judge**: `openai/gpt-5-mini, STANCE-CLASSIFICATION framing (StrongREJECT-evaluator framing dropped, grader-side refusal)`  
+  source: `iter_2/gen_art/gen_art_experiment_2/README.md:100-102`
+- **item_set**: `items_160.json, iteration 1's pre-registered 160 items (96 graded items for continuations)`  
+  source: `iter_2/gen_art/gen_art_experiment_2/behave2.py:749 (item_set field of summarise())`
+- **n_checkpoints**: `6 hosts/families: ['HuggingFaceTB/SmolLM2-1.7B-Instruct', 'Qwen/Qwen2.5-0.5B-Instruct', 'Qwen/Qwen3-0.6B', 'TinyLlama/TinyLlama-1.1B-Chat-v1.0', 'allenai/OLMo-2-0425-1B-Instruct', 'google/gemma-2-2b-i`  
+  source: `iter_2/gen_art/gen_art_experiment_2/out/ladder_rows.jsonl (distinct 'ckpt' values across all rows)`
+- **hardware**: `UNSOURCED`  
+  source: `no env.json/hardware.json found directly under this artifact (sibling exp_1/exp_3 in the same iteration record GPU no / 2 CPUs, but that is not this artifact's own file)`
+- **spend_usd**: `0.38186`  
+  source: `sum over iter_2/gen_art/gen_art_experiment_2/out/spend.jsonl (3458 rows)`
+- **deviations**: `UNSOURCED`  
+  source: `no prereg_deviations.json/DEVIATIONS.json/acceptance.json found; README/TODO_TRACKER describe changes in prose only`
+
+### iter_2/gen_art_experiment_3
+- **gen_max_new_tokens**: `64`  
+  source: `iter_2/gen_art/gen_art_experiment_3/stage2_generate_v2.py:66 (MAX_NEW_TOKENS = 64; "the sibling used 96")`
+- **decoding**: `greedy (do_sample=False)`  
+  source: `iter_2/gen_art/gen_art_experiment_3/stage2_generate_v2.py:257`
+- **judge**: `openai/gpt-5-mini primary, google/gemini-2.5-flash alternate, STANCE framing`  
+  source: `iter_2/gen_art/gen_art_experiment_3/stage2b_grade_v2.py:77 (PRIMARY, ALTERNATE)`
+- **item_set**: `panel/panel_selected.json + items/ pool (H120/B120/alpaca120/xstest twins); graded on H+twin+probe items per method.py:25`  
+  source: `iter_2/gen_art/gen_art_experiment_3/method.py:25`
+- **n_checkpoints**: `24 graded (panel pool: 85 honest + 41 edited candidates)`  
+  source: `iter_2/gen_art/gen_art_experiment_3/results/stage3_v2.json:graded_panel (list length); iter_2/gen_art/gen_art_experiment_3/results/panel.json:n_honest,n_edited`
+- **hardware**: `GPU NONE (nvidia-smi absent, torch.cuda.is_available() False); n_logical_cpus_in_cpuset=2`  
+  source: `iter_2/gen_art/gen_art_experiment_3/results/hardware_v2.json:gpu,n_logical_cpus_in_cpuset`
+- **spend_usd**: `1.172058`  
+  source: `iter_2/gen_art/gen_art_experiment_3/results/spend.json:usd`
+- **deviations**: `25 (D0..D24)`  
+  source: `iter_2/gen_art/gen_art_experiment_3/DEVIATIONS.json (top-level list length + first/last ids)`
+
+### iter_2/gen_art_evaluation_1
+- **gen_max_new_tokens**: `N/A (no generation)`  
+  source: `iter_2/gen_art/gen_art_evaluation_1/README.md ("No GPU. No downloads. No model inference.")`
+- **decoding**: `N/A (no generation)`  
+  source: `UNSOURCED`
+- **judge**: `N/A (no LLM judge; offline statistical re-analysis of iter_1/experiment_1's harvest)`  
+  source: `UNSOURCED`
+- **item_set**: `re-analyses iter_1/gen_art_experiment_1's harvest in place (no new items)`  
+  source: `iter_2/gen_art/gen_art_evaluation_1/README.md:1-10`
+- **n_checkpoints**: `17`  
+  source: `iter_2/gen_art/gen_art_evaluation_1/README.md:33 ("n=17 with a 1000-draw null distribution")`
+- **hardware**: `GPU no; CPU-only, $0 (stated, no compute-heavy step)`  
+  source: `iter_2/gen_art/gen_art_evaluation_1/README.md:5 ("No GPU. ... $0.00 of API spend.")`
+- **spend_usd**: `0.0`  
+  source: `sum of cost_usd over iter_2/gen_art/gen_art_evaluation_1/.aii_cost_ledger.jsonl (14 rows; all web-search tool calls, all $0.00)`
+- **deviations**: `UNSOURCED`  
+  source: `no prereg_deviations.json/DEVIATIONS.json/acceptance.json found; artifact frames itself as a bugfix re-run, not a prereg deviation`
+
+### iter_3/gen_art_dataset_1
+- **gen_max_new_tokens**: `64`  
+  source: `iter_3/gen_art/gen_art_dataset_1/scripts/generate.py:170 (--max-new default=64)`
+- **decoding**: `greedy (do_sample=False)`  
+  source: `iter_3/gen_art/gen_art_dataset_1/scripts/generate.py:94`
+- **judge**: `primary=google/gemini-2.5-flash (switched from gpt-5-mini after calibration-gate failure, deviation PRIMARY_JUDGE_SWITCHED), secondary=openai/gpt-5-mini, STANCE framing`  
+  source: `iter_3/gen_art/gen_art_dataset_1/results/outcome.json:primary_judge`
+- **item_set**: `CORE-94 (66 harmful / 28 XSTest-safe), n_graded=94`  
+  source: `iter_3/gen_art/gen_art_dataset_1/results/outcome.json:checkpoints.0.label_protocol,checkpoints.0.n_graded`
+- **n_checkpoints**: `21`  
+  source: `iter_3/gen_art/gen_art_dataset_1/results/outcome.json:checkpoints (list length)`
+- **hardware**: `GPU no (torch_cuda_available=false); nproc=48 host / sched_getaffinity=2`  
+  source: `iter_3/gen_art/gen_art_dataset_1/env.json:torch_cuda_available,nproc,sched_getaffinity`
+- **spend_usd**: `0.5345335`  
+  source: `iter_3/gen_art/gen_art_dataset_1/results/outcome.json:total_spend_usd`
+- **deviations**: `9 (NO_GPU_PANEL_SHRINK, POLES_PARTIAL, PRIMARY_JUDGE_SWITCHED, GRADING_SEPARATE_PROCESS, EXTERNAL_SAFETY_COLUMNS_EMPTY, ACCEPTANCE_FAILED:graded_chat_checkpoints>=30, ACCEPTANCE_FAILED:families_with>=`  
+  source: `iter_3/gen_art/gen_art_dataset_1/acceptance.json:deviations (list length + .name fields)`
+
+### iter_3/gen_art_evaluation_1
+- **gen_max_new_tokens**: `N/A (no generation)`  
+  source: `iter_3/gen_art/gen_art_evaluation_1/README.md:3 ("No model is loaded, no LLM is called")`
+- **decoding**: `N/A (no generation)`  
+  source: `UNSOURCED`
+- **judge**: `N/A (no new LLM judging; re-scores iter_2/gen_art_experiment_1's already-judged grades)`  
+  source: `iter_3/gen_art/gen_art_evaluation_1/README.md:3`
+- **item_set**: `48 harmful + 32 benign_alarming judged items (coverage fact); SCREEN16 subset for early scatter`  
+  source: `iter_3/gen_art/gen_art_evaluation_1/README.md ("Coverage fact" paragraph, "48 harmful + 32 benign_alarming items")`
+- **n_checkpoints**: `15`  
+  source: `iter_3/gen_art/gen_art_evaluation_1/README.md:11 ("n <= 15 checkpoints (6 lineages, 3 families)")`
+- **hardware**: `GPU no; CPU-only, $0 (stated)`  
+  source: `iter_3/gen_art/gen_art_evaluation_1/README.md:3 ("No model is loaded, no LLM is called and nothing was spent on OpenRouter ($0)")`
+- **spend_usd**: `0.0`  
+  source: `iter_3/gen_art/gen_art_evaluation_1/README.md:3`
+- **deviations**: `UNSOURCED`  
+  source: `no prereg_deviations.json/DEVIATIONS.json/acceptance.json found; artifact is framed as addressing 4 reviewer-flagged items in prose, not formal prereg deviations`

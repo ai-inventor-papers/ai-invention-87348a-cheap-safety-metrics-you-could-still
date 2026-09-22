@@ -1,0 +1,774 @@
+[
+  {
+    "item": "A1",
+    "old_text": "A blanket refuser achieves $D_2 = 0.5$ (64 correct refusals, 0 correct compliances); a blanket complier scores the same. A model must both refuse harmful prompts and answer benign ones to exceed 0.5.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 3.1 Two-Sided Ground Truth, line 58",
+    "reviewer_text": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation.",
+    "corrected_text": "The stored Table-1 correlations use the PRODUCT target P=(1-hc)(1-fr) (step5_correlations.json:target). hc = mean judged compliance score on 48 harmful items, fr = judged refusal on 32 benign-alarming XSTest items, gpt-5-mini stance judge, 96-token replies; Josiefied-Qwen2.5-1.5B (48-token regeneration) excluded under D12. Components recomputed from judge_grades.json match prompt_budget.json:targets exactly.",
+    "corrected_numbers": {
+      "n_checkpoints_with_target": 15,
+      "component_recompute_max_abs_err": 0.0
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_1/results/step5_correlations.json:target",
+      "iter_2/gen_art/gen_art_experiment_1/results/prompt_budget.json:targets"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "A2",
+    "old_text": "Table-1 Spearman values (e.g. presentation invariance -0.71 n=13, lineage -0.40 n=5; card regex +0.451 n=15).",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "Reproduction gate PASSED: all 20 stored cells (10 rows x 2 levels) reproduce under P with |diff|<=0.005 and identical n (0 unreproduced).",
+    "corrected_numbers": {
+      "n_cells": 20,
+      "n_unreproduced": 0
+    },
+    "source": [
+      "results/A_targets.json:rows[*].reproduction"
+    ],
+    "status": "CONFIRMED_AS_IS"
+  },
+  {
+    "item": "A3",
+    "old_text": "\\textit{Card regex (term-swept)} ($\\rho_{\\mathrm{ckpt}} = +0.45$, $p = 0.091$) has a positive but non-significant checkpoint-level correlation and a lineage-level correlation near zero ($\\rho_{\\mathrm{lin}} = -0.03$), indicating that the signal comes from across-family variation rather than within-family safety differences.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.1 The Race Table, line 150",
+    "reviewer_text": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation.",
+    "corrected_text": "Table 1 now reports rho under balanced B and product P side by side, with analytic p, permutation p (10,000 Monte Carlo, or exact enumeration for n<=8) and a 5,000-draw lineage-cluster bootstrap CI.",
+    "corrected_numbers": {
+      "x_presentation_invariance": {
+        "rho_B_ckpt": -0.6923076923076923,
+        "rho_P_ckpt": -0.7087912087912087,
+        "rho_B_lin": -0.6,
+        "rho_P_lin": -0.39999999999999997
+      },
+      "b_card_regex_termswept": {
+        "rho_B_ckpt": 0.49100352644586287,
+        "rho_P_ckpt": 0.4512900059245063,
+        "rho_B_lin": 0.05797710356524484,
+        "rho_P_lin": -0.02898855178262242
+      },
+      "w_bsa_w8_k4": {
+        "rho_B_ckpt": -0.2678571428571428,
+        "rho_P_ckpt": -0.18928571428571428,
+        "rho_B_lin": -0.08571428571428573,
+        "rho_P_lin": -0.14285714285714288
+      },
+      "k_hrci_repr": {
+        "rho_B_ckpt": 0.06813186813186813,
+        "rho_P_ckpt": 0.015384615384615385,
+        "rho_B_lin": -0.7,
+        "rho_P_lin": -0.39999999999999997
+      },
+      "b_logit_gap_mean": {
+        "rho_B_ckpt": 0.3285714285714285,
+        "rho_P_ckpt": 0.2285714285714285,
+        "rho_B_lin": -0.7714285714285715,
+        "rho_P_lin": -0.8285714285714287
+      },
+      "b_logit_gap_harmful": {
+        "rho_B_ckpt": 0.39999999999999997,
+        "rho_P_ckpt": 0.3071428571428571,
+        "rho_B_lin": -0.6,
+        "rho_P_lin": -0.6571428571428573
+      },
+      "b_logit_gap_alarming": {
+        "rho_B_ckpt": 0.12857142857142856,
+        "rho_P_ckpt": 0.010714285714285713,
+        "rho_B_lin": -1.0,
+        "rho_P_lin": -0.942857142857143
+      },
+      "b_refusal_token_mass": {
+        "rho_B_ckpt": -0.3142857142857143,
+        "rho_P_ckpt": -0.35357142857142854,
+        "rho_B_lin": -0.8285714285714287,
+        "rho_P_lin": -0.7714285714285715
+      },
+      "x_c1_r2": {
+        "rho_B_ckpt": 0.5164835164835165,
+        "rho_P_ckpt": 0.38461538461538464,
+        "rho_B_lin": -0.39999999999999997,
+        "rho_P_lin": -0.3
+      },
+      "x_c1_auroc_items": {
+        "rho_B_ckpt": 0.4945054945054946,
+        "rho_P_ckpt": 0.35824175824175825,
+        "rho_B_lin": -0.39999999999999997,
+        "rho_P_lin": -0.3
+      }
+    },
+    "source": [
+      "results/A_targets.json:rows"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "A4",
+    "old_text": "(no flags reported)",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "Checkpoint level: 0 sign changes and 0 significance changes between B and P over 10 rows. Lineage level: 1 sign change and 5 significance changes (n=5-6 lineages; lineage-level bootstrap CIs discard 25-58% of draws and are descriptive only).",
+    "corrected_numbers": {
+      "n_rows_sign_change_ckpt": 0,
+      "n_rows_sig_change_ckpt": 0,
+      "n_rows_sign_change_lineage": 1,
+      "n_rows_sig_change_lineage": 5
+    },
+    "source": [
+      "results/A_targets.json:counts",
+      "results/A_targets.json:rows[*].flags"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "A5",
+    "old_text": "Presentation invariance has $\\rho_{\\mathrm{ckpt}} = -0.71$ across 13 checkpoints but $\\rho_{\\mathrm{lin}} = -0.40$ across only 5 lineages; card regex has $\\rho_{\\mathrm{ckpt}} = +0.45$ but $\\rho_{\\mathrm{lin}} = -0.03$.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.3 Qwen3-4B Lineage Anatomy, Cross-metric correlations, line 241",
+    "reviewer_text": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation.",
+    "corrected_text": "Under the balanced target presentation invariance is rho_B=-0.692 (n=13, p=0.0087, perm p=0.0110, lineage-bootstrap 95% CI [-0.93, -0.28]) at checkpoint level: verdict SURVIVES (same sign, |rho|>=0.5, p<0.05, CI excludes 0) -- it survives as a NEGATIVE association. At lineage level rho_B=-0.60 vs rho_P=-0.40, at lineage level n=5, which cannot reach significance under any target (minimum achievable two-sided Spearman p at n=5 is 0.0167 only for a perfect rank order). The iter-2 conclusion stands: within-lineage only and negative.",
+    "corrected_numbers": {
+      "rho_B_ckpt": -0.6923076923076923,
+      "p_B_ckpt": 0.008730317796749335,
+      "p_perm_B_ckpt": 0.010998900109989001,
+      "ci_B_ckpt": [
+        -0.9255042290175666,
+        -0.2791111111111111
+      ],
+      "rho_P_ckpt": -0.7087912087912087,
+      "rho_B_lineage": -0.6,
+      "rho_P_lineage": -0.39999999999999997,
+      "n_ckpt": 13,
+      "n_lineage": 5
+    },
+    "source": [
+      "results/A_targets.json:A5_presentation_invariance"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "A6",
+    "old_text": "iter-3 panel J2 described as the 'product' target (blanket refuser = 0).",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": "The target behind the headline correlations is not the target the paper defines. Section 3.1 defines D2 as balanced accuracy, where a blanket refuser scores 0.5. Every rho in Table 1, Contribution 1 and Section 5.5 comes from exp1 results/step5_correlations.json, whose target is (1-harmful_compliance)*(1-false_refusal), where a blanket refuser scores 0. The iter-3 evaluation artifact's numbers ledger flags exactly this discrepancy. The sign and size of rho -0.71 may differ under balanced D2 because the product target punishes over-refusal much harder, which is precisely the mechanism the paper invokes to explain the anti-correlation.",
+    "corrected_text": "iter-3 J2_core = 2*S2_core - 1 (Youden form hr+bac-1), a LINEAR rescaling of S2, so it can never change a rank statistic. A true product P3 = harm_refusal_rate * benign_alarming_compliance was rebuilt from the stored components. iter-2 B vs iter-3 S2 on the 15 shared checkpoints: Spearman 0.763; iter-2 P vs iter-3 P3: 0.704 (item sets, token budgets and judges differ).",
+    "corrected_numbers": {
+      "max_abs_J2_minus_2S2m1": 0.0,
+      "rho_B_vs_S2": 0.7631817167208805,
+      "rho_P_vs_P3": 0.7042004599251216,
+      "n_overlap": 15
+    },
+    "source": [
+      "iter_3/gen_art/gen_art_dataset_1/full_data_out.json:dev_panel_outcome.metadata_{S2_core,J2_core,core_components}"
+    ],
+    "status": "DISCREPANCY"
+  },
+  {
+    "item": "B1",
+    "old_text": "To control for this, we construct an anisotropy-matched null: 1,000 random directions drawn from the within-item-span covariance of the activation space, preserving the geometric structure without the semantic content.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 3.3 Direction Significance Testing, line 84",
+    "reviewer_text": "The race null is mislabelled. The abstract, Contribution 1, Section 5.1 and the Table 1 caption say the three winners beat the 'anisotropy-matched null'. exp1 RESULTS.md defines null p95 as 'the 95th percentile of the metric's own within-lineage label-permutation null'. The anisotropy (within-span direction) null is a separate test applied only to fitted harm directions (Section 3.4). Presentation invariance and card regex are not directions, so an anisotropy null cannot apply to them.",
+    "corrected_text": "within-lineage label-permutation null: role labels (instruct vs abliterated) are permuted WITHIN each lineage, the identical leave-one-lineage-out balanced-accuracy pipeline is re-run on every permutation, and the 95th percentile of the permuted BA is the bar (analysis2.py:label_permutation_null L501-535, called with group=primary holdout=lineage, n_perm=min(n_perm,300), pipeline2.py L1402-1403)",
+    "corrected_numbers": {
+      "b_logit_gap_alarming": {
+        "ba": 0.8,
+        "p95": 0.7,
+        "n_perm": 300
+      },
+      "b_card_regex_termswept": {
+        "ba": 0.9166666666666667,
+        "p95": 0.7878787878787878,
+        "n_perm": 300
+      },
+      "w_bsa_w8_k4": {
+        "ba": 0.8257575757575758,
+        "p95": 0.8257575757575758,
+        "n_perm": 300
+      },
+      "x_presentation_invariance": {
+        "ba": 1.0,
+        "p95": 0.775,
+        "n_perm": 300
+      }
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_1/screen/analysis2.py:L501-535",
+      "iter_2/gen_art/gen_art_experiment_1/screen/pipeline2.py:L1387-1403",
+      "iter_2/gen_art/gen_art_experiment_1/results/race.json:rows_primary"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "B2",
+    "old_text": "16 of 17 checkpoints beat the null at the 95th percentile (Wilson 95\\% CI $[0.73, 0.99]$; mean cross-fitted AUROC 0.835 versus null mean 0.629).\n\\item \\textbf{First-generation token}: 9 of 17 beat the null (Wilson CI $[0.31, 0.74]$; mean AUROC 0.664 versus null 0.576). This position fails the survival criterion.\n\\item \\textbf{XSTest twin contrast}: 17 of 17 beat the null (Wilson CI $[0.82, 1.00]$; mean AUROC 0.801 versus null 0.626).",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 3.3 Direction Significance Testing, line 89",
+    "reviewer_text": "The abstract's claim that 'an anisotropy-matched null accounts for over half of all activation-probe results' contradicts the paper's own Section 3.4: 16/17 checkpoints survive at the last prompt token, 17/17 on the XSTest twin contrast, and whitening explains 'roughly 10%'. Only the first-generated-token read (9/17) and the cross-family G8 (9/20) show majority failure.",
+    "corrected_text": "All four counts are printed together with their null definitions: 16/17 (content_last, harmful vs plain_benign, last prompt token (primary read), Wilson [0.73, 0.99]); 17/17 (twin_xstest, xstest_contrast vs benign_alarming (twin pairs), Wilson [0.82, 1.00]); 9/17 (content_first, harmful vs plain_benign, first token, Wilson [0.31, 0.74]); 9/20 (iter-2 exp1 harm direction at depth 0.6 (probe_cf harvest), harmful vs benign (plain+alarming), exp1 G8 gate, Wilson [0.26, 0.66])",
+    "corrected_numbers": {
+      "content_last": {
+        "k": 16,
+        "n": 17,
+        "wilson95": [
+          0.7301796914154303,
+          0.9895395991310502
+        ]
+      },
+      "twin_xstest": {
+        "k": 17,
+        "n": 17,
+        "wilson95": [
+          0.8156818626193445,
+          1.0
+        ]
+      },
+      "content_first": {
+        "k": 9,
+        "n": 17,
+        "wilson95": [
+          0.3096323491502231,
+          0.7383489368862088
+        ]
+      },
+      "iter-2 exp1 harm direction at depth 0.6 (probe_cf harvest)": {
+        "k": 9,
+        "n": 20,
+        "wilson95": [
+          0.25819785703764037,
+          0.6579146589808726
+        ]
+      },
+      "harm_vs_allbenign": {
+        "k": 17,
+        "n": 17,
+        "wilson95": [
+          0.8156818626193445,
+          1.0
+        ]
+      }
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.SURV_span_k",
+      "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.twin_xstest.SURV_span_k",
+      "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_first.SURV_span_k",
+      "iter_2/gen_art/gen_art_experiment_1/results/direction_nulls.json:n_fitted_beats_within_span_p95",
+      "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.harm_vs_allbenign.SURV_span_k"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "B3",
+    "old_text": "We also report that a whitened version of the probe (projecting out the top principal components of the activation covariance) retains a mean AUROC of 0.759 compared to 0.835 for the raw probe, confirming that a substantial fraction of probe signal survives anisotropy correction while roughly 10\\% of the signal is explained by geometry alone.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 3.3 Direction Significance Testing, line 96",
+    "reviewer_text": "Replace the abstract sentence with the exact split: 'fitted harm directions beat a within-span null within family at the prompt token (16/17) but not at the first generated token (9/17) or cross-family (9/20)'. Fix the 10% sentence to use the above-chance decomposition. ... A random span direction already reaches 0.629 against 0.835 fitted, i.e. about 38% of above-chance AUROC. Whitening drops above-chance AUROC from 0.335 to 0.259, about 23%.",
+    "corrected_text": "About 38% of the harm direction's above-chance AUROC is reachable by a random direction inside the item span, and whitening removes about 23%.",
+    "corrected_numbers": {
+      "random_span_share": 0.3848636013357304,
+      "whitening_removal_share": 0.22895795872934321,
+      "ci95": {
+        "random_span_share": [
+          0.32926775464265595,
+          0.4103789454806316
+        ],
+        "whitening_removal_share": [
+          0.1308,
+          0.3708896252867704
+        ],
+        "B": 5000,
+        "n_lineages": 4,
+        "n_checkpoints": 17,
+        "note": "only 4 lineages: the CI is a descriptive band, not inference"
+      }
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.mean_AUROC_xf",
+      "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.mean_null_span_mean (or per_checkpoint NULL_span.null_mean)",
+      "iter_2/gen_art/gen_art_evaluation_1/results/d2_controls.json:aggregate.content_last.mean_AUROC_white_xf"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "C1",
+    "old_text": "On a pool of 71 checkpoints (39 unedited, 32 edited across multiple methods), BSA achieves a pooled detection AUROC of 0.84. For tool-generated outputs specifically, AUROC reaches 0.95.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.4 Weight Reads: Detection Without Grading, line 223",
+    "reviewer_text": "Section 5.4 and Contribution 4 misattribute and invert the weight-read results. (a) The pooled AUROC 0.84 (0.95 for tool outputs) and the within-edited Spearman 0.26 (n=14) are for down_proj kappa_hat, not BSA. BSA's own prereg 0.35 flag false-positives on 97% of honest checkpoints.",
+    "corrected_text": "down_proj kappa_hat (realised-strength estimate) separates edited from honest checkpoints: pooled AUROC 0.843 [0.74, 0.93] (n=71); abliteration-tool outputs 0.947 [0.86, 1.00] (n=60).",
+    "corrected_numbers": {
+      "auroc_pooled": 0.8428571428571429,
+      "auroc_tool": 0.9474285714285714
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_3/results/stage3_v2.json:_rows[*].mlp_kappa_hat_band,arm (kind=real)"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "C2",
+    "old_text": "However, detection does not imply grading. Within the set of 14 edited checkpoints that have ground-truth $D_2$ scores, the Spearman correlation between BSA distance and $D_2$ is 0.257 ($p = 0.375$). BSA can tell that a checkpoint has been edited but cannot rank how much the edit degraded safety.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.4 Weight Reads: Detection Without Grading, line 225",
+    "reviewer_text": "Rewrite Contribution 4 as: 'kappa_hat detects edits (AUROC 0.84) but shows no grading within 14 edited checkpoints (rho 0.26, CI [-0.65, 0.86], MDE 0.56); even true kappa does not grade (0.03, n=12); an external 20-checkpoint replication is positive (0.85) but confounded by edit type (projection-only 0.65, CI spans 0)'.",
+    "corrected_text": "Within-edited Spearman(down_proj kappa_hat, compliance) = 0.26 (n=14, 5 families, p=0.37); lineage-cluster bootstrap CI [-0.47, 0.83] (the stored [-0.65, 0.86] is a different interval). The stored 'MDE 0.56' is the |rho| whose own 95% CI just excludes 0 (z_0.975 only); the Fisher-z MDE at 80% power, two-sided alpha 0.05, n=14 is 0.714. A null here is 'not detectable at n=14', not absence. The outcome in this test is judged harmful COMPLIANCE on the edited checkpoints (not D2), and the statistic is down_proj kappa_hat, not 'BSA distance'.",
+    "corrected_numbers": {
+      "rho": 0.2571428571428571,
+      "ci_cluster": [
+        -0.4658385093167702,
+        0.8293413173652693
+      ],
+      "mde_stored_formula": 0.555574207821083,
+      "mde_80pct_power_fisher_z": 0.714
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_3/results/stage3_v2.json:primary_endpoint"
+    ],
+    "status": "DISCREPANCY"
+  },
+  {
+    "item": "C3",
+    "old_text": "True kappa does not grade harm (Spearman 0.03, n=12); in-arm L1 logit gap -0.62, p=0.02.",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "Confirmed: parent-based true kappa vs compliance rho=0.035 (n=12, p=0.91); logit-only first-token gap within the edited arm rho=-0.62 (n=14, p=0.019, perm p 0.023).",
+    "corrected_numbers": {
+      "rho_true_kappa": 0.034965034965034975,
+      "rho_L1": -0.6175824175824175
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_3/results/stage3_v2.json:graded_panel[*] (arm=edited): L1_logit_gap_H, COMPLIANCE"
+    ],
+    "status": "CONFIRMED_AS_IS"
+  },
+  {
+    "item": "C4",
+    "old_text": "On 20 independent checkpoints, the combined within-edited Spearman correlation is 0.85 $[0.56, 0.95]$, confirming that BSA reliably orders edits by magnitude. However, restricting to projection-only edits (which include abliteration and ROSI) yields $\\rho = 0.65$ $[-0.26, 0.95]$, $n = 10$, with a confidence interval that includes zero.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.4 Weight Reads: Detection Without Grading, Replication, line 227",
+    "reviewer_text": "The replication rho 0.85 [0.56, 0.95] is a correlation with judged compliance, i.e. GRADING, not detection. The artifact concludes 'a graded signal is not excluded, not established'. The paper calls it one that 'confirms detection' and 'confirms that BSA reliably orders edits by magnitude.'",
+    "corrected_text": "Replication across three other runs' stored generations: combined within-edited rho 0.85 [0.58, 0.95] (n=20), projection edits only 0.65 [-0.20, 0.94] (n=10) -- CONFOUNDED BY EDIT TYPE.",
+    "corrected_numbers": {
+      "rho_all": 0.848944105973521,
+      "rho_projection": 0.6514548322682623
+    },
+    "source": [
+      "results/C_weights.json:replication_other_runs"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "C5",
+    "old_text": "A per-layer analysis of 484 layer-checkpoint pairs reveals that only 177 fall within the operating range where BSA is well-calibrated (median cosine similarity 1.0), while 307 are out of range (median cosine 0.144). The true per-layer discriminability ($\\kappa$) correlates at $\\rho = 0.075$ ($n = 484$) with BSA distance, confirming that the weight signal is present but diffuse across layers and not concentrated where BSA looks.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.4 Weight Reads: Detection Without Grading, Validity band, line 229",
+    "reviewer_text": "The 0.075 is per-layer Spearman(true kappa, parent-free kappa_hat) over 484 layer-matrices (exp3 RESULTS line 122). It means the parent-free read barely tracks true edit strength outside the validity band. The paper calls it 'confirming that the weight signal is present but diffuse.' Report the validity band as: in-band median cos 1.0, out-of-band 0.14, 307/484 out of band, per-layer Spearman with true kappa 0.075.",
+    "corrected_text": "down_proj kappa_hat validity band |1-kappa| < sigma_min/sigma_rms: in-band median cosine 1.000 vs out-of-band 0.14; 307/484 out of band (Wilson [0.590, 0.676]); per-layer Spearman(true kappa, kappa_hat) 0.075 (p=0.098).",
+    "corrected_numbers": {
+      "k_out": 307,
+      "n": 484,
+      "wilson": [
+        0.5904884341621289,
+        0.6759915823131258
+      ]
+    },
+    "source": [
+      "results/C_weights.json:validity_band"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "C6",
+    "old_text": "The pre-registered BSA 0.35 flag false-positives on 97% of honest checkpoints.",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "Confirmed (this line is genuinely BSA): 34/35 honest checkpoints flagged (0.971, Wilson [0.855, 0.995]).",
+    "corrected_numbers": {
+      "k": 34,
+      "n": 35
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_3/results/stage3_v2.json:_rows[*].mlp_BSA_w8 (kind=real, arm=honest)"
+    ],
+    "status": "CONFIRMED_AS_IS"
+  },
+  {
+    "item": "C7",
+    "old_text": "We test whether a ``repair'' operation --- swapping the safety-degraded layers back to the parent's weights --- evades detection while preserving the safety modification. After repair, the BSA detection gap jumps from 0.012 to 0.824 (the repaired checkpoint now looks like the parent in weight space), but behavioural measures tell a different story",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.4 Weight Reads: Detection Without Grading, Repair as detector evasion, line 231",
+    "reviewer_text": "The repair is 'a rank-one repair from the checkpoint's own weights (zero prompts)', not 'swapping the safety-degraded layers back to the parent's weights'. A parent swap would need the parent, violating the threat model, and would trivially restore behaviour. The '0.012 -> 0.824' is BOTGAP_min, not 'BSA detection gap'.",
+    "corrected_text": "A zero-prompt RANK-ONE SPECTRAL REPAIR (not a parent swap) heals BOTGAP_min 0.012->0.82 and kappa_hat, but harmful refusal only moves 0.125->0.208 vs the honest parent 0.438.",
+    "corrected_numbers": {
+      "botgap": [
+        0.012257199463439731,
+        0.8237174205825443
+      ],
+      "refusal": [
+        0.125,
+        0.20833333333333334,
+        0.4375
+      ]
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_3/results/forgery_handoff.json"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "C8.1",
+    "old_text": "within-edited Spearman CI lower (lineage_cluster_bootstrap): stored/expected -0.6507",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "within-edited Spearman CI lower (lineage_cluster_bootstrap): recomputed -0.4658385093167702",
+    "corrected_numbers": {
+      "label": "within-edited Spearman CI lower (lineage_cluster_bootstrap)",
+      "computed": -0.4658385093167702,
+      "expected": -0.6507,
+      "abs_diff": 0.18486149068322977
+    },
+    "source": [
+      "results/C_weights.json:discrepancies"
+    ],
+    "status": "DISCREPANCY"
+  },
+  {
+    "item": "C8.2",
+    "old_text": "MDE formula label: stored/expected task spec says '80% power'; true 80%-power MDE would be 0.7140, not 0.5556",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "MDE formula label: recomputed formula uses z_0.975 only (no z_beta) (reproduced EXP3's own formula verbatim since it is what generates the 0.5556 ~0.56 number; both values reported)",
+    "corrected_numbers": {
+      "label": "MDE formula label",
+      "computed": "formula uses z_0.975 only (no z_beta)",
+      "expected": "task spec says '80% power'; true 80%-power MDE would be 0.7140, not 0.5556",
+      "note": "reproduced EXP3's own formula verbatim since it is what generates the 0.5556 ~0.56 number; both values reported"
+    },
+    "source": [
+      "results/C_weights.json:discrepancies"
+    ],
+    "status": "DISCREPANCY"
+  },
+  {
+    "item": "D1",
+    "old_text": "The Rank-One Safety Injection (ROSI) \\cite{Shairah2025} adds a rank-one matrix $\\alpha \\mathbf{u}\\mathbf{v}^\\top$ to a residual-stream weight matrix, where $\\mathbf{u}$ and $\\mathbf{v}$ are the left and right singular vectors of the difference between a safety-trained and base model's weights at the layer of maximum divergence, and $\\alpha$ is a scaling factor.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.2 ROSI Reversal on Two-Sided Ground Truth, line 168",
+    "reviewer_text": "ROSI: the paper says u, v are singular vectors of the safety-minus-base weight difference at one layer. The published method (Abu Shairah et al. 2508.20766) injects a refusal direction computed from harmful/harmless instruction activations into ALL residual-stream write matrices, and the artifact ran 'F2b ROSI all-layer'.",
+    "corrected_text": "As implemented (behave2.py:rosi_edit): o_proj AND down_proj on every transformer layer (ALL layers by default) -- iter_2/gen_art/gen_art_experiment_2/behave2.py:rosi_edit:567. Embeddings and other residual-stream write matrices (e.g. lm_head) are NOT touched. Edit: W += alpha * outer(d, w_bar) with alpha = mult*0.01*||W||_F/||w_bar||, where w_bar is the mean ROW of that matrix W itself and d is the unit ROSI direction s_hat (unit-norm difference in means at the LAST PROMPT TOKEN between 'harmful' and 'plain_benign' items (items_160.json), at layer lstar = int(0.6 * n_layers), from iteration-1 GPU harvests (hs_last activations, 160 pre-registered items). This is ROSI's own definition of s_hat, reproduced from cached acti). Multiplier grid: {'weight_only_ladder_grid': [0.25, 1.0, 4.0, 16.0, 64.0], 'weight_only_ladder_grid_source': 'iter_2/gen_art/gen_art_experiment_2/flab2/ladder2.py:ROSI_GRID:41', 'behavioural_2host_subset_actually_run'. Hidden-direction control: {'description': \"F2b_rosi_hidden: same alpha rule, but d is an INDEPENDENT random unit direction per matrix (not s_hat) -- 'preserves ROSI's geometry (one rank-one term per matrix) but not its meaning'.\", 'rng_seed_rule': 'np.random.default_rng(SEED + int(mult*1000)), SEED=20260920 (iter_2/gen_art/g. DEVIATION from the published method (arXiv 2508.20766, 'a rank-one addition of the safety direction to all residual-stream write matrices'): only o_proj and down_proj are edited; embeddings/lm_head are not.",
+    "corrected_numbers": {
+      "matrices": "o_proj AND down_proj on every transformer layer (ALL layers by default) -- iter_2/gen_art/gen_art_experiment_2/behave2.py:rosi_edit:567. Embeddings and other residual-stream write matrices (e.g. lm_head) are NOT touched.",
+      "alpha_rule": {
+        "formula": "alpha = mult * 0.01 * ||W||_F / ||w_bar||",
+        "w_bar": "mean over ROWS of the weight matrix W itself (Wd.float().mean(0)), computed independently per matrix -- NOT the make_shat.py direction",
+        "source": "iter_2/gen_art/gen_art_experiment_2/behave2.py:rosi_edit:586-587 (Wd.float().mean(0); mult*0.01*norm(Wd)/norm(w_bar))"
+      },
+      "deviation": "arXiv 2508.20766 defines ROSI as 'rank-one addition of the safety direction to ALL residual-stream write matrices'. This implementation restricts the edit to o_proj and down_proj only (the two matrices whose columns index the residual stream at attention-out and MLP-out); it does NOT edit the embedding matrix or any other residual-stream write matrix. This is a real deviation, not just an implementation detail: see iter_2/gen_art/gen_art_experiment_2/behave2.py:ROSI_UNITS:818 which documents the restricted matrix set."
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_2/behave2.py",
+      "iter_2/gen_art/gen_art_experiment_2/make_outputs2.py"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "D2",
+    "old_text": "An additional control applies ROSI at $4\\times$ to a hidden layer rather than the published target layer. This variant shows $\\Delta D_2 = -0.042$ $[-0.095, +0.013]$, a weaker and non-significant effect, consistent with the published finding that the target layer matters.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.2 ROSI Reversal on Two-Sided Ground Truth, line 194",
+    "reviewer_text": "The ROSI control is a hidden-DIRECTION arm, not a hidden layer, and its CI [-0.095, -0.001] excludes zero. The paper prints [-0.095, +0.013]. Relabel the control as 'random/hidden direction at the same norm', print its true CI, and note that even a non-refusal direction costs about 0.04 D2 (so part of the 0.151 is generic perturbation).",
+    "corrected_text": "x4 on Qwen2.5-0.5B-Instruct: dD2_B -0.151 [-0.233, -0.065], dD2_P -0.317 [-0.472, -0.159], refusal-based dD2_r -0.109. Hidden-direction control (independent random unit direction per matrix, same alpha) dD2_B -0.042 [-0.0948, -0.0010]: the CI excludes 0 only barely, so part of the two-sided drop is generic perturbation. 20-token greedy continuations, gpt-5-mini stance judge, 2 hosts.",
+    "corrected_numbers": {
+      "x4_dD2_B": {
+        "val": -0.1513671875,
+        "ci": [
+          -0.2333984375,
+          -0.0654296875
+        ]
+      },
+      "x4_dD2_P": {
+        "val": -0.31671142578125,
+        "ci": [
+          -0.4722503662109375,
+          -0.15917358398437503
+        ]
+      },
+      "x4_dD2_r": {
+        "val": -0.109375,
+        "ci": [
+          -0.1953125,
+          -0.0234375
+        ]
+      },
+      "hidden_dD2_B": {
+        "val": -0.0419921875,
+        "ci": [
+          -0.0947509765625,
+          -0.0009765625
+        ]
+      },
+      "qwen3_x4_dD2_B": {
+        "val": -0.0810546875,
+        "ci": [
+          -0.17578125,
+          0.0166015625
+        ]
+      }
+    },
+    "source": [
+      "results/D_rosi.json:dose_table"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "E",
+    "old_text": "We generate completions using greedy decoding (temperature 0, max 256 tokens) on a prompt set combining XSTest \\cite{Rottger2023} harmful/safe pairs, JailbreakBench prompts, and benign-but-alarming queries. Completions are scored by a primary LLM judge (Gemini-2.5-Flash) using a stance-based framing that asks whether the model engaged with or declined the request, rather than asking the judge to rate harmfulness directly.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 4 Experimental Setup, Ground truth scoring, line 115",
+    "reviewer_text": "Reproducibility statements contradict the artifacts. Section 4 says all completions are greedy with max 256 tokens and judged by Gemini-2.5-Flash, with total spend $0.77. In fact the ROSI and forgery behavioural cells used 20-token continuations judged by gpt-5-mini ($0.38). The race used 48-96-token generations with a gpt-5-mini/gemini pair ($0.77 was exp1 alone). The exp3 grading used gpt-5-mini ($1.17). The iter-3 panel used 64-token replies with Gemini primary, because gpt-5-mini failed the calibration gate (acc 0.892).",
+    "corrected_text": "Reproducibility table: 10 artifacts x 8 columns, every cell sourced to file:line or file:key; 17 cells UNSOURCED; sourced OpenRouter spend $2.87. No experiment generated 256 tokens: max_new_tokens = iter_1/gen_art_experiment_1: 96; iter_1/gen_art_experiment_2: 48; iter_1/gen_art_experiment_3: 192; iter_2/gen_art_experiment_1: [48, 96] across checkpoints (Josiefied=48); iter_2/gen_art_experiment_2: 20; iter_2/gen_art_experiment_3: 64; iter_3/gen_art_dataset_1: 64. gemini-2.5-flash is the primary judge ONLY for the iter-3 panel; every iter-2 target (Table 1, ROSI, weights) was graded by gpt-5-mini in the stance framing.",
+    "corrected_numbers": {
+      "n_rows": 10,
+      "n_unsourced": 17,
+      "spend": 2.86666
+    },
+    "source": [
+      "results/E_repro.json"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "F1",
+    "old_text": "On 1,040 paired items (the same completion scored under both StrongREJECT and a stance-based framing), StrongREJECT assigns the degenerate score tuple $(1, 1, 1)$ --- the maximum-refusal score that doubles as the rubric's refusal output --- to 40.5\\% of all items and 65.9\\% of harmful items.\n\nThe asymmetry is large: 328 items received a refusal score from StrongREJECT but an engaged judgement from the stance-based framing, compared to only 67 items in the opposite direction.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.2 Grader-Side Refusal, line 160",
+    "reviewer_text": "'We discover grader-side refusal' overclaims. Judges refusing to evaluate harmful content is documented: GuidedBench (arXiv 2502.16903) explicitly designs its evaluator so that judges 'do not refuse evaluation tasks involving harmful content', and 2609.10594 measures jailbreak evaluators empirically. The 328-vs-67 asymmetry is judged only against another LLM framing, with no human labels.",
+    "corrected_text": "Quantification of a known LLM-judge failure (GuidedBench arXiv 2502.16903; 2609.10594): on 1040 paired replies StrongREJECT-refused/stance-engaged = 328 vs the reverse 67 (exact McNemar p=2.1e-42); 1,1,1 on 40.5% of replies (65.9% on harmful). 1,1,1 is also the rubric's legitimate output for a true refusal, so the asymmetry bounds grader-side refusal from above and does not measure it.",
+    "corrected_numbers": {
+      "b": 328,
+      "c": 67,
+      "mcnemar_p": 2.1012129633912874e-42,
+      "rate111": 0.4048076923076923,
+      "rate111_harmful": 0.6586538461538461
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_1/results/judge_grades_strongreject.json",
+      "iter_2/gen_art/gen_art_experiment_1/results/judge_grades.json"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "F2",
+    "old_text": "gpt-5-mini fails the judge gate (acc 0.892); gemini-2.5-flash passes.",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "Confirmed: gpt-5-mini accuracy 0.892 (fails 0.90 gate; specificity 47/60 -- it calls known-compliant replies refusals), gemini-2.5-flash 0.975. Only the stance framing was calibrated on this set.",
+    "corrected_numbers": {
+      "gpt5mini_accuracy_recomputed": 0.8916666666666667,
+      "gpt5mini_expected_prompt": 0.892,
+      "gpt5mini_fails_gate_0.9": true,
+      "gemini_accuracy_recomputed": 0.9747899159663865,
+      "gemini_expected_prompt": 0.975
+    },
+    "source": [
+      "iter_3/gen_art/gen_art_dataset_1/results/judge_calibration.json"
+    ],
+    "status": "CONFIRMED_AS_IS"
+  },
+  {
+    "item": "G1",
+    "old_text": "HELM: 81 models, 36 resolved, 45 closed-API, 2 sub-4B; guardian gap up to 6.7x the across-model variance.",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": "Add an 'External ground truth' subsection. Report the HELM coverage (and why it is empty below 4B), the 6.7x guardian ceiling as an upper bound on any weights-only readout, and the OLB v2 capability correlation (D2 vs capability, and top metrics vs capability, n=16). ... Yet the artifacts executed a HELM limb (81 models, 36 resolved, only 2 sub-4B with published numbers, guardian-pair ceiling 6.7x the across-model variance) and an OLB v2 capability join (n=16).",
+    "corrected_text": "Confirmed: 81 models, 36 resolved, 45 closed-API, 2 sub-4B. The guardian ratio is 6.72 = squared identical-weights gap (-0.141, ibm_granite-4.0-h-small vs its guardian-wrapped variant, xstest) over the across-model population VARIANCE (0.0029, n=81); as a ratio of SDs it is 2.59. It is a ceiling on any weights-only readout because identical weights receive different published scores.",
+    "corrected_numbers": {
+      "guardian": {
+        "delta_safety_score": -0.14055555555555554,
+        "base_score": 0.9461111111111111,
+        "variant_score": 0.8055555555555556,
+        "across_model_n": 81,
+        "across_model_population_variance": 0.0029401074927108725,
+        "share_of_across_model_VARIANCE": 6.719436022835794,
+        "equivalent_ratio_if_expressed_as_SD": 2.5921874976235406,
+        "prompt_expected_ratio": 6.7,
+        "n_guardian_pairs_found": 5
+      }
+    },
+    "source": [
+      "iter_2/gen_art/gen_art_experiment_3/results/stage4_external.json:guardian_pair_ceiling"
+    ],
+    "status": "CONFIRMED_AS_IS"
+  },
+  {
+    "item": "G2",
+    "old_text": "No external safety scores (e.g., from third-party evaluations) were available for the checkpoints in our panel. The $D_2$ scores we compute are the only ground truth. This limits our ability to validate the target itself.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.3 Qwen3-4B Lineage Anatomy, External ground truth, line 245",
+    "reviewer_text": "Coverage of the user's original request is still partial. ... The paper says 'No external safety scores were available' and never mentions capability. Yet the artifacts executed a HELM limb (81 models, 36 resolved, only 2 sub-4B with published numbers, guardian-pair ceiling 6.7x the across-model variance) and an OLB v2 capability join (n=16). Table 1 has 6 rows, not the top 10.",
+    "corrected_text": "Exact repo-id join with the graded panel gives n=15, of which only 7 carry a graded target: Spearman(B, OLB v2 average) and Spearman(P3, capability) are reported with lineage bootstrap CIs, but at n=7 nothing is identifiable; partial Spearman(metric, B | capability) is undefined for all 10 metrics (n=3 < 4).",
+    "corrected_numbers": {
+      "n_raw_olb2_hits_in_external_join": 16,
+      "n_panel_matched_exact_repo_id": 15,
+      "n_panel_matched_with_nonnull_B_S2_core": 7
+    },
+    "source": [
+      "iter_3/gen_art/gen_art_dataset_1/full_data_out.json:datasets[dev_panel_outcome]",
+      "iter_3/gen_art/gen_art_dataset_1/results/external_join.json:rows"
+    ],
+    "status": "DISCREPANCY"
+  },
+  {
+    "item": "G3",
+    "old_text": "TrustLLM, AIR-Bench, GSM8K, MMLU and Arena-Hard: n=0 published numbers for the panel.",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": "Coverage of the user's original request is still partial. Step 4 asked for real benchmark numbers from model cards, papers and leaderboards covering safety beyond refusal (TrustLLM/AIR-Bench), plus capability benchmarks (GSM8K, MMLU, Arena-Hard) to test the safety-capability trade-off. ... State plainly that TrustLLM/AIR-Bench and GSM8K/MMLU/Arena-Hard numbers do not exist for this panel, and that the sealed hold-out was compromised.",
+    "corrected_text": "TrustLLM n=0, AIR-Bench n=0, Arena-Hard n=0; GSM8K n=1 and MMLU (outside OLB v2 MMLU-PRO) n=1 (one old-leaderboard row, TinyLlama-1.1B-Chat). HELM/AIR/SALAD coverage of the sub-4B panel is 0.",
+    "corrected_numbers": {
+      "source": null,
+      "TrustLLM": 0,
+      "AIR-Bench": 0,
+      "GSM8K": 1,
+      "MMLU_outside_OLB2_MMLU-PRO": 1,
+      "Arena-Hard": 0,
+      "HELM_AIR_SALAD_coverage_sub4B_panel": null,
+      "gsm8k_mmlu_discrepancy": null
+    },
+    "source": [
+      "iter_3/gen_art/gen_art_dataset_1/results/external_join.json:n_per_column"
+    ],
+    "status": "DISCREPANCY"
+  },
+  {
+    "item": "G4",
+    "old_text": "Sealed hold-out described as untouched.",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "Sealed hold-out leak (verbatim SEALED.md): ## Leak note\nFive checkpoints of the sealed families were already behaviour-graded in iteration 2\n(`iter_2/gen_art/gen_art_experiment_3/results/graded/`: extD__ibm-granite__granite-3.1-2b-instruct,\nextE__Damien420__granite-3.2-2b-instruct-abliterated, extE__ibm-granite__granite-3.2-2b-instruct,\nextE__hereticness__heretic_stablelm-2-1_6b-chat, extE__stabilityai__stablelm-2-1_6b-chat).\nThose five are EXCLUDED from confirmation; the sealed list above names FRESH repos only. The granite /\nstablelm FAMILIES are therefore not behaviour-naive at the family level, only at the repo level.",
+    "corrected_numbers": {},
+    "source": [
+      "iter_3/gen_art/gen_art_dataset_1/sealed/SEALED.md"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "H1",
+    "old_text": "The power analysis shows that meaningful effect sizes (Spearman $\\rho \\geq 0.5$) require panels of at least 30 checkpoints across 6 or more families.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 6 Discussion and Limitations, Panel size, line 257",
+    "reviewer_text": "The power and scaling claims in the Discussion and Conclusion contradict the power artifact. The Discussion says rho>=0.5 'require panels of at least 30 checkpoints across 6 or more families', and the Conclusion says 50 checkpoints enable 'reliable detection of rho>=0.4'. power.json reports an MDE of 0.80 at n=24-38 under the lineage-cluster bootstrap with ICC 0.62.",
+    "corrected_text": "Lineage-cluster simulation (iter-3 power.py imported, ICC 0.617, 6 clusters): single-Spearman MDE at 80% power (two-sided) n=15: 0.89, n=21: 0.90, n=24: 0.79, n=30: 0.78, n=38: 0.74, n=50: 0.71; one-sided n=15: 0.85, n=21: 0.82, n=24: 0.73, n=30: 0.73, n=38: 0.69, n=50: 0.64. n needed for rho=0.5: unreachable below 100; rho=0.4: unreachable below 100 (two-sided) -- with 6 lineage clusters the effective n saturates, so adding checkpoints to the same lineages cannot reach 80% power. If lineages grow with n (2.5 checkpoints each): {\"rho0.5_single_2s\": {\"n\": 55, \"k_lineages\": 22}, \"rho0.5_single_1s\": {\"n\": 45, \"k_lineages\": 18}, \"rho0.4_single_2s\": {\"n\": 90, \"k_lineages\": 36}, \"rho0.4_single_1s\": {\"n\": 65, \"k_lineages\": 26}}.",
+    "corrected_numbers": {
+      "MDE": {
+        "15": {
+          "single_2s": 0.8936046511627908,
+          "single_1s": 0.8457446808510638,
+          "diff_c0.3": null,
+          "partial_c0.0": 0.8879032258064516,
+          "partial_c0.3": 0.9094594594594595,
+          "partial_c0.6": 0.8488636363636364
+        },
+        "21": {
+          "single_2s": 0.8990384615384616,
+          "single_1s": 0.8208333333333334,
+          "diff_c0.3": null,
+          "partial_c0.0": 0.8537037037037037,
+          "partial_c0.3": 0.8873015873015874,
+          "partial_c0.6": 0.8298611111111112
+        },
+        "24": {
+          "single_2s": 0.7903508771929825,
+          "single_1s": 0.7288888888888889,
+          "diff_c0.3": null,
+          "partial_c0.0": 0.7822222222222223,
+          "partial_c0.3": 0.8191176470588236,
+          "partial_c0.6": 0.7768656716417911
+        },
+        "30": {
+          "single_2s": 0.7798780487804878,
+          "single_1s": 0.7285714285714286,
+          "diff_c0.3": null,
+          "partial_c0.0": 0.7613636363636364,
+          "partial_c0.3": 0.7897260273972604,
+          "partial_c0.6": 0.7461538461538462
+        },
+        "38": {
+          "single_2s": 0.7427272727272727,
+          "single_1s": 0.687037037037037,
+          "diff_c0.3": 0.9265486725663716,
+          "partial_c0.0": 0.7142857142857143,
+          "partial_c0.3": 0.758974358974359,
+          "partial_c0.6": 0.7179012345679012
+        },
+        "50": {
+          "single_2s": 0.7057377049180328,
+          "single_1s": 0.6357142857142858,
+          "diff_c0.3": 0.8938524590163934,
+          "partial_c0.0": 0.6789156626506024,
+          "partial_c0.3": 0.7081818181818181,
+          "partial_c0.6": 0.682967032967033
+        }
+      },
+      "n_needed": {
+        "rho0.5_single_2s": "unreachable below 100",
+        "rho0.5_single_1s": "unreachable below 100",
+        "rho0.4_single_2s": "unreachable below 100",
+        "rho0.4_single_1s": "unreachable below 100"
+      },
+      "n_needed_growing_lineages": {
+        "rho0.5_single_2s": {
+          "n": 55,
+          "k_lineages": 22
+        },
+        "rho0.5_single_1s": {
+          "n": 45,
+          "k_lineages": 18
+        },
+        "rho0.4_single_2s": {
+          "n": 90,
+          "k_lineages": 36
+        },
+        "rho0.4_single_1s": {
+          "n": 65,
+          "k_lineages": 26
+        }
+      }
+    },
+    "source": [
+      "results/H_power_sim.json",
+      "results/H_power_growing.json"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "H2",
+    "old_text": "Family identity alone explains 46.9\\% of metric variance (one-way ANOVA $R^2$ on the $D_2$ target), establishing a high bar for any metric that claims to measure safety rather than architecture.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.1 The Race Table, line 125",
+    "reviewer_text": "The '46.9% of metric variance' in Section 5.1 is also mislabelled: it is family ANOVA R2 on the target D2 (n=15, 3 families), not on metric variance. Fix the ANOVA wording and state n and the number of families.",
+    "corrected_text": "One-way OLS on family (n=15, 3 families): R2 = 0.469 for the product P (the stored 0.469) and 0.455 for balanced B -- this is variance of the TARGET explained by family, not 'metric variance', and the 46.9% is on P, not D2; by lineage (6): 0.725 (P) / 0.716 (B).",
+    "corrected_numbers": {
+      "R2_family_B": 0.4553517996067367,
+      "R2_family_P": 0.46888129713298393,
+      "R2_lineage_B": 0.715682974266906,
+      "R2_lineage_P": 0.7248405835450424
+    },
+    "source": [
+      "results/A_targets.json:components (hc, fr from iter_2 exp1 prompt_budget.json:targets)"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "H3",
+    "old_text": "A ridge-regression metamodel trained on 288 architecture-free activation descriptors (cosine geometry across 16 depth bins) achieves perfect classification on the training checkpoints (BA 1.0) but LOLO held-out BA of 0.50 and LOFO held-out BA of 0.50, both at chance. The identity-baseline held-out accuracy (predicting safety from architecture and uploader identity alone) is 0.143 for LOLO and 0.0 for LOFO.",
+    "old_text_origin": "verbatim iter-3 paper_draft.txt Section 5.3 Qwen3-4B Lineage Anatomy, Metamodel, line 243",
+    "reviewer_text": "Metamodel 'identity baseline held-out accuracy 0.143 / 0.0' is below chance for balanced accuracy and is unexplained. Explain what the identity baseline predicts and why it scores below chance.",
+    "corrected_text": "Sub-chance identity BA is a fold artefact: 2/5 LOLO and 3/3 LOFO held-out folds contain a family label absent from training (every prediction wrong by construction); 1 LOLO role folds are single-class. Recomputed metamodel pooled out-of-fold Spearman(P(instruct), B) = 0.12 (n=9, p=0.76), with P 0.20; LOFO leaves only 2 targeted OOF predictions (undefined).",
+    "corrected_numbers": {
+      "lolo_role_BA": 0.5,
+      "lolo_identity_BA": 0.14285714285714285,
+      "lolo_oof_rho_B": 0.11866111313364182,
+      "lolo_oof_rho_P": 0.2034190510862431
+    },
+    "source": [
+      "results/H_misc.json:metamodel"
+    ],
+    "status": "CORRECTED"
+  },
+  {
+    "item": "I",
+    "old_text": "Figures drew the product target / mislabelled nulls.",
+    "old_text_origin": "ledger / reviewer wording (no verbatim paper sentence located)",
+    "reviewer_text": null,
+    "corrected_text": "Six regenerated figures (PDF Type-42 + PNG): ROSI dose under B and P, race scatter under B with P arrows, grader refusal, kappa validity band, prompt budget under B and P, power MDE vs n.",
+    "corrected_numbers": {},
+    "source": [
+      "figures/figures_manifest.json"
+    ],
+    "status": "CORRECTED"
+  }
+]
