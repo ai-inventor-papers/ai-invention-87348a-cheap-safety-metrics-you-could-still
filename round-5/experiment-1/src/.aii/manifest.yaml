@@ -1,0 +1,13 @@
+# venv_gpu/ WAS ALREADY REMOVED during this round (it held three third-party torch/triton .so
+# files above the 100 MB per-file publication limit, and its bin/ and pyvenv.cfg had already been
+# reaped, so it was an unusable corpse). It therefore has no entry below -- the path no longer
+# exists. Rebuild it with `bash install.sh`; see "Restoring removed files" in README.md.
+# Nothing under this workspace now exceeds 6.8 MB.
+entries:
+  - path: "**/__pycache__/"
+    delete: regenerable
+    source: "python bytecode caches; regenerated on the next import"
+  - path: rows/
+    keep: one GPU pass over 36 checkpoints (C1n random-steer distributions, C6/C10/C12/C13/C15, AMS); the Set A rows are hashed evidence of blindness and cannot be re-created before the labels exist
+  - path: results/
+    keep: judge cache (stance grades of every 64-token reply); deleting it makes the oracle rows cost money to rebuild

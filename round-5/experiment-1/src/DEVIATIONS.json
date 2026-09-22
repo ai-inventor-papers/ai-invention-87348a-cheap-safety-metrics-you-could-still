@@ -1,0 +1,70 @@
+{
+ "note": "Every deviation from plan gen_plan_experiment_2_idx2 (iteration 5, GPU tier), with the code the plan names. Appended as the run proceeds.",
+ "entries": [
+  {
+   "code": "SIBLING_PREREG_ABSENT",
+   "time_utc": "2026-09-21T21:52:31Z",
+   "detail": "At the pre-registration freeze no other iter_5/gen_art/*experiment*/PREREG.json existed (the no-GPU sibling artifact had not started; iter_5/gen_art held only gen_art_evaluation_1, gen_art_experiment_1 (this workspace) and gen_art_research_1). The verbatim S1-S6 block from the plan's Step 1 was written and PREREG['sibling_prereg']['status'] = 'sibling_absent_at_freeze'. Per fallback F9 the two S1-S6 texts are diffed once both exist; any difference is recorded, never silently reconciled."
+  },
+  {
+   "code": "AMS_PKG_PADDING_BUG",
+   "time_utc": "2026-09-21T22:24:00Z",
+   "detail": "ams-scanner 0.1.3 never sets tokenizer.padding_side and reads hidden_states[:, -1, :] (src/ams/extractor.py:130) with its default batch_size=8, so on a right-padding tokenizer (Qwen2.5-0.5B-Instruct's default) it reads PAD-token activations instead of the prompt's true final token. Isolated on Qwen2.5-0.5B-Instruct, harmful_content: package default sigma=0.7447 (CRITICAL); same package call at batch_size=1 -> 5.3336; same call at batch_size=8 with padding_side forced left -> 5.2919; our own implementation 5.3290 (<0.1% from both). The row therefore reports BOTH AMS_pkg (the package as published) and AMS_published (the same statistic read at the true final token), and the analysis correlates both."
+  },
+  {
+   "code": "AMS_PUBLISHED_MISMATCH",
+   "time_utc": "2026-09-21T22:24:00Z",
+   "detail": "Plan Step 5c(i) requires our AMS_published to match the package within 5%; it does not, for all three concepts, entirely because of AMS_PKG_PADDING_BUG (verified above). Logged rather than reconciled: both numbers are kept and reported side by side."
+  },
+  {
+   "code": "AMS_INPROCESS_NOT_CLI",
+   "time_utc": "2026-09-21T22:24:00Z",
+   "detail": "AMS runs in-process on our already-loaded bf16 model through ams.extractor.ActivationExtractor (src/ams/extractor.py:68-92, .extract_direction_with_layer_search at :345-383) because ams.scanner.ModelScanner always reloads the weights itself (a second copy would breach the 10 GB VRAM cap). The package's own dtype default is float16 (extractor.py:73, scanner.py:269, cli.py:438); we never re-cast our bf16 model, and pass its dtype as metadata only."
+  },
+  {
+   "code": "GPU5_TIME_CAPS_NOT_PREREGISTERED",
+   "time_utc": "2026-09-21T22:42:00Z",
+   "detail": "The frozen PREREG.json carries no time_caps key (iteration 4's did). method.py therefore uses operational caps soft=900 s / hard=1500 s per model, recorded as a per-row flag rather than a pre-registered rule. They bind nothing in practice: the measured wall time is ~55 s for a 0.5B model including load and AMS."
+  },
+  {
+   "code": "ORACLE_DIRECTION_CANDIDATES_DROPPED",
+   "time_utc": "2026-09-21T22:46:00Z",
+   "detail": "C1_oracle / C2_oracle / C16_oracle (and the cf_rank_dirs machinery that only fed them) are not in the plan's row['candidates'] contract for this tier and partly depended on C16, which is dead, so they were dropped. row['oracle'] still carries the judged fields (judged_refusal, readout_validity_auroc, judged_harm_refusal, judged_twin_refusal) that the 16-prompt behaviour probe needs. row['directions'] correspondingly drops ra_folds_defined and cos_ra_rb_per_layer and keeps the harm-direction diagnostics."
+  },
+  {
+   "code": "OOM_RETRY_LIMITED_FOR_STEER_PASS",
+   "time_utc": "2026-09-21T22:46:00Z",
+   "detail": "A true per-item retry is implemented for base_pass (it builds its own KV cache, so per-item is exact). The steering pass used by C1/C1n re-uses one shared 16-row KV cache, so on OOM it is retried once after empty_cache(); if it still fails, the 20-seed C1n distribution is cut for that model only and flagged C1N_SEEDS_REDUCED (plan fallback F3). No model needed either path: the largest peak measured is ~8.2 GB."
+  },
+  {
+   "code": "C6_LENS_ALWAYS_COMPUTED",
+   "time_utc": "2026-09-21T22:46:00Z",
+   "detail": "Plan fallback F7 makes C6_lens (per-layer logit-lens difference, no linearisation) a fallback when the DLA reconstruction correlation drops below 0.99. It is instead computed for EVERY model so the two are comparable panel-wide; the fallback flag still fires only when corr_meanlogit < 0.99. On Qwen2.5-0.5B the reconstruction corr against the mean-logit margin is 0.999999 (against the logsumexp margin 0.954)."
+  },
+  {
+   "code": "NUMPY2_AND_NORM_HOOK_FIXES",
+   "time_utc": "2026-09-21T22:46:00Z",
+   "detail": "Three implementation fixes found by the smoke run, all before any panel row was written: np.trapz was removed in numpy 2.5.3 (C10's depth integral now uses np.trapezoid); the final-norm forward hook assumed a 3-D tensor and crashed when the logit-lens path called the norm module with a 2-D (16, d) tensor (now shape-aware and locked so a lens call can never overwrite the margin readout, with a test asserting the analytic and module paths agree); the k=8 C1n call passed an 8-row batch against the shared 16-row KV cache, and offset_control read a condition key ('_D') the port no longer stores (the cross-fitted harm direction is now passed explicitly)."
+  },
+  {
+   "code": "VRAM_CAP_RAISED_OOM_RETRY",
+   "time_utc": "2026-09-21T23:18:00Z",
+   "detail": "Three checkpoints hit the 10.0 GB operating cap inside the long-lived stage process (mlabonne/Qwen3-4B-abliterated, DreamFast/qwen3-4b-heretic, microsoft/Phi-3.5-mini-instruct). They were re-measured ONE PER FRESH PROCESS at the artifact's declared 10.5 GB budget (run_oom_retry.sh), which is the plan's vram_gb and was never exceeded. Two succeeded (peaks recorded in their rows). Context: the 4B models that passed peak at 9.6-9.7 GB, so the failures are marginal and driven by allocator fragmentation after ~20 models in one process, not by a different model size."
+  },
+  {
+   "code": "OOM_AT_10GB",
+   "time_utc": "2026-09-21T23:20:23Z",
+   "detail": "microsoft/Phi-3.5-mini-instruct (Set A) could not be measured within the declared 10.5 GB VRAM budget. It fails in the WRAPPED base pass (the C13 presentation variant lengthens every prompt), asking for a further 2 MiB at the cap, in a fresh process and again with PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True. The cap was NOT raised (the physical L4 had 12 GB free; the budget is what binds). It is recorded in skips.json with this code; Set A is therefore 11/12 frozen and the analysis prints n. Its iteration-4 row peaked at 10.52 GB WITH the backward pass, so this model sits just above this artifact's budget either way."
+  },
+  {
+   "code": "SET_B_SEALED_NOT_DECLARED",
+   "time_utc": "2026-09-21T23:21:43Z",
+   "detail": "No iter_5/gen_art/*dataset* workspace existed at the freeze, so no Set B declaration file matching (?i)set_?b.*(open|declar).*.json was found and live_lib.assert_not_sealed stays active: the Granite/StableLM2 repos were never touched. setb_status.json records set_b_open=false."
+  },
+  {
+   "code": "PAIRED_CI_STATEMENT_THREE_WAY",
+   "time_utc": "2026-09-22T00:16:04Z",
+   "detail": "Post-hoc reporting fix, no measured value changed. extra_ams_head_to_head() in analyze_gpu.py built plain_statement for each AMS variant's paired lineage-bootstrap rho-difference vs C2 and vs logit_gap with a BINARY rule (beats = ci_lo>0, else 'does NOT clearly beat ... (CI includes 0)'), so the else-branch wrongly said 'CI includes 0' even when ci_hi<0, i.e. when the CI excludes 0 on the negative side and the variant is clearly worse. 9 of the 10 blocks in analysis_gpu.json were in exactly that state (e.g. AMS_published vs C2: point -0.622, CI [-1.005,-0.254]), contradicting RESULTS.md Sec 0 item 4, which already correctly said the CI excludes zero. Fixed to a three-way rule: kept AMS_beats (ci_lo>0) unchanged, added a sibling boolean AMS_clearly_worse (isfinite(ci_hi) and ci_hi<0), and split plain_statement into three cases -- 'beats ... (excludes 0)' [unchanged text], a new 'is CLEARLY WORSE than ...: the paired lineage-bootstrap CI excludes 0 on the negative side', and the unchanged 'does NOT clearly beat ... (CI includes 0)' for the one truly-undistinguishable case (AMS_mean3 vs logit_gap, CI [-0.541,0.014]). Applied by re-running analyze_gpu.py (system python3, seeded bootstrap, N_BOOT=2000) end-to-end: analysis_gpu.json and analysis_tables_gpu.md were regenerated and numerically diffed leaf-by-leaf against the pre-fix originals -- 0 numeric leaves differed by more than 1e-12, only the intended plain_statement strings and the new AMS_clearly_worse booleans changed (Step B, clean). RESULTS.md Sec 3's two truncated `json.dumps(...)[:500]` dumps were replaced in make_results.py with a proper 'variant | rho difference | lineage-bootstrap 95% CI | verdict' markdown table per comparison; running the updated make_results.py was found to DROP the hand-authored Sec 0 'Headline findings' narrative and other hand-added prose (it is not regenerated by the current script), so that output was discarded and RESULTS.md was instead hand-patched in place: the two truncated lines were replaced with the same two markdown tables the corrected make_results.py produces, leaving every other line (including the already-correct Sec 0 item 4) untouched. candidates_gpu.json carries no plain_statement fields and was not touched. See fix_paired_ci_statements.py, kept in WS to document the exact patch."
+  }
+ ]
+}
