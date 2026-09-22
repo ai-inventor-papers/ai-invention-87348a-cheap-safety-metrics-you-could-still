@@ -1,0 +1,162 @@
+/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/utils/hub.py:110: FutureWarning: Using `TRANSFORMERS_CACHE` is deprecated and will be removed in v5 of Transformers. Use `HF_HOME` instead.
+  warnings.warn(
+2026-09-21 14:14:26.183 | INFO     | __main__:run_one:157 - DONE HuggingFaceTB/SmolLM2-360M-Instruct: 142 gens, load 60s gen 199s
+2026-09-21 14:14:31.237 | ERROR    | __main__:main:179 - FAILED h2oai/h2o-danube3-500m-chat
+Traceback (most recent call last):
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2359, in _from_pretrained
+    tokenizer = cls(*init_inputs, **init_kwargs)
+                │    │              └ {'add_bos_token': False, 'add_eos_token': False, 'add_prefix_space': False, 'added_tokens_decoder': {0: AddedToken("<unk>", r...
+                │    └ ()
+                └ <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/models/llama/tokenization_llama_fast.py", line 154, in __init__
+    super().__init__(
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_fast.py", line 108, in __init__
+    raise ValueError(
+
+ValueError: Cannot instantiate this tokenizer from a slow version. If it's based on sentencepiece, make sure you have sentencepiece installed.
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 187, in <module>
+    main()
+    └ <function main at 0x764921fbe480>
+
+> File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 177, in main
+    run_one(repo, args)
+    │       │     └ Namespace(repos='HuggingFaceTB/SmolLM2-360M-Instruct,h2oai/h2o-danube3-500m-chat,unsloth/Llama-3.2-1B-Instruct,allenai/OLMo-2...
+    │       └ 'h2oai/h2o-danube3-500m-chat'
+    └ <function run_one at 0x764921fbe0c0>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 127, in run_one
+    model, tok = load_model(repo, **kw)
+                 │          │       └ {}
+                 │          └ 'h2oai/h2o-danube3-500m-chat'
+                 └ <function load_model at 0x764921fbd4e0>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/guard.py", line 38, in load_model
+    tok = AutoTokenizer.from_pretrained(repo)
+          │             │               └ 'h2oai/h2o-danube3-500m-chat'
+          │             └ <classmethod(<function AutoTokenizer.from_pretrained at 0x764909b75300>)>
+          └ <class 'transformers.models.auto.tokenization_auto.AutoTokenizer'>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1156, in from_pretrained
+    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           │               │               │                               │         └ {'_from_auto': True, '_commit_hash': 'c202f976c26875541e738ea978c8158fa536da9a'}
+           │               │               │                               └ ()
+           │               │               └ 'h2oai/h2o-danube3-500m-chat'
+           │               └ <classmethod(<function PreTrainedTokenizerBase.from_pretrained at 0x76491ef9d1c0>)>
+           └ <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2113, in from_pretrained
+    return cls._from_pretrained(
+           │   └ <classmethod(<function PreTrainedTokenizerBase._from_pretrained at 0x76491ef9d260>)>
+           └ <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2360, in _from_pretrained
+    except import_protobuf_decode_error():
+           └ <function import_protobuf_decode_error at 0x76491ef61da0>
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 88, in import_protobuf_decode_error
+    raise ImportError(PROTOBUF_IMPORT_ERROR.format(error_message))
+                      │                     │      └ ''
+                      │                     └ <method 'format' of 'str' objects>
+                      └ '\n{0} requires the protobuf library but it was not found in your environment. Check out the instructions on the\ninstallatio...
+
+ImportError: 
+ requires the protobuf library but it was not found in your environment. Check out the instructions on the
+installation page of its repo: https://github.com/protocolbuffers/protobuf/tree/master/python#installation and follow the ones
+that match your environment. Please note that you may need to restart your runtime after installation.
+
+2026-09-21 14:23:42.434 | INFO     | __main__:run_one:157 - DONE unsloth/Llama-3.2-1B-Instruct: 142 gens, load 3s gen 548s
+2026-09-21 14:28:16.660 | INFO     | __main__:run_one:157 - DONE allenai/OLMo-2-0425-1B-Instruct: 142 gens, load 3s gen 271s
+2026-09-21 14:33:13.670 | INFO     | __main__:run_one:157 - DONE tiiuae/Falcon3-1B-Instruct: 142 gens, load 13s gen 283s
+2026-09-21 14:33:18.442 | ERROR    | __main__:main:179 - FAILED utter-project/EuroLLM-1.7B-Instruct
+Traceback (most recent call last):
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 187, in <module>
+    main()
+    └ <function main at 0x764921fbe480>
+
+> File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 177, in main
+    run_one(repo, args)
+    │       │     └ Namespace(repos='HuggingFaceTB/SmolLM2-360M-Instruct,h2oai/h2o-danube3-500m-chat,unsloth/Llama-3.2-1B-Instruct,allenai/OLMo-2...
+    │       └ 'utter-project/EuroLLM-1.7B-Instruct'
+    └ <function run_one at 0x764921fbe0c0>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 127, in run_one
+    model, tok = load_model(repo, **kw)
+                 │          │       └ {}
+                 │          └ 'utter-project/EuroLLM-1.7B-Instruct'
+                 └ <function load_model at 0x764921fbd4e0>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/guard.py", line 38, in load_model
+    tok = AutoTokenizer.from_pretrained(repo)
+          │             │               └ 'utter-project/EuroLLM-1.7B-Instruct'
+          │             └ <classmethod(<function AutoTokenizer.from_pretrained at 0x764909b75300>)>
+          └ <class 'transformers.models.auto.tokenization_auto.AutoTokenizer'>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/models/auto/tokenization_auto.py", line 1156, in from_pretrained
+    return tokenizer_class.from_pretrained(pretrained_model_name_or_path, *inputs, **kwargs)
+           │               │               │                               │         └ {'_from_auto': True, '_commit_hash': 'a25c7fa65fc2a644e6270b8940dbe295b51da681'}
+           │               │               │                               └ ()
+           │               │               └ 'utter-project/EuroLLM-1.7B-Instruct'
+           │               └ <classmethod(<function PreTrainedTokenizerBase.from_pretrained at 0x76491ef9d1c0>)>
+           └ <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2113, in from_pretrained
+    return cls._from_pretrained(
+           │   └ <classmethod(<function PreTrainedTokenizerBase._from_pretrained at 0x76491ef9d260>)>
+           └ <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_base.py", line 2359, in _from_pretrained
+    tokenizer = cls(*init_inputs, **init_kwargs)
+                │    │              └ {'add_bos_token': True, 'add_eos_token': False, 'add_prefix_space': True, 'added_tokens_decoder': {0: AddedToken("<unk>", rst...
+                │    └ ()
+                └ <class 'transformers.models.llama.tokenization_llama_fast.LlamaTokenizerFast'>
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/models/llama/tokenization_llama_fast.py", line 154, in __init__
+    super().__init__(
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/transformers/tokenization_utils_fast.py", line 108, in __init__
+    raise ValueError(
+
+ValueError: Cannot instantiate this tokenizer from a slow version. If it's based on sentencepiece, make sure you have sentencepiece installed.
+2026-09-21 14:37:34.669 | INFO     | __main__:run_one:157 - DONE huihui-ai/Qwen2.5-1.5B-Instruct-CensorTune: 142 gens, load 3s gen 253s
+2026-09-21 14:37:34.958 | ERROR    | __main__:main:179 - FAILED HuggingFaceTB/SmolLM2-1.7B-Instruct
+Traceback (most recent call last):
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 187, in <module>
+    main()
+    └ <function main at 0x764921fbe480>
+
+> File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 177, in main
+    run_one(repo, args)
+    │       │     └ Namespace(repos='HuggingFaceTB/SmolLM2-360M-Instruct,h2oai/h2o-danube3-500m-chat,unsloth/Llama-3.2-1B-Instruct,allenai/OLMo-2...
+    │       └ 'HuggingFaceTB/SmolLM2-1.7B-Instruct'
+    └ <function run_one at 0x764921fbe0c0>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/generate.py", line 127, in run_one
+    model, tok = load_model(repo, **kw)
+                 │          │       └ {}
+                 │          └ 'HuggingFaceTB/SmolLM2-1.7B-Instruct'
+                 └ <function load_model at 0x764921fbd4e0>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/guard.py", line 35, in load_model
+    assert_not_sealed(repo)
+    │                 └ 'HuggingFaceTB/SmolLM2-1.7B-Instruct'
+    └ <function assert_not_sealed at 0x764921fbd940>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/scripts/guard.py", line 26, in assert_not_sealed
+    info = HfApi().model_info(repo)
+           │                  └ 'HuggingFaceTB/SmolLM2-1.7B-Instruct'
+           └ <class 'huggingface_hub.hf_api.HfApi'>
+
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 2660, in model_info
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/requests/sessions.py", line 671, in get
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/requests/sessions.py", line 651, in request
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/requests/sessions.py", line 784, in send
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 96, in send
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/requests/adapters.py", line 668, in send
+  File "/ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/requests/adapters.py", line 332, in cert_verify
+
+OSError: Could not find a suitable TLS CA certificate bundle, invalid path: /ai-inventor/aii_data/runs/run_fcYd_7ruOwtm/3_invention_loop/iter_3/gen_art/gen_art_dataset_1/venv_ds/lib/python3.12/site-packages/certifi/cacert.pem
+./run_gen_queue.sh: line 8: venv_ds/bin/python: No such file or directory
